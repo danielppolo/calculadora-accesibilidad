@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### Calculadora de accesibilidad
 
 ## Getting Started
 
@@ -32,3 +32,55 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Data
+The application uses GeoJSON to display the geometry on top of the map. To render everything properly, it needs every file to follow a specific format.
+
+### Cities
+Functions as a dictionary of the hexagons that compose the city. 
+`<:city>.json`
+```json
+{
+  "<:hexagon_id>": {
+    "type": "Feature",
+    "geometry": {
+      "type": "Polygon",
+      "coordinates": [...]
+    },
+    "properties": {
+      "empresas": number,
+      "jobs": number,
+      "clinicas": number,
+      "escuelas": number
+    }
+  },
+  ...
+}
+```
+
+### Hexagon
+Represents all the relationships the hexagon has with his peers. There MUST exist a single JSON for every hexagon in the `<:city>.json`. 
+`<:hexagon_id>.json`
+```json
+{
+  "<:hexagon_id>": [<:car_time>, <:bike_time>, <:walk_time>],
+  ...
+}
+```
+
+
+## Storage
+The storage service of choice is AWS S3. All documents consumed by the application are located in the bucket `bucket_name`. The directory structure MUST follow the specified convention for the application to fetch.
+
+ ```
+└── cities
+│   └── cancun
+│       ├── features.json
+│       └── features
+│            ├── <:id>.json
+│            ├── <:id>.json
+│            │
+│            .
+
+
+ ```
