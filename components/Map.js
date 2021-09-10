@@ -1,88 +1,110 @@
 import mapboxgl from 'mapbox-gl';
 import React, { useEffect, useState } from 'react';
-import data from '../data/cancunDictionary.json';
+import useLayer from '../hooks/useLayer';
 import useOpportunities from '../hooks/useOpportunities';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
 const CANCUN_COORDINATES = [-86.879, 21.1427];
+const opportunities = ['jobs_w', 'empress', 'clinics', 'escuels'];
 
-const getLayers = (res, time) => {
-  const walkIds = Object.keys(res).filter((id) => res[id].walk < time);
-  const bikeIds = Object.keys(res).filter((id) => res[id].bike < time);
-  const carIds = Object.keys(res).filter((id) => res[id].car < time);
-  const walk = walkIds.map((id) => data[id]);
-  const bike = bikeIds.map((id) => data[id]);
-  const car = carIds.map((id) => data[id]);
-  return { walk, bike, car };
+const convertToGeoJSON = (features) => ({
+  type: 'FeatureCollection',
+  features,
+});
+
+const createLayer = (map, features, property, max) => {
+  map.addSource(property, {
+    type: 'geojson',
+    data: convertToGeoJSON(features), // 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
+  });
+  map.addLayer({
+    id: property,
+    type: 'fill',
+    source: property,
+    filter: ['>', ['get', property], 0],
+    layout: {
+      visibility: 'none',
+    },
+    paint: {
+      'fill-color': [
+        'rgba',
+        0,
+        0,
+        ['+', 50, ['round', ['/', ['*', 205, ['get', property]], max]]],
+        0.8,
+      ],
+      'fill-outline-color': [
+        'rgba',
+        0,
+        0,
+        0,
+        0,
+      ],
+    },
+  });
 };
 
-function Map() {
+function Map({ city, data }) {
+  const features = Object.values(data);
   const [map, setMap] = useState(null);
-  const [opportunity, setOpportunity] = useState('jobs_w');
-  const [displayJobs, removeJobs] = useOpportunities(map, Object.values(data), 'jobs_w');
-  const [displayEmpress, removeEmpress] = useOpportunities(map, Object.values(data), 'empress');
-  const [displayClinics, removeClinics] = useOpportunities(map, Object.values(data), 'clinics');
-  const [displaySchools, removeSchools] = useOpportunities(map, Object.values(data), 'escuels');
+  const [layerId, setLayerId] = useState();
 
   useEffect(() => {
-    setMap(new mapboxgl.Map({
+    const mapInstance = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: CANCUN_COORDINATES,
       zoom: 12,
-    }));
+    });
+
+    mapInstance.on('load', () => {
+      opportunities.forEach((opportunity) => {
+        const values = features.map((item) => item.properties[opportunity]);
+        createLayer(mapInstance, features, opportunity, Math.max(...values));
+      });
+    });
+
+    setMap(mapInstance);
   }, []);
 
+  // useEffect(() => {
+  //   if (map && displayJobs) {
+  //     map.on('load', () => {
+  //       displayJobs();
+  //     });
+  //   }
+  // }, [map, displayJobs]);
+
   useEffect(() => {
-    if (map && displayJobs) {
-      map.on('load', () => {
-        displayJobs();
+    if (map && layerId) {
+      console.log(layerId);
+      map.on('click', layerId, async (e) => {
+        const response = await fetch(`/api/cities/${city}/features/${e.features[0].properties.h3_ddrs}`);
+        const text = await response.text();
+        const json = JSON.parse(text);
+        const walkIds = Object.keys(json).filter((id) => json[id][1] < 60);
+        const walk = walkIds.map((id) => ({
+          ...data[id],
+          properties: {
+            ...data[id].properties,
+            walk_time: json[id][1],
+          },
+        }));
+        console.log(walk);
+        const [set] = createLayer(map, walk, 'walk_time', Math.max(...walk.map((item) => item.properties.walk_time)));
+        set();
+        // const { walk, bike, car } = getLayers(data, 15);
       });
-      // map.on('click', 'cancun', async (e) => {
-      //   const id = e.features[0].properties.h3_ddrs
-      //   const response =  await fetch(`http://localhost:3000/api/features/${id}`)
-      //   const data = await response.json()
-      //   const {walk, bike, car} = getLayers(data, 15)
-      //   });
     }
-  }, [map, displayJobs]);
+  }, [map, layerId]);
 
   const handleSelectChange = (event) => {
-    const op = event.currentTarget.value;
-    switch (opportunity) {
-      case 'jobs_w':
-        removeJobs();
-        break;
-      case 'empress':
-        removeEmpress();
-        break;
-      case 'clinics':
-        removeClinics();
-        break;
-      case 'escuels':
-        removeSchools();
-        break;
-      default:
-        break;
-    }
-    switch (op) {
-      case 'jobs_w':
-        displayJobs();
-        break;
-      case 'empress':
-        displayEmpress();
-        break;
-      case 'clinics':
-        displayClinics();
-        break;
-      case 'escuels':
-        displaySchools();
-        break;
-      default:
-        break;
-    }
-    setOpportunity(op);
+    const nextOpportunity = event.currentTarget.value;
+    opportunities.forEach((opportunity) => {
+      map.setLayoutProperty(opportunity, 'visibility', opportunity === nextOpportunity ? 'visible' : 'none');
+    });
+    setLayerId(nextOpportunity);
   };
 
   return (
@@ -101,14 +123,3 @@ function Map() {
 }
 
 export default Map;
-
-// map.addLayer({
-//   'id': 'outline',
-//   'type': 'line',
-//   'source': 'cancun',
-//   'layout': {},
-//   'paint': {
-//   'line-color': '#000',
-//   'line-width': 1
-//   }
-//   });

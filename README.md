@@ -63,7 +63,7 @@ Represents all the relationships the hexagon has with his peers. There MUST exis
 `<:hexagon_id>.json`
 ```json
 {
-  "<:hexagon_id>": [<:car_time>, <:bike_time>, <:walk_time>],
+  "<:hexagon_id>": [<:walk_time>, <:bike_time>, <:car_time>],
   ...
 }
 ```
@@ -73,9 +73,9 @@ Represents all the relationships the hexagon has with his peers. There MUST exis
 The storage service of choice is AWS S3. All documents consumed by the application are located in the bucket `bucket_name`. The directory structure MUST follow the specified convention for the application to fetch.
 
  ```
-└── cities
+└── data
 │   └── cancun
-│       ├── features.json
+│       ├── main.json
 │       └── features
 │            ├── <:id>.json
 │            ├── <:id>.json
