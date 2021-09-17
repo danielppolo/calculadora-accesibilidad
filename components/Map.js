@@ -1,5 +1,5 @@
 import mapboxgl from 'mapbox-gl';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -51,6 +51,52 @@ function Map({ city, data }) {
   const [layerId, setLayerId] = useState();
   const [hexagonId, setHexagonId] = useState();
 
+  useCallback(() => {
+    map.on('click', layerId, async (e) => {
+      const featureId = e.features[0].properties.h3_ddrs;
+
+      // Clear previoyus isochrone
+      if (hexagonId) {
+        mediums.forEach((medium) => {
+          timeSteps.forEach((timeStep) => {
+            map.removeLayer(`${hexagonId}-${medium}-${timeStep}`);
+          });
+        });
+      }
+
+      // Fetch data
+      const response = await fetch(`/api/cities/${city}/features/${featureId}`);
+      const text = await response.text();
+      const json = JSON.parse(text);
+
+      // Create 9 isochrone variant layers
+      mediums.forEach((medium, i) => {
+        timeSteps.forEach((timeStep) => {
+          const filteredIds = Object.keys(json).filter((id) => json[id][i] < timeStep);
+          const hexagons = filteredIds.map((id) => ({
+            ...data[id],
+            properties: {
+              ...data[id].properties,
+              [medium]: json[id][1],
+            },
+          }));
+          const max = Math.max(...hexagons.map((item) => item.properties[medium]));
+          createLayer(`${featureId}-${medium}-${timeStep}`, map, hexagons, medium, max, 'none');
+        });
+      });
+      // Hide all opportunity layers
+      opportunities.forEach((opportunity) => {
+        map.setLayoutProperty(opportunity, 'visibility', 'none');
+      });
+      // Show default isochrone
+      map.setLayoutProperty(`${featureId}-car-60`, 'visibility', 'visible');
+
+      // Set active IDS
+      setLayerId(`${featureId}-car-60`);
+      setHexagonId(featureId);
+    });
+  }, []);
+
   useEffect(() => {
     const mapInstance = new mapboxgl.Map({
       container: 'map',
@@ -71,49 +117,7 @@ function Map({ city, data }) {
 
   useEffect(() => {
     if (map && layerId) {
-      map.on('click', layerId, async (e) => {
-        const featureId = e.features[0].properties.h3_ddrs;
 
-        // Clear previoyus isochrone
-        if (hexagonId) {
-          mediums.forEach((medium) => {
-            timeSteps.forEach((timeStep) => {
-              map.removeLayer(`${hexagonId}-${medium}-${timeStep}`);
-            });
-          });
-        }
-
-        // Fetch data
-        const response = await fetch(`/api/cities/${city}/features/${featureId}`);
-        const text = await response.text();
-        const json = JSON.parse(text);
-
-        // Create 9 isochrone variant layers
-        mediums.forEach((medium, i) => {
-          timeSteps.forEach((timeStep) => {
-            const filteredIds = Object.keys(json).filter((id) => json[id][i] < timeStep);
-            const hexagons = filteredIds.map((id) => ({
-              ...data[id],
-              properties: {
-                ...data[id].properties,
-                [medium]: json[id][1],
-              },
-            }));
-            const max = Math.max(...hexagons.map((item) => item.properties[medium]));
-            createLayer(`${featureId}-${medium}-${timeStep}`, map, hexagons, medium, max, 'none');
-          });
-        });
-        // Hide all opportunity layers
-        opportunities.forEach((opportunity) => {
-          map.setLayoutProperty(opportunity, 'visibility', 'none');
-        });
-        // Show default isochrone
-        map.setLayoutProperty(`${featureId}-car-60`, 'visibility', 'visible');
-
-        // Set active IDS
-        setLayerId(`${featureId}-car-60`);
-        setHexagonId(featureId);
-      });
     }
   }, [map, layerId, hexagonId]);
 
