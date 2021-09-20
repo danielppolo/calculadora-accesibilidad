@@ -111,6 +111,7 @@ function Map({ city, data }) {
     const nextOpportunity = event.target.value;
     show(map, nextOpportunity);
     setOpportunity(nextOpportunity);
+    setHexagon(undefined);
   };
 
   const handleMediumChange = (value) => {

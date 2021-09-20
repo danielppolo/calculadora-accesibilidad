@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Map from '../components/Map';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Home() {
   const [city, setCity] = useState();
@@ -13,6 +15,14 @@ export default function Home() {
     fetchCity();
   }, []);
   return (
+    <>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={!city}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
     <Map city="cancun" data={city || {}} />
+</>
   );
 }

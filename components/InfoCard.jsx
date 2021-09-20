@@ -27,7 +27,7 @@ function InfoCard({
 }) {
   console.log(hexagon)
   return (
-    <div className="bg-white rounded-md fixed top-8 left-8 bottom-8 z-50 w-1/4 shadow-lg p-4">
+    <div className="bg-white rounded-md overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-lg p-4 md:top-8 md:bottom-8 md:left-8 md:right-auto md:w-1/4 md:h-auto">
       <div className="pb-4">
         <TextField
           select
