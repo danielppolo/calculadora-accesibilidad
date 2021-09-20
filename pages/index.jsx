@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from '../components/Map';
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
 
     fetchCity();
   }, []);
-  return city ? (
+  return (
     <Map city="cancun" data={city || {}} />
-  ) : null;
+  );
 }
