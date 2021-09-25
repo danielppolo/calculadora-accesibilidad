@@ -21,24 +21,27 @@ const useLayerCreate = () => {
         id,
         type: 'fill',
         source: id,
-        filter: ['>', ['get', property], 0],
         layout: {
           visibility: visible ? 'visible' : 'none',
         },
         paint: {
           'fill-color': [
             'rgba',
-            0,
-            0,
             ['+', 50, ['round', ['/', ['*', 205, ['get', property]], maxValue]]],
-            0.7,
+            0,
+            0,
+            ["case",
+              ['>', ['get', property], 0], 0.7,
+              ['==', ['get', property], 0], 0,
+              0,
+            ],
           ],
           'fill-outline-color': [
             'rgba',
             0,
             0,
             0,
-            0,
+            0.1,	
           ],
         },
       });
