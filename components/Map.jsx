@@ -14,6 +14,7 @@ const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultMedium = MEDIUMS[0];
 const defaultTimeStep = TIME_STEPS[1];
+const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 
 function Map({ city, data }) {
   const [map, setMap] = useState(null);
@@ -21,6 +22,7 @@ function Map({ city, data }) {
     state,
     current,
     legend,
+    metadata,
     add,
     show,
   } = useLayerManager(map);
@@ -29,9 +31,22 @@ function Map({ city, data }) {
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
-  const features = Object.values(data);
-  const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado en minutos'
+  const [features, setFeatures] = useState(Object.values(data));
+  const [opportunities, setOpportunities] = useState({});
+  const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado (minutos)'
 
+  useEffect(() => {
+    if (data) {
+      const nextFeatures = Object.values(data)
+      setFeatures(nextFeatures);
+      setOpportunities({
+        Trabajos: count(nextFeatures, 'jobs_w'), 
+        Empresas: count(nextFeatures, 'empress'), 
+        Clínicas: count(nextFeatures, 'clinics'), 
+        Escuelas: count(nextFeatures, 'escuels'),
+      })
+    }
+  }, [data])
   useEffect(() => {
     setMap(new mapboxgl.Map({
       container: 'map',
@@ -79,6 +94,7 @@ function Map({ city, data }) {
         MEDIUMS.forEach((med, mediumIndex) => {
           TIME_STEPS.forEach((step) => {
             const featureIds = Object.keys(json)
+            // Get displayable features
             const filteredIds = featureIds.filter((id) => json[id][mediumIndex] <= step );
             const hexagons = filteredIds.map((id) => ({
               ...data[id],
@@ -87,7 +103,7 @@ function Map({ city, data }) {
                 [med]: json[id][mediumIndex],
               },
             }));
-            // Include clicked hexagon.
+            // Include clicked feature.
             hexagons.push({
               ...data[featureId],
               properties: {
@@ -95,6 +111,13 @@ function Map({ city, data }) {
                 [med]: 1,
               },
             })
+
+            // Get only countable features. For metadata.
+            const filteredIdsNoZero = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step );
+            const hexagonsNoZero = filteredIdsNoZero.map((id) => data[id]);
+            // Include clicked feature.
+            hexagonsNoZero.push(data[featureId])
+
             // const max = Math.max(...hexagons.map((item) => item.properties[med]));
             add({
               map,
@@ -103,6 +126,14 @@ function Map({ city, data }) {
               property: med,
               maxValue: step,
               visible: false,
+              metadata: {
+                opportunities: {
+                  Trabajos: count(hexagonsNoZero, 'jobs_w'), 
+                  Empresas: count(hexagonsNoZero, 'empress'), 
+                  Clínicas: count(hexagonsNoZero, 'clinics'), 
+                  Escuelas: count(hexagonsNoZero, 'escuels'),
+                }
+              }
               // stepSize: 4,
             });
           });
@@ -140,11 +171,12 @@ function Map({ city, data }) {
     setTimeStep(value);
   };
   
-
   return (
     <>
       <InfoCard
         hexagon={hexagon}
+        reachableOpportunities={metadata?.opportunities}
+        cityData={opportunities}
         opportunity={opportunity}
         onOpportunityChange={handleOpportunityChange}
         medium={medium}

@@ -36,10 +36,18 @@ const getRedCase = (property, intervals, colors) => {
 const useLayerCreate = () => {
   const [layers] = useState({});
   const [legends] = useState({});
+  const [layerMetadata] = useState({});
   const [current, setCurrent] = useState();
 
   const addLayer = ({
-    map, id, features, property, maxValue, visible, stepSize = NUMBER_OF_BUCKETS,
+    map, 
+    id, 
+    features, 
+    property, 
+    maxValue, 
+    visible, 
+    metadata,
+    stepSize = NUMBER_OF_BUCKETS, 
   }) => {
     if (map && !(id in layers)) {
       console.log('addLayer', id);
@@ -83,8 +91,8 @@ const useLayerCreate = () => {
         },
       });
       layers[id] = true;
+      layerMetadata[id] = metadata
       legends[id] = getLegend(intervals, colors);
-      console.log(legends, getLegend(intervals, colors))
       if (visible) {
         setCurrent(id);
       }
@@ -116,6 +124,7 @@ const useLayerCreate = () => {
     show: showLayer,
     current,
     legend: legends[current] || [],
+    metadata: layerMetadata[current] || {},
   };
 };
 export default useLayerCreate;

@@ -21,11 +21,13 @@ const icon = {
 function InfoCard({
   onOpportunityChange,
   opportunity,
+  cityData,
   medium,
   onMediumChange,
   timeStep,
   onTimeStepChange,
   hexagon,
+  reachableOpportunities,
 }) {
   return (
     <div className="bg-white rounded-md overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-lg p-4 md:top-8 md:bottom-8 md:left-8 md:right-auto md:w-1/4 md:h-auto">
@@ -34,9 +36,23 @@ function InfoCard({
       <div className="mb-4 mt-4">
       <Divider light/>
       </div>
+      <p className="text-base font-medium mb-2">Cancun</p>
+      <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+      <div>
+        {
+          Object.keys(cityData).map(key => (
+            <div key={key} className="flex flex-row items-center justify-between mb-0">
+              <p className="text-sm"><span  className="font-semibold"key={key}>{key}</span>: <span>{Intl.NumberFormat().format(cityData[key])}</span></p>
+            </div>
+          ))
+        }
+      </div>
+      <div className="mb-4 mt-4">
+      <Divider light/>
+      </div>
       <div className="mb-6">
       <p className="text-base font-medium mb-2">Controles</p>
-      <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
+      <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
         <TextField
           select
           label="Categoría"
@@ -50,15 +66,8 @@ function InfoCard({
           }
         </TextField>
       </div>
-      {
-        hexagon ? (
-          <p className="text-sm font-medium mb-2">Cambia el medio de transporte y el tiempo</p>
-          ) : (
-            <p className="text-sm font-medium mb-2">Cambia el medio de transporte y el tiempo</p>
-            
-        )
-      }
-        <div className="pb-4">
+      <div>
+        <p className="text-sm font-medium mb-4">Cambia el medio de transporte y el tiempo</p>
           <div className="pb-4">
             <ButtonGroup size="large" aria-label="large button group" fullWidth>
               {
@@ -82,31 +91,26 @@ function InfoCard({
               }
             </ButtonGroup>
           </div>
-        </div>
-
-        {
-          hexagon ? (
-          <>
-          <p className="text-sm font-medium mb-2">Número de oportunidades al alcance</p>
-            <BarChart 
-              data={{
-                Trabajos: hexagon.jobs_w,
-                Empresas: hexagon.empress,
-                Clínicas: hexagon.clinics,
-                Escuelas: hexagon.escuels,
-              }}
-            />
-          </>
-          ) : (
-            <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
-          )
-        }
+      </div>
+      {
+        reachableOpportunities ? (
+        <>
+        <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
+          <BarChart 
+            data={reachableOpportunities}
+          />
+        </>
+        ) : (
+          <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
+        )
+      }
       <div className="mb-4 mt-4">
         <Divider light/>
       </div>
       <div>
-      <p className="text-sm font-medium mb-2">Créditos</p>
-      <img className="h-6" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
+        <p className="text-sm font-medium mb-2">Créditos</p>
+        <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
+        <img className="h-6" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
       </div>
     </div>
   );
