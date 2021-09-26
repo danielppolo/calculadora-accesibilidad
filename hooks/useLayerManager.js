@@ -29,15 +29,15 @@ const useLayerCreate = () => {
   const [current, setCurrent] = useState();
 
   const addLayer = ({
-    map, id, features, property, maxValue, visible,
+    map, id, features, property, maxValue, visible, stepSize = NUMBER_OF_BUCKETS,
   }) => {
     if (map && !(id in layers)) {
       console.log('addLayer', id);
 
       // Get color intervals
-      const intervals = getIntervals(maxValue)
+      const intervals = getIntervals(maxValue, stepSize)
       const colors = getColors(intervals.length)
-      console.log(features)
+
       map.addSource(id, {
         type: 'geojson',
         data: convertToGeoJSON(features), // 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'

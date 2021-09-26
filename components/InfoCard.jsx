@@ -25,7 +25,6 @@ function InfoCard({
   onTimeStepChange,
   hexagon,
 }) {
-  console.log(hexagon)
   return (
     <div className="bg-white rounded-md overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-lg p-4 md:top-8 md:bottom-8 md:left-8 md:right-auto md:w-1/4 md:h-auto">
       <div className="pb-4">
@@ -42,39 +41,43 @@ function InfoCard({
           }
         </TextField>
       </div>
-      <div className="pb-4">
-        <ButtonGroup size="large" aria-label="large button group" fullWidth>
-          {
-            MEDIUMS.map((md) => (
-              <Button variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                {icon[md]}
-              </Button>
-            ))
-          }
-        </ButtonGroup>
-      </div>
-      <div className="pb-4">
-        <ButtonGroup size="large" aria-label="large button group" fullWidth>
-          {
-            TIME_STEPS.map((step) => (
-              <Button variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
-                {step}
-                min
-              </Button>
-            ))
-          }
-        </ButtonGroup>
-      </div>
-
       {
-        hexagon && (<BarChart 
-          data={{
-            Trabajos: hexagon.jobs_w,
-            Empresas: hexagon.empress,
-            Clínicas: hexagon.clinics,
-            Escuelas: hexagon.escuels,
-          }}
-        />)
+        hexagon && (
+        <div>
+          <div className="pb-4">
+            <ButtonGroup size="large" aria-label="large button group" fullWidth>
+              {
+                MEDIUMS.map((md) => (
+                  <Button variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                    {icon[md]}
+                  </Button>
+                ))
+              }
+            </ButtonGroup>
+          </div>
+          <div className="pb-4">
+            <ButtonGroup size="large" aria-label="large button group" fullWidth>
+              {
+                TIME_STEPS.map((step) => (
+                  <Button variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
+                    {step}
+                    min
+                  </Button>
+                ))
+              }
+            </ButtonGroup>
+          </div>
+            
+            <BarChart 
+              data={{
+                Trabajos: hexagon.jobs_w,
+                Empresas: hexagon.empress,
+                Clínicas: hexagon.clinics,
+                Escuelas: hexagon.escuels,
+              }}
+            />
+        </div>
+        )
       }
     </div>
   );

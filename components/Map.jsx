@@ -76,14 +76,15 @@ function Map({ city, data }) {
         const json = JSON.parse(text);
 
         // Create 9 isochrone variant layers
-        MEDIUMS.forEach((med, i) => {
+        MEDIUMS.forEach((med, mediumIndex) => {
           TIME_STEPS.forEach((step) => {
-            const filteredIds = Object.keys(json).filter((id) => json[id][i] < step);
+            const featureIds = Object.keys(json)
+            const filteredIds = featureIds.filter((id) => json[id][mediumIndex] <= step );
             const hexagons = filteredIds.map((id) => ({
               ...data[id],
               properties: {
                 ...data[id].properties,
-                [med]: json[id][1],
+                [med]: json[id][mediumIndex],
               },
             }));
             const max = Math.max(...hexagons.map((item) => item.properties[med]));
@@ -92,8 +93,9 @@ function Map({ city, data }) {
               id: getHexagonId(featureId, med, step),
               features: hexagons,
               property: med,
-              maxValue: max,
+              maxValue: step,
               visible: false,
+              // stepSize: 4,
             });
           });
         });
