@@ -58,7 +58,7 @@ function InfoCard({
             
         )
       }
-        <div>
+        <div className="pb-4">
           <div className="pb-4">
             <ButtonGroup size="large" aria-label="large button group" fullWidth>
               {
@@ -82,7 +82,8 @@ function InfoCard({
               }
             </ButtonGroup>
           </div>
-            
+        </div>
+
         {
           hexagon ? (
           <>
@@ -100,6 +101,12 @@ function InfoCard({
             <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
           )
         }
+      <div className="mb-4 mt-4">
+        <Divider light/>
+      </div>
+      <div>
+      <p className="text-sm font-medium mb-2">Créditos</p>
+      <img className="h-6" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
       </div>
     </div>
   );
