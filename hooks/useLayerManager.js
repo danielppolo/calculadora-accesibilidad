@@ -5,9 +5,9 @@ const convertToGeoJSON = (features) => ({
   features,
 });
 const NUMBER_OF_BUCKETS = 10;
-const BASE_COLOR = 100;
+const BASE_COLOR = 50;
 const convertToHex = (number) => parseInt(number, 10).toString(16)
-const getColors = (steps = NUMBER_OF_BUCKETS) =>  Array.from({length: steps}, (_, i) => `#${convertToHex(BASE_COLOR + ((255 - BASE_COLOR) / NUMBER_OF_BUCKETS) * (i + 1))}0000`)
+const getColors = (steps = NUMBER_OF_BUCKETS) =>  Array.from({length: steps}, (_, i) => BASE_COLOR + ((255 - BASE_COLOR) / NUMBER_OF_BUCKETS) * (i + 1))
 const getIntervals = ( maxValue, steps = NUMBER_OF_BUCKETS) => {
   const intervalStep = maxValue > steps ? steps : maxValue;
   const interval = maxValue / intervalStep;
@@ -22,6 +22,16 @@ const getLegend = (intervals, colors) => intervals.map((interval, i) => {
     label: isSameNumber ? start : `${start} - ${end}`,
   })
 })
+const getRedCase = (property, intervals, colors) => {
+  const rgbaCases = [['==', ['get', property], 0], 0]
+  intervals.forEach((interval, i) => {
+    rgbaCases.unshift(['<=', ['get', property], interval], colors[i])
+  })
+  return ["case",
+  ...rgbaCases,
+  0,
+  ]
+}
 
 const useLayerCreate = () => {
   const [layers] = useState({});
@@ -36,7 +46,9 @@ const useLayerCreate = () => {
 
       // Get color intervals
       const intervals = getIntervals(maxValue, stepSize)
+      const reversedIntervals = [...intervals].reverse()
       const colors = getColors(intervals.length)
+      const reversedColors = [...colors].reverse()
 
       map.addSource(id, {
         type: 'geojson',
@@ -52,7 +64,7 @@ const useLayerCreate = () => {
         paint: {
           'fill-color': [
             'rgba',
-            ['+', 50, ['round', ['/', ['*', 205, ['get', property]], maxValue]]],
+            getRedCase(property, reversedIntervals, reversedColors),
             0,
             0,
             ["case",

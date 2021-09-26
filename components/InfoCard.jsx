@@ -9,6 +9,8 @@ import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
 import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants/transport';
+import Alert from '@mui/material/Alert';
+import Divider from '@mui/material/Divider';
 
 const icon = {
   walk: <DirectionsWalkIcon />,
@@ -27,10 +29,17 @@ function InfoCard({
 }) {
   return (
     <div className="bg-white rounded-md overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-lg p-4 md:top-8 md:bottom-8 md:left-8 md:right-auto md:w-1/4 md:h-auto">
-      <div className="pb-4">
+      <h1 className="text-lg font-bold mb-2">Calculadora de accesibilidad</h1>
+      <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque blandit ultrices bibendum. Nullam sit amet accumsan mauris. Mauris nec sem efficitur magna egestas pharetra. Suspendisse gravida ex at velit facilisis gravida.</p>
+      <div className="mb-4 mt-4">
+      <Divider light/>
+      </div>
+      <div className="mb-6">
+      <p className="text-base font-medium mb-2">Controles</p>
+      <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
         <TextField
           select
-          label="Selecciona una categoría"
+          label="Categoría"
           onChange={onOpportunityChange}
           value={opportunity}
           name="opportinuty"
@@ -42,13 +51,19 @@ function InfoCard({
         </TextField>
       </div>
       {
-        hexagon && (
+        hexagon ? (
+          <p className="text-sm font-medium mb-2">Cambia el medio de transporte y el tiempo</p>
+          ) : (
+            <p className="text-sm font-medium mb-2">Cambia el medio de transporte y el tiempo</p>
+            
+        )
+      }
         <div>
           <div className="pb-4">
             <ButtonGroup size="large" aria-label="large button group" fullWidth>
               {
                 MEDIUMS.map((md) => (
-                  <Button variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
                     {icon[md]}
                   </Button>
                 ))
@@ -59,7 +74,7 @@ function InfoCard({
             <ButtonGroup size="large" aria-label="large button group" fullWidth>
               {
                 TIME_STEPS.map((step) => (
-                  <Button variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
+                  <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
                     {step}
                     min
                   </Button>
@@ -68,6 +83,10 @@ function InfoCard({
             </ButtonGroup>
           </div>
             
+        {
+          hexagon ? (
+          <>
+          <p className="text-sm font-medium mb-2">Número de oportunidades al alcance</p>
             <BarChart 
               data={{
                 Trabajos: hexagon.jobs_w,
@@ -76,9 +95,12 @@ function InfoCard({
                 Escuelas: hexagon.escuels,
               }}
             />
-        </div>
-        )
-      }
+          </>
+          ) : (
+            <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
+          )
+        }
+      </div>
     </div>
   );
 }

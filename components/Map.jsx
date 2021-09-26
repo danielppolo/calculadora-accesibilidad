@@ -13,7 +13,7 @@ const CANCUN_COORDINATES = [-86.879, 21.1427];
 const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultMedium = MEDIUMS[0];
-const defaultTimeStep = TIME_STEPS[0];
+const defaultTimeStep = TIME_STEPS[1];
 
 function Map({ city, data }) {
   const [map, setMap] = useState(null);
@@ -87,7 +87,15 @@ function Map({ city, data }) {
                 [med]: json[id][mediumIndex],
               },
             }));
-            const max = Math.max(...hexagons.map((item) => item.properties[med]));
+            // Include clicked hexagon.
+            hexagons.push({
+              ...data[featureId],
+              properties: {
+                ...data[featureId].properties,
+                [med]: 1,
+              },
+            })
+            // const max = Math.max(...hexagons.map((item) => item.properties[med]));
             add({
               map,
               id: getHexagonId(featureId, med, step),
