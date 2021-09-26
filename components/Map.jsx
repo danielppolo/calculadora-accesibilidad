@@ -1,9 +1,10 @@
 import mapboxgl from 'mapbox-gl';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants/transport';
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
+import Legend from './Legend';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -19,6 +20,7 @@ function Map({ city, data }) {
   const {
     state,
     current,
+    legend,
     add,
     show,
   } = useLayerManager(map);
@@ -28,6 +30,7 @@ function Map({ city, data }) {
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
   const features = Object.values(data);
+  const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado en minutos'
 
   useEffect(() => {
     setMap(new mapboxgl.Map({
@@ -126,7 +129,7 @@ function Map({ city, data }) {
     }
     setTimeStep(value);
   };
-
+  
 
   return (
     <>
@@ -139,6 +142,9 @@ function Map({ city, data }) {
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
       />
+      {
+        current && (<Legend title={legendTitle} items={legend}/>)
+      }
       <div id="map" className="w-screen h-screen" />
     </>
   );
