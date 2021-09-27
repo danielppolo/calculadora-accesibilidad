@@ -1,10 +1,11 @@
 import mapboxgl from 'mapbox-gl';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants/transport';
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
+import useCancunLayers from '../hooks/useCancunLayers';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -35,6 +36,7 @@ function Map({ city, data }) {
   const [opportunities, setOpportunities] = useState({});
   const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado (minutos)'
 
+  useCancunLayers(map)
   useEffect(() => {
     if (data) {
       const nextFeatures = Object.values(data)

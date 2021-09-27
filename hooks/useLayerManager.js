@@ -60,7 +60,7 @@ const useLayerCreate = () => {
 
       map.addSource(id, {
         type: 'geojson',
-        data: convertToGeoJSON(features), // 'https://docs.mapbox.com/mapbox-gl-js/assets/ne_110m_admin_1_states_provinces_shp.geojson'
+        data: convertToGeoJSON(features), 
       });
       map.addLayer({
         id,
