@@ -12,8 +12,8 @@ const layers = [
 const useCancunLayers = (map) => {
   useEffect(() => {
     const paintExtraLayers = async () => {
-      try {
-        layers.forEach(async (layer) => {
+      layers.forEach(async (layer) => {
+        try {
           const response = await fetch(`api/cities/cancun/layers/${layer}`)
           const geojson = await response.json();
           map.addSource(layer, {
@@ -34,10 +34,10 @@ const useCancunLayers = (map) => {
               ],
             },
           });
-        })
-      } catch(e) {
-        console.error(e)
-      }
+        } catch(e) {
+          console.log(e)
+        }
+      })
     }
 
     if (map) {
