@@ -26,6 +26,7 @@ function MyApp({ Component, pageProps }) {
         />
       </Head>
       <Component {...pageProps} />
+      <div id="popup" className="bg-gray-800 text-white fixed rounded-sm p-2 text-xs"></div>
     </ThemeProvider>
   );
 }

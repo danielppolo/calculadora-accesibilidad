@@ -36,7 +36,7 @@ function InfoCard({
       <div className="mb-4 mt-4">
       <Divider light/>
       </div>
-      <p className="text-base font-medium mb-2">Cancun</p>
+      <p className="text-base font-medium mb-2">Cancún</p>
       <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
       <div>
         {

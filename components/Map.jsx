@@ -81,6 +81,7 @@ function Map({ city, data }) {
   useEffect(() => {
     if (map && current) {
       console.log('Attaching click to', current);
+      // ONCLICK
       map.on('click', current, async (e) => {
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
@@ -147,6 +148,18 @@ function Map({ city, data }) {
           ...feature,
         });
         setOpportunity(undefined);
+      });
+
+      // ON HOVER
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+        });
+      map.on('mousemove', current, (e) => {
+        popup.setLngLat(e.lngLat).setHTML(e.features[0].properties.description).addTo(map);
+      });
+      map.on('mouseleave', current, () => {
+        popup.remove();
       });
     }
   }, [map, current]);
