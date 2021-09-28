@@ -6,6 +6,7 @@ import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
+import useEconomicTiles from '../hooks/useEconomicTiles';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -35,8 +36,10 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado (minutos)'
-
-  useCancunLayers(map)
+  const [economicTiles, setEconomicTiles] = useState(false);
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs } = useEconomicTiles(map)
+  const {load: loadCancun} = useCancunLayers(map)
+  
   useEffect(() => {
     if (data) {
       const nextFeatures = Object.values(data)
@@ -75,6 +78,8 @@ function Map({ city, data }) {
         }
       });
       show(map, opportunity)
+      loadAgebs()
+      loadCancun()
       setFirstDraw(true)
     // })
    }
@@ -129,6 +134,7 @@ function Map({ city, data }) {
               property: med,
               maxValue: step,
               visible: false,
+              beforeId: 'jobs_w',
               metadata: {
                 opportunities: {
                   Trabajos: count(hexagonsNoZero, 'jobs_w'), 
@@ -185,6 +191,15 @@ function Map({ city, data }) {
     }
     setTimeStep(value);
   };
+  const handleAgebsChange = (value) => {
+    if (economicTiles) {
+      hideAgebs()
+      setEconomicTiles(false)
+    } else {
+      showAgebs()
+      setEconomicTiles(true)
+    }
+  };
   
   return (
     <>
@@ -192,6 +207,8 @@ function Map({ city, data }) {
         hexagon={hexagon}
         reachableOpportunities={metadata?.opportunities}
         cityData={opportunities}
+        economicTiles={economicTiles}
+        onEconomicTilesChange={handleAgebsChange}
         opportunity={opportunity}
         onOpportunityChange={handleOpportunityChange}
         medium={medium}

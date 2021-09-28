@@ -22,7 +22,7 @@ const getLegend = (intervals, colors) => intervals.map((interval, i) => {
     label: isSameNumber ? start : `${start} - ${end}`,
   })
 })
-const getRedCase = (property, intervals, colors) => {
+const getColorCase = (property, intervals, colors) => {
   const rgbaCases = [['==', ['get', property], 0], 0]
   intervals.forEach((interval, i) => {
     rgbaCases.unshift(['<=', ['get', property], interval], colors[i])
@@ -47,6 +47,7 @@ const useLayerCreate = () => {
     maxValue, 
     visible, 
     metadata,
+    beforeId,
     stepSize = NUMBER_OF_BUCKETS, 
   }) => {
     if (map && !(id in layers)) {
@@ -72,9 +73,9 @@ const useLayerCreate = () => {
         paint: {
           'fill-color': [
             'rgba',
-            getRedCase(property, reversedIntervals, reversedColors),
-            0,
-            0,
+            25,
+            getColorCase(property, reversedIntervals, reversedColors),
+            25,
             ["case",
               ['>', ['get', property], 0], 0.7,
               ['==', ['get', property], 0], 0,
@@ -89,7 +90,7 @@ const useLayerCreate = () => {
             0.1,	
           ],
         },
-      });
+      }, beforeId);
       layers[id] = true;
       layerMetadata[id] = metadata
       legends[id] = getLegend(intervals, colors);

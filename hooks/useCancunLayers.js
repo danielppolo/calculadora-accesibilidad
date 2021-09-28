@@ -1,18 +1,53 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import mapboxgl from 'mapbox-gl';
 
-const layers = [
-  'Atractores',
-  'Comunidades Sustentables',
-  'Estaciones y paraderos',
-  'Limite Municipal',
-  'L¡mite Estatal',
-  'Trazo',
-]
+const layers = {
+  'Atractores': {
+    type: 'circle',
+    paint: {
+      'circle-color': '#8c3951'
+    }
+  },
+  'Comunidades Sustentables': {
+    type: 'fill',
+    paint: {
+      'fill-color': '#00534C',
+    }
+  },
+  'Estaciones y paraderos': {
+    type: 'circle',
+    paint: {
+      'circle-color': '#FFF',
+      'circle-stroke-color': '#000',
+      'circle-stroke-width': 2,
+      'circle-radius': 5,
+    }
+  },
+  'Limite Municipal': {
+    type: 'line',
+    paint: {
+      'line-color': '#e6e6dc'
+    }
+  },
+  'L¡mite Estatal': {
+    type: 'line',
+    paint: {
+      'line-color': '#ba955c',
+      'line-width': 2	
+    }
+  },
+  'Trazo': {
+    type: 'line',
+    paint: {
+      'line-color': '#ba955c'
+    }
+  },
+}
 
 const useCancunLayers = (map) => {
-  useEffect(() => {
+  const load = useCallback(() => {
     const paintExtraLayers = async () => {
-      layers.forEach(async (layer) => {
+      Object.keys(layers).forEach(async (layer) => {
         try {
           const response = await fetch(`api/cities/cancun/layers/${layer}`)
           const geojson = await response.json();
@@ -22,18 +57,25 @@ const useCancunLayers = (map) => {
           });
           map.addLayer({
             id: layer,
-            type: 'line',
+            type: layers[layer].type,
             source: layer,
-            paint: {
-              'line-color': [
-                'rgba',
-                0,
-                0,
-                0,
-                0.3,	
-              ],
-            },
+            paint: layers[layer].paint,
           });
+          
+          if (layers[layer].type === 'circle') {
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              anchor: 'top',
+              });
+            map.on('mouseenter', layer, (e) => {
+              const description = e.features[0].properties.Nombre;
+              popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+            });
+            map.on('mouseleave', layer, () => {
+              popup.remove();
+            });
+          }
         } catch(e) {
           console.log(e)
         }
@@ -44,6 +86,8 @@ const useCancunLayers = (map) => {
       paintExtraLayers()
     }
   }, [map])
+
+  return {load}
 }
 
 export default useCancunLayers

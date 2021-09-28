@@ -6,16 +6,18 @@ import Button from '@mui/material/Button';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
+import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
-import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants/transport';
+import { MEDIUMS, OPTION_MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants/transport';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-
+import Switch from '@mui/material/Switch';
 const icon = {
   walk: <DirectionsWalkIcon />,
   bike: <DirectionsBikeIcon />,
   car: <DirectionsCarFilledIcon />,
+  public: <DirectionsTransitIcon />,
 };
 
 function InfoCard({
@@ -28,6 +30,8 @@ function InfoCard({
   onTimeStepChange,
   hexagon,
   reachableOpportunities,
+  economicTiles, 
+  onEconomicTilesChange,
 }) {
   return (
     <div className="bg-white rounded-md overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-lg p-4 md:top-8 md:bottom-8 md:left-8 md:right-auto md:w-1/4 md:h-auto">
@@ -51,27 +55,33 @@ function InfoCard({
       <Divider light/>
       </div>
       <div className="mb-6">
-      <p className="text-base font-medium mb-2">Controles</p>
-      <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
-        <TextField
-          select
-          label="Categoría"
-          onChange={onOpportunityChange}
-          value={opportunity}
-          name="opportinuty"
-          fullWidth
-        >
+        <p className="text-base font-medium mb-2">Controles</p>
+        <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
+          <TextField
+            select
+            label="Categoría"
+            onChange={onOpportunityChange}
+            value={opportunity}
+            name="opportinuty"
+            fullWidth
+          >
           {
             Object.keys(OPPORTUNITIES).map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
           }
         </TextField>
       </div>
+
+      <div className="mb-6">
+        <p className="text-sm font-medium mb-2">Mostrar zonas económicas (AGEBS)</p>
+        <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
+      </div>
+
       <div>
         <p className="text-sm font-medium mb-4">Cambia el medio de transporte y el tiempo</p>
           <div className="pb-4">
             <ButtonGroup size="large" aria-label="large button group" fullWidth>
               {
-                MEDIUMS.map((md) => (
+                OPTION_MEDIUMS.map((md) => (
                   <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
                     {icon[md]}
                   </Button>
@@ -92,6 +102,7 @@ function InfoCard({
             </ButtonGroup>
           </div>
       </div>
+      
       {
         reachableOpportunities ? (
         <>
