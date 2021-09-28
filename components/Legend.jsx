@@ -3,7 +3,7 @@ import React from 'react';
 const Swatch = ({
   color,
 }) => (
-  <div className="h-4 w-4" style={{backgroundColor: `rgba(50, ${color}, 50, 0.7)`}}></div>
+  <div className="h-4 w-4" style={{backgroundColor: color, opacity: 0.7}}></div>
 )
 
 const LegendItem = ({color, label}) => (

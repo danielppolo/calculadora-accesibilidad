@@ -1,7 +1,7 @@
 import mapboxgl from 'mapbox-gl';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants/transport';
+import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';

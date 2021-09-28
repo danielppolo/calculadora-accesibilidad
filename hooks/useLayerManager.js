@@ -1,13 +1,17 @@
 import { useState } from 'react';
+import Gradient from "javascript-color-gradient";
+
+const colorGradient = new Gradient();
+const color1 = "#00534C";
+const color2 = "#e1f4ef";
+colorGradient.setGradient(color1, color2);
+const colorArr = colorGradient.getArray();
 
 const convertToGeoJSON = (features) => ({
   type: 'FeatureCollection',
   features,
 });
 const NUMBER_OF_BUCKETS = 10;
-const BASE_COLOR = 50;
-const convertToHex = (number) => parseInt(number, 10).toString(16)
-const getColors = (steps = NUMBER_OF_BUCKETS) =>  Array.from({length: steps}, (_, i) => BASE_COLOR + ((255 - BASE_COLOR) / NUMBER_OF_BUCKETS) * (i + 1))
 const getIntervals = ( maxValue, steps = NUMBER_OF_BUCKETS) => {
   const intervalStep = maxValue > steps ? steps : maxValue;
   const interval = maxValue / intervalStep;
@@ -22,14 +26,15 @@ const getLegend = (intervals, colors) => intervals.map((interval, i) => {
     label: isSameNumber ? start : `${start} - ${end}`,
   })
 })
-const getColorCase = (property, intervals, colors) => {
-  const rgbaCases = [['==', ['get', property], 0], 0]
+const getColor = (property, intervals) => {
+  const rgbaCases = []
   intervals.forEach((interval, i) => {
-    rgbaCases.unshift(['<=', ['get', property], interval], colors[i])
+    rgbaCases.unshift(['<=', ['get', property], interval], colorArr[i])
   })
   return ["case",
+  ['==', ['get', property], 0], 'transparent',
   ...rgbaCases,
-  0,
+  'transparent',
   ]
 }
 
@@ -56,8 +61,6 @@ const useLayerCreate = () => {
       // Get color intervals
       const intervals = getIntervals(maxValue, stepSize)
       const reversedIntervals = [...intervals].reverse()
-      const colors = getColors(intervals.length)
-      const reversedColors = [...colors].reverse()
 
       map.addSource(id, {
         type: 'geojson',
@@ -71,29 +74,20 @@ const useLayerCreate = () => {
           visibility: visible ? 'visible' : 'none',
         },
         paint: {
-          'fill-color': [
-            'rgba',
-            25,
-            getColorCase(property, reversedIntervals, reversedColors),
-            25,
-            ["case",
-              ['>', ['get', property], 0], 0.7,
-              ['==', ['get', property], 0], 0,
-              0,
-            ],
-          ],
+          'fill-opacity': 0.7,
+          'fill-color': getColor(property, reversedIntervals),
           'fill-outline-color': [
             'rgba',
             0,
             0,
             0,
-            0.1,	
+            0.2,	
           ],
         },
       }, beforeId);
       layers[id] = true;
       layerMetadata[id] = metadata
-      legends[id] = getLegend(intervals, colors);
+      legends[id] = getLegend(intervals, [...colorArr].reverse());
       if (visible) {
         setCurrent(id);
       }

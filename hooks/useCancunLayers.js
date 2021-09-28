@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 const layers = {
   'Atractores-0t8xa6': {
     url: 'mapbox://odpolo.8z5yah82',
     type: 'circle',
+    popup: true,
     paint: {
       'circle-color': '#8c3951'
     }
@@ -12,6 +13,7 @@ const layers = {
   'Comunidades_Sustentables-537dcd': {
     url: 'mapbox://odpolo.2g75jf1m',
     type: 'fill',
+    popup: true,
     paint: {
       'fill-color': '#00534C',
     }
@@ -19,6 +21,7 @@ const layers = {
   'Estaciones_y_paraderos-cnjgnc': {
     url: 'mapbox://odpolo.8me4fhb8',
     type: 'circle',
+    popup: true,
     paint: {
       'circle-color': '#FFF',
       'circle-stroke-color': '#000',
@@ -70,15 +73,17 @@ const useCancunLayers = (map) => {
           paint: layers[layer].paint,
         });
         
-        if (layers[layer].type === 'circle') {
+        if (layers[layer].popup) {
           const popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             anchor: 'top',
             });
           map.on('mouseenter', layer, (e) => {
-            const description = e.features[0].properties.Nombre;
-            popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+            const description = e.features[0].properties.Nombre || e.features[0].properties.Name;
+            if (description) {
+              popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+            }
           });
           map.on('mouseleave', layer, () => {
             popup.remove();

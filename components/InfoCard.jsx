@@ -9,7 +9,7 @@ import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
-import { MEDIUMS, OPTION_MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants/transport';
+import { MEDIUMS, OPTION_MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Switch from '@mui/material/Switch';

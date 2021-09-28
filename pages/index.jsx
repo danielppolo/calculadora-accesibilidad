@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Map from '../components/Map';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { OPPORTUNITIES } from '../constants/transport';
+import { OPPORTUNITIES } from '../constants';
 
 export default function Home() {
   const [city, setCity] = useState();
@@ -10,7 +10,7 @@ export default function Home() {
     const fetchCity = async () => {
       const response = await fetch('/api/cities/cancun');
       const data = await response.json();
-      const nextFeaturesWithDescription = Object.values(data).forEach((feature) => {
+      Object.values(data).forEach((feature) => {
         feature.properties.description = `
           <div>
             ${Object.keys(OPPORTUNITIES).map(prop => `<p><strong>${OPPORTUNITIES[prop]}</strong>: <span>${feature.properties[prop]}</span></p>`).join('')}
