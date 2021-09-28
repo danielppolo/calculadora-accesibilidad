@@ -8,7 +8,7 @@ import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
 import useEconomicTiles from '../hooks/useEconomicTiles';
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
+mapboxgl.accessToken = 'pk.eyJ1Ijoib2Rwb2xvIiwiYSI6ImNrdTQ2dmtyaTE3N24yb21weHBncWNoYjYifQ.w9QK7JIBgtfC48-ekvGPtQ';
 
 const CANCUN_COORDINATES = [-86.879, 21.1427];
 
@@ -94,7 +94,7 @@ function Map({ city, data }) {
         const featureId = e.features[0].properties.h3_ddrs;
         console.log('Clicked', featureId);
         // Fetch data
-        const response = await fetch(`/api/cities/${city}/features/${featureId}`);
+        const response = await fetch(`https://calculadora-de-accesibilidad.s3.us-west-2.amazonaws.com/data/cancun/features/${featureId}.json`);
         const text = await response.text();
         const json = JSON.parse(text);
 

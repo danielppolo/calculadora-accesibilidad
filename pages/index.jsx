@@ -8,7 +8,7 @@ export default function Home() {
   const [city, setCity] = useState();
   useEffect(() => {
     const fetchCity = async () => {
-      const response = await fetch('/api/cities/cancun');
+      const response = await fetch('https://calculadora-de-accesibilidad.s3.us-west-2.amazonaws.com/data/cancun/main.json');
       const data = await response.json();
       Object.values(data).forEach((feature) => {
         feature.properties.description = `
