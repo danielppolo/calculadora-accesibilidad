@@ -2,19 +2,22 @@ import React, { useCallback, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 const layers = {
-  'Atractores': {
+  'Atractores-0t8xa6': {
+    url: 'mapbox://odpolo.8z5yah82',
     type: 'circle',
     paint: {
       'circle-color': '#8c3951'
     }
   },
-  'Comunidades Sustentables': {
+  'Comunidades_Sustentables-537dcd': {
+    url: 'mapbox://odpolo.2g75jf1m',
     type: 'fill',
     paint: {
       'fill-color': '#00534C',
     }
   },
-  'Estaciones y paraderos': {
+  'Estaciones_y_paraderos-cnjgnc': {
+    url: 'mapbox://odpolo.8me4fhb8',
     type: 'circle',
     paint: {
       'circle-color': '#FFF',
@@ -23,23 +26,28 @@ const layers = {
       'circle-radius': 5,
     }
   },
-  'Limite Municipal': {
+  'Limite_Municipal-9w88tg': {
+    url: 'mapbox://odpolo.3o0t1sh2',
     type: 'line',
     paint: {
-      'line-color': '#e6e6dc'
+      'line-color': '#e6e6dc',
+      'line-width': 1	
     }
   },
-  'L¡mite Estatal': {
+  'Lmite_Estatal-aqiatz': {
+    url: 'mapbox://odpolo.9tn2f51i',
     type: 'line',
     paint: {
       'line-color': '#ba955c',
-      'line-width': 2	
+      'line-width': 1	
     }
   },
-  'Trazo': {
+  'Trazo-8m24oi': {
+    url: 'mapbox://odpolo.bffy6chz',
     type: 'line',
     paint: {
-      'line-color': '#ba955c'
+      'line-color': '#ba955c',
+      'line-width': 2
     }
   },
 }
@@ -48,36 +56,33 @@ const useCancunLayers = (map) => {
   const load = useCallback(() => {
     const paintExtraLayers = async () => {
       Object.keys(layers).forEach(async (layer) => {
-        try {
-          const response = await fetch(`api/cities/cancun/layers/${layer}`)
-          const geojson = await response.json();
-          map.addSource(layer, {
-            type: 'geojson',
-            data: geojson, 
-          });
-          map.addLayer({
-            id: layer,
-            type: layers[layer].type,
-            source: layer,
-            paint: layers[layer].paint,
-          });
-          
-          if (layers[layer].type === 'circle') {
-            const popup = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
-              anchor: 'top',
-              });
-            map.on('mouseenter', layer, (e) => {
-              const description = e.features[0].properties.Nombre;
-              popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+        map.addSource(layer, {
+          type: 'vector',
+          url: layers[layer].url,
+          minzoom: 6,
+          maxzoom: 14
+        });
+        map.addLayer({
+          id: layer,
+          type: layers[layer].type,
+          source: layer,
+          'source-layer': layer,
+          paint: layers[layer].paint,
+        });
+        
+        if (layers[layer].type === 'circle') {
+          const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            anchor: 'top',
             });
-            map.on('mouseleave', layer, () => {
-              popup.remove();
-            });
-          }
-        } catch(e) {
-          console.log(e)
+          map.on('mouseenter', layer, (e) => {
+            const description = e.features[0].properties.Nombre;
+            popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+          });
+          map.on('mouseleave', layer, () => {
+            popup.remove();
+          });
         }
       })
     }

@@ -19,20 +19,20 @@ const useEconomicTiles = (map) => {
             url: AGEBS[key].url,
             minzoom: 6,
             maxzoom: 14
-            });
-            map.addLayer({
-              id: key,
-              type: 'fill',
-              source: key,
-              layout: {
-                visibility:  'none',
-              },
-              'source-layer': key,
-              'paint': {
-                'fill-color': AGEBS[key].color,
-                // 'fill-opacity': 0.8,
-              }
-            });
+          });
+          map.addLayer({
+            id: key,
+            type: 'fill',
+            source: key,
+            layout: {
+              visibility:  'none',
+            },
+            'source-layer': key,
+            'paint': {
+              'fill-color': AGEBS[key].color,
+              // 'fill-opacity': 0.8,
+            }
+          });
         })
       } catch(e) {
         console.log(e)
