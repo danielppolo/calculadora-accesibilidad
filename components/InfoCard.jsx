@@ -62,11 +62,14 @@ function InfoCard({
         <p className="text-sm font-medium mb-2">Oportunidad a visualizar</p>
           <TextField
             select
-            label=""
             onChange={onOpportunityChange}
             value={opportunity}
             name="opportinuty"
+            label={opportunity ? '' : 'Selecciona oportunidad'}
             fullWidth
+            InputLabelProps={{
+              shrink: false
+            }}
           >
           {
             Object.keys(OPPORTUNITIES).map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
