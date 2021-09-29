@@ -1,17 +1,16 @@
 import mapboxgl from 'mapbox-gl';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
+import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import CancunLegend from './CancunLegend';
+import useMap from '../hooks/useMap';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
-
-const CANCUN_COORDINATES = [-86.879, 21.1427];
 
 const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
@@ -20,7 +19,7 @@ const defaultTimeStep = TIME_STEPS[1];
 const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 
 function Map({ city, data }) {
-  const [map, setMap] = useState(null);
+  const map = useMap({center: CANCUN_COORDINATES});
   const {
     state,
     current,
@@ -30,7 +29,7 @@ function Map({ city, data }) {
     show,
     hide
   } = useLayerManager(map);
-  const [firstDraw, setFirstDraw] = useState(false);
+  const [rendered, setRendered] = useState(false);
   const [opportunity, setOpportunity] = useState(defaultOpportunity);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
@@ -55,19 +54,10 @@ function Map({ city, data }) {
     }
   }, [data])
 
-  console.log(current, state)
-  useEffect(() => {
-    setMap(new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/light-v10',
-      center: CANCUN_COORDINATES,
-      zoom: 12,
-    }))
-  }, []);
+
 
   useEffect(() => {
-   if (map && features.length > 0 && !firstDraw) {
-    //  map.on('load', () => {
+   if (map && features.length > 0 && !rendered) {
       Object.keys(OPPORTUNITIES).forEach((key) => {
         const values = features.map((item) => item.properties[key]);
         if (!(key in state)) {
@@ -86,10 +76,9 @@ function Map({ city, data }) {
       show(map, opportunity)
       loadAgebs()
       loadCancun()
-      setFirstDraw(true)
-    // })
+      setRendered(true)
    }
-  }, [map, features, firstDraw])
+  }, [map, features, rendered])
 
   useEffect(() => {
     if (map && current) {
@@ -132,7 +121,6 @@ function Map({ city, data }) {
             // Include clicked feature.
             hexagonsNoZero.push(data[featureId])
 
-            // const max = Math.max(...hexagons.map((item) => item.properties[med]));
             add({
               map,
               legendTitle: 'Tiempo de traslado (minutos)',
@@ -151,7 +139,6 @@ function Map({ city, data }) {
                   Escuelas: count(hexagonsNoZero, 'escuels'),
                 }
               }
-              // stepSize: 4,
             });
           });
         });
