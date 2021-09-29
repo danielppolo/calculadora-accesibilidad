@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { Popup } from 'mapbox-gl';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
@@ -10,6 +10,7 @@ import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import CancunLegend from './CancunLegend';
 import useMap from '../hooks/useMap';
 import Download from './Download';
+import useBaseGrid from '../hooks/useBaseGrid';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -18,6 +19,10 @@ const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultMedium = MEDIUMS[0];
 const defaultTimeStep = TIME_STEPS[1];
 const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
+const popup = new Popup({
+  closeButton: false,
+  closeOnClick: false
+});
 
 function Map({ city, data }) {
   const map = useMap({center: CANCUN_COORDINATES});
@@ -41,7 +46,8 @@ function Map({ city, data }) {
   const [economicTiles, setEconomicTiles] = useState(false);
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
   const {load: loadCancun} = useCancunLayers(map)
-  
+  const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
+
   useEffect(() => {
     if (data) {
       const nextFeatures = Object.values(data)
@@ -60,15 +66,21 @@ function Map({ city, data }) {
   useEffect(() => {
    if (map && features.length > 0 && !rendered) {
       Object.keys(OPPORTUNITIES).forEach((key) => {
-        const values = features.map((item) => item.properties[key]);
+        let maxValue = 0;
+        const filteredFeatures = features.filter((item) => {
+          if (item.properties[key] > maxValue) {
+            maxValue = item.properties[key];
+          }
+          return item.properties[key] > 0
+        });
         if (!(key in state)) {
           add({
             map,
             legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
             id: key,
-            features,
+            features: filteredFeatures,
             property: key,
-            maxValue: Math.max(...values),
+            maxValue,
             visible: false,
             stepSize: 10,
           });
@@ -77,73 +89,69 @@ function Map({ city, data }) {
       show(map, opportunity)
       loadAgebs()
       loadCancun()
-      setRendered(true)
-   }
-  }, [map, features, rendered])
-
-  useEffect(() => {
-    if (map && current) {
-      console.log('Attaching click to', current);
-      // ONCLICK
-      map.on('click', current, async (e) => {
+      loadGrid(map, features)
+      map.on('mousemove', gridId, (e) => {
+        popup
+          .setLngLat(e.lngLat)
+          .setHTML(e.features[0].properties.description)
+          .addTo(map);
+      });
+      map.on('mouseleave', gridId, () => {
+        popup.remove();
+      });
+      map.on('click', gridId, async (e) => {
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
-        console.log('Clicked', featureId);
-        // Fetch data
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/features/${featureId}.json`);
-        const text = await response.text();
-        const json = JSON.parse(text);
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/features/${featureId}.json`);
+          const text = await response.text();
+          const json = JSON.parse(text);
 
-        // Create 9 isochrone variant layers
-        MEDIUMS.forEach((med, mediumIndex) => {
-          TIME_STEPS.forEach((step) => {
-            const featureIds = Object.keys(json)
-            // Get displayable features
-            const filteredIds = featureIds.filter((id) => json[id][mediumIndex] <= step );
-            const hexagons = filteredIds.map((id) => ({
-              ...data[id],
-              properties: {
-                ...data[id].properties,
-                [med]: json[id][mediumIndex],
-              },
-            }));
-            // Include clicked feature.
-            hexagons.push({
-              ...data[featureId],
-              properties: {
-                ...data[featureId].properties,
-                [med]: 1,
-              },
-            })
+          // Create 9 isochrone variant layers
+          MEDIUMS.forEach((med, mediumIndex) => {
+            TIME_STEPS.forEach((step) => {
+              const featureIds = Object.keys(json)
+              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step );
+              const filteredFeatures = filteredIds.map((id) => ({
+                ...data[id],
+                properties: {
+                  ...data[id].properties,
+                  [med]: json[id][mediumIndex],
+                },
+              }));
+              // Include clicked feature.
+              filteredFeatures.push({
+                ...data[featureId],
+                properties: {
+                  ...data[featureId].properties,
+                  [med]: 1,
+                },
+              })
 
-            // Get only countable features. For metadata.
-            const filteredIdsNoZero = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step );
-            const hexagonsNoZero = filteredIdsNoZero.map((id) => data[id]);
-            // Include clicked feature.
-            hexagonsNoZero.push(data[featureId])
-
-            add({
-              map,
-              legendTitle: 'Tiempo de traslado (minutos)',
-              id: getHexagonId(featureId, med, step),
-              features: hexagons,
-              property: med,
-              maxValue: step,
-              visible: false,
-              beforeId: 'jobs_w',
-              stepSize: Math.floor(step / 15),
-              metadata: {
-                opportunities: {
-                  Trabajos: count(hexagonsNoZero, 'jobs_w'), 
-                  Empresas: count(hexagonsNoZero, 'empress'), 
-                  Clínicas: count(hexagonsNoZero, 'clinics'), 
-                  Escuelas: count(hexagonsNoZero, 'escuels'),
+              add({
+                map,
+                legendTitle: 'Tiempo de traslado (minutos)',
+                id: getHexagonId(featureId, med, step),
+                features: filteredFeatures,
+                property: med,
+                maxValue: step,
+                visible: false,
+                beforeId: 'jobs_w',
+                stepSize: Math.floor(step / 15),
+                metadata: {
+                  opportunities: {
+                    Trabajos: count(filteredFeatures, 'jobs_w'), 
+                    Empresas: count(filteredFeatures, 'empress'), 
+                    Clínicas: count(filteredFeatures, 'clinics'), 
+                    Escuelas: count(filteredFeatures, 'escuels'),
+                  }
                 }
-              }
+              });
             });
           });
-        });
-
+        } catch(e) {
+          console.log(`Failed when downloading feature data: ${e.message}`);
+        }
         // Show default isochrone
         console.log(getHexagonId(featureId, medium, timeStep))
         show(map, getHexagonId(featureId, medium, timeStep));
@@ -153,20 +161,9 @@ function Map({ city, data }) {
         });
         setOpportunity(undefined);
       });
-
-      // ON HOVER
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-        });
-      map.on('mousemove', current, (e) => {
-        popup.setLngLat(e.lngLat).setHTML(e.features[0].properties.description).addTo(map);
-      });
-      map.on('mouseleave', current, () => {
-        popup.remove();
-      });
-    }
-  }, [map, current]);
+      setRendered(true)
+   }
+  }, [map, features, rendered])
 
   const handleOpportunityChange = (event) => {
     const nextOpportunity = event.target.value;
@@ -220,7 +217,7 @@ function Map({ city, data }) {
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
       />
-      <div className="overflow-y-auto space-y-4 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
+      <div className="overflow-y-auto space-y-2 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
         <Download data={geojson} filename={legend.title}/>
         {
           current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)

@@ -48,16 +48,10 @@ const useLayerManager = () => {
         layout: {
           visibility: visible ? 'visible' : 'none',
         },
+        // filter: ['>', ['get', property], 0],
         paint: {
           'fill-opacity': 0.7,
           'fill-color': getColor(property, reversedIntervals, colorIntervals),
-          'fill-outline-color': [
-            'rgba',
-            0,
-            0,
-            0,
-            0.2,	
-          ],
         },
       }, beforeId);
 
