@@ -3,7 +3,7 @@ import React from 'react';
 
 function CancunLegend() {
   return (
-    <div className="bg-white h-1/3 shadow-lg p-4 md:h-auto w-full">
+    <div className="bg-white h-1/3 border-2 border-[#e6e6dc] p-4 md:h-auto w-full">
       <h3 className="text-xs font-semibold pb-2 uppercase">Simbología</h3>
       <div className="space-y-1">
         <div className="flex items-center">

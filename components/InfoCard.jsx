@@ -18,8 +18,8 @@ const icon = {
   bike: <DirectionsBikeIcon />,
   car: <DirectionsCarFilledIcon />,
   public: <DirectionsTransitIcon />,
-  'public-bike': <><DirectionsTransitIcon /> + <DirectionsBikeIcon /></>,
-  'public-car': <><DirectionsTransitIcon /> +  <DirectionsCarFilledIcon /></>,
+  'public-bike': <><DirectionsTransitIcon /> <span className="mx-1">+</span> <DirectionsBikeIcon /></>,
+  'public-car': <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
 };
 
 function InfoCard({
