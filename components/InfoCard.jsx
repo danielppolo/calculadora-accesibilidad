@@ -36,13 +36,13 @@ function InfoCard({
   onEconomicTilesChange,
 }) {
   return (
-    <div className="bg-white overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-2xl border-r-2 border-[#e6e6dc] py-6 px-6 md:top-0 md:bottom-0 md:left-0 md:right-auto md:w-1/3 md:h-auto">
-      <h1 className="text-2xl font-bold mb-4">Calculadora de accesibilidad a oportunidades</h1>
+    <div className="bg-white overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-2xl border-r-2 border-[#e6e6dc] py-6 px-6 md:top-0 md:bottom-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl md:h-auto">
+      <h1 className="text-2xl font-bold mb-4 text-[#00534C]">Calculadora de accesibilidad a oportunidades</h1>
       <p className="text-xs mb-6">La accesibilidad a oportunidades estima el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
       <div className="mb-6 mt-6">
       <Divider light/>
       </div>
-      <p className="text-base font-medium mb-2">Zona Metropolitana de Cancún</p>
+      <h2 className="text-base font-medium mb-2 text-[#00534C]">Zona Metropolitana de Cancún</h2>
       <p className="text-xs mb-4">Para toda la Zona, se cuentan con el siguiente número de oportunidades totales:</p>
       <div>
         {
@@ -53,13 +53,13 @@ function InfoCard({
           ))
         }
       </div>
-      <div className="mb-4 mt-4">
-      <Divider light/>
+      <div className="mb-6 mt-4">
+      {/* <Divider light/> */}
       </div>
       <div className="mb-6">
-        <p className="text-base font-medium mb-2">Controles</p>
+        {/* <p className="text-base font-medium mb-2">Controles</p> */}
         {/* <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
-        <p className="text-sm font-medium mb-2">Oportunidad a visualizar</p>
+        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Oportunidad a visualizar</h3>
           <TextField
             select
             onChange={onOpportunityChange}
@@ -77,17 +77,17 @@ function InfoCard({
         </TextField>
       </div>
 
-      <div className="flex mb-6 w-full justify-between">
-        <div>
-          <p className="text-sm font-medium mb-0">Mostrar marginación por AGEB</p>
-          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: <a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" target="_blank" rel="noreferrer" className="underline">CONAPO</a></p>
-        </div>
-        <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
+      <div className="mb-2">
+        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Oportunidades alcanzadas desde un hexágono</h3>
+        {
+          !reachableOpportunities && (
+            <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
+          )
+        }
       </div>
-
       <div>
           <div className="pb-4">
-        <p className="text-sm font-medium mb-2">Cambia el medio de transporte</p>
+        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
             <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
               {
                 MEDIUMS.slice(0,3).map((md) => (
@@ -108,7 +108,7 @@ function InfoCard({
             </ButtonGroup>
           </div>
           <div className="pb-4">
-          <p className="text-sm font-medium mb-2">Cambia el tiempo de traslado</p>
+          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el tiempo de traslado</h3>
             <ButtonGroup size="medium" aria-label="large button group" fullWidth>
               {
                 TIME_STEPS.map((step) => (
@@ -121,26 +121,32 @@ function InfoCard({
             </ButtonGroup>
           </div>
       </div>
+
+      <div className="flex mb-6 w-full justify-between">
+        <div>
+          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar marginación por AGEB</h3>
+          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: <a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" target="_blank" rel="noreferrer" className="underline">CONAPO</a></p>
+        </div>
+        <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
+      </div>
       
       {
-        reachableOpportunities ? (
+        reachableOpportunities && (
         <>
         <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
           <BarChart 
             data={reachableOpportunities}
           />
         </>
-        ) : (
-          <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
         )
       }
       <div className="mb-4 mt-4">
         <Divider light/>
       </div>
       <div>
-        <p className="text-sm font-medium mb-4">Créditos</p>
+        {/* <p className="text-sm font-medium mb-4">Créditos</p> */}
         {/* <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
-        <img className="h-6" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
+        <img className="h-10" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
       </div>
     </div>
   );
