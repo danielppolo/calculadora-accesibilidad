@@ -27,6 +27,16 @@ function BarChart({data}) {
           scales: {
             y: {
               beginAtZero: true,
+              grid: {
+                color: '#e6e6dc',
+              }
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                color: '#e6e6dc',
+              }
             },
           },
         },
