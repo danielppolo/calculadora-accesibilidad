@@ -11,7 +11,7 @@ const useMap = ({
       container: 'map',
       style: 'mapbox://styles/daniel-itdp/cku50fspf21w917qic6lbyzpv',
       center,
-      zoom: 12,
+      zoom: 7,
     }))
   }, []);
 

@@ -1,7 +1,8 @@
 import Head from 'next/head';
-import '../styles/globals.css';
-import 'tailwindcss/tailwind.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '../styles/globals.css';
+import '../styles/overrides.css';
+import 'tailwindcss/tailwind.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({

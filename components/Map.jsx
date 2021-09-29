@@ -174,12 +174,14 @@ function Map({ city, data }) {
     setOpportunity(nextOpportunity);
     setHexagon(undefined);
     hideAgebs()
+    setEconomicTiles(false)
   };
 
   const handleMediumChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
       hideAgebs()
+      setEconomicTiles(false)
     } 
     setMedium(value);
   };
@@ -187,6 +189,7 @@ function Map({ city, data }) {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
       hideAgebs()
+      setEconomicTiles(false)
     }
     setTimeStep(value);
   };

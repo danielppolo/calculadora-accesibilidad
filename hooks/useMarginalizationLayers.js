@@ -65,7 +65,7 @@ const useMarginalizationLayers = (map) => {
             'source-layer': ageb.sourceLayer,
             'paint': {
               'fill-color': ageb.color,
-              'fill-opacity': 0.7,
+              'fill-opacity': 0.5,
             }
           });
         })

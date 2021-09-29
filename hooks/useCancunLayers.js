@@ -90,6 +90,7 @@ const useCancunLayers = (map) => {
         
         if (layer.popup) {
           const popup = new mapboxgl.Popup({
+            className: 'black-popup',
             closeButton: false,
             closeOnClick: false,
             anchor: 'top',
