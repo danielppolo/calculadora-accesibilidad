@@ -6,8 +6,8 @@ import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
-import useEconomicTiles from '../hooks/useEconomicTiles';
-import DefaultLegend from './DefaultLegend';
+import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
+import CancunLegend from './CancunLegend';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -38,7 +38,7 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const [economicTiles, setEconomicTiles] = useState(false);
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicTiles(map)
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
   const {load: loadCancun} = useCancunLayers(map)
   
   useEffect(() => {
@@ -50,10 +50,12 @@ function Map({ city, data }) {
         Empresas: count(nextFeatures, 'empress'), 
         Clínicas: count(nextFeatures, 'clinics'), 
         Escuelas: count(nextFeatures, 'escuels'),
+        'Zonas turísticas': count(nextFeatures, 'destins'),
       })
     }
   }, [data])
 
+  console.log(current, state)
   useEffect(() => {
     setMap(new mapboxgl.Map({
       container: 'map',
@@ -224,10 +226,12 @@ function Map({ city, data }) {
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
       />
-      {
-        current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
-      }
-      <DefaultLegend />
+      <div className="overflow-y-auto space-y-4 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
+        {
+          current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
+        }
+        <CancunLegend />
+      </div>
       <div id="map" className="w-screen h-screen" />
     </>
   );

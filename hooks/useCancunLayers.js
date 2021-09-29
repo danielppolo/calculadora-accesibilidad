@@ -1,19 +1,40 @@
 import React, { useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 
-const layers = {
-  'atractores-5zs4sy': {
-    url: 'mapbox://daniel-itdp.7j13qn0r',
-    type: 'circle',
-    popup: true,
+const CANCUN_TILES = [
+  {
+    id: 'limite-municipal',
+    sourceLayer: 'limite-municipal-5et9dw',
+    url: 'mapbox://daniel-itdp.bsylc8oa',
+    type: 'line',
     paint: {
-      'circle-color': '#8c3951',
-      'circle-stroke-color': '#FFF',
-      'circle-stroke-width': 1,
-      'circle-radius': 4,
+      'line-color': '#e6e6dc',
+      'line-width': 1	
     }
   },
-  'comunidades-23c5zg': {
+  {
+    id: 'limite-estatal',
+    sourceLayer: 'limite-estatal-4fclwb',
+    url: 'mapbox://daniel-itdp.57hf0gek',
+    type: 'line',
+    paint: {
+      'line-color': '#96968c',
+      'line-width': 0.7	
+    }
+  },
+  {
+    id: 'trazo',
+    sourceLayer: 'trazo-56elpw',
+    url: 'mapbox://daniel-itdp.b2f7a077',
+    type: 'line',
+    paint: {
+      'line-color': '#ba955c',
+      'line-width': 2
+    }
+  },
+  {
+    id: 'comunidades',
+    sourceLayer: 'comunidades-23c5zg',
     url: 'mapbox://daniel-itdp.4ymvwjhc',
     type: 'fill',
     popup: true,
@@ -21,7 +42,9 @@ const layers = {
       'fill-color': '#00524C',
     }
   },
-  'estaciones-5geu9s': {
+  {
+    id: 'estaciones',
+    sourceLayer: 'estaciones-5geu9s',
     url: 'mapbox://daniel-itdp.4m7o3ife',
     type: 'circle',
     popup: true,
@@ -32,75 +55,60 @@ const layers = {
       'circle-radius': 5,
     }
   },
-  'limite-municipal-5et9dw': {
-    url: 'mapbox://daniel-itdp.bsylc8oa',
-    type: 'line',
+  {
+    id: 'atractores',
+    sourceLayer: 'atractores-5zs4sy',
+    url: 'mapbox://daniel-itdp.7j13qn0r',
+    type: 'circle',
+    popup: true,
     paint: {
-      'line-color': '#e6e6dc',
-      'line-width': 1	
+      'circle-color': '#8c3951',
+      'circle-stroke-color': '#FFF',
+      'circle-stroke-width': 1,
+      'circle-radius': 4,
     }
   },
-  'limite-estatal-4fclwb': {
-    url: 'mapbox://daniel-itdp.57hf0gek',
-    type: 'line',
-    paint: {
-      'line-color': '#96968c',
-      'line-width': 0.7	
-    }
-  },
-  'trazo-56elpw': {
-    url: 'mapbox://daniel-itdp.b2f7a077',
-    type: 'line',
-    paint: {
-      'line-color': '#ba955c',
-      'line-width': 2
-    }
-  },
-}
+]
 
 const useCancunLayers = (map) => {
   const load = useCallback(() => {
-    const paintExtraLayers = async () => {
-      Object.keys(layers).forEach(async (layer) => {
-        map.addSource(layer, {
+    if (map) {
+      CANCUN_TILES.forEach((layer) => {
+        map.addSource(layer.sourceLayer, {
           type: 'vector',
-          url: layers[layer].url,
+          url: layer.url,
           minzoom: 6,
           maxzoom: 14
         });
         map.addLayer({
-          id: layer,
-          type: layers[layer].type,
-          source: layer,
-          'source-layer': layer,
-          paint: layers[layer].paint,
+          id: layer.sourceLayer,
+          type: layer.type,
+          source: layer.sourceLayer,
+          'source-layer': layer.sourceLayer,
+          paint: layer.paint,
         });
         
-        if (layers[layer].popup) {
+        if (layer.popup) {
           const popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
             anchor: 'top',
             });
-          map.on('mouseenter', layer, (e) => {
+          map.on('mouseenter', layer.sourceLayer, (e) => {
             const description = e.features[0].properties.Nombre || e.features[0].properties.Name;
             if (description) {
               popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
             }
           });
-          map.on('mouseleave', layer, () => {
+          map.on('mouseleave', layer.sourceLayer, () => {
             popup.remove();
           });
         }
       })
     }
-
-    if (map) {
-      paintExtraLayers()
-    }
   }, [map])
 
-  return {load}
+  return { load }
 }
 
 export default useCancunLayers

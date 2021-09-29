@@ -75,8 +75,8 @@ function InfoCard({
 
       <div className="flex mb-6 w-full justify-between">
         <div>
-          <p className="text-sm font-medium mb-0">Marginación por AGEB</p>
-          <p className="text-[10px] text-gray-600 font-medium mb-2"><a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" >CONAPO</a></p>
+          <p className="text-sm font-medium mb-0">Mostrar marginación por AGEB</p>
+          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: <a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" target="_blank" rel="noreferrer" className="underline">CONAPO</a></p>
         </div>
         <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
       </div>
