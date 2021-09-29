@@ -7,6 +7,7 @@ const useLayerManager = () => {
   const [state] = useState({});
   const [legends] = useState({});
   const [layerMetadata] = useState({});
+  const [geojson] = useState({});
   const [current, setCurrent] = useState();
 
   const add = ({
@@ -33,10 +34,11 @@ const useLayerManager = () => {
         .setGradient(color1, color2)
         .setMidpoint(stepSize)
         .getArray()
+      const geojsonFeatures = convertToGeoJSON(features)
       
       map.addSource(id, {
         type: 'geojson',
-        data: convertToGeoJSON(features), 
+        data: geojsonFeatures, 
       });
 
       map.addLayer({
@@ -60,6 +62,7 @@ const useLayerManager = () => {
       }, beforeId);
 
       state[id] = true;
+      geojson[id] = geojsonFeatures;
       layerMetadata[id] = metadata
       legends[id] = {
         title: legendTitle,
@@ -100,6 +103,7 @@ const useLayerManager = () => {
     hide,
     show,
     current,
+    geojson: geojson[current] || {},
     legend: legends[current] || [],
     metadata: layerMetadata[current] || {},
   };

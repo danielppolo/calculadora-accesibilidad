@@ -9,7 +9,7 @@ const useMap = ({
   useEffect(() => {
     setMap(new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/light-v10',
+      style: 'mapbox://styles/daniel-itdp/cku50fspf21w917qic6lbyzpv',
       center,
       zoom: 12,
     }))

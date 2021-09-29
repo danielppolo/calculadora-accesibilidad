@@ -18,7 +18,7 @@ function Legend({
   items,
 }) {
   return (
-    <div className="bg-white rounded-md h-1/3 z-50 shadow-lg p-4 md:h-auto w-full">
+    <div className="bg-white h-1/3 z-50 shadow-lg p-4 md:h-auto w-full">
       <h3 className="text-xs font-semibold pb-2 uppercase">{title}</h3>
       {
         items.map(({color, label}) => (<LegendItem key={label} color={color} label={label} />))

@@ -9,6 +9,7 @@ import useCancunLayers from '../hooks/useCancunLayers';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import CancunLegend from './CancunLegend';
 import useMap from '../hooks/useMap';
+import Download from './Download';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -27,7 +28,8 @@ function Map({ city, data }) {
     metadata,
     add,
     show,
-    hide
+    hide,
+    geojson,
   } = useLayerManager(map);
   const [rendered, setRendered] = useState(false);
   const [opportunity, setOpportunity] = useState(defaultOpportunity);
@@ -53,7 +55,6 @@ function Map({ city, data }) {
       })
     }
   }, [data])
-
 
 
   useEffect(() => {
@@ -172,17 +173,20 @@ function Map({ city, data }) {
     show(map, nextOpportunity);
     setOpportunity(nextOpportunity);
     setHexagon(undefined);
+    hideAgebs()
   };
 
   const handleMediumChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
+      hideAgebs()
     } 
     setMedium(value);
   };
   const handleTimeStepChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
+      hideAgebs()
     }
     setTimeStep(value);
   };
@@ -214,6 +218,7 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeStepChange}
       />
       <div className="overflow-y-auto space-y-4 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
+        <Download data={geojson} filename={legend.title}/>
         {
           current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
         }
