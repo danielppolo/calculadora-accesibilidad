@@ -65,6 +65,7 @@ function Map({ city, data }) {
 
   useEffect(() => {
    if (map && features.length > 0 && !rendered) {
+      loadGrid(map, features)
       Object.keys(OPPORTUNITIES).forEach((key) => {
         let maxValue = 0;
         const filteredFeatures = features.filter((item) => {
@@ -83,13 +84,14 @@ function Map({ city, data }) {
             maxValue,
             visible: false,
             stepSize: 10,
+            beforeId: gridId,
           });
         }
       });
       show(map, opportunity)
       loadAgebs()
       loadCancun()
-      loadGrid(map, features)
+
       map.on('mousemove', gridId, (e) => {
         popup
           .setLngLat(e.lngLat)
@@ -136,7 +138,7 @@ function Map({ city, data }) {
                 property: med,
                 maxValue: step,
                 visible: false,
-                beforeId: 'jobs_w',
+                beforeId: gridId,
                 stepSize: Math.floor(step / 15),
                 metadata: {
                   opportunities: {
@@ -218,7 +220,7 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeStepChange}
       />
       <div className="overflow-y-auto space-y-2 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
-        <Download data={geojson} filename={legend.title}/>
+        { !economicTiles && <Download data={geojson} filename={legend.title}/> }
         {
           current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
         }

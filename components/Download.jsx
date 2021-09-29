@@ -12,7 +12,7 @@ function Download({ data, filename = 'Geometry' }) {
 
   return(
     <a href="" id="download" download={`${filename}.geojson`} type='text/json'>
-      <Button fullWidth variant="contained" endIcon={<FileDownloadIcon/>}>
+      <Button fullWidth variant="contained" startIcon={<FileDownloadIcon/>}>
         Descargar
       </Button>
     </a>

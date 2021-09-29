@@ -5,16 +5,20 @@ import { OPPORTUNITIES } from '../constants';
 const useBaseGrid = (id) => {
   const load =  useCallback((map, features) => {
     if (map && features) {
-      features.forEach((feature) => {
-        feature.properties.description = `
+      const filteredFeatures = features.map((feature) => ({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          description: `
           <div>
             ${Object.keys(OPPORTUNITIES).map(prop => `<p><strong>${OPPORTUNITIES[prop]}</strong>: <span>${feature.properties[prop]}</span></p>`).join('')}
           </div>
           `
-      });
+        }
+      }));
       map.addSource(id, {
         type: 'geojson',
-        data: convertToGeoJSON(features), 
+        data: convertToGeoJSON(filteredFeatures), 
       });
   
       map.addLayer({
