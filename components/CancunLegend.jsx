@@ -29,7 +29,7 @@ function CancunLegend() {
           <div className="w-4 h-4 flex items-center justify-center">
           <div className="h-3 w-3" style={{backgroundColor: '#00534C'}}></div>
           </div>
-          <span className="ml-2 text-xs">Comunidades</span>
+          <span className="ml-2 text-xs">Comunidad Sustentable</span>
         </div>
       </div>
     </div>
