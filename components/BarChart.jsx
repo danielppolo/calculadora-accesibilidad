@@ -49,7 +49,7 @@ function BarChart({data}) {
     }
   }, [data]);
 
-  return <canvas id="myChart" width="200" height="180" />;
+  return <canvas id="myChart" width="200" height="120" />;
 }
 
 export default BarChart;

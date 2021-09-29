@@ -37,13 +37,13 @@ function InfoCard({
 }) {
   return (
     <div className="bg-white overflow-y-auto fixed bottom-4 left-4 right-4 h-1/3 z-50 shadow-2xl border-r-2 border-[#e6e6dc] py-6 px-6 md:top-0 md:bottom-0 md:left-0 md:right-auto md:w-1/3 md:h-auto">
-      <h1 className="text-2xl font-bold mb-4">Calculadora de accesibilidad</h1>
-      <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque blandit ultrices bibendum. Nullam sit amet accumsan mauris. Mauris nec sem efficitur magna egestas pharetra. Suspendisse gravida ex at velit facilisis gravida.</p>
+      <h1 className="text-2xl font-bold mb-4">Calculadora de accesibilidad a oportunidades</h1>
+      <p className="text-xs mb-6">La accesibilidad a oportunidades estima el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
       <div className="mb-6 mt-6">
       <Divider light/>
       </div>
-      <p className="text-base font-medium mb-2">Cancún</p>
-      <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+      <p className="text-base font-medium mb-2">Zona Metropolitana de Cancún</p>
+      <p className="text-xs mb-4">Para toda la Zona, se cuentan con el siguiente número de oportunidades totales:</p>
       <div>
         {
           Object.keys(cityData).map(key => (
@@ -58,10 +58,11 @@ function InfoCard({
       </div>
       <div className="mb-6">
         <p className="text-base font-medium mb-2">Controles</p>
-        <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
+        {/* <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
+        <p className="text-sm font-medium mb-2">Oportunidad a visualizar</p>
           <TextField
             select
-            label="Categoría"
+            label=""
             onChange={onOpportunityChange}
             value={opportunity}
             name="opportinuty"
@@ -134,8 +135,8 @@ function InfoCard({
         <Divider light/>
       </div>
       <div>
-        <p className="text-sm font-medium mb-2">Créditos</p>
-        <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
+        <p className="text-sm font-medium mb-4">Créditos</p>
+        {/* <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
         <img className="h-6" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
       </div>
     </div>

@@ -6,14 +6,14 @@ require 'json'
 filepath = 'data/output/matrix.csv'
 
 polygons = {}
-csv_options = { headers: :first_row }
-headers = %w[destination origin car bike walk]
+csv_options = { col_sep: ',', quote_char: '"', headers: :first_row }
+headers = %w[destination origin Transporte Tracar Trabici car bicicleta Caminando]
 
 # destination origin transport transport-bike car bike walk
-CSV.foreach(filepath) do |row|
-  polygons[row[1]] = {} unless polygons.key?(row[1])
+CSV.foreach(filepath, csv_options) do |row|
+  polygons[row["origin"]] = {} unless polygons.key?(row["origin"])
 
-  polygons[row[1]][row[0]] = [row[2].to_i, row[3].to_i, row[4].to_i, row[5].to_i, row[6].to_i]
+  polygons[row["origin"]][row["destination"]] = [row["Transporte"].to_i, row["Tracar"].to_i, row["Trabici"].to_i, row["car"].to_i, row["bicicleta"].to_i, row["Caminando"].to_i]
 end
 
 puts polygons.size
