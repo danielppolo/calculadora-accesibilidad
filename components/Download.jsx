@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { Button } from "@mui/material";
-import {convertToGeoJSON} from '../utils'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 function Download({ data, filename = 'Geometry' }) {
   useEffect(() => {
-    const blob = new Blob([JSON.stringify(convertToGeoJSON(data))]);
+    const blob = new Blob([JSON.stringify(data)]);
     const a = document.getElementById('download');
     a.href = URL.createObjectURL(blob);
   }, [data])
