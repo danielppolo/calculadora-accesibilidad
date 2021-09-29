@@ -1,19 +1,27 @@
 import React, { useCallback, useEffect } from 'react';
+import Gradient from "javascript-color-gradient";
 
 const AGEBS = {
-  'Muy_alto-6zbmho': {url: 'mapbox://odpolo.6k6kk1a4', color: '#9b2226'},
-  'Alto-4b86o1': {url: 'mapbox://odpolo.dk8mz5xa', color: '#ae2012'},
-  'Medio-az80tm': {url: 'mapbox://odpolo.24orbjuf', color: '#bb3e03'},
-  'Bajo-4m9kh1': {url: 'mapbox://odpolo.a3y8yl5b', color: '#ca6702'},
-  'Muy_bajo-6ks9o9': {url: 'mapbox://odpolo.8tzfdum5', color: '#ee9b00'},
-  'Otros-6lcusx': {url: 'mapbox://odpolo.dexy4fdd' , color: '#e9d8a6'},
+  'muy-alto-4gqx10': {url: 'mapbox://daniel-itdp.43cq9l5l', color: '#EB4D74', label: 'Muy Alto'},
+  'alto-9d92hn': {url: 'mapbox://daniel-itdp.3o54h1cd', color: '#E96030', label: 'Alto'},
+  'medio-copnh9': {url: 'mapbox://daniel-itdp.d6y0e1oe', color: '#FBD900', label: 'Medio'},
+  'bajo-binxq0': {url: 'mapbox://daniel-itdp.7eb1ttdq', color: '#3C60AC', label: 'Bajo'},
+  'muy-bajo-6b30ev': {url: 'mapbox://daniel-itdp.8dgonb06', color: '#7456A4', label: 'Muy Bajo'},
+  'otros-1qjpnd': {url: 'mapbox://daniel-itdp.cnwsf9qk' , color: '#6BBE49',   label: 'NA'},
 }
+
+const colorGradient = new Gradient();
+const color1 = "#EB4D74";
+const color2 = "#ECB0C2";
+colorGradient.setGradient(color1, color2);
+const colorArr = colorGradient.getArray(Object.keys(AGEBS).length);
+
 
 const useEconomicTiles = (map) => {
   const load = useCallback(() => {
     const paintTiles = () => {
       try {
-        Object.keys(AGEBS).forEach(key => {
+        Object.keys(AGEBS).forEach((key, index) => {
           map.addSource(key, {
             type: 'vector',
             url: AGEBS[key].url,
@@ -30,7 +38,7 @@ const useEconomicTiles = (map) => {
             'source-layer': key,
             'paint': {
               'fill-color': AGEBS[key].color,
-              // 'fill-opacity': 0.8,
+              'fill-opacity': 0.7,
             }
           });
         })
@@ -60,10 +68,19 @@ const useEconomicTiles = (map) => {
     }
   }
 
+  const legend = {
+    title: 'Marginación por AGEB',
+    intervals: Object.keys(AGEBS).map((key) => ({
+      color: AGEBS[key].color,
+      label: AGEBS[key].label,
+    }))
+  }
+
   return {
     show,
     hide,
     load,
+    legend,
   }
 }
 

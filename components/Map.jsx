@@ -7,8 +7,9 @@ import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
 import useEconomicTiles from '../hooks/useEconomicTiles';
+import DefaultLegend from './DefaultLegend';
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoib2Rwb2xvIiwiYSI6ImNrdTQ2dmtyaTE3N24yb21weHBncWNoYjYifQ.w9QK7JIBgtfC48-ekvGPtQ';
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
 const CANCUN_COORDINATES = [-86.879, 21.1427];
 
@@ -27,6 +28,7 @@ function Map({ city, data }) {
     metadata,
     add,
     show,
+    hide
   } = useLayerManager(map);
   const [firstDraw, setFirstDraw] = useState(false);
   const [opportunity, setOpportunity] = useState(defaultOpportunity);
@@ -35,9 +37,8 @@ function Map({ city, data }) {
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
-  const legendTitle = current in OPPORTUNITIES ? `Número de ${OPPORTUNITIES[current]?.toLowerCase()}` : 'Tiempo de traslado (minutos)'
   const [economicTiles, setEconomicTiles] = useState(false);
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs } = useEconomicTiles(map)
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicTiles(map)
   const {load: loadCancun} = useCancunLayers(map)
   
   useEffect(() => {
@@ -52,6 +53,7 @@ function Map({ city, data }) {
       })
     }
   }, [data])
+
   useEffect(() => {
     setMap(new mapboxgl.Map({
       container: 'map',
@@ -69,11 +71,13 @@ function Map({ city, data }) {
         if (!(key in state)) {
           add({
             map,
+            legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
             id: key,
             features,
             property: key,
             maxValue: Math.max(...values),
             visible: false,
+            stepSize: 10,
           });
         }
       });
@@ -94,7 +98,7 @@ function Map({ city, data }) {
         const featureId = e.features[0].properties.h3_ddrs;
         console.log('Clicked', featureId);
         // Fetch data
-        const response = await fetch(`https://calculadora-de-accesibilidad.s3.us-west-2.amazonaws.com/data/cancun/features/${featureId}.json`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/features/${featureId}.json`);
         const text = await response.text();
         const json = JSON.parse(text);
 
@@ -129,12 +133,14 @@ function Map({ city, data }) {
             // const max = Math.max(...hexagons.map((item) => item.properties[med]));
             add({
               map,
+              legendTitle: 'Tiempo de traslado (minutos)',
               id: getHexagonId(featureId, med, step),
               features: hexagons,
               property: med,
               maxValue: step,
               visible: false,
               beforeId: 'jobs_w',
+              stepSize: Math.floor(step / 15),
               metadata: {
                 opportunities: {
                   Trabajos: count(hexagonsNoZero, 'jobs_w'), 
@@ -191,12 +197,14 @@ function Map({ city, data }) {
     }
     setTimeStep(value);
   };
-  const handleAgebsChange = (value) => {
+  const handleAgebsChange = () => {
     if (economicTiles) {
       hideAgebs()
       setEconomicTiles(false)
+      show(map, current)
     } else {
       showAgebs()
+      hide(map)
       setEconomicTiles(true)
     }
   };
@@ -217,8 +225,9 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeStepChange}
       />
       {
-        current && (<Legend title={legendTitle} items={legend}/>)
+        current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
       }
+      <DefaultLegend />
       <div id="map" className="w-screen h-screen" />
     </>
   );

@@ -9,7 +9,7 @@ import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
-import { MEDIUMS, OPTION_MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
+import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Switch from '@mui/material/Switch';
@@ -18,6 +18,8 @@ const icon = {
   bike: <DirectionsBikeIcon />,
   car: <DirectionsCarFilledIcon />,
   public: <DirectionsTransitIcon />,
+  'public-bike': <><DirectionsTransitIcon /> + <DirectionsBikeIcon /></>,
+  'public-car': <><DirectionsTransitIcon /> +  <DirectionsCarFilledIcon /></>,
 };
 
 function InfoCard({
@@ -71,17 +73,29 @@ function InfoCard({
         </TextField>
       </div>
 
-      <div className="mb-6">
-        <p className="text-sm font-medium mb-2">Mostrar zonas económicas (AGEBS)</p>
+      <div className="flex mb-6 w-full justify-between">
+        <div>
+          <p className="text-sm font-medium mb-0">Marginación por AGEB</p>
+          <p className="text-[10px] text-gray-600 font-medium mb-2"><a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" >CONAPO</a></p>
+        </div>
         <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
       </div>
 
       <div>
-        <p className="text-sm font-medium mb-4">Cambia el medio de transporte y el tiempo</p>
           <div className="pb-4">
-            <ButtonGroup size="large" aria-label="large button group" fullWidth>
+        <p className="text-sm font-medium mb-2">Cambia el medio de transporte</p>
+            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
               {
-                OPTION_MEDIUMS.map((md) => (
+                MEDIUMS.slice(0,3).map((md) => (
+                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                    {icon[md]}
+                  </Button>
+                ))
+              }
+            </ButtonGroup>
+            <ButtonGroup size="medium" aria-label="large button group" fullWidth>
+              {
+                MEDIUMS.slice(3,6).map((md) => (
                   <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
                     {icon[md]}
                   </Button>
@@ -90,7 +104,8 @@ function InfoCard({
             </ButtonGroup>
           </div>
           <div className="pb-4">
-            <ButtonGroup size="large" aria-label="large button group" fullWidth>
+          <p className="text-sm font-medium mb-2">Cambia el tiempo de traslado</p>
+            <ButtonGroup size="medium" aria-label="large button group" fullWidth>
               {
                 TIME_STEPS.map((step) => (
                   <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>

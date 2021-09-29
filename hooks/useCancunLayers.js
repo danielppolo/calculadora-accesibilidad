@@ -2,24 +2,27 @@ import React, { useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 const layers = {
-  'Atractores-0t8xa6': {
-    url: 'mapbox://odpolo.8z5yah82',
+  'atractores-5zs4sy': {
+    url: 'mapbox://daniel-itdp.7j13qn0r',
     type: 'circle',
     popup: true,
     paint: {
-      'circle-color': '#8c3951'
+      'circle-color': '#8c3951',
+      'circle-stroke-color': '#FFF',
+      'circle-stroke-width': 1,
+      'circle-radius': 4,
     }
   },
-  'Comunidades_Sustentables-537dcd': {
-    url: 'mapbox://odpolo.2g75jf1m',
+  'comunidades-23c5zg': {
+    url: 'mapbox://daniel-itdp.4ymvwjhc',
     type: 'fill',
     popup: true,
     paint: {
-      'fill-color': '#00534C',
+      'fill-color': '#00524C',
     }
   },
-  'Estaciones_y_paraderos-cnjgnc': {
-    url: 'mapbox://odpolo.8me4fhb8',
+  'estaciones-5geu9s': {
+    url: 'mapbox://daniel-itdp.4m7o3ife',
     type: 'circle',
     popup: true,
     paint: {
@@ -29,24 +32,24 @@ const layers = {
       'circle-radius': 5,
     }
   },
-  'Limite_Municipal-9w88tg': {
-    url: 'mapbox://odpolo.3o0t1sh2',
+  'limite-municipal-5et9dw': {
+    url: 'mapbox://daniel-itdp.bsylc8oa',
     type: 'line',
     paint: {
       'line-color': '#e6e6dc',
       'line-width': 1	
     }
   },
-  'Lmite_Estatal-aqiatz': {
-    url: 'mapbox://odpolo.9tn2f51i',
+  'limite-estatal-4fclwb': {
+    url: 'mapbox://daniel-itdp.57hf0gek',
     type: 'line',
     paint: {
-      'line-color': '#ba955c',
-      'line-width': 1	
+      'line-color': '#96968c',
+      'line-width': 0.7	
     }
   },
-  'Trazo-8m24oi': {
-    url: 'mapbox://odpolo.bffy6chz',
+  'trazo-56elpw': {
+    url: 'mapbox://daniel-itdp.b2f7a077',
     type: 'line',
     paint: {
       'line-color': '#ba955c',

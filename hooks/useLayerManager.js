@@ -46,6 +46,7 @@ const useLayerCreate = () => {
 
   const addLayer = ({
     map, 
+    legendTitle,
     id, 
     features, 
     property, 
@@ -87,7 +88,10 @@ const useLayerCreate = () => {
       }, beforeId);
       layers[id] = true;
       layerMetadata[id] = metadata
-      legends[id] = getLegend(intervals, [...colorArr].reverse());
+      legends[id] = {
+        title: legendTitle,
+        intervals: getLegend(intervals, [...colorArr].reverse()),
+      };
       if (visible) {
         setCurrent(id);
       }
@@ -106,16 +110,20 @@ const useLayerCreate = () => {
     }
   };
 
-  const hideLayer = (map, id) => {
-    if (id in layers && map) {
+  const hide = (map, id = null) => {
+    if (id && map && id in layers ) {
       map.setLayoutProperty(id, 'visibility', 'none');
+    } else if (map) {
+      Object.keys(layers).forEach((layerId) => {
+        map.setLayoutProperty(layerId, 'visibility', 'none');
+      });
     }
   };
 
   return {
     state: layers,
     add: addLayer,
-    hide: hideLayer,
+    hide,
     show: showLayer,
     current,
     legend: legends[current] || [],

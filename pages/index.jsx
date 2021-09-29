@@ -4,11 +4,13 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { OPPORTUNITIES } from '../constants';
 
+const cityName = 'cancun'
+
 export default function Home() {
   const [city, setCity] = useState();
   useEffect(() => {
     const fetchCity = async () => {
-      const response = await fetch('https://calculadora-de-accesibilidad.s3.us-west-2.amazonaws.com/data/cancun/main.json');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${cityName}/main.json`);
       const data = await response.json();
       Object.values(data).forEach((feature) => {
         feature.properties.description = `
@@ -22,6 +24,7 @@ export default function Home() {
 
     fetchCity();
   }, []);
+
   return (
     <>
     <Backdrop

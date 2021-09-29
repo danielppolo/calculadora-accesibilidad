@@ -15,7 +15,7 @@ function BarChart({data}) {
           labels: Object.keys(data),
           datasets: [{
             label: 'Oportunidades',
-            backgroundColor: 'rgb(0,0,0)',
+            backgroundColor: '#00524C',
             borderColor: 'rgb(0,0,0)',
             data: Object.values(data),
           }],
