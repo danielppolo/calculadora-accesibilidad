@@ -11,6 +11,10 @@ import CancunLegend from './CancunLegend';
 import useMap from '../hooks/useMap';
 import Download from './Download';
 import useBaseGrid from '../hooks/useBaseGrid';
+import Fab from '@mui/material/Fab';
+import LayersIcon from '@mui/icons-material/Layers';
+import LayersClearIcon from '@mui/icons-material/LayersClear';
+import { Backdrop } from '@mui/material';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -36,6 +40,7 @@ function Map({ city, data }) {
     hide,
     geojson,
   } = useLayerManager(map);
+  const [showLegend, setShowLegend] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [opportunity, setOpportunity] = useState(defaultOpportunity);
   const [hexagon, setHexagon] = useState();
@@ -219,13 +224,25 @@ function Map({ city, data }) {
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
       />
-      <div className="overflow-y-auto space-y-2 z-50 fixed top-4 left-4 right-4 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto">
-        { !economicTiles && <Download data={geojson} filename={legend.title}/> }
-        {
-          current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
-        }
-        <CancunLegend />
+
+      <div className="block fixed bottom-4 right-4 z-50 md:hidden">
+        <Fab color="primary" onClick={() => { setShowLegend(!showLegend) }} size="medium" aria-label="add">
+          { showLegend ? <LayersClearIcon /> : <LayersIcon /> }
+        </Fab>
       </div>
+      <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
+        <div className="space-y-4">
+          { !economicTiles && <Download data={geojson} filename={legend.title}/> }
+          {
+            current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
+          }
+          <CancunLegend />
+        </div>
+      </div>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: 40 }}
+        open={showLegend}
+      ></Backdrop>
       <div id="map" className="w-screen h-screen" />
     </>
   );
