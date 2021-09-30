@@ -49,10 +49,10 @@ const CANCUN_TILES = [
     type: 'circle',
     popup: true,
     paint: {
-      'circle-color': '#000',
-      'circle-stroke-color': '#FFF',
+      'circle-stroke-color': '#000',
+      'circle-color': '#FFF',
       'circle-stroke-width': 2,
-      'circle-radius': 6,
+      'circle-radius': 5,
     }
   },
   {

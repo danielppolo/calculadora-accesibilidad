@@ -13,7 +13,7 @@ function CancunLegend() {
 
         <div className="flex items-center">
           <div className="w-4 h-4 flex items-center justify-center">
-            <div div className=" bg-black border-2 border-white rounded-md h-3 w-3"></div>
+            <div div className=" bg-white border-2 border-black rounded-md h-3 w-3"></div>
           </div>
           <span className="ml-2 text-xs">Estaciones del Tren Maya</span>
         </div>

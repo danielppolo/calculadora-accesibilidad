@@ -146,7 +146,7 @@ function InfoCard({
       <div>
         {/* <p className="text-sm font-medium mb-4">Créditos</p> */}
         {/* <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
-        <img className="h-10" src="https://lh3.googleusercontent.com/proxy/K7F57RBg0D6HgDKnULZsU0D5Pj9LpK-p0LKEQf51RQhK7pRwmJsY-yuqtdmi-4br4ltc6St5SlANiR4E3iZaO6iBwpNp9VZZoNA" alt="Fonatur logotipo" />
+        <img className="w-full" src="/fonatur.jpg" alt="Fonatur logotipo" />
       </div>
     </div>
   );
