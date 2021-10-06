@@ -1,5 +1,6 @@
 export const TIME_STEPS = [60, 120, 180];
-export const MEDIUMS = [ "caminando",
+export const MEDIUMS = [ 
+ "caminando",
  "bicicleta",
  "bus_actual",
  "TM_caminando",

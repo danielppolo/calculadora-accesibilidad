@@ -3,25 +3,22 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
-import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
-import DirectionsTransitIcon from '@mui/icons-material/DirectionsTransit';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
 import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Switch from '@mui/material/Switch';
+import Grid from '@mui/material/Grid';
 
-const icon = {
-  caminando: <DirectionsWalkIcon />,
-  bus_actual: <DirectionsBikeIcon />,
-  bicicleta: <DirectionsBikeIcon />,
-  TM_caminando: <><DirectionsTransitIcon /> <span className="mx-1">+</span> <DirectionsBikeIcon /></>,
-  bus_actual_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
-  bicicleta_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
-  bus_mejora_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
+const MEDIUM_TRANSLATIONS = {
+  caminando: "Caminando",
+  bus_actual: "Bicicleta",
+  bicicleta:  "Transporte público local",
+  TM_caminando:  "Transporte público local",
+  bus_actual_TM:  "Tren Maya + Transporte público local" ,
+  bicicleta_TM: "Tren Maya + Bicicleta",
+  bus_mejora_TM:   "Tren Maya + Rutas propuestas de TP",
 };
 
 function InfoCard({
@@ -90,42 +87,17 @@ function InfoCard({
       <div>
           <div className="pb-4">
         <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
-            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
-              {
-                MEDIUMS.slice(0,2).map((md) => (
-                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                    {icon[md]}
+            <Grid container spacing={1}>
+            {
+              MEDIUMS.map((md) => (
+                <Grid key={md} item xs={12}>
+                  <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                    {MEDIUM_TRANSLATIONS[md]}
                   </Button>
+                </Grid>
                 ))
               }
-            </ButtonGroup>
-            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
-              {
-                MEDIUMS.slice(2,4).map((md) => (
-                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                    {icon[md]}
-                  </Button>
-                ))
-              }
-            </ButtonGroup>
-            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
-              {
-                MEDIUMS.slice(4,6).map((md) => (
-                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                    {icon[md]}
-                  </Button>
-                ))
-              }
-            </ButtonGroup>
-            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
-              {
-                MEDIUMS.slice(6,7).map((md) => (
-                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                    {icon[md]}
-                  </Button>
-                ))
-              }
-            </ButtonGroup>
+            </Grid>
           </div>
           <div className="pb-4">
           <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el tiempo de traslado</h3>
