@@ -13,13 +13,15 @@ import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import Switch from '@mui/material/Switch';
+
 const icon = {
-  walk: <DirectionsWalkIcon />,
-  bike: <DirectionsBikeIcon />,
-  car: <DirectionsCarFilledIcon />,
-  public: <DirectionsTransitIcon />,
-  'public-bike': <><DirectionsTransitIcon /> <span className="mx-1">+</span> <DirectionsBikeIcon /></>,
-  'public-car': <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
+  caminando: <DirectionsWalkIcon />,
+  bus_actual: <DirectionsBikeIcon />,
+  bicicleta: <DirectionsBikeIcon />,
+  TM_caminando: <><DirectionsTransitIcon /> <span className="mx-1">+</span> <DirectionsBikeIcon /></>,
+  bus_actual_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
+  bicicleta_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
+  bus_mejora_TM: <><DirectionsTransitIcon /> <span className="mx-1">+</span>  <DirectionsCarFilledIcon /></>,
 };
 
 function InfoCard({
@@ -90,16 +92,34 @@ function InfoCard({
         <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
             <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
               {
-                MEDIUMS.slice(0,3).map((md) => (
+                MEDIUMS.slice(0,2).map((md) => (
                   <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
                     {icon[md]}
                   </Button>
                 ))
               }
             </ButtonGroup>
-            <ButtonGroup size="medium" aria-label="large button group" fullWidth>
+            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
               {
-                MEDIUMS.slice(3,6).map((md) => (
+                MEDIUMS.slice(2,4).map((md) => (
+                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                    {icon[md]}
+                  </Button>
+                ))
+              }
+            </ButtonGroup>
+            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
+              {
+                MEDIUMS.slice(4,6).map((md) => (
+                  <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                    {icon[md]}
+                  </Button>
+                ))
+              }
+            </ButtonGroup>
+            <ButtonGroup className="mb-1" size="medium" aria-label="large button group" fullWidth>
+              {
+                MEDIUMS.slice(6,7).map((md) => (
                   <Button disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
                     {icon[md]}
                   </Button>
