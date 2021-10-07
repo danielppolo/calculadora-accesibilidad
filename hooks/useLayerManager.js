@@ -21,6 +21,7 @@ const useLayerManager = () => {
     metadata,
     beforeId,
     stepSize = NUMBER_OF_BUCKETS, 
+    reverseColors = false,
   }) => {
     if (map && !(id in state)) {
       console.log('addLayer', id);
@@ -30,10 +31,12 @@ const useLayerManager = () => {
       // Get color intervals
       const intervals = getIntervals(maxValue, stepSize)
       const reversedIntervals = [...intervals].reverse()
-      const colorIntervals = new Gradient()
-        .setGradient(color1, color2)
-        .setMidpoint(stepSize)
-        .getArray()
+      const colorGradient = new Gradient()
+      .setGradient(color1, color2)
+      .setMidpoint(stepSize)
+      .getArray()
+      let colorIntervals = reverseColors ? [...colorGradient].reverse() : colorGradient
+      let legendColorIntervals = reverseColors ? colorGradient : [...colorGradient].reverse()
       const geojsonFeatures = convertToGeoJSON(features)
       
       map.addSource(id, {
@@ -60,7 +63,7 @@ const useLayerManager = () => {
       layerMetadata[id] = metadata
       legends[id] = {
         title: legendTitle,
-        intervals: getLegend(intervals, [...colorIntervals].reverse()),
+        intervals: getLegend(intervals, legendColorIntervals),
       };
       
       if (visible) {

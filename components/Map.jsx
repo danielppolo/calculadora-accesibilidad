@@ -145,6 +145,7 @@ function Map({ city, data }) {
                 visible: false,
                 beforeId: gridId,
                 stepSize: Math.floor(step / 15),
+                reverseColors: true,
                 metadata: {
                   opportunities: {
                     Trabajos: count(filteredFeatures, 'jobs_w'), 
