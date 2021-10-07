@@ -15,7 +15,7 @@ const MEDIUM_TRANSLATIONS = {
   caminando: "Caminando",
   bus_actual: "Bicicleta",
   bicicleta:  "Transporte público local",
-  TM_caminando:  "Transporte público local",
+  TM_caminando:  "Tren Maya",
   bus_actual_TM:  "Tren Maya + Transporte público local" ,
   bicicleta_TM: "Tren Maya + Bicicleta",
   bus_mejora_TM:   "Tren Maya + Rutas propuestas de TP",
@@ -85,33 +85,47 @@ function InfoCard({
         }
       </div>
       <div>
-          <div className="pb-4">
-        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
-            <Grid container spacing={1}>
-            {
-              MEDIUMS.map((md) => (
-                <Grid key={md} item xs={12}>
-                  <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                    {MEDIUM_TRANSLATIONS[md]}
-                  </Button>
-                </Grid>
-                ))
-              }
-            </Grid>
-          </div>
-          <div className="pb-4">
+        <div className="pb-4">
+          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
+          <Grid container spacing={1}>
+          {
+            MEDIUMS.slice(0,3).map((md) => (
+              <Grid key={md} item xs={12}>
+                <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                  {MEDIUM_TRANSLATIONS[md]}
+                </Button>
+              </Grid>
+              ))
+            }
+          </Grid>
+        </div>
+        <div className="pb-4">
+          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte con Tren Maya</h3>
+          <Grid container spacing={1}>
+          {
+            MEDIUMS.slice(3,7).map((md) => (
+              <Grid key={md} item xs={12}>
+                <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
+                  {MEDIUM_TRANSLATIONS[md]}
+                </Button>
+              </Grid>
+              ))
+            }
+          </Grid>
+        </div>
+        <div className="pb-4">
           <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el tiempo de traslado</h3>
-            <ButtonGroup size="medium" aria-label="large button group" fullWidth>
-              {
-                TIME_STEPS.map((step) => (
-                  <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
-                    {step}
-                    min
-                  </Button>
-                ))
-              }
-            </ButtonGroup>
-          </div>
+          <ButtonGroup size="medium" aria-label="large button group" fullWidth>
+            {
+              TIME_STEPS.map((step) => (
+                <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
+                  {step}
+                  min
+                </Button>
+              ))
+            }
+          </ButtonGroup>
+        </div>
       </div>
 
       <div className="flex mb-6 w-full justify-between">
