@@ -25,7 +25,7 @@ export default function Home() {
     >
       <CircularProgress color="inherit" />
     </Backdrop>
-    <Map city="cancun" data={city || {}} />
+    <Map city={cityName} data={city || {}} />
 </>
   );
 }

@@ -26,15 +26,14 @@ CSV.foreach(filepath, csv_options) do |row|
   ]
 end
 
+puts polygons['88450a1b25fffff']
 puts polygons.size
 
-polygons.keys.each do |origin|
-  File.open("data/output/features/#{origin}.json", 'wb') do |file|
-    file.write(JSON.generate(polygons[origin]))
-  end
-end
-
-
+# polygons.keys.each do |origin|
+#   File.open("data/output/features/#{origin}.json", 'wb') do |file|
+#     file.write(JSON.generate(polygons[origin]))
+#   end
+# end
 
 # [ "caminando",
 #   "bicicleta",
