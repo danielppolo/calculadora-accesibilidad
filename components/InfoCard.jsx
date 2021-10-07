@@ -13,8 +13,8 @@ import Grid from '@mui/material/Grid';
 
 const MEDIUM_TRANSLATIONS = {
   caminando: "Caminando",
-  bus_actual: "Bicicleta",
-  bicicleta:  "Transporte público local",
+  bicicleta:  "Bicicleta",
+  bus_actual: "Transporte público local",
   TM_caminando:  "Tren Maya",
   bus_actual_TM:  "Tren Maya + Transporte público local" ,
   bicicleta_TM: "Tren Maya + Bicicleta",
