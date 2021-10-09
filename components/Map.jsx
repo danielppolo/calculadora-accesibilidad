@@ -58,7 +58,7 @@ function Map({ city, data }) {
       const nextFeatures = Object.values(data)
       setFeatures(nextFeatures);
       setOpportunities({
-        Trabajos: count(nextFeatures, 'jobs_w'), 
+        'Personal ocupado': count(nextFeatures, 'jobs_w'), 
         Empresas: count(nextFeatures, 'empress'), 
         Clínicas: count(nextFeatures, 'clinics'), 
         Escuelas: count(nextFeatures, 'escuels'),
@@ -71,29 +71,6 @@ function Map({ city, data }) {
   useEffect(() => {
    if (map && features.length > 0 && !rendered) {
       loadGrid(map, features)
-      Object.keys(OPPORTUNITIES).forEach((key) => {
-        let maxValue = 0;
-        const filteredFeatures = features.filter((item) => {
-          if (item.properties[key] > maxValue) {
-            maxValue = item.properties[key];
-          }
-          return item.properties[key] > 0
-        });
-        if (!(key in state)) {
-          add({
-            map,
-            legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
-            id: key,
-            features: filteredFeatures,
-            property: key,
-            maxValue,
-            visible: false,
-            stepSize: 10,
-            beforeId: gridId,
-          });
-        }
-      });
-      show(map, opportunity)
       loadAgebs()
       loadCancun()
 
@@ -173,15 +150,6 @@ function Map({ city, data }) {
    }
   }, [map, features, rendered])
 
-  const handleOpportunityChange = (event) => {
-    const nextOpportunity = event.target.value;
-    show(map, nextOpportunity);
-    setOpportunity(nextOpportunity);
-    setHexagon(undefined);
-    hideAgebs()
-    setEconomicTiles(false)
-  };
-
   const handleMediumChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
@@ -218,8 +186,6 @@ function Map({ city, data }) {
         cityData={opportunities}
         economicTiles={economicTiles}
         onEconomicTilesChange={handleAgebsChange}
-        opportunity={opportunity}
-        onOpportunityChange={handleOpportunityChange}
         medium={medium}
         onMediumChange={handleMediumChange}
         timeStep={timeStep}

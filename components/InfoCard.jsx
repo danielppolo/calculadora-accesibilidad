@@ -5,11 +5,16 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import BarChart from './BarChart';
-import { MEDIUMS, TIME_STEPS, OPPORTUNITIES } from '../constants';
+import { MEDIUMS, TIME_STEPS } from '../constants';
 import Alert from '@mui/material/Alert';
+import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Grid';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import FlareIcon from '@mui/icons-material/Flare';
 
 const MEDIUM_TRANSLATIONS = {
   caminando: "Caminando",
@@ -22,8 +27,6 @@ const MEDIUM_TRANSLATIONS = {
 };
 
 function InfoCard({
-  onOpportunityChange,
-  opportunity,
   cityData,
   medium,
   onMediumChange,
@@ -53,68 +56,76 @@ function InfoCard({
         }
       </div>
       <div className="mb-6 mt-4">
-      {/* <Divider light/> */}
-      </div>
-      <div className="mb-6">
-        {/* <p className="text-base font-medium mb-2">Controles</p> */}
-        {/* <p className="text-xs mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
-        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Oportunidad a visualizar</h3>
-          <TextField
-            select
-            onChange={onOpportunityChange}
-            value={opportunity}
-            name="opportinuty"
-            label={opportunity ? '' : 'Selecciona oportunidad'}
-            fullWidth
-            InputLabelProps={{
-              shrink: false
-            }}
-          >
-          {
-            Object.keys(OPPORTUNITIES).map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
-          }
-        </TextField>
       </div>
 
-      <div className="mb-2">
-        <h3 className="text-sm font-medium mb-2 text-[#00534C]">Oportunidades alcanzadas desde un hexágono</h3>
-        {
-          !reachableOpportunities && (
-            <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
-          )
-        }
+      <div className="mb-4">
+        <h3 className="text-sm font-medium mb-2 text-[#00534C]">
+          Paso 1. Da click en un hexágono” 
+        </h3>
+        <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
       </div>
-      <div>
-        <div className="pb-4">
-          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte</h3>
+
+      <div className="mb-4">
+        <h3 className="text-sm font-medium text-[#00534C] mb-4">
+          Paso 2. Selecciona modo de transporte.
+        </h3>
           <Grid container spacing={1}>
-          {
-            MEDIUMS.slice(0,3).map((md) => (
-              <Grid key={md} item xs={12}>
-                <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                  {MEDIUM_TRANSLATIONS[md]}
+            <Grid item xs={6}>
+              <h4 className="text-sm text-center font-semibold uppercase">Situación actual</h4>
+            </Grid>
+            <Grid item xs={6}>
+              <h4 className="text-sm text-center font-semibold uppercase">Tren Maya</h4>
+            </Grid>
+            <Grid item xs={6}>
+              <Button startIcon={<DirectionsWalkIcon/>} fullWidth disabled={!hexagon} variant={medium === 'caminando' ? 'contained' : 'outlined'} key={'caminando'} onClick={() => { onMediumChange('caminando'); }}>
+                Caminando
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Tooltip title="Caminando + Tren Maya" arrow={false} placement="right">
+                <Button startIcon={<DirectionsWalkIcon/>} fullWidth disabled={!hexagon} variant={medium === 'TM_caminando' ? 'contained' : 'outlined'} key={'TM_caminando'} onClick={() => { onMediumChange('TM_caminando'); }}>
+                  Caminando
                 </Button>
-              </Grid>
-              ))
-            }
-          </Grid>
-        </div>
-        <div className="pb-4">
-          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte con Tren Maya</h3>
-          <Grid container spacing={1}>
-          {
-            MEDIUMS.slice(3,7).map((md) => (
-              <Grid key={md} item xs={12}>
-                <Button fullWidth disabled={!hexagon} variant={medium === md ? 'contained' : 'outlined'} key={md} onClick={() => { onMediumChange(md); }}>
-                  {MEDIUM_TRANSLATIONS[md]}
+              </Tooltip>
+            </Grid>
+            <Grid item xs={6}>
+              <Button startIcon={<DirectionsBikeIcon/>} fullWidth disabled={!hexagon} variant={medium === 'bicicleta' ? 'contained' : 'outlined'} key={'bicicleta'} onClick={() => { onMediumChange('bicicleta'); }}>
+                Bicicleta
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Tooltip title="Bicicleta + Tren Maya" arrow={false} placement="right">
+                <Button startIcon={<DirectionsBikeIcon/>} fullWidth disabled={!hexagon} variant={medium === 'bicicleta_TM' ? 'contained' : 'outlined'} key={'bicicleta_TM'} onClick={() => { onMediumChange('bicicleta_TM'); }}>
+                  Bicicleta
                 </Button>
-              </Grid>
-              ))
-            }
+              </Tooltip>
+            </Grid>
+            <Grid item xs={6}>
+                <Button startIcon={<DirectionsBusFilledIcon/>}  fullWidth disabled={!hexagon} variant={medium === 'bus_actual' ? 'contained' : 'outlined'} key={'bus_actual'} onClick={() => { onMediumChange('bus_actual'); }}>
+                  T. público
+                </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Tooltip title="Transporte Público + Tren Maya" arrow={false} placement="right">
+                <Button  startIcon={<DirectionsBusFilledIcon/>}  fullWidth disabled={!hexagon} variant={medium === 'bus_actual_TM' ? 'contained' : 'outlined'} key={'bus_actual_TM'} onClick={() => { onMediumChange('bus_actual_TM'); }}>
+                  T. público
+                </Button>
+              </Tooltip>
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <Grid item xs={6}>
+              <Tooltip title="Propuesta de Transporte Público + Tren Maya" arrow={false} placement="right">
+                <Button startIcon={<FlareIcon/>}  fullWidth disabled={!hexagon} variant={medium === 'bus_mejora_TM' ? 'contained' : 'outlined'} key={'bus_mejora_TM'} onClick={() => { onMediumChange('bus_mejora_TM'); }}>
+                  Propuesta de TP
+                </Button>
+              </Tooltip>
+            </Grid>
           </Grid>
-        </div>
+
         <div className="pb-4">
-          <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el tiempo de traslado</h3>
+          <h3 className="text-sm font-medium mb-2 text-[#00534C]">
+          Paso 3. Selecciona el tiempo
+          </h3>
           <ButtonGroup size="medium" aria-label="large button group" fullWidth>
             {
               TIME_STEPS.map((step) => (
@@ -128,10 +139,17 @@ function InfoCard({
         </div>
       </div>
 
+      <div className="mb-4">
+        <h3 className="text-sm font-medium mb-2 text-[#00534C]">
+          Paso 4. Observa la isocrona y el histograma.
+        </h3>
+        {/* <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert> */}
+      </div>
+
       <div className="flex mb-6 w-full justify-between">
         <div>
-          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar marginación por AGEB</h3>
-          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: <a href="http://www.conapo.gob.mx/es/CONAPO/Indice_de_marginacion_urbana_2010" target="_blank" rel="noreferrer" className="underline">CONAPO</a></p>
+          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar usos de suelo</h3>
+          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: CONAVI</p>
         </div>
         <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
       </div>
