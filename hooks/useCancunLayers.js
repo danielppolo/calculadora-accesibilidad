@@ -68,6 +68,20 @@ const CANCUN_TILES = [
       'circle-radius': 4,
     }
   },
+  // TODO: add ZonaMetropolitana de Cancun
+  // {
+  //   id: 'atractores',
+  //   sourceLayer: 'atractores-5zs4sy',
+  //   url: 'mapbox://daniel-itdp.7j13qn0r',
+  //   type: 'circle',
+  //   popup: true,
+  //   paint: {
+  //     'circle-color': '#8c3951',
+  //     'circle-stroke-color': '#FFF',
+  //     'circle-stroke-width': 1,
+  //     'circle-radius': 4,
+  //   }
+  // },
 ]
 
 const useCancunLayers = (map) => {

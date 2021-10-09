@@ -15,6 +15,9 @@ import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
 import { Backdrop } from '@mui/material';
+import useRoadNetwork from '../hooks/useRoadNetwork';
+import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal';
+import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -51,16 +54,26 @@ function Map({ city, data }) {
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
   const {load: loadCancun} = useCancunLayers(map)
   const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
+  const {load:loadRoadNetwork} = useRoadNetwork(map) 
+  const {
+    load:loadCiclopathProposal,
+    hide:hideCiclopathProposal,
+    show:showCiclopathProposal,
+  } = useTrenMayaCiclopathProposal(map) 
+  const {
+    load:loadPublicTransportProposal,
+    hide:hidePublicTransportProposal,
+    show:showPublicTransportProposal
+  } = useTrenMayaPublicTransportProposal(map) 
 
   useEffect(() => {
     // Fit map to selected features.
     if (map && geojson?.features) {
       const bounds = new mapboxgl.LngLatBounds();
-      geojson.features.forEach(feature => {
-        const coordinates = feature.geometry.coordinates[0]
-        bounds.extend(coordinates)
-      })
       const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
+      geojson.features.forEach(feature => {
+        bounds.extend(feature.geometry.coordinates[0])
+      })
       map.fitBounds(bounds, { 
         padding: 200, 
         maxZoom: 15, 
@@ -87,10 +100,15 @@ function Map({ city, data }) {
 
   useEffect(() => {
    if (map && features.length > 0 && !rendered) {
-      loadGrid(map, features)
-      loadAgebs()
-      loadCancun()
-
+      
+      map.on('load', () => {
+        loadGrid(map, features)
+        loadRoadNetwork(map)
+        loadAgebs()
+        loadCancun()
+        loadCiclopathProposal()
+        loadPublicTransportProposal()
+      })
       map.on('mousemove', gridId, (e) => {
         popup
           .setLngLat(e.lngLat)
@@ -168,11 +186,19 @@ function Map({ city, data }) {
   }, [map, features, rendered])
 
   const handleMediumChange = (value) => {
+    hidePublicTransportProposal()
+    hideCiclopathProposal()
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
       hideAgebs()
       setEconomicTiles(false)
-    } 
+    }
+    if (value === 'bus_mejora_TM') {
+      showPublicTransportProposal()
+    }
+    if (value === 'bicicleta_TM') {
+      showCiclopathProposal()
+    }
     setMedium(value);
   };
   const handleTimeStepChange = (value) => {
