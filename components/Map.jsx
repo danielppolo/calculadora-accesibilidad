@@ -42,7 +42,6 @@ function Map({ city, data }) {
   } = useLayerManager(map);
   const [showLegend, setShowLegend] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [opportunity, setOpportunity] = useState(defaultOpportunity);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
@@ -52,6 +51,24 @@ function Map({ city, data }) {
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
   const {load: loadCancun} = useCancunLayers(map)
   const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
+
+  useEffect(() => {
+    // Fit map to selected features.
+    if (map && geojson?.features) {
+      const bounds = new mapboxgl.LngLatBounds();
+      geojson.features.forEach(feature => {
+        const coordinates = feature.geometry.coordinates[0]
+        bounds.extend(coordinates)
+      })
+      const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
+      map.fitBounds(bounds, { 
+        padding: 200, 
+        maxZoom: 15, 
+        duration: 500,
+        offset: [offsetX, 0]
+      });
+    }
+  }, [geojson, map])
 
   useEffect(() => {
     if (data) {
@@ -103,6 +120,7 @@ function Map({ city, data }) {
                   [med]: json[id][mediumIndex],
                 },
               }));
+
               // Include clicked feature.
               filteredFeatures.push({
                 ...data[featureId],
@@ -144,7 +162,6 @@ function Map({ city, data }) {
           id: featureId,
           ...feature,
         });
-        setOpportunity(undefined);
       });
       setRendered(true)
    }
