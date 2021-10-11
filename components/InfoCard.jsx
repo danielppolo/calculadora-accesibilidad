@@ -143,7 +143,18 @@ function InfoCard({
         <h3 className="text-sm font-medium mb-2 text-[#00534C]">
           Paso 4. Observa la isocrona y el histograma.
         </h3>
-        <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
+        {
+          reachableOpportunities ? (
+            <>
+            <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
+              <BarChart 
+                data={reachableOpportunities}
+              />
+            </>
+            ) : (
+          <Alert severity="info">Da click sobre un hexágono para obtener más información</Alert>
+          ) 
+        }
       </div>
 
       <div className="flex mb-6 w-full justify-between">
@@ -154,16 +165,6 @@ function InfoCard({
         <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
       </div>
       
-      {
-        reachableOpportunities && (
-        <>
-        <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
-          <BarChart 
-            data={reachableOpportunities}
-          />
-        </>
-        )
-      }
       <div className="mb-4 mt-4">
         <Divider light/>
       </div>
