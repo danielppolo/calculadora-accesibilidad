@@ -33,7 +33,7 @@ const popup = new Popup({
 });
 
 function Map({ city, data }) {
-  const map = useMap({center: CANCUN_COORDINATES});
+  const map = useMap({ center: CANCUN_COORDINATES });
   const {
     state,
     current,
@@ -54,19 +54,19 @@ function Map({ city, data }) {
   const [opportunities, setOpportunities] = useState({});
   const [economicTiles, setEconomicTiles] = useState(false);
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
-  const {load: loadCancun} = useCancunLayers()
-  const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
-  const {load:loadRoadNetwork} = useRoadNetwork() 
+  const { load: loadCancun } = useCancunLayers()
+  const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
+  const { load: loadRoadNetwork } = useRoadNetwork()
   const {
-    load:loadCiclopathProposal,
-    hide:hideCiclopathProposal,
-    show:showCiclopathProposal,
-  } = useTrenMayaCiclopathProposal() 
+    load: loadCiclopathProposal,
+    hide: hideCiclopathProposal,
+    show: showCiclopathProposal,
+  } = useTrenMayaCiclopathProposal()
   const {
-    load:loadPublicTransportProposal,
-    hide:hidePublicTransportProposal,
-    show:showPublicTransportProposal
-  } = useTrenMayaPublicTransportProposal() 
+    load: loadPublicTransportProposal,
+    hide: hidePublicTransportProposal,
+    show: showPublicTransportProposal
+  } = useTrenMayaPublicTransportProposal()
 
   useEffect(() => {
     // Fit map to selected features.
@@ -76,9 +76,9 @@ function Map({ city, data }) {
       geojson.features.forEach(feature => {
         bounds.extend(feature.geometry.coordinates[0])
       })
-      map.fitBounds(bounds, { 
-        padding: 200, 
-        maxZoom: 15, 
+      map.fitBounds(bounds, {
+        padding: 200,
+        maxZoom: 15,
         duration: 500,
         offset: [offsetX, 0]
       });
@@ -90,9 +90,9 @@ function Map({ city, data }) {
       const nextFeatures = Object.values(data)
       setFeatures(nextFeatures);
       setOpportunities({
-        'Personal ocupado': count(nextFeatures, 'jobs_w'), 
-        Empresas: count(nextFeatures, 'empress'), 
-        Clínicas: count(nextFeatures, 'clinics'), 
+        'Personal ocupado': count(nextFeatures, 'jobs_w'),
+        Empresas: count(nextFeatures, 'empress'),
+        Clínicas: count(nextFeatures, 'clinics'),
         Escuelas: count(nextFeatures, 'escuels'),
         'Zonas turísticas': count(nextFeatures, 'destins'),
       })
@@ -101,12 +101,12 @@ function Map({ city, data }) {
 
 
   useEffect(() => {
-   if (map && features.length > 0 && !rendered) {
-      
+    if (map && features.length > 0 && !rendered) {
+
       map.on('load', () => {
-        loadGrid(map, features)
-        loadRoadNetwork(map)
         loadAgebs(map)
+        loadRoadNetwork(map)
+        loadGrid(map, features)
         loadCiclopathProposal(map)
         loadPublicTransportProposal(map)
         loadCancun(map)
@@ -122,6 +122,8 @@ function Map({ city, data }) {
       });
       map.on('click', gridId, async (e) => {
         setLoading(true)
+        hideAgebs(map)
+        setEconomicTiles(false)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
         try {
@@ -133,7 +135,7 @@ function Map({ city, data }) {
           MEDIUMS.forEach((med, mediumIndex) => {
             TIME_STEPS.forEach((step) => {
               const featureIds = Object.keys(json)
-              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step );
+              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step && data[id]);
               const filteredFeatures = filteredIds.map((id) => ({
                 ...data[id],
                 properties: {
@@ -164,17 +166,18 @@ function Map({ city, data }) {
                 reverseColors: true,
                 metadata: {
                   opportunities: {
-                    'Personal ocupado': count(filteredFeatures, 'jobs_w'), 
-                    Empresas: count(filteredFeatures, 'empress'), 
-                    Clínicas: count(filteredFeatures, 'clinics'), 
+                    'Personal ocupado': count(filteredFeatures, 'jobs_w'),
+                    Empresas: count(filteredFeatures, 'empress'),
+                    Clínicas: count(filteredFeatures, 'clinics'),
                     Escuelas: count(filteredFeatures, 'escuels'),
                     'Zonas turísticas': count(filteredFeatures, 'destins'),
+                    Estaciones: count(filteredFeatures, 'estaciones'),
                   }
                 }
               });
             });
           });
-        } catch(e) {
+        } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
         } finally {
           setLoading(false)
@@ -188,7 +191,7 @@ function Map({ city, data }) {
         });
       });
       setRendered(true)
-   }
+    }
   }, [map, features, rendered])
 
   const handleMediumChange = (value) => {
@@ -228,7 +231,7 @@ function Map({ city, data }) {
   };
 
   console.log(agebLegend)
-  
+
   return (
     <>
       <InfoCard
@@ -245,17 +248,17 @@ function Map({ city, data }) {
 
       <div className="block fixed bottom-4 right-4 z-50 md:hidden">
         <Fab color="primary" onClick={() => { setShowLegend(!showLegend) }} size="medium" aria-label="add">
-          { showLegend ? <LayersClearIcon /> : <LayersIcon /> }
+          {showLegend ? <LayersClearIcon /> : <LayersIcon />}
         </Fab>
       </div>
       <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          { !economicTiles && <Download data={geojson} filename={legend.title}/> }
+          {!economicTiles && <Download data={geojson} filename={legend.title} />}
           {
-            economicTiles && (<Legend title={agebLegend.title} items={agebLegend.intervals}/>)
+            economicTiles && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
           }
           {
-            current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
+            current && legend && !economicTiles && (<Legend title={legend.title} items={legend.intervals} />)
           }
           <CancunLegend />
         </div>
@@ -268,8 +271,8 @@ function Map({ city, data }) {
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
-        >
-          <CircularProgress color="inherit" />
+      >
+        <CircularProgress color="inherit" />
       </Backdrop>
     </>
   );

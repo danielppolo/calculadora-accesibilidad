@@ -60,7 +60,7 @@ function InfoCard({
 
       <div className="mb-4">
         <h3 className="text-sm font-medium mb-2 text-[#00534C]">
-          Paso 1. Da click en un hexágono” 
+          Paso 1. Da click en un hexágono
         </h3>
         <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
       </div>
