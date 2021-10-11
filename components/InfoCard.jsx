@@ -147,12 +147,12 @@ function InfoCard({
         )
       }
       <div className="mb-4 mt-4">
-        <Divider light/>
+        {/* <Divider light/> */}
       </div>
       <div>
         {/* <p className="text-sm font-medium mb-4">Créditos</p> */}
         {/* <p className="text-xs mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p> */}
-        <img className="w-full" src="/fonatur.jpg" alt="Fonatur logotipo" />
+        {/* <img className="w-full" src="/fonatur.jpg" alt="Fonatur logotipo" /> */}
       </div>
     </div>
   );
