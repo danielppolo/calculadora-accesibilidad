@@ -31,7 +31,6 @@ const useTrenMayaCiclopathProposal = () => {
             'source-layer': layer.sourceLayer,
             'paint': {
               'line-color': layer.color,
-              'line-opacity': 0.5,
               'line-width': 2,
             }
           });

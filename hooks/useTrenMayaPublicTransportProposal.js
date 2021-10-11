@@ -3,64 +3,58 @@ import React, { useCallback } from 'react';
 const PROPOSAL_TILES = [
   {
     id: 'tren-maya-ruta-transporte-publico', 
-    sourceLayer: 'propuesta-tren-maya-ruta-cicl-53xogl', 
-    url: 'mapbox://daniel-itdp.9d11x400', 
+    sourceLayer: 'PropuestaTP-4mtn0b', 
+    url: 'mapbox://daniel-itdp.5cjeztin', 
     color: '#fd6541', 
     type: 'line',
     label: 'Propuesta transporte público'
   },
 ]
 
-const useTrenMayaPublicTransportProposal = (map) => {
-  const load = useCallback(() => {
-    if (map) {
-        PROPOSAL_TILES.forEach(ageb => {
-          map.addSource(ageb.id, {
-            type: 'vector',
-            url: ageb.url,
-            minzoom: 6,
-            maxzoom: 14
-          });
-          map.addLayer({
-            id: ageb.id,
-            type: 'fill',
-            source: ageb.id,
-            layout: {
-              visibility:  'none',
-            },
-            'source-layer': ageb.sourceLayer,
-            'paint': {
-              'fill-color': ageb.color,
-              'fill-opacity': 0.5,
-            }
-          });
-        })
-      }
-  }, [map])
+const useTrenMayaPublicTransportProposal = () => {
+  const load = useCallback((map) => {
+      PROPOSAL_TILES.forEach(layer => {
+        map.addSource(layer.id, {
+          type: 'vector',
+          url: layer.url,
+          minzoom: 6,
+          maxzoom: 14
+        });
+        map.addLayer({
+          id: layer.id,
+          type: layer.type,
+          source: layer.id,
+          layout: {
+            visibility:  'none',
+          },
+          'source-layer': layer.sourceLayer,
+          'paint': {
+            'line-color': layer.color,
+            'line-width': 2,
+          }
+        });
+      })
+  }, [])
 
-  const show = useCallback(() => {
-    if (map) {
+  const show = useCallback((map) => {
       console.log('SHOW PUBLIC TRANSPORT PROPOSAL')
       PROPOSAL_TILES.forEach((ageb) => {
         map.setLayoutProperty(ageb.id, 'visibility', 'visible');
       });
-    }
-  }, [map])
+  }, [])
  
-  const hide = useCallback(() => {
-    if (map) {
+  const hide = useCallback((map) => {
       console.log('HIDE PUBLIC TRANSPORT PROPOSAL')
       PROPOSAL_TILES.forEach((ageb) => {
         map.setLayoutProperty(ageb.id, 'visibility', 'none');
       });
-    }
-  }, [map])
+  }, [])
 
   const legend = {
     title: 'Propuesta de Tren Maya',
-    intervals: PROPOSAL_TILES.map((ageb) => ({
-      color: ageb.color,
-      label: ageb.label,
+    intervals: PROPOSAL_TILES.map((layer) => ({
+      color: layer.color,
+      label: layer.label,
     }))
   }
 

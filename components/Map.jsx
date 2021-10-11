@@ -230,8 +230,6 @@ function Map({ city, data }) {
     }
   };
 
-  console.log(agebLegend)
-
   return (
     <>
       <InfoCard
