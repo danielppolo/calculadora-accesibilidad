@@ -1,59 +1,62 @@
 import React, { useCallback } from 'react';
 
 const PROPOSAL_TILES = [
-//  TODO: UPDATE TILESET
+  {
+    id: 'tren-maya-ruta-ciclista', 
+    sourceLayer: 'propuesta-tren-maya-ruta-cicl-53xogl', 
+    url: 'mapbox://daniel-itdp.9d11x400', 
+    color: '#ff5079', 
+    type: 'line',
+    label: 'Propuesta ruta ciclista'
+  },
 ]
 
-const useTrenMayaCiclopathProposal = (map) => {
-  const load = useCallback(() => {
-    if (map) {
-        PROPOSAL_TILES.forEach(ageb => {
-          map.addSource(ageb.id, {
+
+const useTrenMayaCiclopathProposal = () => {
+  const load = useCallback((map) => {
+        PROPOSAL_TILES.forEach(layer => {
+          map.addSource(layer.id, {
             type: 'vector',
-            url: ageb.url,
+            url: layer.url,
             minzoom: 6,
             maxzoom: 14
           });
           map.addLayer({
-            id: ageb.id,
-            type: 'fill',
-            source: ageb.id,
+            id: layer.id,
+            type: layer.type,
+            source: layer.id,
             layout: {
               visibility:  'none',
             },
-            'source-layer': ageb.sourceLayer,
+            'source-layer': layer.sourceLayer,
             'paint': {
-              'fill-color': ageb.color,
-              'fill-opacity': 0.5,
+              'line-color': layer.color,
+              'line-opacity': 0.5,
+              'line-width': 2,
             }
           });
         })
-      }
-  }, [map])
+  }, [])
 
-  const show = useCallback(() => {
-    if (map) {
+  const show = useCallback((map) => {
       console.log('SHOW CICLOVIA PROPOSAL')
-      PROPOSAL_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'visible');
+      PROPOSAL_TILES.forEach((layer) => {
+        map.setLayoutProperty(layer.id, 'visibility', 'visible');
       });
-    }
-  }, [map])
+  }, [])
  
-  const hide = useCallback(() => {
-    if (map) {
+  const hide = useCallback((map) => {
       console.log('HIDE CICLOVIA PROPOSAL')
-      PROPOSAL_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'none');
+      PROPOSAL_TILES.forEach((layer) => {
+        map.setLayoutProperty(layer.id, 'visibility', 'none');
       });
-    }
-  }, [map])
+  }, [])
 
   const legend = {
     title: 'Propuesta de ciclovía',
-    intervals: PROPOSAL_TILES.map((ageb) => ({
-      color: ageb.color,
-      label: ageb.label,
+    intervals: PROPOSAL_TILES.map((layer) => ({
+      color: layer.color,
+      label: layer.label,
     }))
   }
 

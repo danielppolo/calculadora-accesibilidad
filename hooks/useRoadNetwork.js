@@ -1,7 +1,13 @@
 import React, { useCallback } from 'react';
 
 const ROAD_TILES = [
-  //  TODO: add tilesets
+  {
+    id: 'tren-maya-ruta-ciclista', 
+    sourceLayer: 'red-vial-bu2vky', 
+    url: 'mapbox://daniel-itdp.agpu75bd', 
+    color: '#96968c', 
+    label: 'Red vial'
+  },
 ]
 
 const useRoadNetwork = () => {
@@ -15,10 +21,13 @@ const useRoadNetwork = () => {
         });
         map.addLayer({
           id: layer.sourceLayer,
-          type: layer.type,
+          type: 'line',
           source: layer.sourceLayer,
           'source-layer': layer.sourceLayer,
-          paint: layer.paint,
+          'paint': {
+            'line-color': '#96968c',
+            'line-opacity': 0.5,
+          }
         });
       })
   }, [])

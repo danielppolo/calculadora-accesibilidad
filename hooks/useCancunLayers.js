@@ -68,25 +68,19 @@ const CANCUN_TILES = [
       'circle-radius': 4,
     }
   },
-  // TODO: add ZonaMetropolitana de Cancun
-  // {
-  //   id: 'atractores',
-  //   sourceLayer: 'atractores-5zs4sy',
-  //   url: 'mapbox://daniel-itdp.7j13qn0r',
-  //   type: 'circle',
-  //   popup: true,
-  //   paint: {
-  //     'circle-color': '#8c3951',
-  //     'circle-stroke-color': '#FFF',
-  //     'circle-stroke-width': 1,
-  //     'circle-radius': 4,
-  //   }
-  // },
+  {
+    id: 'zmc',
+    sourceLayer: 'zona-metropolitana-cancun-9ygbru',
+    url: 'mapbox://daniel-itdp.9x13h76u',
+    type: 'line',
+    paint: {
+      'line-color': '#fdbbcd',
+    }
+  },
 ]
 
-const useCancunLayers = (map) => {
-  const load = useCallback(() => {
-    if (map) {
+const useCancunLayers = () => {
+  const load = useCallback((map) => {
       CANCUN_TILES.forEach((layer) => {
         map.addSource(layer.sourceLayer, {
           type: 'vector',
@@ -120,8 +114,7 @@ const useCancunLayers = (map) => {
           });
         }
       })
-    }
-  }, [map])
+  }, [])
 
   return { load }
 }

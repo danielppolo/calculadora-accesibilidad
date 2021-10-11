@@ -1,107 +1,177 @@
 import React, { useCallback } from 'react';
+import useLayer from './useLayer';
 
-const MARGINALIZATION_TILES = [
-  {
-    id: 'muy-alto', 
-    sourceLayer: 'muy-alto-4gqx10', 
-    url: 'mapbox://daniel-itdp.43cq9l5l', 
-    color: '#EB4D74', 
-    label: 'Muy Alto'
-  },
-  {
-    id: 'alto', 
-    sourceLayer: 'alto-9d92hn', 
-    url: 'mapbox://daniel-itdp.3o54h1cd', 
-    color: '#E96030', 
-    label: 'Alto'
-  },
-  {
-    id: 'medio', 
-    sourceLayer: 'medio-copnh9', 
-    url: 'mapbox://daniel-itdp.d6y0e1oe', 
-    color: '#FBD900', 
-    label: 'Medio'
-  },
-  {
-    id: 'bajo', 
-    sourceLayer: 'bajo-binxq0', 
-    url: 'mapbox://daniel-itdp.7eb1ttdq', 
-    color: '#3C60AC', 
-    label: 'Bajo'
-  },
-  {
-    id: 'muy-bajo', 
-    sourceLayer: 'muy-bajo-6b30ev', 
-    url: 'mapbox://daniel-itdp.8dgonb06', 
-    color: '#7456A4', 
-    label: 'Muy Bajo'
-  },
-  {
-    id: 'otros', 
-    sourceLayer: 'otros-1qjpnd', 
-    url: 'mapbox://daniel-itdp.cnwsf9qk' , 
-    color: '#6BBE49',   
-    label: 'NA'
-  },
-]
-
-const useMarginalizationLayers = (map) => {
-  const load = useCallback(() => {
-    if (map) {
-        MARGINALIZATION_TILES.forEach(ageb => {
-          map.addSource(ageb.id, {
-            type: 'vector',
-            url: ageb.url,
-            minzoom: 6,
-            maxzoom: 14
-          });
-          map.addLayer({
-            id: ageb.id,
-            type: 'fill',
-            source: ageb.id,
-            layout: {
-              visibility:  'none',
-            },
-            'source-layer': ageb.sourceLayer,
-            'paint': {
-              'fill-color': ageb.color,
-              'fill-opacity': 0.5,
-            }
-          });
-        })
+const useEconomicZones = () => {
+  return useLayer([
+    {
+      id: 'uso-acuicola',
+      sourceLayer: 'ACUACOLA-2yg0mz',
+      url: 'mapbox://daniel-itdp.0hbjuuxe',
+      type: 'fill',
+      color: '#839E34',
+      label: 'Acuícola',
+      paint: {
+        'fill-color': '#839E34',
+        'fill-opacity': 0.3,
       }
-  }, [map])
-
-  const show = useCallback(() => {
-    if (map) {
-      MARGINALIZATION_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'visible');
-      });
-    }
-  }, [map])
- 
-  const hide = useCallback(() => {
-    if (map) {
-      MARGINALIZATION_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'none');
-      });
-    }
-  }, [map])
-
-  const legend = {
-    title: 'Marginación por AGEB',
-    intervals: MARGINALIZATION_TILES.map((ageb) => ({
-      color: ageb.color,
-      label: ageb.label,
-    }))
-  }
-
-  return {
-    show,
-    hide,
-    load,
-    legend,
-  }
+    },
+    {
+      id: 'uso-agricultura',
+      sourceLayer: 'AGRICULTURA-1nglu1',
+      url: 'mapbox://daniel-itdp.d2k35cu0',
+      type: 'fill',
+      color: '#FFF',
+      label: 'Agricultura',
+      paint: {
+        'fill-color': '#FFF',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-bosque',
+      sourceLayer: 'BOSQUE-7bt0zj',
+      url: 'mapbox://daniel-itdp.beyf3el7',
+      type: 'fill',
+      color: '#56FF00',
+      label: 'Bosque',
+      paint: {
+        'fill-color': '#56FF00',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-manglar',
+      sourceLayer: 'MANGLAR-1l7c13',
+      url: 'mapbox://daniel-itdp.4ownv4ef',
+      type: 'fill',
+      color: '#4C0074',
+      label: 'Manglar',
+      paint: {
+        'fill-color': '#4C0074',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-palmar',
+      sourceLayer: 'PALMAR-72pfn1',
+      url: 'mapbox://daniel-itdp.1urge0yl',
+      type: 'fill',
+      color: '#F5A27A',
+      label: 'Palmar',
+      paint: {
+        'fill-color': '#F5A27A',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-pastizal',
+      sourceLayer: 'PASTIZAL-bq1of5',
+      url: 'mapbox://daniel-itdp.72apyli2',
+      type: 'fill',
+      color: '#D7D79E',
+      label: 'Pastizal',
+      paint: {
+        'fill-color': '#D7D79E',
+        'fill-opacity': 0.3,
+      }
+    }, 
+    {
+      id: 'uso-popal',
+      sourceLayer: 'POPAL-9rmy4h',
+      url: 'mapbox://daniel-itdp.6ck31sow',
+      type: 'fill',
+      color: '#C600FF',
+      label: 'Popal',
+      paint: {
+        'fill-color': '#C600FF',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-pradera',
+      sourceLayer: 'PRADERA-dfw8up',
+      url: 'mapbox://daniel-itdp.9iniqxjq',
+      type: 'fill',
+      color: '#73B2FF',
+      label: 'Pradera',
+      paint: {
+        'fill-color': '#73B2FF',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-sabana',
+      sourceLayer: 'SABANA-2vail2',
+      url: 'mapbox://daniel-itdp.6rlo2deo',
+      type: 'fill',
+      color: '#AB66CD',
+      label: 'Sabana',
+      paint: {
+        'fill-color': '#AB66CD',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-sabanoide',
+      sourceLayer: 'SABANOIDE-3pd4ms',
+      url: 'mapbox://daniel-itdp.2s483ltu',
+      type: 'fill',
+      color: '#A900E6',
+      label: 'Sabanoide',
+      paint: {
+        'fill-color': '#A900E6',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-selva',
+      sourceLayer: 'SELVA-b6b0f8',
+      url: 'mapbox://daniel-itdp.91wyqcgu',
+      type: 'fill',
+      color: '#A900E6',
+      label: 'Selva',
+      paint: {
+        'fill-color': '#A900E6',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-tular',
+      sourceLayer: 'TULAR-3gc9eg',
+      url: 'mapbox://daniel-itdp.5v1yy0up',
+      type: 'fill',
+      color: '#4C0074',
+      label: 'Tular',
+      paint: {
+        'fill-color': '#4C0074',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-vegetacion',
+      sourceLayer: 'VEGETACIAN-crfdfe',
+      url: 'mapbox://daniel-itdp.99g1iz3q',
+      type: 'fill',
+      color: '#D7D79E',
+      label: 'Vegetación',
+      paint: {
+        'fill-color': '#D7D79E',
+        'fill-opacity': 0.3,
+      }
+    },
+    {
+      id: 'uso-urbano',
+      sourceLayer: 'URBANO-0kaglx',
+      url: 'mapbox://daniel-itdp.chrdbq0i',
+      type: 'fill',
+      color: '#9C9C9C',
+      label: 'Zona Urbana',
+      paint: {
+        'fill-color': '#9C9C9C',
+        'fill-opacity': 0.3,
+      }
+    },
+  ], 'Uso de suelo CONAVI')
 }
 
-export default useMarginalizationLayers
+export default useEconomicZones

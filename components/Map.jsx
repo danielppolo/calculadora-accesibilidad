@@ -6,7 +6,7 @@ import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
-import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
+import useEconomicZones from '../hooks/useEconomicZones';
 import CancunLegend from './CancunLegend';
 import useMap from '../hooks/useMap';
 import Download from './Download';
@@ -18,6 +18,7 @@ import { Backdrop } from '@mui/material';
 import useRoadNetwork from '../hooks/useRoadNetwork';
 import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal';
 import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
+import CircularProgress from '@mui/material/CircularProgress';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -43,6 +44,7 @@ function Map({ city, data }) {
     hide,
     geojson,
   } = useLayerManager(map);
+  const [loading, setLoading] = useState(false)
   const [showLegend, setShowLegend] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [hexagon, setHexagon] = useState();
@@ -51,20 +53,20 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const [economicTiles, setEconomicTiles] = useState(false);
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
-  const {load: loadCancun} = useCancunLayers(map)
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  const {load: loadCancun} = useCancunLayers()
   const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
-  const {load:loadRoadNetwork} = useRoadNetwork(map) 
+  const {load:loadRoadNetwork} = useRoadNetwork() 
   const {
     load:loadCiclopathProposal,
     hide:hideCiclopathProposal,
     show:showCiclopathProposal,
-  } = useTrenMayaCiclopathProposal(map) 
+  } = useTrenMayaCiclopathProposal() 
   const {
     load:loadPublicTransportProposal,
     hide:hidePublicTransportProposal,
     show:showPublicTransportProposal
-  } = useTrenMayaPublicTransportProposal(map) 
+  } = useTrenMayaPublicTransportProposal() 
 
   useEffect(() => {
     // Fit map to selected features.
@@ -104,10 +106,10 @@ function Map({ city, data }) {
       map.on('load', () => {
         loadGrid(map, features)
         loadRoadNetwork(map)
-        loadAgebs()
-        loadCancun()
-        loadCiclopathProposal()
-        loadPublicTransportProposal()
+        loadAgebs(map)
+        loadCiclopathProposal(map)
+        loadPublicTransportProposal(map)
+        loadCancun(map)
       })
       map.on('mousemove', gridId, (e) => {
         popup
@@ -119,6 +121,7 @@ function Map({ city, data }) {
         popup.remove();
       });
       map.on('click', gridId, async (e) => {
+        setLoading(true)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
         try {
@@ -161,10 +164,11 @@ function Map({ city, data }) {
                 reverseColors: true,
                 metadata: {
                   opportunities: {
-                    Trabajos: count(filteredFeatures, 'jobs_w'), 
+                    'Personal ocupado': count(filteredFeatures, 'jobs_w'), 
                     Empresas: count(filteredFeatures, 'empress'), 
                     Clínicas: count(filteredFeatures, 'clinics'), 
                     Escuelas: count(filteredFeatures, 'escuels'),
+                    'Zonas turísticas': count(filteredFeatures, 'destins'),
                   }
                 }
               });
@@ -172,6 +176,8 @@ function Map({ city, data }) {
           });
         } catch(e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
+        } finally {
+          setLoading(false)
         }
         // Show default isochrone
         console.log(getHexagonId(featureId, medium, timeStep))
@@ -186,40 +192,42 @@ function Map({ city, data }) {
   }, [map, features, rendered])
 
   const handleMediumChange = (value) => {
-    hidePublicTransportProposal()
-    hideCiclopathProposal()
+    hidePublicTransportProposal(map)
+    hideCiclopathProposal(map)
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
     }
     if (value === 'bus_mejora_TM') {
-      showPublicTransportProposal()
+      showPublicTransportProposal(map)
     }
     if (value === 'bicicleta_TM') {
-      showCiclopathProposal()
+      showCiclopathProposal(map)
     }
     setMedium(value);
   };
   const handleTimeStepChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
     }
     setTimeStep(value);
   };
   const handleAgebsChange = () => {
     if (economicTiles) {
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
       show(map, current)
     } else {
-      showAgebs()
+      showAgebs(map)
       hide(map)
       setEconomicTiles(true)
     }
   };
+
+  console.log(agebLegend)
   
   return (
     <>
@@ -244,6 +252,9 @@ function Map({ city, data }) {
         <div className="space-y-4">
           { !economicTiles && <Download data={geojson} filename={legend.title}/> }
           {
+            economicTiles && (<Legend title={agebLegend.title} items={agebLegend.intervals}/>)
+          }
+          {
             current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
           }
           <CancunLegend />
@@ -254,6 +265,12 @@ function Map({ city, data }) {
         open={showLegend}
       ></Backdrop>
       <div id="map" className="w-screen h-screen" />
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+        >
+          <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

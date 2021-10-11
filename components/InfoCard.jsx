@@ -148,8 +148,8 @@ function InfoCard({
 
       <div className="flex mb-6 w-full justify-between">
         <div>
-          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar usos de suelo</h3>
-          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: CONAVI</p>
+          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar Usos de Suelo y Vegetación.</h3>
+          <p className="text-[10px] text-gray-600 font-medium mb-2">Fuente: <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a></p>
         </div>
         <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
       </div>

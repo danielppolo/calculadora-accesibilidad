@@ -1,7 +1,14 @@
 import React, { useCallback } from 'react';
 
 const PROPOSAL_TILES = [
-  // TODO: UPDATE TILESET
+  {
+    id: 'tren-maya-ruta-transporte-publico', 
+    sourceLayer: 'propuesta-tren-maya-ruta-cicl-53xogl', 
+    url: 'mapbox://daniel-itdp.9d11x400', 
+    color: '#fd6541', 
+    type: 'line',
+    label: 'Propuesta transporte público'
+  },
 ]
 
 const useTrenMayaPublicTransportProposal = (map) => {

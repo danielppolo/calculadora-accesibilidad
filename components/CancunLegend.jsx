@@ -12,6 +12,26 @@ function CancunLegend() {
         </div>
 
         <div className="flex items-center">
+          <div className="h-1 w-4 bg-[#fdbbcd]"></div>
+          <span className="ml-2 text-xs">Zona Metropolitana de Cancún</span>
+        </div>
+
+        <div className="flex items-center">
+          <div className="h-1 w-4 bg-[#96968c]"></div>
+          <span className="ml-2 text-xs">Red vial</span>
+        </div>
+
+        <div className="flex items-center">
+          <div className="h-1 w-4 bg-[#fd6541]"></div>
+          <span className="ml-2 text-xs">Propuesta de Transporte Público</span>
+        </div>
+
+        <div className="flex items-center">
+          <div className="h-1 w-4 bg-[#ff5079]"></div>
+          <span className="ml-2 text-xs">Propuesta de rutas ciclistas</span>
+        </div>
+
+        <div className="flex items-center">
           <div className="w-4 h-4 flex items-center justify-center">
             <div div className=" bg-white border-2 border-black rounded-md h-3 w-3"></div>
           </div>
