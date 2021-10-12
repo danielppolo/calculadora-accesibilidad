@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 
 const ROAD_TILES = [
   {
-    id: 'tren-maya-ruta-ciclista', 
-    sourceLayer: 'red-vial-bu2vky', 
-    url: 'mapbox://daniel-itdp.agpu75bd', 
-    color: '#96968c', 
+    id: 'red-vial', 
+    sourceLayer: 'Red_Vial_Actualizado-ax0w1b', 
+    url: 'mapbox://daniel-itdp.cuwp66d7', 
+    color: '#ff0000', 
     label: 'Red vial'
   },
 ]
@@ -26,7 +26,7 @@ const useRoadNetwork = () => {
           'source-layer': layer.sourceLayer,
           'paint': {
             'line-color': '#96968c',
-            'line-opacity': 0.5,
+            'line-opacity': 1,
           }
         });
       })

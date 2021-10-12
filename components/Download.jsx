@@ -10,7 +10,7 @@ function Download({ data, filename = 'Geometry' }) {
   }, [data])
 
   return(
-    <Tooltip title="Descarga en formato GeoJSON, que puede utilizarse en la mayoría de los programas GIS" arrow={false} placement="left">
+    <Tooltip title="Descarga en formato GeoJSON. Este formato puede ser utilizado en la mayoría de los Sistemas de Información Geográfica." arrow={false} placement="left">
       <a href="" id="download" download={`${filename}.geojson`} type='text/json'>
         <Button fullWidth variant="contained" endIcon={<InfoOutlinedIcon/>}>
           Descargar

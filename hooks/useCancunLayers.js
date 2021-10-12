@@ -2,16 +2,16 @@ import React, { useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 const CANCUN_TILES = [
-  {
-    id: 'limite-municipal',
-    sourceLayer: 'limite-municipal-5et9dw',
-    url: 'mapbox://daniel-itdp.bsylc8oa',
-    type: 'line',
-    paint: {
-      'line-color': '#e6e6dc',
-      'line-width': 1	
-    }
-  },
+  // {
+  //   id: 'limite-municipal',
+  //   sourceLayer: 'limite-municipal-5et9dw',
+  //   url: 'mapbox://daniel-itdp.bsylc8oa',
+  //   type: 'line',
+  //   paint: {
+  //     'line-color': '#e6e6dc',
+  //     'line-width': 1	
+  //   }
+  // },
   {
     id: 'limite-estatal',
     sourceLayer: 'limite-estatal-4fclwb',
@@ -43,6 +43,28 @@ const CANCUN_TILES = [
     }
   },
   {
+    id: 'atractores',
+    sourceLayer: 'atractores-5zs4sy',
+    url: 'mapbox://daniel-itdp.7j13qn0r',
+    type: 'circle',
+    popup: true,
+    paint: {
+      'circle-color': '#8c3951',
+      'circle-stroke-color': '#FFF',
+      'circle-stroke-width': 1,
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 0.5, 10, 4], //4
+    }
+  },
+  {
+    id: 'zmc',
+    sourceLayer: 'zona-metropolitana-cancun-9ygbru',
+    url: 'mapbox://daniel-itdp.9x13h76u',
+    type: 'line',
+    paint: {
+      'line-color': '#fdbbcd',
+    }
+  },
+  {
     id: 'estaciones',
     sourceLayer: 'estaciones-5geu9s',
     url: 'mapbox://daniel-itdp.4m7o3ife',
@@ -53,28 +75,6 @@ const CANCUN_TILES = [
       'circle-color': '#FFF',
       'circle-stroke-width': 2,
       'circle-radius': 5,
-    }
-  },
-  {
-    id: 'atractores',
-    sourceLayer: 'atractores-5zs4sy',
-    url: 'mapbox://daniel-itdp.7j13qn0r',
-    type: 'circle',
-    popup: true,
-    paint: {
-      'circle-color': '#8c3951',
-      'circle-stroke-color': '#FFF',
-      'circle-stroke-width': 1,
-      'circle-radius': 4,
-    }
-  },
-  {
-    id: 'zmc',
-    sourceLayer: 'zona-metropolitana-cancun-9ygbru',
-    url: 'mapbox://daniel-itdp.9x13h76u',
-    type: 'line',
-    paint: {
-      'line-color': '#fdbbcd',
     }
   },
 ]

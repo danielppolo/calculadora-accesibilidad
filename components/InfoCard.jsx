@@ -40,7 +40,7 @@ function InfoCard({
   return (
     <div className="bg-white overflow-y-auto fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-t-4  border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-4 md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto md:border-2">
       <h1 className="text-2xl font-bold mb-4 text-[#00534C]">Calculadora de accesibilidad a oportunidades</h1>
-      <p className="text-xs mb-6">La accesibilidad a oportunidades estima el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
+      <p className="text-xs mb-6">La accesibilidad a oportunidades estima el acceso  a oportunidades estima el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
       <div className="mb-6 mt-6">
       <Divider light/>
       </div>
@@ -83,7 +83,7 @@ function InfoCard({
 
       <div className="mb-4">
         <h3 className="text-sm font-medium text-[#00534C] mb-4">
-          Paso 3. Selecciona modo de transporte.
+          Paso 3. Selecciona un modo de transporte sustentable.
         </h3>
           <Grid container spacing={1}>
             <Grid item xs={6}>
