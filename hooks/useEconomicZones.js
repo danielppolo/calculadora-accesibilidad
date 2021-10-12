@@ -20,10 +20,10 @@ const useEconomicZones = () => {
       sourceLayer: 'AGRICULTURA-1nglu1',
       url: 'mapbox://daniel-itdp.d2k35cu0',
       type: 'fill',
-      color: '#FFF',
+      color: '#f7e1d7',
       label: 'Agricultura',
       paint: {
-        'fill-color': '#FFF',
+        'fill-color': '#f7e1d7',
         'fill-opacity': 0.3,
       }
     },
@@ -44,10 +44,10 @@ const useEconomicZones = () => {
       sourceLayer: 'MANGLAR-1l7c13',
       url: 'mapbox://daniel-itdp.4ownv4ef',
       type: 'fill',
-      color: '#4C0074',
+      color: '#06d6a0',
       label: 'Manglar',
       paint: {
-        'fill-color': '#4C0074',
+        'fill-color': '#06d6a0',
         'fill-opacity': 0.3,
       }
     },
@@ -56,10 +56,10 @@ const useEconomicZones = () => {
       sourceLayer: 'PALMAR-72pfn1',
       url: 'mapbox://daniel-itdp.1urge0yl',
       type: 'fill',
-      color: '#F5A27A',
+      color: '#b0c4b1',
       label: 'Palmar',
       paint: {
-        'fill-color': '#F5A27A',
+        'fill-color': '#b0c4b1',
         'fill-opacity': 0.3,
       }
     },
@@ -68,10 +68,10 @@ const useEconomicZones = () => {
       sourceLayer: 'PASTIZAL-bq1of5',
       url: 'mapbox://daniel-itdp.72apyli2',
       type: 'fill',
-      color: '#D7D79E',
+      color: '#f07167',
       label: 'Pastizal',
       paint: {
-        'fill-color': '#D7D79E',
+        'fill-color': '#f07167',
         'fill-opacity': 0.3,
       }
     }, 
@@ -80,10 +80,10 @@ const useEconomicZones = () => {
       sourceLayer: 'POPAL-9rmy4h',
       url: 'mapbox://daniel-itdp.6ck31sow',
       type: 'fill',
-      color: '#C600FF',
+      color: '#e09f3e',
       label: 'Popal',
       paint: {
-        'fill-color': '#C600FF',
+        'fill-color': '#e09f3e',
         'fill-opacity': 0.3,
       }
     },
@@ -128,10 +128,10 @@ const useEconomicZones = () => {
       sourceLayer: 'SELVA-b6b0f8',
       url: 'mapbox://daniel-itdp.91wyqcgu',
       type: 'fill',
-      color: '#A900E6',
+      color: '#335c67',
       label: 'Selva',
       paint: {
-        'fill-color': '#A900E6',
+        'fill-color': '#335c67',
         'fill-opacity': 0.3,
       }
     },
