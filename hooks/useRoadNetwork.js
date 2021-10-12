@@ -16,7 +16,7 @@ const useRoadNetwork = () => {
         map.addSource(layer.sourceLayer, {
           type: 'vector',
           url: layer.url,
-          minzoom: 12,
+          minzoom: 10,
           maxzoom: 16
         });
         map.addLayer({
@@ -26,7 +26,7 @@ const useRoadNetwork = () => {
           'source-layer': layer.sourceLayer,
           'paint': {
             'line-color': '#96968c',
-            'line-opacity': 1,
+            'line-opacity': 0.5,
           }
         });
       })
