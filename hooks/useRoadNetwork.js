@@ -16,8 +16,8 @@ const useRoadNetwork = () => {
         map.addSource(layer.sourceLayer, {
           type: 'vector',
           url: layer.url,
-          minzoom: 6,
-          maxzoom: 14
+          minzoom: 12,
+          maxzoom: 16
         });
         map.addLayer({
           id: layer.sourceLayer,
