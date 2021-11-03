@@ -95,7 +95,7 @@ function Map({ city, data }) {
       });
       show(map, opportunity)
       loadAgebs()
-      loadCancun()
+      // loadCancun()
 
       map.on('mousemove', gridId, (e) => {
         popup
@@ -237,7 +237,7 @@ function Map({ city, data }) {
           {
             current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
           }
-          <CancunLegend />
+          {/* <CancunLegend /> */}
         </div>
       </div>
       <Backdrop

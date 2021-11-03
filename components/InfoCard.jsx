@@ -99,7 +99,7 @@ function InfoCard({
             }
           </Grid>
         </div>
-        <div className="pb-4">
+        {/* <div className="pb-4">
           <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el medio de transporte con Tren Maya</h3>
           <Grid container spacing={1}>
           {
@@ -112,7 +112,7 @@ function InfoCard({
               ))
             }
           </Grid>
-        </div>
+        </div> */}
         <div className="pb-4">
           <h3 className="text-sm font-medium mb-2 text-[#00534C]">Cambia el tiempo de traslado</h3>
           <ButtonGroup size="medium" aria-label="large button group" fullWidth>
