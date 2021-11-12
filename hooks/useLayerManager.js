@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import Gradient from "javascript-color-gradient";
+import Gradient from 'javascript-color-gradient';
 import { NUMBER_OF_BUCKETS } from '../constants';
-import { getIntervals, getColor, getLegend, convertToGeoJSON } from '../utils';
+import {
+  getIntervals, getColor, getLegend, convertToGeoJSON,
+} from '../utils';
 
 const useLayerManager = () => {
   const [state] = useState({});
@@ -11,37 +13,37 @@ const useLayerManager = () => {
   const [current, setCurrent] = useState();
 
   const add = ({
-    map, 
+    map,
     legendTitle,
-    id, 
-    features, 
-    property, 
-    maxValue, 
-    visible, 
+    id,
+    features,
+    property,
+    maxValue,
+    visible,
     metadata,
     beforeId,
-    stepSize = NUMBER_OF_BUCKETS, 
+    stepSize = NUMBER_OF_BUCKETS,
     reverseColors = false,
   }) => {
     if (map && !(id in state)) {
       console.log('addLayer', id);
-      const color1 = "#00534C";
-      const color2 = "#e1f4ef";
+      const color1 = '#62cdb4';
+      const color2 = '#ff507a';
 
       // Get color intervals
-      const intervals = getIntervals(maxValue, stepSize)
-      const reversedIntervals = [...intervals].reverse()
+      const intervals = getIntervals(maxValue, stepSize);
+      const reversedIntervals = [...intervals].reverse();
       const colorGradient = new Gradient()
-      .setGradient(color1, color2)
-      .setMidpoint(stepSize)
-      .getArray()
-      let colorIntervals = reverseColors ? [...colorGradient].reverse() : colorGradient
-      let legendColorIntervals = reverseColors ? colorGradient : [...colorGradient].reverse()
-      const geojsonFeatures = convertToGeoJSON(features)
-      
+        .setGradient(color1, color2)
+        .setMidpoint(stepSize)
+        .getArray();
+      const colorIntervals = reverseColors ? [...colorGradient].reverse() : colorGradient;
+      const legendColorIntervals = reverseColors ? colorGradient : [...colorGradient].reverse();
+      const geojsonFeatures = convertToGeoJSON(features);
+
       map.addSource(id, {
         type: 'geojson',
-        data: geojsonFeatures, 
+        data: geojsonFeatures,
       });
 
       map.addLayer({
@@ -53,19 +55,19 @@ const useLayerManager = () => {
         },
         // filter: ['>', ['get', property], 0],
         paint: {
-          'fill-opacity': 0.7,
+          'fill-opacity': 0.6,
           'fill-color': getColor(property, reversedIntervals, colorIntervals),
         },
       }, beforeId);
 
       state[id] = true;
       geojson[id] = geojsonFeatures;
-      layerMetadata[id] = metadata
+      layerMetadata[id] = metadata;
       legends[id] = {
         title: legendTitle,
         intervals: getLegend(intervals, legendColorIntervals),
       };
-      
+
       if (visible) {
         setCurrent(id);
       }
@@ -73,7 +75,7 @@ const useLayerManager = () => {
   };
 
   const show = (map, id) => {
-    console.log(state, id, id in state, map)
+    console.log(state, id, id in state, map);
     if (id in state && map) {
       Object.keys(state).forEach((layerId) => {
         map.setLayoutProperty(layerId, 'visibility', 'none');
@@ -85,7 +87,7 @@ const useLayerManager = () => {
   };
 
   const hide = (map, id = null) => {
-    if (id && map && id in state ) {
+    if (id && map && id in state) {
       map.setLayoutProperty(id, 'visibility', 'none');
     } else if (map) {
       Object.keys(state).forEach((layerId) => {

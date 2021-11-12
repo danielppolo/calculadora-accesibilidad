@@ -261,6 +261,7 @@ function Map({ city, data }) {
           <CancunLegend />
         </div>
       </div>
+      
       <Backdrop
         sx={{ color: '#fff', zIndex: 40 }}
         open={showLegend}
