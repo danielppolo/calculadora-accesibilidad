@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Button } from "@mui/material";
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { Button, Tooltip } from "@mui/material";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 function Download({ data, filename = 'Geometry' }) {
   useEffect(() => {
@@ -10,11 +10,13 @@ function Download({ data, filename = 'Geometry' }) {
   }, [data])
 
   return(
-    <a href="" id="download" download={`${filename}.geojson`} type='text/json'>
-      <Button fullWidth variant="contained" startIcon={<FileDownloadIcon/>}>
-        Descargar
-      </Button>
-    </a>
+    <Tooltip title="Descarga en formato GeoJSON. Este formato puede ser utilizado en la mayoría de los Sistemas de Información Geográfica." arrow={false} placement="left">
+      <a href="" id="download" download={`${filename}.geojson`} type='text/json'>
+        <Button fullWidth variant="contained" endIcon={<InfoOutlinedIcon/>}>
+          Descargar
+        </Button>
+      </a>
+    </Tooltip>
   )
 }
 

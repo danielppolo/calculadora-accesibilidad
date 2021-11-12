@@ -6,7 +6,7 @@ import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
 import useCancunLayers from '../hooks/useCancunLayers';
-import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
+import useEconomicZones from '../hooks/useEconomicZones';
 import CancunLegend from './CancunLegend';
 import useMap from '../hooks/useMap';
 import Download from './Download';
@@ -15,6 +15,10 @@ import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
 import { Backdrop } from '@mui/material';
+import useRoadNetwork from '../hooks/useRoadNetwork';
+import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal';
+import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
+import CircularProgress from '@mui/material/CircularProgress';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -29,7 +33,7 @@ const popup = new Popup({
 });
 
 function Map({ city, data }) {
-  const map = useMap({center: CANCUN_COORDINATES});
+  const map = useMap({ center: CANCUN_COORDINATES });
   const {
     state,
     current,
@@ -40,27 +44,55 @@ function Map({ city, data }) {
     hide,
     geojson,
   } = useLayerManager(map);
+  const [loading, setLoading] = useState(false)
   const [showLegend, setShowLegend] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [opportunity, setOpportunity] = useState(defaultOpportunity);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const [economicTiles, setEconomicTiles] = useState(false);
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers(map)
-  const {load: loadCancun} = useCancunLayers(map)
-  const {load:loadGrid, layerName: gridId} = useBaseGrid('grid') 
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  const { load: loadCancun } = useCancunLayers()
+  const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
+  const { load: loadRoadNetwork } = useRoadNetwork()
+  const {
+    load: loadCiclopathProposal,
+    hide: hideCiclopathProposal,
+    show: showCiclopathProposal,
+  } = useTrenMayaCiclopathProposal()
+  const {
+    load: loadPublicTransportProposal,
+    hide: hidePublicTransportProposal,
+    show: showPublicTransportProposal
+  } = useTrenMayaPublicTransportProposal()
+
+  useEffect(() => {
+    // Fit map to selected features.
+    if (map && geojson?.features) {
+      const bounds = new mapboxgl.LngLatBounds();
+      const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
+      geojson.features.forEach(feature => {
+        bounds.extend(feature.geometry.coordinates[0])
+      })
+      map.fitBounds(bounds, {
+        padding: 200,
+        maxZoom: 15,
+        duration: 500,
+        offset: [offsetX, 0]
+      });
+    }
+  }, [geojson, map])
 
   useEffect(() => {
     if (data) {
       const nextFeatures = Object.values(data)
       setFeatures(nextFeatures);
       setOpportunities({
-        Trabajos: count(nextFeatures, 'jobs_w'), 
-        Empresas: count(nextFeatures, 'empress'), 
-        Clínicas: count(nextFeatures, 'clinics'), 
+        'Personal ocupado': count(nextFeatures, 'jobs_w'),
+        Empresas: count(nextFeatures, 'empress'),
+        Clínicas: count(nextFeatures, 'clinics'),
         Escuelas: count(nextFeatures, 'escuels'),
         'Zonas turísticas': count(nextFeatures, 'destins'),
       })
@@ -69,34 +101,16 @@ function Map({ city, data }) {
 
 
   useEffect(() => {
-   if (map && features.length > 0 && !rendered) {
-      loadGrid(map, features)
-      Object.keys(OPPORTUNITIES).forEach((key) => {
-        let maxValue = 0;
-        const filteredFeatures = features.filter((item) => {
-          if (item.properties[key] > maxValue) {
-            maxValue = item.properties[key];
-          }
-          return item.properties[key] > 0
-        });
-        if (!(key in state)) {
-          add({
-            map,
-            legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
-            id: key,
-            features: filteredFeatures,
-            property: key,
-            maxValue,
-            visible: false,
-            stepSize: 10,
-            beforeId: gridId,
-          });
-        }
-      });
-      show(map, opportunity)
-      loadAgebs()
-      loadCancun()
+    if (map && features.length > 0 && !rendered) {
 
+      map.on('load', () => {
+        loadAgebs(map)
+        loadRoadNetwork(map)
+        loadGrid(map, features)
+        loadCiclopathProposal(map)
+        loadPublicTransportProposal(map)
+        loadCancun(map)
+      })
       map.on('mousemove', gridId, (e) => {
         popup
           .setLngLat(e.lngLat)
@@ -107,6 +121,9 @@ function Map({ city, data }) {
         popup.remove();
       });
       map.on('click', gridId, async (e) => {
+        setLoading(true)
+        hideAgebs(map)
+        setEconomicTiles(false)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
         try {
@@ -118,7 +135,7 @@ function Map({ city, data }) {
           MEDIUMS.forEach((med, mediumIndex) => {
             TIME_STEPS.forEach((step) => {
               const featureIds = Object.keys(json)
-              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step );
+              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step && data[id]);
               const filteredFeatures = filteredIds.map((id) => ({
                 ...data[id],
                 properties: {
@@ -126,6 +143,7 @@ function Map({ city, data }) {
                   [med]: json[id][mediumIndex],
                 },
               }));
+
               // Include clicked feature.
               filteredFeatures.push({
                 ...data[featureId],
@@ -148,17 +166,21 @@ function Map({ city, data }) {
                 reverseColors: true,
                 metadata: {
                   opportunities: {
-                    Trabajos: count(filteredFeatures, 'jobs_w'), 
-                    Empresas: count(filteredFeatures, 'empress'), 
-                    Clínicas: count(filteredFeatures, 'clinics'), 
+                    'Personal ocupado': count(filteredFeatures, 'jobs_w'),
+                    Empresas: count(filteredFeatures, 'empress'),
+                    Clínicas: count(filteredFeatures, 'clinics'),
                     Escuelas: count(filteredFeatures, 'escuels'),
+                    'Zonas turísticas': count(filteredFeatures, 'destins'),
+                    Estaciones: count(filteredFeatures, 'estaciones'),
                   }
                 }
               });
             });
           });
-        } catch(e) {
+        } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
+        } finally {
+          setLoading(false)
         }
         // Show default isochrone
         console.log(getHexagonId(featureId, medium, timeStep))
@@ -167,49 +189,47 @@ function Map({ city, data }) {
           id: featureId,
           ...feature,
         });
-        setOpportunity(undefined);
       });
       setRendered(true)
-   }
+    }
   }, [map, features, rendered])
 
-  const handleOpportunityChange = (event) => {
-    const nextOpportunity = event.target.value;
-    show(map, nextOpportunity);
-    setOpportunity(nextOpportunity);
-    setHexagon(undefined);
-    hideAgebs()
-    setEconomicTiles(false)
-  };
-
   const handleMediumChange = (value) => {
+    hidePublicTransportProposal(map)
+    hideCiclopathProposal(map)
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
-    } 
+    }
+    if (value === 'bus_mejora_TM') {
+      showPublicTransportProposal(map)
+    }
+    if (value === 'bicicleta_TM') {
+      showCiclopathProposal(map)
+    }
     setMedium(value);
   };
   const handleTimeStepChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
     }
     setTimeStep(value);
   };
   const handleAgebsChange = () => {
     if (economicTiles) {
-      hideAgebs()
+      hideAgebs(map)
       setEconomicTiles(false)
       show(map, current)
     } else {
-      showAgebs()
+      showAgebs(map)
       hide(map)
       setEconomicTiles(true)
     }
   };
-  
+
   return (
     <>
       <InfoCard
@@ -218,8 +238,6 @@ function Map({ city, data }) {
         cityData={opportunities}
         economicTiles={economicTiles}
         onEconomicTilesChange={handleAgebsChange}
-        opportunity={opportunity}
-        onOpportunityChange={handleOpportunityChange}
         medium={medium}
         onMediumChange={handleMediumChange}
         timeStep={timeStep}
@@ -228,14 +246,17 @@ function Map({ city, data }) {
 
       <div className="block fixed bottom-4 right-4 z-50 md:hidden">
         <Fab color="primary" onClick={() => { setShowLegend(!showLegend) }} size="medium" aria-label="add">
-          { showLegend ? <LayersClearIcon /> : <LayersIcon /> }
+          {showLegend ? <LayersClearIcon /> : <LayersIcon />}
         </Fab>
       </div>
       <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          { !economicTiles && <Download data={geojson} filename={legend.title}/> }
+          {!economicTiles && <Download data={geojson} filename={legend.title} />}
           {
-            current && legend && (<Legend title={economicTiles ? agebLegend.title : legend.title} items={economicTiles ? agebLegend.intervals : legend.intervals}/>)
+            economicTiles && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
+          }
+          {
+            current && legend && !economicTiles && (<Legend title={legend.title} items={legend.intervals} />)
           }
           <CancunLegend />
         </div>
@@ -245,6 +266,12 @@ function Map({ city, data }) {
         open={showLegend}
       ></Backdrop>
       <div id="map" className="w-screen h-screen" />
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
