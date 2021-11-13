@@ -1,5 +1,6 @@
 {
   "extends": [
+    "next"
     // "airbnb",
     // "airbnb/hooks"
   ]
