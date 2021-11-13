@@ -19,6 +19,7 @@ import useRoadNetwork from '../hooks/useRoadNetwork';
 import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal';
 import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
 import CircularProgress from '@mui/material/CircularProgress';
+import useCancunLandUse from '../hooks/useCancunLandUse';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -53,7 +54,8 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const [economicTiles, setEconomicTiles] = useState(false);
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  const { load: loadLandUse, show: showLandUse, hide: hideLandUse, legend: landUseLegend } = useCancunLandUse()
   const { load: loadCancun } = useCancunLayers()
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadRoadNetwork } = useRoadNetwork()
@@ -104,7 +106,7 @@ function Map({ city, data }) {
     if (map && features.length > 0 && !rendered) {
 
       map.on('load', () => {
-        loadAgebs(map)
+        loadLandUse(map)
         loadRoadNetwork(map)
         loadGrid(map, features)
         loadCiclopathProposal(map)
@@ -122,7 +124,7 @@ function Map({ city, data }) {
       });
       map.on('click', gridId, async (e) => {
         setLoading(true)
-        hideAgebs(map)
+        hideLandUse(map)
         setEconomicTiles(false)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
@@ -199,7 +201,7 @@ function Map({ city, data }) {
     hideCiclopathProposal(map)
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
-      hideAgebs(map)
+      hideLandUse(map)
       setEconomicTiles(false)
     }
     if (value === 'bus_mejora_TM') {
@@ -210,21 +212,23 @@ function Map({ city, data }) {
     }
     setMedium(value);
   };
+  
   const handleTimeStepChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
-      hideAgebs(map)
+      hideLandUse(map)
       setEconomicTiles(false)
     }
     setTimeStep(value);
   };
+
   const handleAgebsChange = () => {
     if (economicTiles) {
-      hideAgebs(map)
+      hideLandUse(map)
       setEconomicTiles(false)
       show(map, current)
     } else {
-      showAgebs(map)
+      showLandUse(map)
       hide(map)
       setEconomicTiles(true)
     }
@@ -253,7 +257,7 @@ function Map({ city, data }) {
         <div className="space-y-4">
           {!economicTiles && <Download data={geojson} filename={legend.title} />}
           {
-            economicTiles && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
+            economicTiles && (<Legend title={landUseLegend.title} items={landUseLegend.intervals} />)
           }
           {
             current && legend && !economicTiles && (<Legend title={legend.title} items={legend.intervals} />)
