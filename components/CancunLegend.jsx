@@ -33,7 +33,7 @@ function CancunLegend({
           publicTransport && (
             <div className="flex items-center">
               <div className="h-[2px] w-4 flex-shrink-0	 bg-[#00043a]" />
-              <span className="ml-2 text-xs">Propuesta de Transporte Público</span>
+              <span className="ml-2 text-xs">Transporte público existente</span>
             </div>
           )
         }
@@ -42,7 +42,7 @@ function CancunLegend({
           publicTransportProposal && (
             <div className="flex items-center">
               <div className="h-[2px] w-4 flex-shrink-0	bg-[#407ba7]" />
-              <span className="ml-2 text-xs">Transporte público existente</span>
+              <span className="ml-2 text-xs">Propuesta de Transporte Público</span>
             </div>
           )
         }

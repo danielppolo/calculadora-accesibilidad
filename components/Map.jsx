@@ -20,8 +20,10 @@ import useRoadNetwork from '../hooks/useRoadNetwork';
 
 // Tren maya
 import useCancunLayers from '../hooks/tren-maya/useCancunLayers';
-import useTrenMayaCiclopathProposal from '../hooks/tren-maya/useTrenMayaCiclopathProposal';
-import useTrenMayaPublicTransportProposal from '../hooks/tren-maya/useTrenMayaPublicTransportProposal';
+import useCancunCiclopathProposal from '../hooks/tren-maya/useCancunCiclopathProposal';
+import useCancunPublicTransportProposal from '../hooks/tren-maya/useCancunPublicTransportProposal';
+import useCancunPedestrianProposal from '../hooks/tren-maya/useCancunPedestrianProposal';
+import useCancunVehicularProposal from '../hooks/tren-maya/useCancunVehicularProposal';
 import CircularProgress from '@mui/material/CircularProgress';
 import useCancunLandUse from '../hooks/tren-maya/useCancunLandUse';
 import useCancunPopulationDensity from '../hooks/tren-maya/useCancunPopulationDensity';
@@ -104,12 +106,22 @@ function Map({ city, data }) {
     load: loadCiclopathProposal,
     hide: hideCiclopathProposal,
     show: showCiclopathProposal,
-  } = useTrenMayaCiclopathProposal()
+  } = useCancunCiclopathProposal()
   const {
     load: loadPublicTransportProposal,
     hide: hidePublicTransportProposal,
     show: showPublicTransportProposal
-  } = useTrenMayaPublicTransportProposal()
+  } = useCancunPublicTransportProposal()
+  const {
+    load: loadVehicularProposal,
+    hide: hideVehicularProposal,
+    show: showVehicularProposal,
+  } = useCancunVehicularProposal()
+  const {
+    load: loadPedestrianProposal,
+    hide: hidePedestrianProposal,
+    show: showPedestrianProposal
+  } = useCancunPedestrianProposal()
 
   useEffect(() => {
     // Fit map to selected features.
@@ -157,6 +169,8 @@ function Map({ city, data }) {
         loadPublicTransport(map)
         loadCiclopathProposal(map)
         loadPublicTransportProposal(map)
+        loadVehicularProposal(map)
+        loadPedestrianProposal(map)
         loadCancun(map)
       })
       map.on('mousemove', gridId, (e) => {
@@ -274,11 +288,9 @@ function Map({ city, data }) {
     if (landUse) {
       hideLandUse(map)
       setLandUse(false)
-      show(map, current)
     } else {
       hideDensity(map)
       showLandUse(map)
-      hide(map)
       setPopulationDensity(false)
       setLandUse(true)
     }
@@ -287,25 +299,20 @@ function Map({ city, data }) {
     if (populationDensity) {
       hideDensity(map)
       setPopulationDensity(false)
-      show(map, current)
     } else {
       hideLandUse(map)
       showDensity(map)
-      hide(map)
       setLandUse(false)
       setPopulationDensity(true)
     }
   };
 
-
   const handleVehicularChange = () => {
     if (vehicular) {
       hideVehicular(map)
       setVehicular(false)
-      show(map, current)
     } else {
       showVehicular(map)
-      hide(map)
       setVehicular(true)
     }
   }
@@ -314,10 +321,8 @@ function Map({ city, data }) {
     if (pedestrian) {
       hidePedestrian(map)
       setPedestrian(false)
-      show(map, current)
     } else {
       showPedestrian(map)
-      hide(map)
       setPedestrian(true)
     }
   }
@@ -326,10 +331,8 @@ function Map({ city, data }) {
     if (publicTransport) {
       hidePublicTransport(map)
       setPublicTransport(false)
-      show(map, current)
     } else {
       showPublicTransport(map)
-      hide(map)
       setPublicTransport(true)
     }
   }
@@ -343,6 +346,48 @@ function Map({ city, data }) {
       showCiclopath(map)
       hide(map)
       setCiclopath(true)
+    }
+  }
+
+  const handleVehicularProposalChange = () => {
+    if (vehicularProposal) {
+      hideVehicularProposal(map)
+      setVehicularProposal(false)
+    } else {
+      showVehicularProposal(map)
+      setVehicularProposal(true)
+    }
+  }
+
+  const handlePedestrianProposalChange = () => {
+    if (pedestrianProposal) {
+      hidePedestrianProposal(map)
+      setPedestrianProposal(false)
+    } else {
+      showPedestrianProposal(map)
+      setPedestrianProposal(true)
+    }
+  }
+
+  const handlePublicTransportProposalChange = () => {
+    if (publicTransportProposal) {
+      hidePublicTransportProposal(map)
+      setPublicTransportProposal(false)
+    } else {
+      showPublicTransportProposal(map)
+      setPublicTransportProposal(true)
+    }
+  }
+
+  const handleCiclopathProposalChange = () => {
+    if (ciclopathProposal) {
+      hideCiclopathProposal(map)
+      setCiclopathProposal(false)
+      show(map, current)
+    } else {
+      showCiclopathProposal(map)
+      hide(map)
+      setCiclopathProposal(true)
     }
   }
 
@@ -368,6 +413,14 @@ function Map({ city, data }) {
         onPublicTransportChange={handlePublicTransportChange}
         ciclopath={ciclopath}
         onCiclopathChange={handleCiclopathChange}
+        pedestrianProposal={pedestrianProposal}
+        onPedestrianProposalChange={handlePedestrianProposalChange}
+        vehicularProposal={vehicularProposal}
+        onVehicularProposalChange={handleVehicularProposalChange}
+        publicTransportProposal={publicTransportProposal}
+        onPublicTransportProposalChange={handlePublicTransportProposalChange}
+        ciclopathProposal={ciclopathProposal}
+        onCiclopathProposalChange={handleCiclopathProposalChange}
       />
 
       <div className="block fixed bottom-4 right-4 z-50 md:hidden">
