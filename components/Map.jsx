@@ -5,22 +5,26 @@ import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../const
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
-import useCancunLayers from '../hooks/useCancunLayers';
-import useEconomicZones from '../hooks/useEconomicZones';
 import CancunLegend from './CancunLegend';
-import useMap from '../hooks/useMap';
 import Download from './Download';
 import useBaseGrid from '../hooks/useBaseGrid';
 import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
 import { Backdrop } from '@mui/material';
+
+// Mexico
+import useEconomicZones from '../hooks/useEconomicZones';
+import useMap from '../hooks/useMap';
 import useRoadNetwork from '../hooks/useRoadNetwork';
-import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal';
-import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
+
+// Tren maya
+import useCancunLayers from '../hooks/tren-maya/useCancunLayers';
+import useTrenMayaCiclopathProposal from '../hooks/tren-maya/useTrenMayaCiclopathProposal';
+import useTrenMayaPublicTransportProposal from '../hooks/tren-maya/useTrenMayaPublicTransportProposal';
 import CircularProgress from '@mui/material/CircularProgress';
-import useCancunLandUse from '../hooks/useCancunLandUse';
-import useCancunPopulationDensity from '../hooks/useCancunPopulationDensity';
+import useCancunLandUse from '../hooks/tren-maya/useCancunLandUse';
+import useCancunPopulationDensity from '../hooks/tren-maya/useCancunPopulationDensity';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -55,13 +59,14 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const [landUse, setLandUse] = useState(false);
-  const [populationDensity, setPopulationDensity] = useState(false);
+  const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
+  const { load: loadRoadNetwork } = useRoadNetwork()
   // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  
+  const [populationDensity, setPopulationDensity] = useState(false);
   const { load: loadLandUse, show: showLandUse, hide: hideLandUse, legend: landUseLegend } = useCancunLandUse()
   const { load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend } = useCancunPopulationDensity()
   const { load: loadCancun } = useCancunLayers()
-  const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
-  const { load: loadRoadNetwork } = useRoadNetwork()
   const {
     load: loadCiclopathProposal,
     hide: hideCiclopathProposal,

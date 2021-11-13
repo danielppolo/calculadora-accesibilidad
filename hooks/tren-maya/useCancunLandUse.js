@@ -1,4 +1,4 @@
-import useLayer from './useLayer';
+import useLayer from '../useLayer';
 
 const useCancunLandUse = () => useLayer([
   {
