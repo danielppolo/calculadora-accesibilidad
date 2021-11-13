@@ -14,7 +14,7 @@ import LayersClearIcon from '@mui/icons-material/LayersClear';
 import { Backdrop } from '@mui/material';
 
 // Mexico
-import useEconomicZones from '../hooks/useEconomicZones';
+// import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
 import useRoadNetwork from '../hooks/useRoadNetwork';
 
@@ -25,6 +25,10 @@ import useTrenMayaPublicTransportProposal from '../hooks/tren-maya/useTrenMayaPu
 import CircularProgress from '@mui/material/CircularProgress';
 import useCancunLandUse from '../hooks/tren-maya/useCancunLandUse';
 import useCancunPopulationDensity from '../hooks/tren-maya/useCancunPopulationDensity';
+import useCancunCiclopath from '../hooks/tren-maya/useCancunCiclopath';
+import useCancunPublicTransport from '../hooks/tren-maya/useCancunPublicTransport';
+import useCancunVehicular from '../hooks/tren-maya/useCancunVehicular';
+import useCancunPedestrian from '../hooks/tren-maya/useCancunPedestrian';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -58,15 +62,44 @@ function Map({ city, data }) {
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
-  const [landUse, setLandUse] = useState(false);
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadRoadNetwork } = useRoadNetwork()
   // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
   
+  // Tren maya
   const [populationDensity, setPopulationDensity] = useState(false);
+  const [landUse, setLandUse] = useState(false);
+  const [pedestrian, setPedestrian] = useState(false)
+  const [vehicular, setVehicular] = useState(false)
+  const [publicTransport, setPublicTransport] = useState(false)
+  const [ciclopath, setCiclopath] = useState(false)
+  const [pedestrianProposal, setPedestrianProposal] = useState(false)
+  const [vehicularProposal, setVehicularProposal] = useState(false)
+  const [publicTransportProposal, setPublicTransportProposal] = useState(false)
+  const [ciclopathProposal, setCiclopathProposal] = useState(false)
   const { load: loadLandUse, show: showLandUse, hide: hideLandUse, legend: landUseLegend } = useCancunLandUse()
   const { load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend } = useCancunPopulationDensity()
   const { load: loadCancun } = useCancunLayers()
+  const {
+    load: loadCiclopath,
+    hide: hideCiclopath,
+    show: showCiclopath,
+  } = useCancunCiclopath()
+  const {
+    load: loadVehicular,
+    hide: hideVehicular,
+    show: showVehicular,
+  } = useCancunVehicular()
+  const {
+    load: loadPedestrian,
+    hide: hidePedestrian,
+    show: showPedestrian,
+  } = useCancunPedestrian()
+  const {
+    load: loadPublicTransport,
+    hide: hidePublicTransport,
+    show: showPublicTransport,
+  } = useCancunPublicTransport()
   const {
     load: loadCiclopathProposal,
     hide: hideCiclopathProposal,
@@ -118,6 +151,10 @@ function Map({ city, data }) {
         loadDensity(map)
         loadRoadNetwork(map)
         loadGrid(map, features)
+        loadCiclopath(map)
+        loadPedestrian(map)
+        loadVehicular(map)
+        loadPublicTransport(map)
         loadCiclopathProposal(map)
         loadPublicTransportProposal(map)
         loadCancun(map)
@@ -260,6 +297,55 @@ function Map({ city, data }) {
     }
   };
 
+
+  const handleVehicularChange = () => {
+    if (vehicular) {
+      hideVehicular(map)
+      setVehicular(false)
+      show(map, current)
+    } else {
+      showVehicular(map)
+      hide(map)
+      setVehicular(true)
+    }
+  }
+
+  const handlePedestrianChange = () => {
+    if (pedestrian) {
+      hidePedestrian(map)
+      setPedestrian(false)
+      show(map, current)
+    } else {
+      showPedestrian(map)
+      hide(map)
+      setPedestrian(true)
+    }
+  }
+
+  const handlePublicTransportChange = () => {
+    if (publicTransport) {
+      hidePublicTransport(map)
+      setPublicTransport(false)
+      show(map, current)
+    } else {
+      showPublicTransport(map)
+      hide(map)
+      setPublicTransport(true)
+    }
+  }
+
+  const handleCiclopathChange = () => {
+    if (ciclopath) {
+      hideCiclopath(map)
+      setCiclopath(false)
+      show(map, current)
+    } else {
+      showCiclopath(map)
+      hide(map)
+      setCiclopath(true)
+    }
+  }
+
   return (
     <>
       <InfoCard
@@ -274,6 +360,14 @@ function Map({ city, data }) {
         onMediumChange={handleMediumChange}
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
+        pedestrian={pedestrian}
+        onPedestrianChange={handlePedestrianChange}
+        vehicular={vehicular}
+        onVehicularChange={handleVehicularChange}
+        publicTransport={publicTransport}
+        onPublicTransportChange={handlePublicTransportChange}
+        ciclopath={ciclopath}
+        onCiclopathChange={handleCiclopathChange}
       />
 
       <div className="block fixed bottom-4 right-4 z-50 md:hidden">
@@ -293,7 +387,16 @@ function Map({ city, data }) {
           {
             current && legend && !landUse && !populationDensity && (<Legend title={legend.title} items={legend.intervals} />)
           }
-          <CancunLegend />
+          <CancunLegend 
+          pedestrian={pedestrian}
+          vehicular={vehicular}
+          publicTransport={publicTransport}
+          ciclopath={ciclopath}
+          pedestrianProposal={pedestrianProposal}
+          vehicularProposal={vehicularProposal}
+          publicTransportProposal={publicTransportProposal}
+          ciclopathProposal={ciclopathProposal}
+          />
         </div>
       </div>
       

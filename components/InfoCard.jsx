@@ -38,14 +38,24 @@ function InfoCard({
   onEconomicTilesChange,
   populationDensity,
   onPopulationDensityChange,
+  pedestrian,
+  onPedestrianChange,
+  vehicular,
+  onVehicularChange,
+  publicTransport,
+  onPublicTransportChange,
+  ciclopath,
+  onCiclopathChange,
 }) {
   return (
     <div className="bg-white overflow-y-auto fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-t-4 md:border-r-2 border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-32 md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto">
       <h1 className="text-2xl font-bold mb-4 text-[#00534C]"> Plataforma de visualización de accesibilidad urbana, Cancún, Quintana Roo</h1>
       <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
+
       <div className="mb-6 mt-6">
         <Divider light />
       </div>
+
       <h2 className="text-base font-medium mb-2 text-[#00534C]">Zona Metropolitana de Cancún</h2>
       <p className="text-sm mb-4">Para toda la Zona, se cuentan con el siguiente número de oportunidades totales:</p>
       <div>
@@ -163,12 +173,10 @@ function InfoCard({
         }
       </div>
 
-      <div className="mb-6 mt-6">
-        <Divider light />
-      </div>
-
-      <div className="">
-        <h2 className="text-base font-medium mb-2 text-[#00534C]">Capas</h2>
+      <div className="mb-4">
+        <h3 className="text-sm mb-4 font-medium text-[#00534C]">
+          Paso 5. Mostrar capa de referencia
+        </h3>
         {/* <LayerSwitch
           title="Usos de Suelo y Vegetación."
           legend={(
@@ -182,6 +190,73 @@ function InfoCard({
           onChange={onEconomicTilesChange}
         /> */}
         {/* TODO: Upload layers to Mapbox. */}
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            <h4 className="text-sm font-semibold uppercase">Infraestructura existente</h4>
+          </Grid>
+          <Grid item xs={6}>
+            <h4 className="text-sm font-semibold uppercase">Propuesta de proyectos de movilidad</h4>
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Transporte público"
+              checked={publicTransport}
+              onChange={onPublicTransportChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Transporte público"
+              checked={false}
+              onChange={console.log}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Peatonal"
+              checked={pedestrian}
+              onChange={onPedestrianChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Peatonal"
+              checked={false}
+              onChange={console.log}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Ciclista"
+              checked={ciclopath}
+              onChange={onCiclopathChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Ciclista"
+              checked={false}
+              onChange={console.log}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Vehicular"
+              checked={vehicular}
+              onChange={onVehicularChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <LayerSwitch
+              title="Vehicular"
+              checked={false}
+              onChange={console.log}
+            />
+          </Grid>
+        </Grid>
+        <div className="mb-6 mt-6">
+          <Divider light />
+        </div>
         <LayerSwitch
           title="Usos de suelo urbano"
           legend="Fuente: ITDP 2021"
@@ -194,46 +269,7 @@ function InfoCard({
           checked={populationDensity}
           onChange={onPopulationDensityChange}
         />
-        <LayerSwitch
-          title="Transporte público existente"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura peatonal existente"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura ciclista existente"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura vehicular existente"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Transporte público propuesto"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura peatonal propuesta "
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura ciclista propuesta"
-          checked={false}
-          onChange={console.log}
-        />
-        <LayerSwitch
-          title="Infraestructura vehicular propuesta"
-          checked={false}
-          onChange={console.log}
-        />
+
       </div>
 
       <div className="mb-4 mt-4">
