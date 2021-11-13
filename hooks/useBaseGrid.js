@@ -3,7 +3,7 @@ import { convertToGeoJSON } from '../utils';
 import { OPPORTUNITIES } from '../constants';
 
 const useBaseGrid = (id) => {
-  const load =  useCallback((map, features) => {
+  const load = useCallback((map, features) => {
     if (map && features) {
       const filteredFeatures = features.map((feature) => ({
         ...feature,
@@ -11,18 +11,18 @@ const useBaseGrid = (id) => {
           ...feature.properties,
           description: `
           <div>
-            ${Object.keys(OPPORTUNITIES).map(prop => `<p><strong>${OPPORTUNITIES[prop]}</strong>: <span>${feature.properties[prop]}</span></p>`).join('')}
+            ${Object.keys(OPPORTUNITIES).map((prop) => `<p><strong>${OPPORTUNITIES[prop]}</strong>: <span>${feature.properties[prop]}</span></p>`).join('')}
           </div>
-          `
-        }
+          `,
+        },
       }));
       map.addSource(id, {
         type: 'geojson',
-        data: convertToGeoJSON(filteredFeatures), 
+        data: convertToGeoJSON(filteredFeatures),
       });
-  
+
       map.addLayer({
-        id: id,
+        id,
         type: 'fill',
         source: id,
         paint: {
@@ -33,7 +33,7 @@ const useBaseGrid = (id) => {
             0,
             0,
             0,
-            0.1,	
+            0.1,
           ],
         },
       });
@@ -41,9 +41,9 @@ const useBaseGrid = (id) => {
   }, []);
 
   return {
-    load, 
-    layerName: id
+    load,
+    layerName: id,
   };
-}
+};
 
 export default useBaseGrid;

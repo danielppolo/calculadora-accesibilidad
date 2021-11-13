@@ -1,13 +1,10 @@
 import React from 'react';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import Alert from '@mui/material/Alert';
 import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
-import Switch from '@mui/material/Switch';
 import Grid from '@mui/material/Grid';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
@@ -16,6 +13,8 @@ import FlareIcon from '@mui/icons-material/Flare';
 import { MEDIUMS, TIME_STEPS } from '../constants';
 import BarChart from './BarChart';
 import Notes from './tren-maya/Notes';
+import Credits from './tren-maya/Credits';
+import LayerSwitch from './LayerSwitch';
 
 const MEDIUM_TRANSLATIONS = {
   caminando: 'Caminando',
@@ -40,8 +39,8 @@ function InfoCard({
 }) {
   return (
     <div className="bg-white overflow-y-auto fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-t-4 md:border-r-2 border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-32 md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto">
-      <h1 className="text-2xl font-bold mb-4 text-[#00534C]">Calculadora de accesibilidad a oportunidades</h1>
-      <p className="text-xs mb-6">La accesibilidad a oportunidades estima el acceso  a oportunidades estima el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
+      <h1 className="text-2xl font-bold mb-4 text-[#00534C]"> Plataforma de visualización de accesibilidad urbana, Cancún, Quintana Roo</h1>
+      <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en la Zona de la Península de Yucatán a través de una herramienta interactiva.</p>
       <div className="mb-6 mt-6">
         <Divider light />
       </div>
@@ -162,26 +161,85 @@ function InfoCard({
         }
       </div>
 
-      <div className="flex mb-6 w-full justify-between">
-        <div>
-          <h3 className="text-sm font-medium mb-0 text-[#00534C]">Mostrar Usos de Suelo y Vegetación.</h3>
-          <p className="text-[10px] text-gray-600 font-medium mb-2">
-            Fuente:
-            {' '}
-            <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a>
-          </p>
-        </div>
-        <Switch checked={economicTiles} onChange={onEconomicTilesChange} />
+      <div className="mb-6 mt-6">
+        <Divider light />
+      </div>
+
+      <div className="">
+        <h2 className="text-base font-medium mb-2 text-[#00534C]">Capas</h2>
+        {/* <LayerSwitch
+          title="Usos de Suelo y Vegetación."
+          legend={(
+            <span>
+              Fuente:
+              {' '}
+              <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a>
+            </span>
+          )}
+          checked={economicTiles}
+          onChange={onEconomicTilesChange}
+        /> */}
+        {/* TODO: Upload layers to Mapbox. */}
+        <LayerSwitch
+          title="Usos de suelo urbano"
+          legend={<span>Fuente: ITDP 2021</span>}
+          checked={economicTiles}
+          onChange={onEconomicTilesChange}
+        />
+        <LayerSwitch
+          title="Densidad de población"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Transporte público existente"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura peatonal existente"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura ciclista existente"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura vehicular existente"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Transporte público propuesto"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura peatonal propuesta "
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura ciclista propuesta"
+          checked={false}
+          onChange={console.log}
+        />
+        <LayerSwitch
+          title="Infraestructura vehicular propuesta"
+          checked={false}
+          onChange={console.log}
+        />
       </div>
 
       <div className="mb-4 mt-4">
-        {/* <Divider light/> */}
+        <Divider light />
       </div>
+
       <div>
         <Notes />
-        <p className="text-sm font-medium mb-4">Créditos</p>
-        <p className="text-sm mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id feugiat ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque tempor nulla vitae augue porttitor sollicitudin. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; </p>
-        <img className="w-full" src="/fonatur.jpg" alt="Fonatur logotipo" />
+        <Credits />
       </div>
     </div>
   );
