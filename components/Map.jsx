@@ -20,6 +20,7 @@ import useTrenMayaCiclopathProposal from '../hooks/useTrenMayaCiclopathProposal'
 import useTrenMayaPublicTransportProposal from '../hooks/useTrenMayaPublicTransportProposal';
 import CircularProgress from '@mui/material/CircularProgress';
 import useCancunLandUse from '../hooks/useCancunLandUse';
+import useCancunPopulationDensity from '../hooks/useCancunPopulationDensity';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -53,9 +54,11 @@ function Map({ city, data }) {
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
-  const [economicTiles, setEconomicTiles] = useState(false);
+  const [landUse, setLandUse] = useState(false);
+  const [populationDensity, setPopulationDensity] = useState(false);
   // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
   const { load: loadLandUse, show: showLandUse, hide: hideLandUse, legend: landUseLegend } = useCancunLandUse()
+  const { load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend } = useCancunPopulationDensity()
   const { load: loadCancun } = useCancunLayers()
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadRoadNetwork } = useRoadNetwork()
@@ -107,6 +110,7 @@ function Map({ city, data }) {
 
       map.on('load', () => {
         loadLandUse(map)
+        loadDensity(map)
         loadRoadNetwork(map)
         loadGrid(map, features)
         loadCiclopathProposal(map)
@@ -125,7 +129,7 @@ function Map({ city, data }) {
       map.on('click', gridId, async (e) => {
         setLoading(true)
         hideLandUse(map)
-        setEconomicTiles(false)
+        setLandUse(false)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
         try {
@@ -202,7 +206,7 @@ function Map({ city, data }) {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
       hideLandUse(map)
-      setEconomicTiles(false)
+      setLandUse(false)
     }
     if (value === 'bus_mejora_TM') {
       showPublicTransportProposal(map)
@@ -217,20 +221,37 @@ function Map({ city, data }) {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, medium, value));
       hideLandUse(map)
-      setEconomicTiles(false)
+      hideDensity(map)
+      setLandUse(false)
+      setPopulationDensity(false)
     }
     setTimeStep(value);
   };
 
-  const handleAgebsChange = () => {
-    if (economicTiles) {
+  const handleLandUseChange = () => {
+    if (landUse) {
       hideLandUse(map)
-      setEconomicTiles(false)
+      setLandUse(false)
       show(map, current)
     } else {
+      hideDensity(map)
       showLandUse(map)
       hide(map)
-      setEconomicTiles(true)
+      setPopulationDensity(false)
+      setLandUse(true)
+    }
+  };
+  const handlePopulationDensityChange = () => {
+    if (populationDensity) {
+      hideDensity(map)
+      setPopulationDensity(false)
+      show(map, current)
+    } else {
+      hideLandUse(map)
+      showDensity(map)
+      hide(map)
+      setLandUse(false)
+      setPopulationDensity(true)
     }
   };
 
@@ -240,8 +261,10 @@ function Map({ city, data }) {
         hexagon={hexagon}
         reachableOpportunities={metadata?.opportunities}
         cityData={opportunities}
-        economicTiles={economicTiles}
-        onEconomicTilesChange={handleAgebsChange}
+        economicTiles={landUse}
+        onEconomicTilesChange={handleLandUseChange}
+        populationDensity={populationDensity}
+        onPopulationDensityChange={handlePopulationDensityChange}
         medium={medium}
         onMediumChange={handleMediumChange}
         timeStep={timeStep}
@@ -255,12 +278,15 @@ function Map({ city, data }) {
       </div>
       <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          {!economicTiles && <Download data={geojson} filename={legend.title} />}
+          {!landUse && <Download data={geojson} filename={legend.title} />}
           {
-            economicTiles && (<Legend title={landUseLegend.title} items={landUseLegend.intervals} />)
+            landUse && (<Legend title={landUseLegend.title} items={landUseLegend.intervals} />)
           }
           {
-            current && legend && !economicTiles && (<Legend title={legend.title} items={legend.intervals} />)
+            populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
+          }
+          {
+            current && legend && !landUse && !populationDensity && (<Legend title={legend.title} items={legend.intervals} />)
           }
           <CancunLegend />
         </div>

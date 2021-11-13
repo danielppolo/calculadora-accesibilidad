@@ -36,6 +36,8 @@ function InfoCard({
   reachableOpportunities,
   economicTiles,
   onEconomicTilesChange,
+  populationDensity,
+  onPopulationDensityChange,
 }) {
   return (
     <div className="bg-white overflow-y-auto fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-t-4 md:border-r-2 border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-32 md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto">
@@ -182,14 +184,15 @@ function InfoCard({
         {/* TODO: Upload layers to Mapbox. */}
         <LayerSwitch
           title="Usos de suelo urbano"
-          legend={<span>Fuente: ITDP 2021</span>}
+          legend="Fuente: ITDP 2021"
           checked={economicTiles}
           onChange={onEconomicTilesChange}
         />
         <LayerSwitch
           title="Densidad de población"
-          checked={false}
-          onChange={console.log}
+          legend="Fuente: INEGI 2020"
+          checked={populationDensity}
+          onChange={onPopulationDensityChange}
         />
         <LayerSwitch
           title="Transporte público existente"
