@@ -11,7 +11,7 @@ const useCancunCiclopathProposal = () => useLayer([
     paint: {
       'line-color': '#70bc4c',
       'line-width': 2,
-      'line-dasharray': [6,6]
+      'line-dasharray': [3,3]
     },
   },
 

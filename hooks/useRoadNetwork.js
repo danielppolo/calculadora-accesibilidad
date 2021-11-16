@@ -26,7 +26,7 @@ const useRoadNetwork = () => {
           'source-layer': layer.sourceLayer,
           'paint': {
             'line-color': '#96968c',
-            'line-opacity': 0.5,
+            'line-opacity': 0.25,
           }
         });
       })

@@ -32,7 +32,7 @@ function CancunLegend({
         {
           publicTransport && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	 bg-[#b3b3b3]" />
+              <div className="h-[2px] w-4 flex-shrink-0	 border-t-2 border-solid border-[#BF91F7]" />
               <span className="ml-2 text-xs">Principales rutas actuales</span>
             </div>
           )
@@ -41,7 +41,7 @@ function CancunLegend({
         {
           publicTransportProposal && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#9547f4]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2 border-[#9547f4] border-dashed" />
               <span className="ml-2 text-xs">Rutas propuestas</span>
             </div>
           )
@@ -50,7 +50,7 @@ function CancunLegend({
         {
           pedestrian && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#4d4d4d]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2  border-[#FF9CB3]" />
               <span className="ml-2 text-xs">Banquetas existentes</span>
             </div>
           )
@@ -59,7 +59,7 @@ function CancunLegend({
         {
           pedestrianProposal && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#ff507a]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2 border-dashed border-[#ff507a]" />
               <span className="ml-2 text-xs">Intervenciones en banquetas</span>
             </div>
           )
@@ -68,7 +68,7 @@ function CancunLegend({
         {
           ciclopath && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#808080]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2 border-solid border-[#9FC88C]" />
               <span className="ml-2 text-xs">Red ciclista actual</span>
             </div>
           )
@@ -77,7 +77,7 @@ function CancunLegend({
         {
           ciclopathProposal && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#70bc4c]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2 border-dashed border-[#70bc4c]" />
               <span className="ml-2 text-xs">Ciclocarriles y prioridad ciclista</span>
             </div>
           )
@@ -86,7 +86,7 @@ function CancunLegend({
         {
           vehicular && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	bg-[#e6e6e6]" />
+              <div className="h-[2px] w-4 flex-shrink-0	border-t-2 border-solid border-[#FDA28E]" />
               <span className="ml-2 text-xs">Red vial actual</span>
             </div>
           )
@@ -95,7 +95,7 @@ function CancunLegend({
         {
           vehicularProposal && (
             <div className="flex items-center">
-              <div className="h-[2px] w-4 flex-shrink-0	 bg-[#fd6541]" />
+              <div className="h-[2px] w-4 flex-shrink-0	 border-t-2 border-dashed border-[#fd6541]" />
               <span className="ml-2 text-xs">Prolongación de vías</span>
             </div>
           )

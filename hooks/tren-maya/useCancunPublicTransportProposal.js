@@ -11,7 +11,7 @@ const useCancunPublicTransportProposal = () => useLayer([
     paint: {
       'line-color': '#9547f4',
       'line-width': 2,
-      'line-dasharray': [6,6]
+      'line-dasharray': [3,3]
     },
   },
 

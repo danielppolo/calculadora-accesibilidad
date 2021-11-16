@@ -11,7 +11,7 @@ const useCancunPedestrianProposal = () => useLayer([
     paint: {
       'line-color': '#ff507a',
       'line-width': 2,
-      'line-dasharray': [6,6]
+      'line-dasharray': [3,3]
     },
   },
 
