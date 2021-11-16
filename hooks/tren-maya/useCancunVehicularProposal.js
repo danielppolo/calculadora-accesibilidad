@@ -6,12 +6,12 @@ const useCancunVehicularProposal = () => useLayer([
     sourceLayer: 'propuesta-vial-8rwaez',
     url: 'mapbox://daniel-itdp.0davsxaf',
     type: 'line',
-    color: '#ff4800',
+    color: '#fd6541',
     label: 'Infraestructura vehicular propuesta',
     paint: {
-      'line-color': '#ff4800',
-      'line-opacity': 1,
-      'line-width': 1.5,
+      'line-color': '#fd6541',
+      'line-width': 2,
+      'line-dasharray': [6,6]
     },
   },
 

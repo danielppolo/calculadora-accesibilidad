@@ -6,12 +6,11 @@ const useCancunPublicTransport = () => useLayer([
     sourceLayer: 'existente-transporte-publico-7lhi9a',
     url: 'mapbox://daniel-itdp.9v9fw6g3',
     type: 'line',
-    color: '#407ba7',
+    color: '#b3b3b3',
     label: 'Transporte público existente',
     paint: {
-      'line-color': '#407ba7',
-      // 'line-opacity': 0.5,
-      'line-width': 1,
+      'line-color': '#b3b3b3',
+      'line-width': 0.5,
     },
   },
 

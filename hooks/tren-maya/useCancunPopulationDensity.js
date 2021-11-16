@@ -6,11 +6,12 @@ const useCancunPopulationDensity = () => useLayer([
     sourceLayer: 'cancun-density-very_low-csyicp',
     url: 'mapbox://daniel-itdp.b7ijw12u',
     type: 'fill',
-    color: '#FFFFB2',
+    color: '#ffffb2',
     label: '1 - 65',
     paint: {
-      'fill-color': '#FFFFB2',
-      'fill-opacity': 0.5,
+      'fill-color': '#ffffb2',
+      'fill-opacity': 0.75,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -18,11 +19,12 @@ const useCancunPopulationDensity = () => useLayer([
     sourceLayer: 'cancun-density-low-3nb4gg',
     url: 'mapbox://daniel-itdp.02h5d7ki',
     type: 'fill',
-    color: '#FECC5C',
-    label: '65 - 144',
+    color: '#fecc5c',
+    label: '66 - 144',
     paint: {
-      'fill-color': '#FECC5C',
-      'fill-opacity': 0.5,
+      'fill-color': '#fecc5c',
+      'fill-opacity': 0.75,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -30,11 +32,12 @@ const useCancunPopulationDensity = () => useLayer([
     sourceLayer: 'cancun-density-medium-9uyxtv',
     url: 'mapbox://daniel-itdp.biqvib3x',
     type: 'fill',
-    color: '#FD8D3C',
-    label: '144 - 218',
+    color: '#fd8d3c',
+    label: '145 - 218',
     paint: {
-      'fill-color': '#FD8D3C',
-      'fill-opacity': 0.5,
+      'fill-color': '#fd8d3c',
+      'fill-opacity': 0.75,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -42,11 +45,12 @@ const useCancunPopulationDensity = () => useLayer([
     sourceLayer: 'cancun-density-high-corz2q',
     url: 'mapbox://daniel-itdp.40xvzrxt',
     type: 'fill',
-    color: '#F03B20',
-    label: '218 - 374',
+    color: '#f03b20',
+    label: '219 - 374',
     paint: {
-      'fill-color': '#F03B20',
-      'fill-opacity': 0.5,
+      'fill-color': '#f03b20',
+      'fill-opacity': 0.75,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -54,11 +58,12 @@ const useCancunPopulationDensity = () => useLayer([
     sourceLayer: 'cancun-density-very_high-9gml9s',
     url: 'mapbox://daniel-itdp.647isvdm',
     type: 'fill',
-    color: '#BD0026',
-    label: '374 - 6,294',
+    color: '#bd0026',
+    label: '375 - 6,294',
     paint: {
-      'fill-color': '#BD0026',
-      'fill-opacity': 0.5,
+      'fill-color': '#bd0026',
+      'fill-opacity': 0.75,
+      'fill-outline-color': '#545454'
     },
   },
 

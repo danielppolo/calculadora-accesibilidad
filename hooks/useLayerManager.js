@@ -57,6 +57,10 @@ const useLayerManager = () => {
         paint: {
           'fill-opacity': 0.6,
           'fill-color': getColor(property, reversedIntervals, colorIntervals),
+          'fill-outline-color': ["case",
+          ['has', 'selected'], ["rgba", 0, 0, 0, 1],
+          ["rgba", 255, 0, 0, 0]
+          ]
         },
       }, beforeId);
 

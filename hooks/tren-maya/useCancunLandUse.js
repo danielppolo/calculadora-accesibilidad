@@ -6,11 +6,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-rea-verde-cwh4b9',
     url: 'mapbox://daniel-itdp.08ua1t6p',
     type: 'fill',
-    color: '#81dc59',
+    color: '#70bc4c',
     label: 'Área verde',
     paint: {
-      'fill-color': '#81dc59',
+      'fill-color': '#70bc4c',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -18,11 +19,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-comercio-de-centro-urb-1zxj0h',
     url: 'mapbox://daniel-itdp.apbyfsrm',
     type: 'fill',
-    color: '#E04A91',
+    color: '#ff507a',
     label: 'Comercio de centro urbano',
     paint: {
-      'fill-color': '#E04A91',
+      'fill-color': '#ff507a',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -30,11 +32,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-comercio-de-subcentro--dg97kw',
     url: 'mapbox://daniel-itdp.drz53ge8',
     type: 'fill',
-    color: '#E00036',
+    color: '#cd5553',
     label: 'Comercio de subcentro urbano',
     paint: {
-      'fill-color': '#E00036',
+      'fill-color': '#cd5553',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -42,11 +45,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-equipamiento-2v7h6t',
     url: 'mapbox://daniel-itdp.6x8gw6xn',
     type: 'fill',
-    color: '#2F73BC',
+    color: '#0063f0',
     label: 'Equipamiento',
     paint: {
-      'fill-color': '#2F73BC',
+      'fill-color': '#0063f0',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -59,6 +63,7 @@ const useCancunLandUse = () => useLayer([
     paint: {
       'fill-color': '#3f9bff',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -71,6 +76,7 @@ const useCancunLandUse = () => useLayer([
     paint: {
       'fill-color': '#193d65',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -78,11 +84,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-habitacional-08wbek',
     url: 'mapbox://daniel-itdp.c5iqdhfn',
     type: 'fill',
-    color: '#EAE490',
+    color: '#fcd84a',
     label: 'Habitacional',
     paint: {
-      'fill-color': '#EAE490',
+      'fill-color': '#fcd84a',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -90,11 +97,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-industria-6t1xa5',
     url: 'mapbox://daniel-itdp.0gohr6qf',
     type: 'fill',
-    color: '#8E01FF',
+    color: '#9547f4',
     label: 'Industria',
     paint: {
-      'fill-color': '#8E01FF',
+      'fill-color': '#9547f4',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -107,6 +115,7 @@ const useCancunLandUse = () => useLayer([
     paint: {
       'fill-color': '#E8A233',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
   {
@@ -114,11 +123,12 @@ const useCancunLandUse = () => useLayer([
     sourceLayer: 'cancun-turismo-hotelero-780zu8',
     url: 'mapbox://daniel-itdp.60qn0tc3',
     type: 'fill',
-    color: '#E65069',
+    color: '#cd5367',
     label: 'Turismo hotelero',
     paint: {
-      'fill-color': '#E65069',
+      'fill-color': '#cd5367',
       'fill-opacity': 0.5,
+      'fill-outline-color': '#545454'
     },
   },
 

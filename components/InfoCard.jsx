@@ -208,7 +208,6 @@ function InfoCard({
           checked={economicTiles}
           onChange={onEconomicTilesChange}
         /> */}
-            {/* TODO: Upload layers to Mapbox. */}
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <h4 className="text-sm font-semibold uppercase">Infraestructura existente</h4>

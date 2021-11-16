@@ -6,12 +6,12 @@ const useCancunCiclopathProposal = () => useLayer([
     sourceLayer: 'propuesta-ciclista-1o86ql',
     url: 'mapbox://daniel-itdp.148hd1yd',
     type: 'line',
-    color: '#6247aa',
+    color: '#70bc4c',
     label: 'Infraestructura ciclista propuesta',
     paint: {
-      'line-color': '#6247aa',
-      // 'line-opacity': 0.5,
-      'line-width': 1.5,
+      'line-color': '#70bc4c',
+      'line-width': 2,
+      'line-dasharray': [6,6]
     },
   },
 

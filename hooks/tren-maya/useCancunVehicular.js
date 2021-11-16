@@ -6,10 +6,10 @@ const useCancunVehicular = () => useLayer([
     sourceLayer: 'existente-vial-581meg',
     url: 'mapbox://daniel-itdp.7kdy4z1p',
     type: 'line',
-    color: '#ffaa00',
+    color: '#e6e6e6',
     label: 'Infraestructura vehicular existente',
     paint: {
-      'line-color': '#ffaa00',
+      'line-color': '#e6e6e6',
       'line-opacity': 0.5,
     },
   },

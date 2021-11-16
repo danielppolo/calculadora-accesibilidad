@@ -3,7 +3,7 @@
 require 'csv'
 require 'json'
 
-filepath = 'data/src/matrix_v2.csv'
+filepath = 'data/src/matrix_v3.csv'
 
 polygons = {}
 csv_options = { col_sep: ',', quote_char: '"', headers: :first_row }
@@ -26,14 +26,11 @@ CSV.foreach(filepath, csv_options) do |row|
   ]
 end
 
-puts polygons['88450a1b25fffff']
-puts polygons.size
-
-# polygons.keys.each do |origin|
-#   File.open("data/output/features/#{origin}.json", 'wb') do |file|
-#     file.write(JSON.generate(polygons[origin]))
-#   end
-# end
+polygons.keys.each do |origin|
+  File.open("data/output/features_v3/#{origin}.json", 'wb') do |file|
+    file.write(JSON.generate(polygons[origin]))
+  end
+end
 
 # [ "caminando",
 #   "bicicleta",

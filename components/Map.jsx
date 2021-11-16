@@ -44,6 +44,9 @@ const popup = new Popup({
   closeOnClick: false
 });
 
+let currentTimestep = defaultTimeStep
+let currentMedium = defaultMedium
+
 function Map({ city, data }) {
   const map = useMap({ center: CANCUN_COORDINATES });
   const {
@@ -140,6 +143,9 @@ function Map({ city, data }) {
     }
   }, [geojson, map])
 
+  const getCurrentTimestep = () => currentTimestep
+  const getCurrentMedium = () => currentMedium
+
   useEffect(() => {
     if (data) {
       const nextFeatures = Object.values(data)
@@ -155,6 +161,7 @@ function Map({ city, data }) {
   }, [data])
 
 
+
   useEffect(() => {
     if (map && features.length > 0 && !rendered) {
 
@@ -162,16 +169,16 @@ function Map({ city, data }) {
         loadLandUse(map)
         loadDensity(map)
         loadRoadNetwork(map)
-        loadGrid(map, features)
-        loadCiclopath(map)
-        loadPedestrian(map)
         loadVehicular(map)
         loadPublicTransport(map)
-        loadCiclopathProposal(map)
-        loadPublicTransportProposal(map)
+        loadCiclopath(map)
+        loadPedestrian(map)
         loadVehicularProposal(map)
+        loadPublicTransportProposal(map)
+        loadCiclopathProposal(map)
         loadPedestrianProposal(map)
         loadCancun(map)
+        loadGrid(map, features)
       })
       map.on('mousemove', gridId, (e) => {
         popup
@@ -203,6 +210,7 @@ function Map({ city, data }) {
                 properties: {
                   ...data[id].properties,
                   [med]: json[id][mediumIndex],
+                  // description: '15 minutes' //TODO: Enables mouseenter & mouseleave on every click layer.
                 },
               }));
 
@@ -212,6 +220,7 @@ function Map({ city, data }) {
                 properties: {
                   ...data[featureId].properties,
                   [med]: 1,
+                  selected: true,
                 },
               })
 
@@ -245,8 +254,8 @@ function Map({ city, data }) {
           setLoading(false)
         }
         // Show default isochrone
-        console.log(getHexagonId(featureId, medium, timeStep))
-        show(map, getHexagonId(featureId, medium, timeStep));
+        console.log(getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()))
+        show(map, getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()));
         setHexagon({
           id: featureId,
           ...feature,
@@ -256,6 +265,7 @@ function Map({ city, data }) {
     }
   }, [map, features, rendered])
 
+    
   const handleMediumChange = (value) => {
     hidePublicTransportProposal(map)
     hideCiclopathProposal(map)
@@ -271,6 +281,7 @@ function Map({ city, data }) {
       showCiclopathProposal(map)
     }
     setMedium(value);
+    currentMedium = value;
   };
   
   const handleTimeStepChange = (value) => {
@@ -282,6 +293,7 @@ function Map({ city, data }) {
       setPopulationDensity(false)
     }
     setTimeStep(value);
+    currentTimestep   = value;
   };
 
   const handleLandUseChange = () => {
@@ -341,10 +353,8 @@ function Map({ city, data }) {
     if (ciclopath) {
       hideCiclopath(map)
       setCiclopath(false)
-      show(map, current)
     } else {
       showCiclopath(map)
-      hide(map)
       setCiclopath(true)
     }
   }
@@ -383,10 +393,8 @@ function Map({ city, data }) {
     if (ciclopathProposal) {
       hideCiclopathProposal(map)
       setCiclopathProposal(false)
-      show(map, current)
     } else {
       showCiclopathProposal(map)
-      hide(map)
       setCiclopathProposal(true)
     }
   }

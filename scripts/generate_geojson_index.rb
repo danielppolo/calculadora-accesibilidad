@@ -4,8 +4,8 @@ require 'json'
 
 hexagons = {}
 
-filepath = 'data/src/hexagonos.json'
-output_path = 'data/output/main.json'
+filepath = 'data/src/cancun_v3.json'
+output_path = 'data/output/main_v3.json'
 
 serialized_geojson = File.read(filepath)
 
