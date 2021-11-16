@@ -3,7 +3,7 @@ import Map from '../components/Map';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const cityName = 'tren-maya'
+const cityName = 'fonatur'
 
 export default function Home() {
   const [city, setCity] = useState();
