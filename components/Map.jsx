@@ -180,15 +180,15 @@ function Map({ city, data }) {
         loadCancun(map)
         loadGrid(map, features)
       })
-      map.on('mousemove', gridId, (e) => {
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.description)
-          .addTo(map);
-      });
-      map.on('mouseleave', gridId, () => {
-        popup.remove();
-      });
+      // map.on('mousemove', gridId, (e) => {
+      //   popup
+      //     .setLngLat(e.lngLat)
+      //     .setHTML(e.features[0].properties.description)
+      //     .addTo(map);
+      // });
+      // map.on('mouseleave', gridId, () => {
+      //   popup.remove();
+      // });
       map.on('click', gridId, async (e) => {
         setLoading(true)
         hideLandUse(map)
@@ -210,7 +210,7 @@ function Map({ city, data }) {
                 properties: {
                   ...data[id].properties,
                   [med]: json[id][mediumIndex],
-                  // description: '15 minutes' //TODO: Enables mouseenter & mouseleave on every click layer.
+                  description: `${json[id][mediumIndex]} minutos`
                 },
               }));
 
@@ -221,6 +221,7 @@ function Map({ city, data }) {
                   ...data[featureId].properties,
                   [med]: 1,
                   selected: true,
+                  description: `15 minutos`
                 },
               })
 
@@ -259,6 +260,16 @@ function Map({ city, data }) {
         setHexagon({
           id: featureId,
           ...feature,
+        });
+
+        map.on('mousemove', getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()), (e) => {
+          popup
+            .setLngLat(e.lngLat)
+            .setHTML(e.features[0].properties.description)
+            .addTo(map);
+        });
+        map.on('mouseleave', getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()), () => {
+          popup.remove();
         });
       });
       setRendered(true)
