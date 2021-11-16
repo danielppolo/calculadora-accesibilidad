@@ -6,10 +6,10 @@ const useCancunPedestrian = () => useLayer([
     sourceLayer: 'existente-peatonal-99lvpp',
     url: 'mapbox://daniel-itdp.4qk3jqjk',
     type: 'line',
-    color: '#800016',
+    color: '#ff002b',
     label: 'Infraestructura peatonal existente',
     paint: {
-      'line-color': '#800016',
+      'line-color': '#ff002b',
       'line-opacity': 0.5,
     },
   },

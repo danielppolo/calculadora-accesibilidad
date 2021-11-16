@@ -1,17 +1,17 @@
 import useLayer from '../useLayer';
 
-// TODO: Actualizar referencias de Mapbox
 const useCancunVehicularProposal = () => useLayer([
   {
     id: 'cancun-via-vehicular-proposal',
-    sourceLayer: 'existente-vial-581meg',
-    url: 'mapbox://daniel-itdp.7kdy4z1p',
+    sourceLayer: 'propuesta-vial-8rwaez',
+    url: 'mapbox://daniel-itdp.0davsxaf',
     type: 'line',
     color: '#ff4800',
     label: 'Infraestructura vehicular propuesta',
     paint: {
       'line-color': '#ff4800',
-      'line-opacity': 0.5,
+      'line-opacity': 1,
+      'line-width': 1.5,
     },
   },
 

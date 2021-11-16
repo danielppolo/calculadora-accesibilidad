@@ -1,11 +1,10 @@
 import useLayer from '../useLayer';
 
-// TODO: Actualizar referencias de Mapbox
 const useCancunPublicTransportProposal = () => useLayer([
   {
     id: 'cancun-via-public-transport-proposal',
-    sourceLayer: 'existente-transporte-publico-7lhi9a',
-    url: 'mapbox://daniel-itdp.9v9fw6g3',
+    sourceLayer: 'propuesta-transporte-publico-6lavdu',
+    url: 'mapbox://daniel-itdp.5kst1mfj',
     type: 'line',
     color: '#00043a',
     label: 'Transporte público propuesto',
