@@ -48,7 +48,7 @@ let currentTimestep = defaultTimeStep
 let currentMedium = defaultMedium
 
 function Map({ city, data }) {
-  const map = useMap({ center: CANCUN_COORDINATES });
+  const [map, mapLoaded] = useMap({ center: CANCUN_COORDINATES });
   const {
     state,
     current,
@@ -60,8 +60,8 @@ function Map({ city, data }) {
     geojson,
   } = useLayerManager(map);
   const [loading, setLoading] = useState(false)
-  const [showLegend, setShowLegend] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
@@ -163,23 +163,20 @@ function Map({ city, data }) {
 
 
   useEffect(() => {
-    if (map && features.length > 0 && !rendered) {
-
-      map.on('load', () => {
-        loadLandUse(map)
-        loadDensity(map)
-        loadRoadNetwork(map)
-        loadVehicular(map)
-        loadPublicTransport(map)
-        loadCiclopath(map)
-        loadPedestrian(map)
-        loadVehicularProposal(map)
-        loadPublicTransportProposal(map)
-        loadCiclopathProposal(map)
-        loadPedestrianProposal(map)
-        loadCancun(map)
-        loadGrid(map, features)
-      })
+    if (map && mapLoaded && features.length > 0 && !rendered) {
+      loadLandUse(map)
+      loadDensity(map)
+      loadRoadNetwork(map)
+      loadVehicular(map)
+      loadPublicTransport(map)
+      loadCiclopath(map)
+      loadPedestrian(map)
+      loadVehicularProposal(map)
+      loadPublicTransportProposal(map)
+      loadCiclopathProposal(map)
+      loadPedestrianProposal(map)
+      loadCancun(map)
+      loadGrid(map, features)
       // map.on('mousemove', gridId, (e) => {
       //   popup
       //     .setLngLat(e.lngLat)
@@ -274,7 +271,7 @@ function Map({ city, data }) {
       });
       setRendered(true)
     }
-  }, [map, features, rendered])
+  }, [map, mapLoaded, features, rendered])
 
     
   const handleMediumChange = (value) => {

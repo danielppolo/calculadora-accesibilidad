@@ -5,6 +5,7 @@ const useMap = ({
   center,
 }) => {
   const [map, setMap] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const mapInstance = new mapboxgl.Map({
@@ -15,10 +16,11 @@ const useMap = ({
     });
     mapInstance.addControl(new mapboxgl.NavigationControl());
     mapInstance.addControl(new mapboxgl.ScaleControl());
+    mapInstance.on('load', () => { setLoaded(true) })
     setMap(mapInstance);
   }, []);
 
-  return map;
+  return [map, loaded];
 };
 
 export default useMap;
