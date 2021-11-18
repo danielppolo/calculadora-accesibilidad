@@ -240,7 +240,7 @@ function Map({ city, data }) {
                     Clínicas: count(filteredFeatures, 'clinicas'),
                     Escuelas: count(filteredFeatures, 'escuelas'),
                     'Zonas turísticas': count(filteredFeatures, 'destinos'),
-                    Estaciones: count(filteredFeatures, 'estaciones'),
+                    Estaciones: count(filteredFeatures, 'Estaciones'),
                   }
                 }
               });
