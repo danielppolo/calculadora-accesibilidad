@@ -244,6 +244,16 @@ function Map({ city, data }) {
                   }
                 }
               });
+
+              map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
+                popup
+                  .setLngLat(e.lngLat)
+                  .setHTML(e.features[0].properties.description)
+                  .addTo(map);
+              });
+              map.on('mouseleave', getHexagonId(featureId, med, step), () => {
+                popup.remove();
+              });
             });
           });
         } catch (e) {
@@ -257,17 +267,7 @@ function Map({ city, data }) {
         setHexagon({
           id: featureId,
           ...feature,
-        });
-
-        map.on('mousemove', getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()), (e) => {
-          popup
-            .setLngLat(e.lngLat)
-            .setHTML(e.features[0].properties.description)
-            .addTo(map);
-        });
-        map.on('mouseleave', getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()), () => {
-          popup.remove();
-        });
+        })
       });
       setRendered(true)
     }

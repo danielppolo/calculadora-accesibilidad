@@ -12,7 +12,7 @@ const useMap = ({
       container: 'map',
       style: 'mapbox://styles/daniel-itdp/cku50fspf21w917qic6lbyzpv',
       center,
-      zoom: 7,
+      zoom: 9
     });
     mapInstance.addControl(new mapboxgl.NavigationControl());
     mapInstance.addControl(new mapboxgl.ScaleControl());
