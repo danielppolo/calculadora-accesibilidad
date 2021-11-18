@@ -1,5 +1,5 @@
 import mapboxgl, { Popup } from 'mapbox-gl';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
@@ -407,11 +407,21 @@ function Map({ city, data }) {
     }
   }
 
+  const reachableOpportunities = useMemo(() => {
+    if (!metadata || !metadata?.opportunities) return null;
+
+    const opp = {...metadata.opportunities}
+    if (['caminando', 'bicicleta', 'bus_actual'].includes(medium)) {
+      delete opp.Estaciones
+    }
+    return opp
+  }, [medium, metadata])
+
   return (
     <>
       <InfoCard
         hexagon={hexagon}
-        reachableOpportunities={metadata?.opportunities}
+        reachableOpportunities={reachableOpportunities}
         cityData={opportunities}
         economicTiles={landUse}
         onEconomicTilesChange={handleLandUseChange}
