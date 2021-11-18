@@ -16,7 +16,10 @@ const useMap = ({
     });
     mapInstance.addControl(new mapboxgl.NavigationControl());
     mapInstance.addControl(new mapboxgl.ScaleControl());
-    mapInstance.on('load', () => { setLoaded(true) })
+    mapInstance.on('load', () => {
+      mapInstance.resize();
+      setLoaded(true)
+     })
     setMap(mapInstance);
   }, []);
 
