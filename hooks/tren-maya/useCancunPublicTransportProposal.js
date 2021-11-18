@@ -3,8 +3,8 @@ import useLayer from '../useLayer';
 const useCancunPublicTransportProposal = () => useLayer([
   {
     id: 'cancun-via-public-transport-proposal',
-    sourceLayer: 'propuesta-transporte-publico-6lavdu',
-    url: 'mapbox://daniel-itdp.5kst1mfj',
+    sourceLayer: 'propuesta-tren-maya-tp',
+    url: 'mapbox://daniel-itdp.propuesta-tren-maya-tp',
     type: 'line',
     color: '#9547f4',
     label: 'Transporte público propuesto',

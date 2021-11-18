@@ -3,8 +3,8 @@ import useLayer from '../useLayer';
 const useCancunCiclopathProposal = () => useLayer([
   {
     id: 'cancun-via-ciclopath-proposal',
-    sourceLayer: 'propuesta-ciclista-1o86ql',
-    url: 'mapbox://daniel-itdp.148hd1yd',
+    sourceLayer: 'propuesta-tren-maya-ciclista',
+    url: 'mapbox://daniel-itdp.propuesta-tren-maya-ciclista',
     type: 'line',
     color: '#70bc4c',
     label: 'Infraestructura ciclista propuesta',

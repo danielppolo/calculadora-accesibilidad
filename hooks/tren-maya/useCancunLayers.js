@@ -24,8 +24,8 @@ const CANCUN_TILES = [
   },
   {
     id: 'trazo',
-    sourceLayer: 'trazo-tren-maya-abstract-62xwzu',
-    url: 'mapbox://daniel-itdp.19h6nje0',
+    sourceLayer: 'trazo-tren-maya',
+    url: 'mapbox://daniel-itdp.trazo-tren-maya',
     type: 'line',
     paint: {
       'line-color': '#ba955c',
@@ -85,6 +85,8 @@ const useCancunLayers = () => {
       map.addSource(layer.sourceLayer, {
         type: 'vector',
         url: layer.url,
+        minzoom: 6,
+        maxzoom: 16,
       });
       map.addLayer({
         id: layer.sourceLayer,

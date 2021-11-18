@@ -3,8 +3,8 @@ import useLayer from '../useLayer';
 const useCancunPedestrianProposal = () => useLayer([
   {
     id: 'cancun-via-pedestrian-proposal',
-    sourceLayer: 'propuesta-peatonal-6rcm3o',
-    url: 'mapbox://daniel-itdp.d6ed9v1d',
+    sourceLayer: 'propuesta-tren-maya-peatonal',
+    url: 'mapbox://daniel-itdp.propuesta-tren-maya-peatonal',
     type: 'line',
     color: '#ff507a',
     label: 'Infraestructura peatonal propuesta',

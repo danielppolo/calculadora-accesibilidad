@@ -7,7 +7,7 @@ const useLayer = (layerList, title = '') => {
         type: 'vector',
         url: layer.url,
         minzoom: 6,
-        maxzoom: 14,
+        maxzoom: 16,
       });
       map.addLayer({
         id: layer.id,
