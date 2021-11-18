@@ -11,10 +11,10 @@ export const MEDIUMS = [
 
 export const OPPORTUNITIES = {
   jobs_w: 'Personal ocupado',
-  empress: 'Empresas',
-  clinics: 'Clínicas',
-  escuels: 'Escuelas',
-  destins: 'Zonas turísticas',
+  empresas: 'Empresas',
+  clinicas: 'Clínicas',
+  escuelas: 'Escuelas',
+  destinos: 'Zonas turísticas',
 };
 export const NUMBER_OF_BUCKETS = 10;
 export const CANCUN_COORDINATES = [-89.582467, 20.208589];

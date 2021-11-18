@@ -49,7 +49,7 @@ Functions as a dictionary of the hexagons that compose the city.
     },
     "properties": {
       "empresas": number,
-      "jobs": number,
+      "trabajos": number,
       "clinicas": number,
       "escuelas": number
     }

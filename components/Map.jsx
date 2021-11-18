@@ -152,10 +152,10 @@ function Map({ city, data }) {
       setFeatures(nextFeatures);
       setOpportunities({
         'Personal ocupado': count(nextFeatures, 'jobs_w'),
-        Empresas: count(nextFeatures, 'empress'),
-        Clínicas: count(nextFeatures, 'clinics'),
-        Escuelas: count(nextFeatures, 'escuels'),
-        'Zonas turísticas': count(nextFeatures, 'destins'),
+        Empresas: count(nextFeatures, 'empresas'),
+        Clínicas: count(nextFeatures, 'clinicas'),
+        Escuelas: count(nextFeatures, 'escuelas'),
+        'Zonas turísticas': count(nextFeatures, 'destinos'),
       })
     }
   }, [data])
@@ -236,10 +236,10 @@ function Map({ city, data }) {
                 metadata: {
                   opportunities: {
                     'Personal ocupado': count(filteredFeatures, 'jobs_w'),
-                    Empresas: count(filteredFeatures, 'empress'),
-                    Clínicas: count(filteredFeatures, 'clinics'),
-                    Escuelas: count(filteredFeatures, 'escuels'),
-                    'Zonas turísticas': count(filteredFeatures, 'destins'),
+                    Empresas: count(filteredFeatures, 'empresas'),
+                    Clínicas: count(filteredFeatures, 'clinicas'),
+                    Escuelas: count(filteredFeatures, 'escuelas'),
+                    'Zonas turísticas': count(filteredFeatures, 'destinos'),
                     Estaciones: count(filteredFeatures, 'estaciones'),
                   }
                 }

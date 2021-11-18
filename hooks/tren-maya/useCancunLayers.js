@@ -85,8 +85,6 @@ const useCancunLayers = () => {
       map.addSource(layer.sourceLayer, {
         type: 'vector',
         url: layer.url,
-        minzoom: 6,
-        maxzoom: 14,
       });
       map.addLayer({
         id: layer.sourceLayer,
