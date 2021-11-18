@@ -17,4 +17,4 @@ export const OPPORTUNITIES = {
   destinos: 'Zonas turísticas',
 };
 export const NUMBER_OF_BUCKETS = 10;
-export const CANCUN_COORDINATES = [ -87.607127, 20.858097];
+export const CANCUN_COORDINATES = [-86.851404, 21.161788];

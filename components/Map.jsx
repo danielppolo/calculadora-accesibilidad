@@ -142,7 +142,7 @@ function Map({ city, data }) {
       });
     }
   }, [geojson, map])
-
+  
   const getCurrentTimestep = () => currentTimestep
   const getCurrentMedium = () => currentMedium
 
