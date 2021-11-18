@@ -51,8 +51,8 @@ const CANCUN_TILES = [
     paint: {
       'circle-color': '#8c3951',
       'circle-stroke-color': '#FFF',
-      'circle-stroke-width': 1,
-      'circle-radius': ['step', ['zoom'],  0.1, 5, 1, 6, 2, 7, 3, 8, 4, 9, 5, 10, 6, 11, 7, 12, 8, 13, 9, 14, 10, 15, 11, 16, 12, 17, 13, 18, 14, 19, 15, 20, 16, 21, 17, 22, 18], // 4
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 11, 1],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 0.5, 22, 10],
     },
   },
   {
@@ -73,8 +73,8 @@ const CANCUN_TILES = [
     paint: {
       'circle-stroke-color': '#000',
       'circle-color': '#FFF',
-      'circle-stroke-width': 2,
-      'circle-radius': 5,
+      'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 11, 2],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 1, 0.5, 22, 10],
     },
   },
 ];
