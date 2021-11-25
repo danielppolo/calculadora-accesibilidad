@@ -460,7 +460,7 @@ function Map({ city, data }) {
       </div>
       <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          {!landUse && <Download data={geojson} filename={legend.title} />}
+          {!landUse && <Download data={geojson} filename={legend.title} type="kml" />}
           {
             landUse && (<Legend title={landUseLegend.title} items={landUseLegend.intervals} />)
           }

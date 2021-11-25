@@ -2,13 +2,44 @@ import React, { useEffect } from 'react';
 import { Button, Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LaunchIcon from '@mui/icons-material/Launch';
+import tokml from 'tokml';
 
-function Download({ data, filename = 'Geometry' }) {
+function Download({ data: geojson, filename = 'Geometry', type = 'geojson' }) {
   useEffect(() => {
-    const blob = new Blob([JSON.stringify(data)]);
-    const a = document.getElementById('download');
-    a.href = URL.createObjectURL(blob);
-  }, [data]);
+    if (type === 'kml') {
+      const kml = tokml(geojson, {
+        name: filename,
+      });
+      const blob = new Blob([kml]);
+      const a = document.getElementById('download-kml');
+      a.href = URL.createObjectURL(blob);
+    } else {
+      const json = JSON.stringify(geojson);
+      const blob = new Blob([json]);
+      const a = document.getElementById('download-geojson');
+      a.href = URL.createObjectURL(blob);
+    }
+  }, [filename, geojson, type]);
+
+  if (type === 'kml') {
+    return (
+      <Tooltip
+        title={(
+          <p>
+            Descarga en formato KML. Este formato puede ser utilizado en la mayoría de los Sistemas de Información Geográfica.
+          </p>
+  )}
+        arrow={false}
+        placement="left"
+      >
+        <a id="download-kml" href="" download={`${filename}.kml`} type="text">
+          <Button fullWidth variant="contained" endIcon={<InfoOutlinedIcon />}>
+            Descargar
+          </Button>
+        </a>
+      </Tooltip>
+    );
+  }
 
   return (
     <Tooltip
@@ -25,7 +56,7 @@ function Download({ data, filename = 'Geometry' }) {
       arrow={false}
       placement="left"
     >
-      <a href="" id="download" download={`${filename}.geojson`} type="text/json">
+      <a id="download-geojson" href="" download={`${filename}.geojson`} type="text/json">
         <Button fullWidth variant="contained" endIcon={<InfoOutlinedIcon />}>
           Descargar
         </Button>

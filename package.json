@@ -21,7 +21,8 @@
     "prop-types": "^15.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "styled-components": "^5.3.1"
+    "styled-components": "^5.3.1",
+    "tokml": "^0.4.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.3.3",
