@@ -11,8 +11,10 @@ const useCancunPedestrianProposal = () => useLayer([
     paint: {
       'line-color': '#ff507a',
       'line-width': 2,
-      'line-dasharray': [3,3]
+      'line-dasharray': [3, 3],
     },
+    popup: true,
+    popupDescriptionKey: 'Red_peaton',
   },
 
 ], 'Infraestructura peatonal existente');

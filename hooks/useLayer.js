@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import mapboxgl from 'mapbox-gl';
 
 const useLayer = (layerList, title = '') => {
   const load = useCallback((map) => {
@@ -19,6 +20,24 @@ const useLayer = (layerList, title = '') => {
         'source-layer': layer.sourceLayer,
         paint: layer.paint,
       });
+
+      if (layer.popup && layer.popupDescriptionKey) {
+        const popup = new mapboxgl.Popup({
+          className: 'black-popup',
+          closeButton: false,
+          closeOnClick: false,
+          anchor: 'top',
+        });
+        map.on('mouseenter', layer.id, (e) => {
+          const description = e.features[0].properties[layer.popupDescriptionKey];
+          if (description) {
+            popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+          }
+        });
+        map.on('mouseleave', layer.id, () => {
+          popup.remove();
+        });
+      }
     });
   }, [layerList]);
 

@@ -44,8 +44,8 @@ const CANCUN_TILES = [
   },
   {
     id: 'atractores',
-    sourceLayer: 'atractores-tren-maya-abstract-c5957d',
-    url: 'mapbox://daniel-itdp.1dp36h9b',
+    sourceLayer: 'sitios-de-interes-7icabb',
+    url: 'mapbox://daniel-itdp.0kqkuq63',
     type: 'circle',
     popup: true,
     paint: {

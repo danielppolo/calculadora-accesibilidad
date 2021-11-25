@@ -13,6 +13,8 @@ const useCancunCiclopathProposal = () => useLayer([
       'line-width': 2,
       'line-dasharray': [3, 3],
     },
+    popup: true,
+    popupDescriptionKey: 'Red_bici',
   },
 
 ], 'Infraestructura ciclista existente');

@@ -11,8 +11,10 @@ const useCancunPublicTransportProposal = () => useLayer([
     paint: {
       'line-color': '#9547f4',
       'line-width': 2,
-      'line-dasharray': [3,3]
+      'line-dasharray': [3, 3],
     },
+    popup: true,
+    popupDescriptionKey: 'TP',
   },
 
 ], 'Transporte público existente');

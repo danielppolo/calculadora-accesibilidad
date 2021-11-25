@@ -11,8 +11,10 @@ const useCancunVehicularProposal = () => useLayer([
     paint: {
       'line-color': '#fd6541',
       'line-width': 2,
-      'line-dasharray': [3,3]
+      'line-dasharray': [3, 3],
     },
+    popup: true,
+    popupDescriptionKey: 'Prol_via',
   },
 
 ], 'Infraestructura vehicular existente');
