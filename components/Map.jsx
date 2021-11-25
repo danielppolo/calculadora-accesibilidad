@@ -284,9 +284,13 @@ function Map({ city, data }) {
     }
     if (value === 'bus_mejora_TM') {
       showPublicTransportProposal(map)
+      setPublicTransportProposal(true)
+      setCiclopathProposal(false)
     }
     if (value === 'bicicleta_TM') {
       showCiclopathProposal(map)
+      setCiclopathProposal(true)
+      setPublicTransportProposal(false)
     }
     setMedium(value);
     currentMedium = value;

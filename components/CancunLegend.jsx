@@ -16,7 +16,7 @@ function CancunLegend({
       <div className="space-y-1">
         <div className="flex items-center">
           <div className="h-[2px] w-4 flex-shrink-0	 bg-[#ba955c]" />
-          <span className="ml-2 text-xs">Trazo del Tren Maya</span>
+          <span className="ml-2 text-xs">Pretrazo del Tren Maya</span>
         </div>
 
         <div className="flex items-center">
@@ -33,7 +33,7 @@ function CancunLegend({
           publicTransport && (
             <div className="flex items-center">
               <div className="h-[2px] w-4 flex-shrink-0	 border-t-2 border-solid border-[#BF91F7]" />
-              <span className="ml-2 text-xs">Principales rutas actuales</span>
+              <span className="ml-2 text-xs">Principales rutas de Transporte</span>
             </div>
           )
         }

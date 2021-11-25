@@ -7,11 +7,11 @@ const useCancunPopulationDensity = () => useLayer([
     url: 'mapbox://daniel-itdp.b7ijw12u',
     type: 'fill',
     color: '#ffffb2',
-    label: '1 - 65',
+    label: '1 - 65 Hab',
     paint: {
       'fill-color': '#ffffb2',
       'fill-opacity': 0.75,
-      'fill-outline-color': '#545454'
+      // 'fill-outline-color': '#545454'
     },
   },
   {
@@ -20,11 +20,11 @@ const useCancunPopulationDensity = () => useLayer([
     url: 'mapbox://daniel-itdp.02h5d7ki',
     type: 'fill',
     color: '#fecc5c',
-    label: '66 - 144',
+    label: '66 - 144 Hab',
     paint: {
       'fill-color': '#fecc5c',
       'fill-opacity': 0.75,
-      'fill-outline-color': '#545454'
+      // 'fill-outline-color': '#545454'
     },
   },
   {
@@ -33,11 +33,11 @@ const useCancunPopulationDensity = () => useLayer([
     url: 'mapbox://daniel-itdp.biqvib3x',
     type: 'fill',
     color: '#fd8d3c',
-    label: '145 - 218',
+    label: '145 - 218 Hab',
     paint: {
       'fill-color': '#fd8d3c',
       'fill-opacity': 0.75,
-      'fill-outline-color': '#545454'
+      // 'fill-outline-color': '#545454'
     },
   },
   {
@@ -46,11 +46,11 @@ const useCancunPopulationDensity = () => useLayer([
     url: 'mapbox://daniel-itdp.40xvzrxt',
     type: 'fill',
     color: '#f03b20',
-    label: '219 - 374',
+    label: '219 - 374 Hab',
     paint: {
       'fill-color': '#f03b20',
       'fill-opacity': 0.75,
-      'fill-outline-color': '#545454'
+      // 'fill-outline-color': '#545454'
     },
   },
   {
@@ -59,11 +59,11 @@ const useCancunPopulationDensity = () => useLayer([
     url: 'mapbox://daniel-itdp.647isvdm',
     type: 'fill',
     color: '#bd0026',
-    label: '375 - 6,294',
+    label: '375 - 6,294 Hab',
     paint: {
       'fill-color': '#bd0026',
       'fill-opacity': 0.75,
-      'fill-outline-color': '#545454'
+      // 'fill-outline-color': '#545454'
     },
   },
 

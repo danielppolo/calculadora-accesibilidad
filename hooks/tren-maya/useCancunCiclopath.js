@@ -10,7 +10,7 @@ const useCancunCiclopath = () => useLayer([
     label: 'Infraestructura ciclista existente',
     paint: {
       'line-color': '#9FC88C',
-      'line-width': 1,
+      'line-width': 1.5,
     },
   },
 

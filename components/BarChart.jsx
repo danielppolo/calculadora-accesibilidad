@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-function BarChart({data}) {
+function BarChart({ data }) {
   const [activeChart, setActiveChart] = useState();
   useEffect(() => {
     if (data) {
@@ -29,14 +29,14 @@ function BarChart({data}) {
               beginAtZero: true,
               grid: {
                 color: '#e6e6dc',
-              }
+              },
             },
           },
           scales: {
             x: {
               grid: {
                 color: '#e6e6dc',
-              }
+              },
             },
           },
         },

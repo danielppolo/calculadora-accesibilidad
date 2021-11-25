@@ -55,12 +55,12 @@ const useLayerManager = () => {
         },
         // filter: ['>', ['get', property], 0],
         paint: {
-          'fill-opacity': 0.6,
+          'fill-opacity': 0.5,
           'fill-color': getColor(property, reversedIntervals, colorIntervals),
-          'fill-outline-color': ["case",
-          ['has', 'selected'], ["rgba", 0, 0, 0, 1],
-          ["rgba", 255, 0, 0, 0]
-          ]
+          'fill-outline-color': ['case',
+            ['has', 'selected'], ['rgba', 0, 0, 0, 1],
+            ['rgba', 255, 0, 0, 0],
+          ],
         },
       }, beforeId);
 

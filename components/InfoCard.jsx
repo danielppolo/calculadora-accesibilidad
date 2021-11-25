@@ -59,7 +59,7 @@ function InfoCard({
   return (
     <div className={`bg-white fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-2 m border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-auto md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto overflow-y-auto ${expanded && 'md:bottom-4'}`}>
       <h1 className="text-2xl font-bold mb-4 text-[#00534C]"> Plataforma de visualización de accesibilidad urbana, Cancún, Quintana Roo</h1>
-      <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso el acceso a trabajos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en un radio de 150 kilómetros de Cancún a través de una herramienta interactiva.</p>
+      <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso el acceso a empleos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en un radio de 150 kilómetros de Cancún a través de una herramienta interactiva.</p>
 
       <Button
         variant="outlined"
@@ -85,7 +85,7 @@ function InfoCard({
                 <span className="font-semibold" key={key}>{key}</span>
                 :
                 {' '}
-                <span>{Intl.NumberFormat().format(cityData[key])}</span>
+                <span>{Intl.NumberFormat('es-mx').format(cityData[key])}</span>
               </p>
             </div>
           ))
@@ -122,10 +122,10 @@ function InfoCard({
             </h3>
             <Grid container spacing={1}>
               <Grid item xs={6}>
-                <h4 className="text-sm text-center font-semibold uppercase">Situación actual</h4>
+                <h4 className="text-sm text-center font-semibold uppercase">SITUACIÓN ACTUAL SIN TREN MAYA</h4>
               </Grid>
               <Grid item xs={6}>
-                <h4 className="text-sm text-center font-semibold uppercase">Tren Maya</h4>
+                <h4 className="text-sm text-center font-semibold uppercase">CON TREN MAYA</h4>
               </Grid>
               <Grid item xs={6}>
                 <Button startIcon={<DirectionsWalkIcon />} fullWidth disabled={!hexagon} variant={medium === 'caminando' ? 'contained' : 'outlined'} key="caminando" onClick={() => { onMediumChange('caminando'); }}>
@@ -277,13 +277,13 @@ function InfoCard({
             </div>
             <LayerSwitch
               title="Usos de suelo urbano"
-              legend="Fuente: ITDP 2021"
+              // legend="Fuente: ITDP 2021"
               checked={economicTiles}
               onChange={onEconomicTilesChange}
             />
             <LayerSwitch
               title="Densidad de población"
-              legend="Fuente: INEGI 2020"
+              // legend="Fuente: INEGI 2020"
               checked={populationDensity}
               onChange={onPopulationDensityChange}
             />

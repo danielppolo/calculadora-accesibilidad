@@ -52,7 +52,7 @@ const CANCUN_TILES = [
       'circle-color': '#8c3951',
       'circle-stroke-color': '#FFF',
       'circle-stroke-width': ['step', ['zoom'], 0, 6, 0.5, 11, 1],
-      'circle-radius': ['step', ['zoom'], 1, 6, 2, 8, 3,  10, 4, 12, 6, 14, 8, 16, 10, 18, 12, 22, 14],
+      'circle-radius': ['step', ['zoom'], 1, 6, 2, 8, 3, 10, 4, 12, 6, 14, 8, 16, 10, 18, 12, 22, 14],
     },
   },
   {
@@ -61,7 +61,9 @@ const CANCUN_TILES = [
     url: 'mapbox://daniel-itdp.9x13h76u',
     type: 'line',
     paint: {
-      'line-color': '#fdbbcd',
+      'line-color': '#000',
+      'line-width': 1,
+      'line-dasharray': [3, 3],
     },
   },
   {

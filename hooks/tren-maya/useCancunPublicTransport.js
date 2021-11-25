@@ -10,7 +10,7 @@ const useCancunPublicTransport = () => useLayer([
     label: 'Transporte público existente',
     paint: {
       'line-color': '#BF91F7',
-      'line-width': 0.5,
+      'line-width': 1,
     },
   },
 
