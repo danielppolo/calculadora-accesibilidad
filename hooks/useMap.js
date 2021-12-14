@@ -10,16 +10,16 @@ const useMap = ({
   useEffect(() => {
     const mapInstance = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/daniel-itdp/cku50fspf21w917qic6lbyzpv',
+      style: 'mapbox://styles/daniel-itdp/ckx5nzo9i01ee14pcd9wzswd0',
       center,
-      zoom: 11
+      zoom: 11,
     });
     mapInstance.addControl(new mapboxgl.NavigationControl());
     mapInstance.addControl(new mapboxgl.ScaleControl());
     mapInstance.on('load', () => {
       mapInstance.resize();
-      setLoaded(true)
-     })
+      setLoaded(true);
+    });
     setMap(mapInstance);
   }, []);
 
