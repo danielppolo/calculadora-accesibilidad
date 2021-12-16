@@ -7,8 +7,10 @@ import Divider from '@mui/material/Divider';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import { MEDIUMS, TIME_STEPS } from '../constants';
-import BarChart from './BarChart';
+import { MenuItem, TextField } from '@mui/material';
+import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
+import FacilitiesChart from './FacilitiesChart';
+import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
 import LayerSwitch from './LayerSwitch';
 import Card from './Card';
@@ -32,18 +34,14 @@ function InfoCard({
   onMediumChange,
   timeStep,
   onTimeStepChange,
+  onOpportunityChange,
+  opportunity,
   hexagon,
   reachableOpportunities,
-
-  // Unused
-  economicTiles,
-  onEconomicTilesChange,
-  populationDensity,
-  onPopulationDensityChange,
 }) {
   const [expanded, setExpanded] = useState(true);
   return (
-    <Card className="fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
+    <Card className=" fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
       <h1 className="text-3xl font-bold mb-4 text-black">
         Calculadora
         {' '}
@@ -67,22 +65,42 @@ function InfoCard({
           <p className="text-sm mb-4">Para toda la zona, se cuentan con el siguiente número de oportunidades totales:</p>
           <div>
             {
-          Object.keys(cityData).map((key) => (
-            <div key={key} className="flex flex-row items-center justify-between mb-0">
-              <p className="text-sm">
-                <span className="font-semibold" key={key}>{key}</span>
-                :
-                {' '}
-                <span>{Intl.NumberFormat('es-mx').format(cityData[key])}</span>
-              </p>
-            </div>
-          ))
-        }
+              Object.keys(cityData).map((key) => (
+                <div key={key} className="flex flex-row items-center justify-between mb-0">
+                  <p className="text-sm">
+                    <span className="font-semibold" key={key}>{key}</span>
+                    :
+                    {' '}
+                    <span>{Intl.NumberFormat('es-mx').format(cityData[key])}</span>
+                  </p>
+                </div>
+              ))
+            }
+            <div className="mb-12" />
+            <p className="text-md font-medium mb-2 text-black">Oportunidad a visualizar</p>
+            <TextField
+              select
+              onChange={onOpportunityChange}
+              value={opportunity}
+              name="opportinuty"
+              label={opportunity ? '' : 'Selecciona oportunidad'}
+              fullWidth
+              InputLabelProps={{
+                shrink: false,
+              }}
+            >
+              {
+                Object.keys(OPPORTUNITIES)
+                  .map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
+              }
+            </TextField>
+
           </div>
           <div className="mb-12" />
           <Subtitle>Explora</Subtitle>
+          <div className="mb-6" />
           <Step number={1} title="Da click en un hexágono">
-            <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
+            <Alert variant="outlined" severity="warning">Da click sobre un hexágono para habilitar los controles</Alert>
           </Step>
           <div className="mb-6" />
           <Step number={2} title="Selecciona el tiempo">
@@ -102,7 +120,7 @@ function InfoCard({
             <ButtonGroup size="medium" aria-label="large button group" fullWidth>
               {
                 MEDIUMS.map((mdm) => (
-                  <Button disabled={!hexagon} variant={medium === mdm ? 'contained' : 'outlined'} key={mdm} onClick={() => { onTimeStepChange(mdm); }}>
+                  <Button disabled={!hexagon} variant={medium === mdm ? 'contained' : 'outlined'} key={mdm} onClick={() => { onMediumChange(mdm); }}>
                     {MEDIUM_ICONS[mdm]}
                   </Button>
                 ))
@@ -115,40 +133,25 @@ function InfoCard({
               reachableOpportunities ? (
                 <>
                   <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
-                  <BarChart
+                  <FacilitiesChart
+                    data={reachableOpportunities}
+                  />
+                  <PeopleChart
                     data={reachableOpportunities}
                   />
                 </>
               ) : (
-                <Alert severity="info">Da click sobre un hexágono para obtener más información</Alert>
+                <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
               )
             }
           </Step>
           <div className="mb-6" />
           <Step number={5} title="Mostrar capa de referencia">
-            {/* <LayerSwitch
-              title="Usos de Suelo y Vegetación."
-              legend={(
-                <span>
-                  Fuente:
-                  {' '}
-                  <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a>
-                </span>
-              )}
-              checked={economicTiles}
-              onChange={onEconomicTilesChange}
-            /> */}
             <LayerSwitch
               title="Usos de suelo urbano"
               // legend="Fuente: ITDP 2021"
-              checked={economicTiles}
-              onChange={onEconomicTilesChange}
-            />
-            <LayerSwitch
-              title="Densidad de población"
-              // legend="Fuente: INEGI 2020"
-              checked={populationDensity}
-              onChange={onPopulationDensityChange}
+              // checked={economicTiles}
+              // onChange={onEconomicTilesChange}
             />
           </Step>
 

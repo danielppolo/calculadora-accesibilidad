@@ -27,8 +27,8 @@ const useLayerManager = () => {
   }) => {
     if (map && !(id in state)) {
       console.log('addLayer', id);
-      const color1 = '#62cdb4';
-      const color2 = '#ff507a';
+      const color1 = '#f8dda1';
+      const color2 = '#f1bb43';
 
       // Get color intervals
       const intervals = getIntervals(maxValue, stepSize);

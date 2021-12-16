@@ -7,6 +7,7 @@ import InfoCard from './InfoCard';
 import Legend from './Legend';
 import Download from './Download';
 import useBaseGrid from '../hooks/useBaseGrid';
+import useFitMap from '../hooks/useFitMap';
 import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
@@ -45,8 +46,10 @@ function Map({ city, data }) {
     hide,
     geojson,
   } = useLayerManager(map);
+  useFitMap(map, geojson?.features)
   const [loading, setLoading] = useState(false)
   const [rendered, setRendered] = useState(false);
+  const [opportunity, setOpportunity] = useState(defaultOpportunity);
   const [showLegend, setShowLegend] = useState(false);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
@@ -55,23 +58,7 @@ function Map({ city, data }) {
   const [opportunities, setOpportunities] = useState({});
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
-  
-  useEffect(() => {
-    // Fit map to selected features.
-    if (map && geojson?.features) {
-      const bounds = new mapboxgl.LngLatBounds();
-      const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
-      geojson.features.forEach(feature => {
-        bounds.extend(feature.geometry.coordinates[0])
-      })
-      map.fitBounds(bounds, {
-        padding: 200,
-        maxZoom: 15,
-        duration: 500,
-        offset: [offsetX, 0]
-      });
-    }
-  }, [geojson, map])
+
   
   const getCurrentTimestep = () => currentTimestep
   const getCurrentMedium = () => currentMedium
@@ -95,6 +82,28 @@ function Map({ city, data }) {
   useEffect(() => {
     if (map && mapLoaded && features.length > 0 && !rendered) {
       loadGrid(map, features)
+      Object.keys(OPPORTUNITIES).forEach((key) => {
+        let maxValue = 0;
+        const filteredFeatures = features.filter((item) => {
+          if (item.properties[key] > maxValue) {
+            maxValue = item.properties[key];
+          }
+          return item.properties[key] > 0
+        });
+        if (!(key in state)) {
+          add({
+            map,
+            legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
+            id: key,
+            features: filteredFeatures,
+            property: key,
+            maxValue,
+            visible: false,
+            stepSize: 10,
+            beforeId: gridId,
+          });
+        }
+      });
       // map.on('mousemove', gridId, (e) => {
       //   popup
       //     .setLngLat(e.lngLat)
@@ -185,11 +194,20 @@ function Map({ city, data }) {
           ...feature,
         })
       });
+      setOpportunity(undefined);
       setRendered(true)
     }
   }, [map, mapLoaded, features, rendered])
 
-    
+  const handleOpportunityChange = (event) => {
+    const nextOpportunity = event.target.value;
+    show(map, nextOpportunity);
+    setOpportunity(nextOpportunity);
+    setHexagon(undefined);
+    // hideAgebs()
+    // setEconomicTiles(false)
+  };
+
   const handleMediumChange = (value) => {
     if (hexagon?.id) {
       show(map, getHexagonId(hexagon.id, value, timeStep));
@@ -227,6 +245,8 @@ function Map({ city, data }) {
         onMediumChange={handleMediumChange}
         timeStep={timeStep}
         onTimeStepChange={handleTimeStepChange}
+        onOpportunityChange={handleOpportunityChange}
+        opportunity={opportunity}
       />
 
       <div className="block fixed bottom-4 right-4 z-50 md:hidden">
@@ -236,7 +256,7 @@ function Map({ city, data }) {
       </div>
       <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          {geojson && <Download data={geojson} filename={legend.title} type="kml" />}
+          <Download data={geojson} filename={legend.title} type="kml" />
           {/* {
             populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
           } */}

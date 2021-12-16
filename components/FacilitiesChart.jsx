@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 
-function BarChart({ data }) {
+function FacilitiesChart({ data }) {
   const [activeChart, setActiveChart] = useState();
   useEffect(() => {
     if (data) {
@@ -42,14 +42,14 @@ function BarChart({ data }) {
         },
       };
       const chart = new Chart(
-        document.getElementById('myChart'),
+        document.getElementById('facilities-chart'),
         config,
       );
       setActiveChart(chart);
     }
   }, [data]);
 
-  return <canvas id="myChart" width="200" height="120" />;
+  return <canvas id="facilities-chart" width="200" height="120" />;
 }
 
-export default BarChart;
+export default FacilitiesChart;

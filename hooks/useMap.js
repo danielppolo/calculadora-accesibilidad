@@ -10,7 +10,7 @@ const useMap = ({
   useEffect(() => {
     const mapInstance = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
+      style: 'mapbox://styles/daniel-itdp/ckx9ajen70bf614pmjrguulmg',
       center,
       zoom: 11,
     });

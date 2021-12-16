@@ -6,20 +6,24 @@ import tokml from 'tokml';
 
 function Download({ data: geojson, filename = 'Geometry', type = 'geojson' }) {
   useEffect(() => {
-    if (type === 'kml') {
+    if (type === 'kml' && geojson) {
       const kml = tokml(geojson, {
         name: filename,
       });
       const blob = new Blob([kml]);
       const a = document.getElementById('download-kml');
       a.href = URL.createObjectURL(blob);
-    } else {
+    } else if (type === 'geojson' && geojson) {
       const json = JSON.stringify(geojson);
       const blob = new Blob([json]);
       const a = document.getElementById('download-geojson');
       a.href = URL.createObjectURL(blob);
     }
   }, [filename, geojson, type]);
+
+  if (!geojson) {
+    return null;
+  }
 
   if (type === 'kml') {
     return (
@@ -28,7 +32,7 @@ function Download({ data: geojson, filename = 'Geometry', type = 'geojson' }) {
           <p>
             Descarga en formato KML. Este formato puede ser utilizado en la mayoría de los Sistemas de Información Geográfica.
           </p>
-  )}
+        )}
         arrow={false}
         placement="left"
       >
