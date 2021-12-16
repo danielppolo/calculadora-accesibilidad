@@ -3,27 +3,27 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import Alert from '@mui/material/Alert';
-import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import FlareIcon from '@mui/icons-material/Flare';
 import { MEDIUMS, TIME_STEPS } from '../constants';
 import BarChart from './BarChart';
 import Notes from './tren-maya/Notes';
-import Credits from './tren-maya/Credits';
 import LayerSwitch from './LayerSwitch';
+import Card from './Card';
+import Step from './Step';
+import Subtitle from './Subtitle';
 
 const MEDIUM_TRANSLATIONS = {
   caminando: 'Caminando',
   bicicleta: 'Bicicleta',
   bus_actual: 'Transporte público local',
-  TM_caminando: 'Tren Maya',
-  bus_actual_TM: 'Tren Maya + Transporte público local',
-  bicicleta_TM: 'Tren Maya + Bicicleta',
-  bus_mejora_TM: 'Tren Maya + Rutas propuestas de TP',
+};
+const MEDIUM_ICONS = {
+  caminando: <DirectionsWalkIcon />,
+  bicicleta: <DirectionsBikeIcon />,
+  bus_actual: <DirectionsBusFilledIcon />,
 };
 
 function InfoCard({
@@ -34,31 +34,21 @@ function InfoCard({
   onTimeStepChange,
   hexagon,
   reachableOpportunities,
+
+  // Unused
   economicTiles,
   onEconomicTilesChange,
   populationDensity,
   onPopulationDensityChange,
-  pedestrian,
-  onPedestrianChange,
-  vehicular,
-  onVehicularChange,
-  publicTransport,
-  onPublicTransportChange,
-  ciclopath,
-  onCiclopathChange,
-  pedestrianProposal,
-  onPedestrianProposalChange,
-  vehicularProposal,
-  onVehicularProposalChange,
-  publicTransportProposal,
-  onPublicTransportProposalChange,
-  ciclopathProposal,
-  onCiclopathProposalChange,
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   return (
-    <div className={`bg-white fixed bottom-0 left-0 right-0 h-1/3 z-30 shadow-2xl border-2 m border-[#e6e6dc] py-6 px-6 md:top-4 md:bottom-auto md:left-4 md:right-auto md:w-1/3 md:max-w-xl md:h-auto overflow-y-auto ${expanded && 'md:bottom-4'}`}>
-      <h1 className="text-2xl font-bold mb-4 text-[#00534C]"> Plataforma de visualización de accesibilidad urbana, Cancún, Quintana Roo</h1>
+    <Card className="fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
+      <h1 className="text-3xl font-bold mb-4 text-black">
+        Calculadora
+        {' '}
+        <span className="font-medium">de accesibilidad de oportunidades</span>
+      </h1>
       <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso a empleos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en un radio de 150 kilómetros de Cancún a través de una herramienta interactiva.</p>
 
       <Button
@@ -72,10 +62,8 @@ function InfoCard({
 
       { expanded && (
         <div>
-          <div className="mb-6 mt-6">
-            <Divider light />
-          </div>
-          <h2 className="text-base font-medium mb-2 text-[#00534C]">Oportunidades en la zona</h2>
+          <div className="mb-12" />
+          <Subtitle>Oportunidades en la zona</Subtitle>
           <p className="text-sm mb-4">Para toda la zona, se cuentan con el siguiente número de oportunidades totales:</p>
           <div>
             {
@@ -91,190 +79,65 @@ function InfoCard({
           ))
         }
           </div>
-          <div className="mb-6 mt-4" />
-
-          <div className="mb-4 mt-8">
-            <h3 className="text-sm font-medium mb-2 text-[#00534C]">
-              Paso 1. Da click en un hexágono
-            </h3>
+          <div className="mb-12" />
+          <Subtitle>Explora</Subtitle>
+          <Step number={1} title="Da click en un hexágono">
             <Alert severity="info">Da click sobre un hexágono para habilitar los controles</Alert>
-          </div>
-
-          <div className="pb-4v mt-8">
-            <h3 className="text-sm font-medium mb-2 text-[#00534C]">
-              Paso 2. Selecciona el tiempo
-            </h3>
+          </Step>
+          <div className="mb-6" />
+          <Step number={2} title="Selecciona el tiempo">
             <ButtonGroup size="medium" aria-label="large button group" fullWidth>
               {
-            TIME_STEPS.map((step) => (
-              <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
-                {step}
-                min
-              </Button>
-            ))
-          }
+                TIME_STEPS.map((step) => (
+                  <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
+                    {step}
+                    min
+                  </Button>
+                ))
+              }
             </ButtonGroup>
-          </div>
-
-          <div className="mb-4 mt-8">
-            <h3 className="text-sm font-medium text-[#00534C] mb-4">
-              Paso 3. Selecciona un modo de transporte sustentable.
-            </h3>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <h4 className="text-sm text-center font-semibold uppercase">SITUACIÓN ACTUAL SIN TREN MAYA</h4>
-              </Grid>
-              <Grid item xs={6}>
-                <h4 className="text-sm text-center font-semibold uppercase">CON TREN MAYA</h4>
-              </Grid>
-              <Grid item xs={6}>
-                <Button startIcon={<DirectionsWalkIcon />} fullWidth disabled={!hexagon} variant={medium === 'caminando' ? 'contained' : 'outlined'} key="caminando" onClick={() => { onMediumChange('caminando'); }}>
-                  Caminando
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Tooltip title="Caminando + Tren Maya" arrow={false} placement="right">
-                  <Button startIcon={<DirectionsWalkIcon />} fullWidth disabled={!hexagon} variant={medium === 'TM_caminando' ? 'contained' : 'outlined'} key="TM_caminando" onClick={() => { onMediumChange('TM_caminando'); }}>
-                    Caminando
+          </Step>
+          <div className="mb-6" />
+          <Step number={3} title="Selecciona un modo de transporte sustentable.">
+            <ButtonGroup size="medium" aria-label="large button group" fullWidth>
+              {
+                MEDIUMS.map((mdm) => (
+                  <Button disabled={!hexagon} variant={medium === mdm ? 'contained' : 'outlined'} key={mdm} onClick={() => { onTimeStepChange(mdm); }}>
+                    {MEDIUM_ICONS[mdm]}
                   </Button>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={6}>
-                <Button startIcon={<DirectionsBikeIcon />} fullWidth disabled={!hexagon} variant={medium === 'bicicleta' ? 'contained' : 'outlined'} key="bicicleta" onClick={() => { onMediumChange('bicicleta'); }}>
-                  Bicicleta
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Tooltip title="Bicicleta + Tren Maya" arrow={false} placement="right">
-                  <Button startIcon={<DirectionsBikeIcon />} fullWidth disabled={!hexagon} variant={medium === 'bicicleta_TM' ? 'contained' : 'outlined'} key="bicicleta_TM" onClick={() => { onMediumChange('bicicleta_TM'); }}>
-                    Bicicleta
-                  </Button>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={6}>
-                <Button startIcon={<DirectionsBusFilledIcon />} fullWidth disabled={!hexagon} variant={medium === 'bus_actual' ? 'contained' : 'outlined'} key="bus_actual" onClick={() => { onMediumChange('bus_actual'); }}>
-                  T. público
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Tooltip title="Transporte Público + Tren Maya" arrow={false} placement="right">
-                  <Button startIcon={<DirectionsBusFilledIcon />} fullWidth disabled={!hexagon} variant={medium === 'bus_actual_TM' ? 'contained' : 'outlined'} key="bus_actual_TM" onClick={() => { onMediumChange('bus_actual_TM'); }}>
-                    T. público
-                  </Button>
-                </Tooltip>
-              </Grid>
-              <Grid item xs={6} />
-              <Grid item xs={6}>
-                <Tooltip title="Propuesta de Transporte Público + Tren Maya" arrow={false} placement="right">
-                  <Button startIcon={<FlareIcon />} fullWidth disabled={!hexagon} variant={medium === 'bus_mejora_TM' ? 'contained' : 'outlined'} key="bus_mejora_TM" onClick={() => { onMediumChange('bus_mejora_TM'); }}>
-                    Propuesta de TP
-                  </Button>
-                </Tooltip>
-              </Grid>
-            </Grid>
-          </div>
-
-          <div className="mb-4 mt-8">
-            <h3 className="text-sm font-medium mb-2 text-[#00534C]">
-              Paso 4. Observa la isocrona y el histograma.
-            </h3>
+                ))
+              }
+            </ButtonGroup>
+          </Step>
+          <div className="mb-6" />
+          <Step number={4} title="Observa la isocrona y el histograma.">
             {
-          reachableOpportunities ? (
-            <>
-              <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
-              <BarChart
-                data={reachableOpportunities}
-              />
-            </>
-          ) : (
-            <Alert severity="info">Da click sobre un hexágono para obtener más información</Alert>
-          )
-        }
-          </div>
-
-          <div className="mb-4 mt-8">
-            <h3 className="text-sm mb-4 font-medium text-[#00534C]">
-              Paso 5. Mostrar capa de referencia
-            </h3>
+              reachableOpportunities ? (
+                <>
+                  <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades al alcance</p>
+                  <BarChart
+                    data={reachableOpportunities}
+                  />
+                </>
+              ) : (
+                <Alert severity="info">Da click sobre un hexágono para obtener más información</Alert>
+              )
+            }
+          </Step>
+          <div className="mb-6" />
+          <Step number={5} title="Mostrar capa de referencia">
             {/* <LayerSwitch
-          title="Usos de Suelo y Vegetación."
-          legend={(
-            <span>
-              Fuente:
-              {' '}
-              <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a>
-            </span>
-          )}
-          checked={economicTiles}
-          onChange={onEconomicTilesChange}
-        /> */}
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <h4 className="text-sm font-semibold uppercase">Infraestructura existente</h4>
-              </Grid>
-              <Grid item xs={6}>
-                <h4 className="text-sm font-semibold uppercase">Propuesta de proyectos de movilidad</h4>
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Transporte público"
-                  checked={publicTransport}
-                  onChange={onPublicTransportChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Transporte público"
-                  checked={publicTransportProposal}
-                  onChange={onPublicTransportProposalChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Peatonal"
-                  checked={pedestrian}
-                  onChange={onPedestrianChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Peatonal"
-                  checked={pedestrianProposal}
-                  onChange={onPedestrianProposalChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Ciclista"
-                  checked={ciclopath}
-                  onChange={onCiclopathChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Ciclista"
-                  checked={ciclopathProposal}
-                  onChange={onCiclopathProposalChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Vehicular"
-                  checked={vehicular}
-                  onChange={onVehicularChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <LayerSwitch
-                  title="Vehicular"
-                  checked={vehicularProposal}
-                  onChange={onVehicularProposalChange}
-                />
-              </Grid>
-            </Grid>
-            <div className="mb-6 mt-6">
-              <Divider light />
-            </div>
+              title="Usos de Suelo y Vegetación."
+              legend={(
+                <span>
+                  Fuente:
+                  {' '}
+                  <a className="uppercase underline" href="http://www.conabio.gob.mx/informacion/metadata/gis/usv250s6gw.xml?_httpcache=yes&_xsl=/db/metadata/xsl/fgdc_html.xsl&_indent=no">CONABIO</a>
+                </span>
+              )}
+              checked={economicTiles}
+              onChange={onEconomicTilesChange}
+            /> */}
             <LayerSwitch
               title="Usos de suelo urbano"
               // legend="Fuente: ITDP 2021"
@@ -287,20 +150,16 @@ function InfoCard({
               checked={populationDensity}
               onChange={onPopulationDensityChange}
             />
-
-          </div>
+          </Step>
 
           <div className="mb-4 mt-4">
             <Divider light />
           </div>
 
-          <div>
-            <Notes />
-            <Credits />
-          </div>
+          <Notes />
         </div>
       ) }
-    </div>
+    </Card>
   );
 }
 

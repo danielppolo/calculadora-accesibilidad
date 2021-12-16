@@ -3,10 +3,6 @@ export const MEDIUMS = [
   'caminando',
   'bicicleta',
   'bus_actual',
-  'TM_caminando',
-  'bus_actual_TM',
-  'bicicleta_TM',
-  'bus_mejora_TM',
 ];
 
 export const OPPORTUNITIES = {
