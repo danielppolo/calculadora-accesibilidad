@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { Button, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import LaunchIcon from '@mui/icons-material/Launch';
 import tokml from 'tokml';
+import Button from './Button';
 
 function Download({ data: geojson, filename = 'Geometry', type = 'geojson' }) {
   useEffect(() => {
@@ -37,7 +38,7 @@ function Download({ data: geojson, filename = 'Geometry', type = 'geojson' }) {
         placement="left"
       >
         <a id="download-kml" href="" download={`${filename}.kml`} type="text">
-          <Button fullWidth variant="contained" endIcon={<InfoOutlinedIcon />}>
+          <Button>
             Descargar
           </Button>
         </a>

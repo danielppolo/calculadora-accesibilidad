@@ -4,18 +4,18 @@ import PropTypes from 'prop-types';
 import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
-import Legend from './Legend';
 import Loader from './Loader';
-import Download from './Download';
+import LegendBar from './LegendBar'
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
-import Fab from '@mui/material/Fab';
-import LayersIcon from '@mui/icons-material/Layers';
-import LayersClearIcon from '@mui/icons-material/LayersClear';
 
 // Mexico
 import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
+import TimeControls from './TimeControls';
+import TransportControls from './TransportControls';
+import LayerControls from './LayerControls';
+import ControlsCard from './ControlsCard';
 
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
@@ -26,6 +26,7 @@ const defaultMedium = MEDIUMS[0];
 const defaultTimeStep = TIME_STEPS[1];
 const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 const popup = new Popup({
+  className: 'black-popup',
   closeButton: false,
   closeOnClick: false
 });
@@ -49,7 +50,6 @@ function Map({ city, data }) {
   const [loading, setLoading] = useState(false)
   const [rendered, setRendered] = useState(false);
   const [opportunity, setOpportunity] = useState(defaultOpportunity);
-  const [showLegend, setShowLegend] = useState(false);
   const [hexagon, setHexagon] = useState();
   const [medium, setMedium] = useState(defaultMedium);
   const [timeStep, setTimeStep] = useState(defaultTimeStep);
@@ -230,7 +230,7 @@ function Map({ city, data }) {
 
   return (
     <>
-      <InfoCard
+      <ControlsCard
         hexagon={hexagon}
         reachableOpportunities={metadata.opportunities}
         cityData={opportunities}
@@ -240,25 +240,29 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeStepChange}
         onOpportunityChange={handleOpportunityChange}
         opportunity={opportunity}
+        geojson={geojson}
+        legendTitle={legend.title}
       />
-
-      <div className="block fixed bottom-4 right-4 z-50 md:hidden">
-        <Fab color="primary" onClick={() => { setShowLegend(!showLegend) }} size="medium" aria-label="add">
-          {showLegend ? <LayersClearIcon /> : <LayersIcon />}
-        </Fab>
-      </div>
-      <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-8 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
-        <div className="space-y-4">
-          <Download data={geojson} filename={legend.title} type="kml" />
-          {/* {
-            populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
-          } */}
-          {
-            current && legend  && (<Legend title={legend.title} items={legend.intervals} />)
-          }
-        </div>
-      </div>
-      
+      {/* <div className="z-30 fixed top-3 right-14">
+        <TransportControls
+          hexagon={hexagon}
+          medium={medium}
+          onMediumChange={handleMediumChange}
+        />
+        <div className="mb-3"></div>
+        <TimeControls
+          hexagon={hexagon}
+          timeStep={timeStep}
+          onTimeStepChange={handleTimeStepChange}
+        />
+      </div> */}
+      {/* <LayerControls      /> */}
+      <LegendBar 
+        geojson={geojson}
+        legendTitle={legend.title}
+        legendDictionary={legend.intervals}
+        current={current}
+      />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading}/>
     </>

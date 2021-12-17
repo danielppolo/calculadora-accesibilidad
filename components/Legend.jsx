@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from './Card';
 
 const Swatch = ({
   color,
@@ -18,12 +19,12 @@ function Legend({
   items,
 }) {
   return (
-    <div className="bg-white h-1/3 z-50 border-2 border-[#e6e6dc] p-4 md:h-auto w-full">
+    <Card className="h-1/3 z-50 p-4 pt-2 w-full md:h-auto">
       <h3 className="text-base font-semibold pb-2">{title}</h3>
       {
         items.map(({ color, label }) => (<LegendItem key={label} color={color} label={label} />))
       }
-    </div>
+    </Card>
   );
 }
 

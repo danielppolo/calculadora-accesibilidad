@@ -9,10 +9,10 @@ import 'tailwindcss/tailwind.css';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#221E1B',
+      main: '#1A1A1A',
     },
     secondary: {
-      main: '#FFF',
+      main: '#F1F3EE',
     },
     info: {
       light: '#307DC6',

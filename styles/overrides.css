@@ -4,13 +4,13 @@
   opacity: 0;
 }
 .mapboxgl-popup-content {
-  border-radius: 4px;
-  padding: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 0;
+  padding: 4px 8px;
 }
 .mapboxgl-popup.black-popup .mapboxgl-popup-content {
-  background-color: black;
-  color: white;
+  font-family: sofia-pro, sans-serif !important;
+  background-color: #1A1A1A;
+  color: #F1F3EE;
 }
 .mapboxgl-popup-content p {
   margin: 0;
