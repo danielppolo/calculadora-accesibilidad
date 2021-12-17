@@ -1,7 +1,7 @@
 {
   "extends": [
-    // "next"
-    "airbnb",
-    "airbnb/hooks"
+    "next"
+    // "airbnb",
+    // "airbnb/hooks"
   ]
 }
