@@ -1,6 +1,5 @@
 import React from 'react';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import PropTypes from 'prop-types';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
@@ -9,7 +8,7 @@ import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import { MenuItem, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import {
-  TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, COLORS, TRANSPORT_COLORS,
+  TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS,
 } from '../constants';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
@@ -35,6 +34,8 @@ function ControlsCard({
   opportunity,
   hexagon,
   reachableOpportunities,
+  economicLayer,
+  onEconomicLayerChange,
 }) {
   return (
     <Card className="p-6 fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
@@ -139,7 +140,9 @@ function ControlsCard({
       <div className="mb-6" />
       <Step number={5} title="Mostrar capa de referencia">
         <LayerSwitch
-          title="Usos de suelo urbano"
+          title="Capa de marginación"
+          onChange={onEconomicLayerChange}
+          checked={economicLayer}
         />
       </Step>
 
@@ -151,15 +154,5 @@ function ControlsCard({
     </Card>
   );
 }
-
-ControlsCard.propTypes = {
-  medium: PropTypes.string.isRequired,
-  transport: PropTypes.array.isRequired,
-  opportunity: PropTypes.string.isRequired,
-  timeframe: PropTypes.number.isRequired,
-  onOpportunityChange: PropTypes.func.isRequired,
-  onTimeStepChange: PropTypes.func.isRequired,
-  onMediumChange: PropTypes.func.isRequired,
-};
 
 export default ControlsCard;

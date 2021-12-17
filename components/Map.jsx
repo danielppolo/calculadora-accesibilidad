@@ -11,7 +11,7 @@ import useCityData from '../hooks/useCityData';
 import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
 import ControlsCard from './ControlsCard';
-
+import useMarginalizationLayers from '../hooks/useMarginalizationLayers'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -23,7 +23,8 @@ const defaultParams = {
   hexagon: undefined,
   transport: [defaultTransport],
   timeframe: defaultTimeframe, 
-  opportunity: defaultOpportunity
+  opportunity: defaultOpportunity,
+  agebs: false,
 }
 const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 const popup = new Popup({
@@ -54,7 +55,7 @@ function Map({ city, data }) {
   const [rendered, setRendered] = useState(false);
   const [params, setParams] = useState(defaultParams)
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
-  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers()
   const getCurrentTimeframe = () => currentTimeframe
   const getCurrentTransport = () => currentTransport
 
@@ -62,6 +63,7 @@ function Map({ city, data }) {
     if (map && mapLoaded && features.length > 0 && !rendered) {
       // Load base grid
       loadGrid(map, features)
+      loadAgebs(map)
       map.on('mousemove', gridId, (e) => {
         popup
           .setLngLat(e.lngLat)
@@ -194,14 +196,30 @@ function Map({ city, data }) {
   const handleOpportunityChange = (event) => {
     const nextOpportunity = event.target.value;
     hideAll(map)
+    hideAgebs(map)
     show(map, nextOpportunity);
     setParams({
       ...params,
       opportunity: nextOpportunity,
       hexagon: undefined,
+      agebs: false,
     })
-    // hideAgebs()
-    // setEconomicTiles(false)
+  };
+
+  const handleEconomicChange = () => {
+    if (params.agebs) {
+      hideAgebs(map)
+      setParams({
+        ...params,
+        agebs: false,
+      })
+    } else {
+      showAgebs(map)
+      setParams({
+        ...params,
+        agebs: true,
+      })
+    }
   };
 
   const handleTimeframeChange = (value) => {
@@ -245,11 +263,13 @@ function Map({ city, data }) {
         opportunity={params.opportunity}
         cityData={cityData}
         geojson={geojson}
+        economicLayer={params.agebs}
         reachableOpportunities={metadata.opportunities}
         legendTitle={legend.title}
         onMediumChange={handleTransportChange}
         onTimeStepChange={handleTimeframeChange}
         onOpportunityChange={handleOpportunityChange}
+        onEconomicLayerChange={handleEconomicChange}
       />
       {
         params.transport.length === 1 && ( 
