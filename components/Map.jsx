@@ -1,7 +1,7 @@
 import mapboxgl, { Popup } from 'mapbox-gl';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { CANCUN_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS } from '../constants';
+import { CANCUN_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS, TRANSPORT_TRANSLATIONS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import Loader from './Loader';
 import LegendBar from './LegendBar'
@@ -54,6 +54,7 @@ function Map({ city, data }) {
   const [loading, setLoading] = useState(false)
   const [rendered, setRendered] = useState(false);
   const [params, setParams] = useState(defaultParams)
+  const [chartData, setChartData] = useState({})
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers()
   const getCurrentTimeframe = () => currentTimeframe
@@ -106,7 +107,7 @@ function Map({ city, data }) {
           const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/features/${featureId}.json`);
           const text = await response.text();
           const json = JSON.parse(text);
-
+          const incomingChartData = {};
           // Create 9 isochrones variant layers
           [...TRANSPORTS].reverse().forEach((med, mediumIndex) => {
             [...TIMEFRAMES].reverse().forEach((step) => {
@@ -132,7 +133,6 @@ function Map({ city, data }) {
                 },
               })
               
-              console.log('add', COLORS[TRANSPORT_COLORS[med]])
               add({
                 map,
                 legendTitle: 'Tiempo de traslado',
@@ -146,17 +146,20 @@ function Map({ city, data }) {
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[med]],
-                metadata: {
-                  opportunities: {
-                    'Personal ocupado': count(filteredFeatures, 'jobs_w'),
-                    Empresas: count(filteredFeatures, 'empresas'),
-                    Clínicas: count(filteredFeatures, 'clinicas'),
-                    Escuelas: count(filteredFeatures, 'escuelas'),
-                    'Zonas turísticas': count(filteredFeatures, 'destinos'),
-                    Estaciones: count(filteredFeatures, 'Estaciones'),
-                  }
-                }
               });
+
+              incomingChartData[getHexagonId(featureId, med, step)] = {
+                facilities: {
+                  Empresas: count(filteredFeatures, 'empresas'),
+                  Clínicas: count(filteredFeatures, 'clinicas'),
+                  Escuelas: count(filteredFeatures, 'escuelas'),
+                  'Zonas turísticas': count(filteredFeatures, 'destinos'),
+                  Estaciones: count(filteredFeatures, 'Estaciones'),
+                },
+                opportunities: {
+                  'Personal ocupado': count(filteredFeatures, 'jobs_w'),
+                }
+              }
 
               map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
                 popup
@@ -169,6 +172,7 @@ function Map({ city, data }) {
               });
             });
           });
+          setChartData(incomingChartData)
         } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
         } finally {
@@ -254,6 +258,27 @@ function Map({ city, data }) {
     } 
   };
 
+  const buildChartData = useCallback((key) => {
+    if (params.hexagon) {
+      const activeLayers = params.transport.map(transport => ({
+        id: getHexagonId(params.hexagon.id, transport, params.timeframe),
+        color: COLORS[TRANSPORT_COLORS[transport]][0]
+      }))
+      if (!activeLayers.length) {
+        return null
+      }
+      return {
+        labels: Object.keys(chartData[activeLayers[0].id][key]),
+        datasets: activeLayers.map(({id, color, label}) => ({
+          label,
+          data: Object.values(chartData[id][key]),
+          backgroundColor: color
+        })),
+      }
+    }
+    return null
+  }, [chartData, params])
+
   return (
     <>
       <ControlsCard
@@ -264,7 +289,8 @@ function Map({ city, data }) {
         cityData={cityData}
         geojson={geojson}
         economicLayer={params.agebs}
-        reachableOpportunities={metadata.opportunities}
+        reachableOpportunities={buildChartData('opportunities')}
+        reachableFacilities={buildChartData('facilities')}
         legendTitle={legend.title}
         onMediumChange={handleTransportChange}
         onTimeStepChange={handleTimeframeChange}

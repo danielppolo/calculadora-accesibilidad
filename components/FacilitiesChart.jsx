@@ -11,15 +11,7 @@ function FacilitiesChart({ data }) {
 
       const config = {
         type: 'bar',
-        data: {
-          labels: Object.keys(data),
-          datasets: [{
-            label: 'Oportunidades',
-            backgroundColor: '#00524C',
-            borderColor: 'rgb(0,0,0)',
-            data: Object.values(data),
-          }],
-        },
+        data,
         options: {
           plugins: {
             legend: false,

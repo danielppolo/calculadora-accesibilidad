@@ -34,6 +34,7 @@ function ControlsCard({
   opportunity,
   hexagon,
   reachableOpportunities,
+  reachableFacilities,
   economicLayer,
   onEconomicLayerChange,
 }) {
@@ -121,20 +122,29 @@ function ControlsCard({
       <div className="mb-6" />
       <Step number={4} title="Observa la isocrona y el histograma.">
         {
-          reachableOpportunities ? (
-            <>
-              <p className="text-sm font-medium mb-2 mt-4">Número de empleos alcanzados</p>
-              <FacilitiesChart
-                data={reachableOpportunities}
-              />
+          reachableOpportunities && (
+          <div>
+            <p className="text-sm font-medium mb-2 mt-4">Número de empleos alcanzados</p>
+            <FacilitiesChart
+              data={reachableOpportunities}
+            />
+          </div>
+          )
+        }
+        {
+          reachableFacilities && (
+            <div>
               <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades alcanzados</p>
               <PeopleChart
-                data={reachableOpportunities}
+                data={reachableFacilities}
               />
-            </>
-          ) : (
-            <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
+            </div>
           )
+        }
+        {
+         !hexagon && (
+         <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
+         )
         }
       </Step>
       <div className="mb-6" />
