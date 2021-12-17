@@ -1,6 +1,5 @@
 import React from 'react';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
@@ -8,7 +7,10 @@ import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import { MenuItem, TextField } from '@mui/material';
-import { MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
+import Button from '@mui/material/Button';
+import {
+  TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, COLORS, TRANSPORT_COLORS,
+} from '../constants';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
@@ -17,7 +19,7 @@ import Card from './Card';
 import Step from './Step';
 import Subtitle from './Subtitle';
 
-const MEDIUM_ICONS = {
+const TRANSPORT_ICONS = {
   caminando: <DirectionsWalkIcon />,
   bicicleta: <DirectionsBikeIcon />,
   bus_actual: <DirectionsBusFilledIcon />,
@@ -88,7 +90,7 @@ function ControlsCard({
       <Step number={2} title="Selecciona el tiempo">
         <ButtonGroup size="medium" aria-label="large button group" fullWidth>
           {
-            TIME_STEPS.map((step) => (
+            TIMEFRAMES.map((step) => (
               <Button disabled={!hexagon} variant={timeframe === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
                 {step}
                 min
@@ -101,9 +103,15 @@ function ControlsCard({
       <Step number={3} title="Selecciona un modo de transporte sustentable.">
         <ButtonGroup size="medium" aria-label="large button group" fullWidth>
           {
-            MEDIUMS.map((mdm) => (
-              <Button disabled={!hexagon} variant={transport.includes(mdm) ? 'contained' : 'outlined'} key={mdm} onClick={() => { onMediumChange(mdm); }}>
-                {MEDIUM_ICONS[mdm]}
+            TRANSPORTS.map((mdm) => (
+              <Button
+                disabled={!hexagon}
+                variant={transport.includes(mdm) ? 'contained' : 'outlined'}
+                key={mdm}
+                onClick={() => { onMediumChange(mdm); }}
+                color={TRANSPORT_COLORS[mdm]}
+              >
+                {TRANSPORT_ICONS[mdm]}
               </Button>
             ))
           }

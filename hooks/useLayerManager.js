@@ -25,10 +25,11 @@ const useLayerManager = () => {
     beforeId,
     stepSize = NUMBER_OF_BUCKETS,
     reverseColors = false,
+    colors = ['#f8dda1', '#f1bb43'],
+    opacity = 0.5,
   }) => {
     if (map && !(id in state)) {
-      const color1 = '#f8dda1';
-      const color2 = '#f1bb43';
+      const [color1, color2] = colors;
 
       // Get color intervals
       const intervals = getIntervals(maxValue, stepSize);
@@ -55,7 +56,7 @@ const useLayerManager = () => {
         },
         // filter: ['>', ['get', property], 0],
         paint: {
-          'fill-opacity': 0.5,
+          'fill-opacity': opacity,
           'fill-color': getColor(property, reversedIntervals, colorIntervals),
           'fill-outline-color': ['case',
             ['has', 'selected'], ['rgba', 0, 0, 0, 1],

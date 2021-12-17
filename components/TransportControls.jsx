@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import { MEDIUMS } from '../constants';
+import { TRANSPORTS } from '../constants';
 
 const MEDIUM_ICONS = {
   caminando: <DirectionsWalkIcon />,
@@ -21,7 +21,7 @@ function TransportControls({
     <div>
       <ButtonGroup size="medium" aria-label="large button group" fullWidth>
         {
-          MEDIUMS.map((mdm) => (
+          TRANSPORTS.map((mdm) => (
             <Button disabled={!hexagon} variant={medium === mdm ? 'contained' : 'outlined'} key={mdm} onClick={() => { onMediumChange(mdm); }}>
               {MEDIUM_ICONS[mdm]}
             </Button>

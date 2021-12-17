@@ -1,21 +1,15 @@
 import mapboxgl, { Popup } from 'mapbox-gl';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../constants';
+import { CANCUN_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
-import InfoCard from './InfoCard';
 import Loader from './Loader';
 import LegendBar from './LegendBar'
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
 import useCityData from '../hooks/useCityData';
-
-// Mexico
 import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
-import TimeControls from './TimeControls';
-import TransportControls from './TransportControls';
-import LayerControls from './LayerControls';
 import ControlsCard from './ControlsCard';
 
 
@@ -23,8 +17,8 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
 const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
-const defaultTransport = MEDIUMS[0];
-const defaultTimeframe = TIME_STEPS[1];
+const defaultTransport = TRANSPORTS[0];
+const defaultTimeframe = TIMEFRAMES[1];
 const defaultParams = {
   hexagon: undefined,
   transport: [defaultTransport],
@@ -111,9 +105,9 @@ function Map({ city, data }) {
           const text = await response.text();
           const json = JSON.parse(text);
 
-          // Create 9 isochrone variant layers
-          MEDIUMS.forEach((med, mediumIndex) => {
-            TIME_STEPS.forEach((step) => {
+          // Create 9 isochrones variant layers
+          [...TRANSPORTS].reverse().forEach((med, mediumIndex) => {
+            [...TIMEFRAMES].reverse().forEach((step) => {
               const featureIds = Object.keys(json)
               const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step && data[id]);
               const filteredFeatures = filteredIds.map((id) => ({
@@ -136,6 +130,7 @@ function Map({ city, data }) {
                 },
               })
               
+              console.log('add', COLORS[TRANSPORT_COLORS[med]])
               add({
                 map,
                 legendTitle: 'Tiempo de traslado',
@@ -148,6 +143,7 @@ function Map({ city, data }) {
                 beforeId: gridId,
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
+                colors: COLORS[TRANSPORT_COLORS[med]],
                 metadata: {
                   opportunities: {
                     'Personal ocupado': count(filteredFeatures, 'jobs_w'),
@@ -255,12 +251,16 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeframeChange}
         onOpportunityChange={handleOpportunityChange}
       />
-      <LegendBar 
-        geojson={geojson}
-        legendTitle={legend.title}
-        legendDictionary={legend.intervals}
-        current={current}
-      />
+      {
+        params.transport.length === 1 && ( 
+          <LegendBar 
+          geojson={geojson}
+          legendTitle={legend.title}
+          legendDictionary={legend.intervals}
+          current={current}
+        />
+        )
+      }
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading}/>
     </>

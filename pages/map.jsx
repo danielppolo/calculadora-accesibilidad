@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import Map from '../components/Map';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import Map from '../components/Map';
 
-const cityName = 'fonatur-tren-maya'
+const cityName = 'fonatur-tren-maya';
 
 export default function Home() {
   const [city, setCity] = useState();
@@ -19,13 +19,13 @@ export default function Home() {
 
   return (
     <>
-    <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={!city}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>
-    <Map city={cityName} data={city || {}} />
-</>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={!city}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Map city={cityName} data={city || {}} />
+    </>
   );
 }
