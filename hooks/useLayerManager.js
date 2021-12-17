@@ -21,6 +21,7 @@ const useLayerManager = () => {
     maxValue,
     visible,
     metadata,
+    unit,
     beforeId,
     stepSize = NUMBER_OF_BUCKETS,
     reverseColors = false,
@@ -69,7 +70,7 @@ const useLayerManager = () => {
       layerMetadata[id] = metadata;
       legends[id] = {
         title: legendTitle,
-        intervals: getLegend(intervals, legendColorIntervals),
+        intervals: getLegend(intervals, legendColorIntervals, unit),
       };
 
       if (visible) {

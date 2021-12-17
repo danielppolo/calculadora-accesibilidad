@@ -14,7 +14,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
 
 // Mexico
-// import useEconomicZones from '../hooks/useEconomicZones';
+import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
 
 
@@ -56,7 +56,7 @@ function Map({ city, data }) {
   const [features, setFeatures] = useState(Object.values(data));
   const [opportunities, setOpportunities] = useState({});
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
-  // const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
+  const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
 
   
   const getCurrentTimestep = () => currentTimestep
@@ -152,7 +152,8 @@ function Map({ city, data }) {
 
               add({
                 map,
-                legendTitle: 'Tiempo de traslado (minutos)',
+                legendTitle: 'Tiempo de traslado',
+                unit: 'min',
                 id: getHexagonId(featureId, med, step),
                 features: filteredFeatures,
                 property: med,
@@ -227,22 +228,11 @@ function Map({ city, data }) {
     currentTimestep   = value;
   };
 
-
-  const reachableOpportunities = useMemo(() => {
-    if (!metadata || !metadata?.opportunities) return null;
-
-    const opp = {...metadata.opportunities}
-    if (['caminando', 'bicicleta', 'bus_actual'].includes(medium)) {
-      delete opp.Estaciones
-    }
-    return opp
-  }, [medium, metadata])
-
   return (
     <>
       <InfoCard
         hexagon={hexagon}
-        reachableOpportunities={reachableOpportunities}
+        reachableOpportunities={metadata.opportunities}
         cityData={opportunities}
         medium={medium}
         onMediumChange={handleMediumChange}

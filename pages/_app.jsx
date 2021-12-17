@@ -31,7 +31,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>Calculadora de accesibilidad</title>
+        <title>Visualizador de accesibilidad urbana y acceso a oportunidades</title>
+        <meta name="description" content="Una plataforma para facilitar el diseño de soluciones de movilidad en ciudades mexicanas" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
