@@ -1,5 +1,5 @@
 import mapboxgl, { Popup } from 'mapbox-gl';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, createElement } from 'react';
 import PropTypes from 'prop-types';
 import { MEXICO_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS, TRANSPORT_TRANSLATIONS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
@@ -36,7 +36,7 @@ const popup = new Popup({
 let currentTimeframe = defaultTimeframe
 let currentTransport =  [defaultTransport]
 
-function Map({ city, data }) {
+function Map({ city, data, cities, onCityChange }) {
   const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
   const {
     state,
@@ -52,16 +52,39 @@ function Map({ city, data }) {
   useFitMap(map, geojson?.features)
   const {features, metadata: cityData} = useCityData(data);
   const [loading, setLoading] = useState(false)
-  const [rendered, setRendered] = useState(false);
   const [params, setParams] = useState(defaultParams)
   const [chartData, setChartData] = useState({})
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers()
   const getCurrentTimeframe = () => currentTimeframe
   const getCurrentTransport = () => currentTransport
+  
+  useEffect(() => {
+    if (map && cities) {
+      // Display cities
+      Object.keys(cities).forEach(cty => {
+        console.log(cities[cty].coordinates)
+        const el = document.createElement('div')
+        el.style.width = `12px`;
+        el.style.height = `12px`;
+        el.style.borderRadius = '50%'
+        el.style.backgroundColor = '#DA546F'
+        el.addEventListener('click', () => {
+          onCityChange(cty)
+          map.flyTo({
+            center: cities[cty].coordinates,
+            zoom: 11,
+            duration: 2000,
+            offset: [100, 50]
+            })
+        })
+        new mapboxgl.Marker(el).setLngLat(cities[cty].coordinates).addTo(map)
+      })
+    }    
+  }, [map, cities])
 
   useEffect(() => {
-    if (map && mapLoaded && features.length > 0 && !rendered) {
+    if (map && mapLoaded && features.length > 0) {
       // Load base grid
       loadGrid(map, features)
       loadAgebs(map)
@@ -193,9 +216,8 @@ function Map({ city, data }) {
           },
         })
       });
-      setRendered(true)
     }
-  }, [map, mapLoaded, features, rendered])
+  }, [map, mapLoaded, features])
 
   const handleOpportunityChange = (event) => {
     const nextOpportunity = event.target.value;
@@ -260,6 +282,7 @@ function Map({ city, data }) {
 
   const buildChartData = useCallback((key) => {
     if (params.hexagon) {
+      console.log(chartData)
       const activeLayers = params.transport.map(transport => ({
         id: getHexagonId(params.hexagon.id, transport, params.timeframe),
         color: COLORS[TRANSPORT_COLORS[transport]][0]
