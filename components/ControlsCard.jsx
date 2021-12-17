@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -17,11 +17,6 @@ import Card from './Card';
 import Step from './Step';
 import Subtitle from './Subtitle';
 
-const MEDIUM_TRANSLATIONS = {
-  caminando: 'Caminando',
-  bicicleta: 'Bicicleta',
-  bus_actual: 'Transporte público local',
-};
 const MEDIUM_ICONS = {
   caminando: <DirectionsWalkIcon />,
   bicicleta: <DirectionsBikeIcon />,
@@ -30,16 +25,15 @@ const MEDIUM_ICONS = {
 
 function ControlsCard({
   cityData,
-  medium,
+  transport,
   onMediumChange,
-  timeStep,
+  timeframe,
   onTimeStepChange,
   onOpportunityChange,
   opportunity,
   hexagon,
   reachableOpportunities,
 }) {
-  const [expanded, setExpanded] = useState(true);
   return (
     <Card className="p-6 fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
       <h1 className="text-3xl font-bold mb-4 text-black">
@@ -94,25 +88,25 @@ function ControlsCard({
       <Step number={2} title="Selecciona el tiempo">
         <ButtonGroup size="medium" aria-label="large button group" fullWidth>
           {
-                TIME_STEPS.map((step) => (
-                  <Button disabled={!hexagon} variant={timeStep === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
-                    {step}
-                    min
-                  </Button>
-                ))
-              }
+            TIME_STEPS.map((step) => (
+              <Button disabled={!hexagon} variant={timeframe === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
+                {step}
+                min
+              </Button>
+            ))
+          }
         </ButtonGroup>
       </Step>
       <div className="mb-6" />
       <Step number={3} title="Selecciona un modo de transporte sustentable.">
         <ButtonGroup size="medium" aria-label="large button group" fullWidth>
           {
-                MEDIUMS.map((mdm) => (
-                  <Button disabled={!hexagon} variant={medium === mdm ? 'contained' : 'outlined'} key={mdm} onClick={() => { onMediumChange(mdm); }}>
-                    {MEDIUM_ICONS[mdm]}
-                  </Button>
-                ))
-              }
+            MEDIUMS.map((mdm) => (
+              <Button disabled={!hexagon} variant={transport.includes(mdm) ? 'contained' : 'outlined'} key={mdm} onClick={() => { onMediumChange(mdm); }}>
+                {MEDIUM_ICONS[mdm]}
+              </Button>
+            ))
+          }
         </ButtonGroup>
       </Step>
       <div className="mb-6" />
@@ -152,8 +146,9 @@ function ControlsCard({
 
 ControlsCard.propTypes = {
   medium: PropTypes.string.isRequired,
+  transport: PropTypes.array.isRequired,
   opportunity: PropTypes.string.isRequired,
-  timeStep: PropTypes.number.isRequired,
+  timeframe: PropTypes.number.isRequired,
   onOpportunityChange: PropTypes.func.isRequired,
   onTimeStepChange: PropTypes.func.isRequired,
   onMediumChange: PropTypes.func.isRequired,

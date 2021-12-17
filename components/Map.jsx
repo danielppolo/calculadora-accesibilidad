@@ -8,6 +8,7 @@ import Loader from './Loader';
 import LegendBar from './LegendBar'
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
+import useCityData from '../hooks/useCityData';
 
 // Mexico
 import useEconomicZones from '../hooks/useEconomicZones';
@@ -22,8 +23,14 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
 const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
-const defaultMedium = MEDIUMS[0];
-const defaultTimeStep = TIME_STEPS[1];
+const defaultTransport = MEDIUMS[0];
+const defaultTimeframe = TIME_STEPS[1];
+const defaultParams = {
+  hexagon: undefined,
+  transport: [defaultTransport],
+  timeframe: defaultTimeframe, 
+  opportunity: defaultOpportunity
+}
 const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 const popup = new Popup({
   className: 'black-popup',
@@ -31,8 +38,8 @@ const popup = new Popup({
   closeOnClick: false
 });
 
-let currentTimestep = defaultTimeStep
-let currentMedium = defaultMedium
+let currentTimeframe = defaultTimeframe
+let currentTransport =  [defaultTransport]
 
 function Map({ city, data }) {
   const [map, mapLoaded] = useMap({ center: CANCUN_COORDINATES });
@@ -44,39 +51,18 @@ function Map({ city, data }) {
     add,
     show,
     hide,
+    hideAll,
     geojson,
   } = useLayerManager(map);
   useFitMap(map, geojson?.features)
+  const {features, metadata: cityData} = useCityData(data);
   const [loading, setLoading] = useState(false)
   const [rendered, setRendered] = useState(false);
-  const [opportunity, setOpportunity] = useState(defaultOpportunity);
-  const [hexagon, setHexagon] = useState();
-  const [medium, setMedium] = useState(defaultMedium);
-  const [timeStep, setTimeStep] = useState(defaultTimeStep);
-  const [features, setFeatures] = useState(Object.values(data));
-  const [opportunities, setOpportunities] = useState({});
+  const [params, setParams] = useState(defaultParams)
   const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useEconomicZones()
-
-  
-  const getCurrentTimestep = () => currentTimestep
-  const getCurrentMedium = () => currentMedium
-
-  useEffect(() => {
-    if (data) {
-      const nextFeatures = Object.values(data)
-      setFeatures(nextFeatures);
-      setOpportunities({
-        'Personal ocupado': count(nextFeatures, 'jobs_w'),
-        Empresas: count(nextFeatures, 'empresas'),
-        Clínicas: count(nextFeatures, 'clinicas'),
-        Escuelas: count(nextFeatures, 'escuelas'),
-        'Zonas turísticas': count(nextFeatures, 'destinos'),
-      })
-    }
-  }, [data])
-
-
+  const getCurrentTimeframe = () => currentTimeframe
+  const getCurrentTransport = () => currentTransport
 
   useEffect(() => {
     if (map && mapLoaded && features.length > 0 && !rendered) {
@@ -115,7 +101,7 @@ function Map({ city, data }) {
         }
       });
 
-      // Load click listener
+      // Hexagon click listener
       map.on('click', gridId, async (e) => {
         setLoading(true)
         const feature = e.features[0].properties
@@ -149,7 +135,7 @@ function Map({ city, data }) {
                   description: `15 minutos`
                 },
               })
-
+              
               add({
                 map,
                 legendTitle: 'Tiempo de traslado',
@@ -190,15 +176,21 @@ function Map({ city, data }) {
         } finally {
           setLoading(false)
         }
-        // Show default isochrone
-        console.log(getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()))
-        show(map, getHexagonId(featureId, getCurrentMedium(), getCurrentTimestep()));
-        setHexagon({
-          id: featureId,
-          ...feature,
+        hideAll(map)
+        getCurrentTransport().forEach((transport) => {
+          show(map, getHexagonId(featureId, transport, getCurrentTimeframe()));
+        })
+        setParams({
+          ...params,
+          timeframe: getCurrentTimeframe(),
+          transport: getCurrentTransport(),
+          opportunity: undefined,
+          hexagon: {
+            id: featureId,
+            ...feature,
+          },
         })
       });
-      setOpportunity(undefined);
       setRendered(true)
     }
   }, [map, mapLoaded, features, rendered])
@@ -206,57 +198,62 @@ function Map({ city, data }) {
   const handleOpportunityChange = (event) => {
     const nextOpportunity = event.target.value;
     show(map, nextOpportunity);
-    setOpportunity(nextOpportunity);
-    setHexagon(undefined);
+    setParams({
+      ...params,
+      opportunity: nextOpportunity,
+      hexagon: undefined,
+    })
     // hideAgebs()
     // setEconomicTiles(false)
   };
 
-  const handleMediumChange = (value) => {
-    if (hexagon?.id) {
-      show(map, getHexagonId(hexagon.id, value, timeStep));
+  const handleTimeframeChange = (value) => {
+    if (params.hexagon?.id) {
+      hideAll(map)
+      params.transport.forEach(transport => {
+        show(map, getHexagonId(params.hexagon.id, transport, value));
+      })
     }
-    setMedium(value);
-    currentMedium = value;
+    setParams({
+      ...params,
+      timeframe: value,
+    })
+    currentTimeframe = value;
   };
   
-  const handleTimeStepChange = (value) => {
-    if (hexagon?.id) {
-      show(map, getHexagonId(hexagon.id, medium, value));
-    }
-    setTimeStep(value);
-    currentTimestep   = value;
+  const handleTransportChange = (value) => {
+    if (params.hexagon?.id && value) {
+    let newTransportSelection
+      if (params.transport.includes(value)) {
+        hide(map, getHexagonId(params.hexagon.id, value, params.timeframe));
+         newTransportSelection = [...params.transport].filter((item) => item !== value);
+      } else {
+        show(map, getHexagonId(params.hexagon.id, value, params.timeframe));
+         newTransportSelection = [...params.transport, value]
+      }
+      setParams({ 
+        ...params, 
+        transport: newTransportSelection
+      })
+      currentTransport = newTransportSelection;
+    } 
   };
 
   return (
     <>
       <ControlsCard
-        hexagon={hexagon}
-        reachableOpportunities={metadata.opportunities}
-        cityData={opportunities}
-        medium={medium}
-        onMediumChange={handleMediumChange}
-        timeStep={timeStep}
-        onTimeStepChange={handleTimeStepChange}
-        onOpportunityChange={handleOpportunityChange}
-        opportunity={opportunity}
+        hexagon={params.hexagon}
+        transport={params.transport}
+        timeframe={params.timeframe}
+        opportunity={params.opportunity}
+        cityData={cityData}
         geojson={geojson}
+        reachableOpportunities={metadata.opportunities}
         legendTitle={legend.title}
+        onMediumChange={handleTransportChange}
+        onTimeStepChange={handleTimeframeChange}
+        onOpportunityChange={handleOpportunityChange}
       />
-      {/* <div className="z-30 fixed top-3 right-14">
-        <TransportControls
-          hexagon={hexagon}
-          medium={medium}
-          onMediumChange={handleMediumChange}
-        />
-        <div className="mb-3"></div>
-        <TimeControls
-          hexagon={hexagon}
-          timeStep={timeStep}
-          onTimeStepChange={handleTimeStepChange}
-        />
-      </div> */}
-      {/* <LayerControls      /> */}
       <LegendBar 
         geojson={geojson}
         legendTitle={legend.title}

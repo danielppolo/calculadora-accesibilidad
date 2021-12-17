@@ -27,7 +27,6 @@ const useLayerManager = () => {
     reverseColors = false,
   }) => {
     if (map && !(id in state)) {
-      console.log('addLayer', id);
       const color1 = '#f8dda1';
       const color2 = '#f1bb43';
 
@@ -80,12 +79,7 @@ const useLayerManager = () => {
   };
 
   const show = (map, id) => {
-    console.log(state, id, id in state, map);
     if (id in state && map) {
-      Object.keys(state).forEach((layerId) => {
-        map.setLayoutProperty(layerId, 'visibility', 'none');
-      });
-      console.log('show', id);
       map.setLayoutProperty(id, 'visibility', 'visible');
       setCurrent(id);
     }
@@ -94,17 +88,20 @@ const useLayerManager = () => {
   const hide = (map, id = null) => {
     if (id && map && id in state) {
       map.setLayoutProperty(id, 'visibility', 'none');
-    } else if (map) {
-      Object.keys(state).forEach((layerId) => {
-        map.setLayoutProperty(layerId, 'visibility', 'none');
-      });
     }
+  };
+
+  const hideAll = (map) => {
+    Object.keys(state).forEach((layerId) => {
+      map.setLayoutProperty(layerId, 'visibility', 'none');
+    });
   };
 
   return {
     state,
     add,
     hide,
+    hideAll,
     show,
     current,
     geojson: geojson[current] || {},
