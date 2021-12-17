@@ -47,17 +47,17 @@ function ControlsCard({
       <p className="text-sm mb-4">Para toda la zona, se cuentan con el siguiente número de oportunidades totales:</p>
       <div>
         {
-              Object.keys(cityData).map((key) => (
-                <div key={key} className="flex flex-row items-center justify-between mb-0">
-                  <p className="text-sm">
-                    <span className="font-semibold" key={key}>{key}</span>
-                    :
-                    {' '}
-                    <span>{Intl.NumberFormat('es-mx').format(cityData[key])}</span>
-                  </p>
-                </div>
-              ))
-            }
+          Object.keys(cityData).map((key) => (
+            <div key={key} className="flex flex-row items-center justify-between mb-0">
+              <p className="text-sm">
+                <span className="font-semibold" key={key}>{key}</span>
+                :
+                {' '}
+                <span>{Intl.NumberFormat('es-mx').format(cityData[key])}</span>
+              </p>
+            </div>
+          ))
+        }
         <div className="mb-8" />
         <p className="text-md font-medium mb-2 text-black">Oportunidad a visualizar</p>
         <TextField
@@ -72,9 +72,9 @@ function ControlsCard({
           }}
         >
           {
-                Object.keys(OPPORTUNITIES)
-                  .map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
-              }
+            Object.keys(OPPORTUNITIES)
+              .map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
+          }
         </TextField>
 
       </div>
@@ -82,7 +82,7 @@ function ControlsCard({
       <Subtitle>Explora</Subtitle>
       <div className="mb-6" />
       <Step number={1} title="Da click en un hexágono">
-        <Alert variant="outlined" severity="warning">Da click sobre un hexágono para habilitar los controles</Alert>
+        {!hexagon && <Alert variant="outlined" severity="warning">Da click sobre un hexágono para habilitar los controles</Alert>}
       </Step>
       <div className="mb-6" />
       <Step number={2} title="Selecciona el tiempo">
@@ -112,21 +112,21 @@ function ControlsCard({
       <div className="mb-6" />
       <Step number={4} title="Observa la isocrona y el histograma.">
         {
-              reachableOpportunities ? (
-                <>
-                  <p className="text-sm font-medium mb-2 mt-4">Número de empleos alcanzados</p>
-                  <FacilitiesChart
-                    data={reachableOpportunities}
-                  />
-                  <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades alcanzados</p>
-                  <PeopleChart
-                    data={reachableOpportunities}
-                  />
-                </>
-              ) : (
-                <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
-              )
-            }
+          reachableOpportunities ? (
+            <>
+              <p className="text-sm font-medium mb-2 mt-4">Número de empleos alcanzados</p>
+              <FacilitiesChart
+                data={reachableOpportunities}
+              />
+              <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades alcanzados</p>
+              <PeopleChart
+                data={reachableOpportunities}
+              />
+            </>
+          ) : (
+            <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
+          )
+        }
       </Step>
       <div className="mb-6" />
       <Step number={5} title="Mostrar capa de referencia">

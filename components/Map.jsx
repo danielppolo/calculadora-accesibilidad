@@ -197,6 +197,7 @@ function Map({ city, data }) {
 
   const handleOpportunityChange = (event) => {
     const nextOpportunity = event.target.value;
+    hideAll(map)
     show(map, nextOpportunity);
     setParams({
       ...params,
