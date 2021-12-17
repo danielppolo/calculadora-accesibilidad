@@ -21,7 +21,7 @@ export default function Home() {
           <a className="hover:opacity-70 duration-100" href="https://ideamos.mx/noticias">Noticias</a>
           <a className="hover:opacity-70 duration-100" href="https://ideamos.mx/convocatoria">Convocatoria</a>
         </div>
-        <MenuIcon className="text-white" onClick={() => setExpanded(!expanded)} />
+        <MenuIcon className="text-white md:hidden" onClick={() => setExpanded(!expanded)} />
         <div id="mobile-menu" className={`absolute top-16 left-0 right-0 bg-blue opacity-90 duration-300 overflow-hidden ${expanded ? 'h-64' : 'h-0'}`}>
           <a className="duration-100 flex items-center text-2xl p-2 font-bold h-16 border-b border-white" href="https://ideamos.mx/el-programa">El programa</a>
           <a className="duration-100 flex items-center text-2xl p-2 font-bold h-16 border-b border-white" href="https://ideamos.mx/indice-de-pilotos">Los pilotos</a>

@@ -1,7 +1,7 @@
 import mapboxgl, { Popup } from 'mapbox-gl';
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { CANCUN_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS, TRANSPORT_TRANSLATIONS } from '../constants';
+import { MEXICO_COORDINATES, TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS, COLORS, TRANSPORT_TRANSLATIONS } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import Loader from './Loader';
 import LegendBar from './LegendBar'
@@ -37,7 +37,7 @@ let currentTimeframe = defaultTimeframe
 let currentTransport =  [defaultTransport]
 
 function Map({ city, data }) {
-  const [map, mapLoaded] = useMap({ center: CANCUN_COORDINATES });
+  const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
   const {
     state,
     current,
@@ -279,9 +279,9 @@ function Map({ city, data }) {
     return null
   }, [chartData, params])
 
-  return (
+  return(
     <>
-      <ControlsCard
+      { city ? <ControlsCard
         hexagon={params.hexagon}
         transport={params.transport}
         timeframe={params.timeframe}
@@ -296,7 +296,7 @@ function Map({ city, data }) {
         onTimeStepChange={handleTimeframeChange}
         onOpportunityChange={handleOpportunityChange}
         onEconomicLayerChange={handleEconomicChange}
-      />
+      /> : null}
       {
         params.transport.length === 1 && ( 
           <LegendBar 
@@ -309,8 +309,7 @@ function Map({ city, data }) {
       }
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading}/>
-    </>
-  );
+    </>)
 };
 
 Map.propTypes = {

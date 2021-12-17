@@ -34,3 +34,4 @@ export const OPPORTUNITIES = {
 };
 export const NUMBER_OF_BUCKETS = 10;
 export const CANCUN_COORDINATES = [-86.851404, 21.161788];
+export const MEXICO_COORDINATES = [-102.918019, 24.244178];
