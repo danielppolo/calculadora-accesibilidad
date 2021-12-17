@@ -5,14 +5,13 @@ import { CANCUN_COORDINATES, MEDIUMS, OPPORTUNITIES, TIME_STEPS } from '../const
 import useLayerManager from '../hooks/useLayerManager';
 import InfoCard from './InfoCard';
 import Legend from './Legend';
+import Loader from './Loader';
 import Download from './Download';
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
 import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
-import { Backdrop } from '@mui/material';
-import { CircularProgress } from '@mui/material';
 
 // Mexico
 // import useEconomicZones from '../hooks/useEconomicZones';
@@ -81,7 +80,18 @@ function Map({ city, data }) {
 
   useEffect(() => {
     if (map && mapLoaded && features.length > 0 && !rendered) {
+      // Load base grid
       loadGrid(map, features)
+      map.on('mousemove', gridId, (e) => {
+        popup
+          .setLngLat(e.lngLat)
+          .setHTML(e.features[0].properties.description)
+          .addTo(map);
+      });
+      map.on('mouseleave', gridId, () => {
+        popup.remove();
+      });
+      // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((key) => {
         let maxValue = 0;
         const filteredFeatures = features.filter((item) => {
@@ -104,15 +114,8 @@ function Map({ city, data }) {
           });
         }
       });
-      // map.on('mousemove', gridId, (e) => {
-      //   popup
-      //     .setLngLat(e.lngLat)
-      //     .setHTML(e.features[0].properties.description)
-      //     .addTo(map);
-      // });
-      // map.on('mouseleave', gridId, () => {
-      //   popup.remove();
-      // });
+
+      // Load click listener
       map.on('click', gridId, async (e) => {
         setLoading(true)
         const feature = e.features[0].properties
@@ -267,12 +270,7 @@ function Map({ city, data }) {
       </div>
       
       <div id="map" className="w-screen h-screen" />
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Loader loading={loading}/>
     </>
   );
 };
