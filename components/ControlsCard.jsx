@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
@@ -15,11 +15,11 @@ function ControlsCard({
   reachableOpportunities,
   reachableFacilities,
 }) {
+  console.log('render')
   return (
-    <Card className="py-4 px-6 fixed bottom-0 left-0 right-0 shadow-xl z-30 md:bottom-0 md:top-4 md:right-4 md:left-auto md:w-96 md:max-w-xl overflow-y-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">
+      <Card className="py-4 px-6 m-4 overflow-y-auto">
       <Subtitle>{title}</Subtitle>
-      <p className="text-sm mb-4">Para toda la zona, se cuentan con el siguiente número de oportunidades totales:</p>
-      <div>
         {
           Object.keys(cityData).map((key) => (
             <div key={key} className="flex flex-row items-center justify-between mb-0">
@@ -32,7 +32,6 @@ function ControlsCard({
             </div>
           ))
         }
-      </div>
       <div className="mb-6" />
         {
           reachableOpportunities && (
@@ -57,7 +56,8 @@ function ControlsCard({
       <div className="mb-6" />
       <Notes />
     </Card>
+    </div>
   );
 }
 
-export default ControlsCard;
+export default memo(ControlsCard);

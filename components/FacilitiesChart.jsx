@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 
 function FacilitiesChart({ data }) {
@@ -44,4 +44,4 @@ function FacilitiesChart({ data }) {
   return <canvas id="facilities-chart" width="200" height="120" />;
 }
 
-export default FacilitiesChart;
+export default memo(FacilitiesChart);

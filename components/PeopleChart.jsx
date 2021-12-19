@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import Chart from 'chart.js/auto';
 
 function PeopleChart({ data }) {
@@ -44,4 +44,4 @@ function PeopleChart({ data }) {
   return <canvas id="people-chart" width="200" height="120" />;
 }
 
-export default PeopleChart;
+export default memo(PeopleChart);

@@ -191,8 +191,19 @@ function Map({ city, data, cities, onCityChange }) {
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[med]],
               });
-
-              incomingChartData[getHexagonId(featureId, med, step)] = {
+              map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
+                popup
+                  .setLngLat(e.lngLat)
+                  .setHTML(e.features[0].properties.description)
+                  .addTo(map);
+              });
+              map.on('mouseleave', getHexagonId(featureId, med, step), () => {
+                popup.remove();
+              });
+              if (!(step in incomingChartData)) {
+                incomingChartData[step] = {};
+              }
+              incomingChartData[step][med] = {
                 facilities: {
                   Empresas: count(filteredFeatures, 'empresas'),
                   Clínicas: count(filteredFeatures, 'clinicas'),
@@ -204,16 +215,6 @@ function Map({ city, data, cities, onCityChange }) {
                   'Personal ocupado': count(filteredFeatures, 'jobs_w'),
                 }
               }
-
-              map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
-                popup
-                  .setLngLat(e.lngLat)
-                  .setHTML(e.features[0].properties.description)
-                  .addTo(map);
-              });
-              map.on('mouseleave', getHexagonId(featureId, med, step), () => {
-                popup.remove();
-              });
             });
           });
           setChartData(incomingChartData)
@@ -301,29 +302,38 @@ function Map({ city, data, cities, onCityChange }) {
     } 
   };
 
-  const buildChartData = useCallback((key) => {
+  const opportunitiesChartData = useMemo(() => {
     if (params.hexagon) {
-      console.log(chartData)
-      const activeLayers = params.transport.map(transport => ({
-        id: getHexagonId(params.hexagon.id, transport, params.timeframe),
-        color: COLORS[TRANSPORT_COLORS[transport]][0]
-      }))
-      if (!activeLayers.length) {
-        return null
-      }
       return {
-        labels: Object.keys(chartData[activeLayers[0].id][key]),
-        datasets: activeLayers.map(({id, color, label}) => ({
-          label,
-          data: Object.values(chartData[id][key]),
-          backgroundColor: color
-        })),
+        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
+        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
+          return {
+            // label,
+            data: Object.values(chartData[params.timeframe][transport].opportunities),
+            backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
+          }
+        }),
       }
     }
     return null
-  }, [chartData, params])
+  }, [chartData, params.timeframe, params.hexagon])
 
-  console.log(cities)
+  const facilitiesChartData = useMemo(() => {
+    if (params.hexagon) {
+      return {
+        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].facilities),
+        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
+          return {
+            // label,
+            data: Object.values(chartData[params.timeframe][transport].facilities),
+            backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
+          }
+        }),
+      }
+    }
+    return null
+  }, [chartData, params.timeframe, params.hexagon])
+
   return(
     <>
     <MapControls
@@ -346,8 +356,8 @@ function Map({ city, data, cities, onCityChange }) {
         opportunity={params.opportunity}
         cityData={cityData}
         geojson={geojson}
-        reachableOpportunities={buildChartData('opportunities')}
-        reachableFacilities={buildChartData('facilities')}
+        reachableOpportunities={opportunitiesChartData}
+        reachableFacilities={facilitiesChartData}
         legendTitle={legend.title}
         onMediumChange={handleTransportChange}
         onTimeStepChange={handleTimeframeChange}
