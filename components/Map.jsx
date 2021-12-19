@@ -15,6 +15,37 @@ import useMarginalizationLayers from '../hooks/useMarginalizationLayers'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
+const buildCityMarker = () => {
+  const container = document.createElement('div')
+  container.className = 'flex items-center justify-center relative'
+  const pulse = document.createElement('div')
+  pulse.className = 'animate-pulse bg-red absolute rounded-full h-4 w-4 opacity-5'
+  const dot = document.createElement('div')
+  dot.className = 'bg-red absolute rounded-full h-2 w-2'
+  container.appendChild(dot)
+  container.appendChild(pulse)
+  return container
+}
+
+const displayCityMarkers = (map, cities, {onClick}) => {
+  const cityMarkers = []
+  Object.keys(cities).forEach(cty => {
+    const marker = buildCityMarker()
+    marker.addEventListener('click', () => {
+      onClick(cty)
+      map.flyTo({
+        center: cities[cty].coordinates,
+        zoom: 11,
+        duration: 2000,
+        offset: [100, 50]
+        })
+    })
+    new mapboxgl.Marker(marker).setLngLat(cities[cty].coordinates).addTo(map)
+    cityMarkers.push(marker)
+  })
+  return cityMarkers
+}
+
 const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
@@ -51,6 +82,7 @@ function Map({ city, data, cities, onCityChange }) {
   } = useLayerManager(map);
   useFitMap(map, geojson?.features)
   const {features, metadata: cityData} = useCityData(data);
+  const [cityMarkers, setCityMarkers] = useState([])
   const [loading, setLoading] = useState(false)
   const [params, setParams] = useState(defaultParams)
   const [chartData, setChartData] = useState({})
@@ -60,28 +92,13 @@ function Map({ city, data, cities, onCityChange }) {
   const getCurrentTransport = () => currentTransport
   
   useEffect(() => {
-    if (map && cities) {
-      // Display cities
-      Object.keys(cities).forEach(cty => {
-        console.log(cities[cty].coordinates)
-        const el = document.createElement('div')
-        el.style.width = `12px`;
-        el.style.height = `12px`;
-        el.style.borderRadius = '50%'
-        el.style.backgroundColor = '#DA546F'
-        el.addEventListener('click', () => {
-          onCityChange(cty)
-          map.flyTo({
-            center: cities[cty].coordinates,
-            zoom: 11,
-            duration: 2000,
-            offset: [100, 50]
-            })
-        })
-        new mapboxgl.Marker(el).setLngLat(cities[cty].coordinates).addTo(map)
-      })
+    if (city && cityMarkers.length > 0) {
+      cityMarkers.forEach(marker => marker.remove())
+      setCityMarkers([])
+    } else if (map && cities && !city && !cityMarkers.length) {
+      setCityMarkers(displayCityMarkers(map, cities, { onClick: onCityChange }))
     }    
-  }, [map, cities])
+  }, [map, cities, city, cityMarkers, onCityChange])
 
   useEffect(() => {
     if (map && mapLoaded && features.length > 0) {

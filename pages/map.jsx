@@ -14,7 +14,7 @@ const cityName = 'fonatur-tren-maya';
 export default function Home() {
   const [cities, setCities] = useState();
   const [city, setCity] = useState();
-  const [cityData, setCityData] = useState();
+  const [data, setData] = useState({});
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -33,10 +33,15 @@ export default function Home() {
   }, []);
 
   const handleCityChange = async (bucket) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
-    const data = await response.json();
+    if (bucket && !data[bucket]) {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
+      const responseData = await response.json();
+      setData({
+        ...data,
+        [bucket]: responseData
+      });
+    }
     setCity(bucket);
-    setCityData(data);
   }
 
   return (
@@ -47,7 +52,7 @@ export default function Home() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Map city={city} cities={cities} data={cityData || {}} onCityChange={handleCityChange}/>
+      <Map city={city} cities={cities} data={data[city]} onCityChange={handleCityChange}/>
     </>
   );
 }
