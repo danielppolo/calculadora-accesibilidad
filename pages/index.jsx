@@ -1,7 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
 import MenuIcon from '@mui/icons-material/Menu';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { marked } from 'marked';
+const contentful = require("contentful");
+
+marked.setOptions({
+  gfm: true,
+})
+
+const client = contentful.createClient({
+  space: "f9qr8a787ywo",
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+});
 
 const Button = () => (
   <Link href="/map">
@@ -9,8 +22,34 @@ const Button = () => (
   </Link>
 );
 
+
+
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await client.getEntry('3q2QHn4ewv8QKVKo10Lkpa')
+        setData(response.fields)
+      } catch(e) {
+        console.log(e)
+      }
+    }
+    fetchCities()
+  }, []);
+
+  if (!data) {
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open
+      >
+      <CircularProgress color="inherit" />
+    </Backdrop>
+  }
+
+  console.log(data)
   return (
     <div>
       <div className="bg-blue h-16 px-4 text-white flex items-center justify-between relative md:px-16">
@@ -47,27 +86,14 @@ export default function Home() {
           </a>
         </div>
       </div>
-      <Container maxWidth="md">
+      <Container maxWidth="md" >
+        <div className="prose max-w-none">
         <div className="my-12">
           <div className="my-8">
-            <h1 className="text-center text-3xl mb-2 font-bold">
-              Visualizador de accesibilidad urbana y acceso a oportunidades
-            </h1>
-            <h2 className="text-center text-xl">
-              Una plataforma para facilitar el diseño de soluciones de movilidad en ciudades mexicanas
-            </h2>
+            <div className="text-center text-3xl mb-2 font-bold" dangerouslySetInnerHTML={{__html: marked.parse(data?.title || '')}} />
+            <div className="text-center text-xl" dangerouslySetInnerHTML={{__html: marked.parse(data?.subtitle || '')}} />
           </div>
-          <p className="mb-4">
-            Esta herramienta interactiva facilita el análisis de accesibilidad urbana en 20 ciudades mexicanas, al visibilizar in-
-            formación integrada sobre la oferta de transporte, y acceso a, empleos, escuelas, clínicas.
-          </p>
-          <p className="mb-4">
-            <strong>¿El objetivo?</strong>
-            {' '}
-            generar referencias que contribuyan al diseño de soluciones de movilidad, principalmente para ciu-
-            dades y servicios de las Empresas de Redes de Transporte (ERT).
-          </p>
-
+          <div className="mb-4" dangerouslySetInnerHTML={{__html: marked.parse(data?.descriptionHead || '')}} />
           <div className="flex justify-center my-8">
             <Button />
           </div>
@@ -75,184 +101,61 @@ export default function Home() {
 
         <Grid container spacing={3} className="my-8">
           <Grid item xs={12} lg={3}>
-            <img className="bg-yellow h-48 mb-8" src="" alt="Img" />
-            <p className="text-sm">
-              Las ciudades podrán identificar
-              zonas de baja accesibilidad a
-              oportunidades y brechas de acceso
-              a la movilidad en diferentes sectores
-              de la población, entre otros
-              indicadores que pueden ser
-              considerados en el diseño y
-              planeación de servicios de
-              transporte.
-
-            </p>
+            <img className="w-full object-cover h-48 mb-8" src={'https:' + data?.feature1img?.fields?.file?.url} alt="Img" />
+            <div className="text-sm" dangerouslySetInnerHTML={{__html: marked.parse(data?.feature1 || '')}} />
           </Grid>
           <Grid item xs={12} lg={3}>
-            <img className="bg-yellow h-48 mb-8" src="" alt="Img" />
-            <p className="text-sm">
-              Las empresas de la red de
-              transporte (ERT) podrán explorar
-              zonas con poca oferta de movilidad
-              o movilidad limitada, así como
-              identificar zonas con alta atracción
-              de viajes poco atendidas donde
-              será posible ofrecer servicios
-              adaptados con nuevas opciones de
-              transporte.
-            </p>
+            <img className="w-full object-cover h-48 mb-8" src={'https:' + data?.feature2img?.fields?.file?.url} alt="Img" />
+            <div className="text-sm" dangerouslySetInnerHTML={{__html: marked.parse(data?.feature2 || '')}} />
           </Grid>
           <Grid item xs={12} lg={3}>
-            <img className="bg-yellow h-48 mb-8" src="" alt="Img" />
-            <p className="text-sm">
-              Las y los estudiantes, docentes e
-              investigadores que realizan análisis
-              sobre movilidad, urbanismo y
-              accesibilidad podrán explorar
-              indicadores integrados por área
-              geográfica en 20 ciudades
-              mexicanas.
-            </p>
+            <img className="w-full object-cover h-48 mb-8" src={'https:' + data?.feature3img?.fields?.file?.url} alt="Img" />
+            <div className="text-sm" dangerouslySetInnerHTML={{__html: marked.parse(data?.feature3 || '')}} />
           </Grid>
           <Grid item xs={12} lg={3}>
-            <img className="bg-yellow h-48 mb-8" src="" alt="Img" />
-            <p className="text-sm">
-              La ciudadanía podrá conocer las
-              medidas de accesibilidad y
-              oportunidades de áreas de interés
-              para habitar o emprender negocios.
-            </p>
+            <img className="w-full object-cover h-48 mb-8" src={'https:' + data?.feature4img?.fields?.file?.url} alt="Img" />
+            <div className="text-sm" dangerouslySetInnerHTML={{__html: marked.parse(data?.feature4 || '')}} />
           </Grid>
         </Grid>
 
         <Grid container spacing={4} className="my-16">
           <Grid item xs={12} lg={6}>
-            <img className="bg-yellow h-full" src="" alt="" />
+            <img className="object-cover w-full h-full" src={'https:' + data?.section1img?.fields?.file?.url} alt="" />
           </Grid>
           <Grid item xs={12} lg={6}>
-            <h3 className="font-bold text-xl mb-6">
-              Diseño de soluciones considerando el acceso
-              a oportunidades:
-            </h3>
-            <p className="text-sm">
-              La accesibilidad urbana nos indica a cuántas oportunidades (empleos,
-              empresas, clínicas, servicios básicos, etc) se puede acceder en un tiempo y
-              medio de transporte dados.
-            </p>
-            <br />
-            <p className="text-sm">
-              Esta plataforma integra distintos mapas que nos muestran la accesibilidad
-              urbana por áreas geográficas o hexágonos de 20 ciudades mexicanas:
-            </p>
-            <ul className="list-inside list-disc space-y-4">
-              <li className="text-sm">
-                Mapa de accesibilidad urbana por ciudad, con indicadores desagregados
-                por género e índice de marginación.
-              </li>
-              <li className="text-sm">Mapa de acceso a oportunidades por ciudad.</li>
-              <li className="text-sm">
-                Mapa con áreas geográficas desagregado por modo de transporte y
-                tiempo de traslado.
-              </li>
-            </ul>
+            <div dangerouslySetInnerHTML={{__html: marked.parse(data?.sectionTwo || '')}} />
           </Grid>
         </Grid>
 
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <img className="bg-yellow h-96" src="" alt="" />
+            <img className="h-96 w-full object-cover" src={'https:' + data?.map?.fields?.file?.url} alt="Mapa" />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} className="my-8">
+        <Grid container spacing={3} className="my-16">
           <Grid item xs={12} lg={6}>
-            <h3 className="font-bold text-xl mb-6">
-              Explorar la plataforma es muy sencillo.
-              También, puedes agendar un taller para aprovechar todo su potencial:
-            </h3>
-            <ol>
-              <li className="mb-2 text-sm">
-                <strong>Paso 1.</strong>
-                {' '}
-                Da click en un hexágono + bullet explicativo
-              </li>
-              <li className="mb-2 text-sm">
-                <strong>Paso 2.</strong>
-                {' '}
-                Selecciona el tiempo + bullet
-
-              </li>
-              <li className="mb-2 text-sm">
-                <strong>Paso 3.</strong>
-                {' '}
-                Selecciona modo de transporte.
-              </li>
-              <li className="mb-2 text-sm">
-                <strong>Paso 4.</strong>
-                {' '}
-                Observa la isocrona y el histograma.
-              </li>
-            </ol>
-            <p className="mb-12 mt-8 text-sm">
-              Escribe a ideamos@itdp.org para agendar un taller, asesoría o aclarar
-              cualquier duda que no esté incluida en nuestra sección de Preguntas
-              Frecuentes.
-            </p>
-
+            <div dangerouslySetInnerHTML={{__html: marked.parse(data?.sectionThree || '')}} />
             <Button />
           </Grid>
           <Grid item xs={12} lg={6}>
-            <img className="bg-yellow h-full" src="" alt="" />
+            <img className="h-full w-full object-cover" src={'https:' + data?.section2img?.fields?.file?.url} alt="GIF" />
           </Grid>
         </Grid>
 
         <Grid container spacing={3} className="my-12">
           <Grid item xs={12}>
-            <img className="bg-yellow h-96" src="" alt="" />
+            <img className="w-full object-cover h-96" src={'https:' + data?.gif?.fields?.file?.url} alt="" />
           </Grid>
         </Grid>
 
         <Grid container spacing={3} className="my-12 text-sm">
           <Grid item xs={12}>
             <h3 className="font-bold text-xl mb-6 text-center">Preguntas frequentes</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="font-bold">Pregunta: Mi ciudad no está en la plataforma ¿qué puedo hacer?</p>
-                <p>
-                  Respuesta: Puedes contactarnos si quieres explorar los análisis para una ciudad que no se encuentra en la
-                  plataforma, puedes contactarnos.
-                </p>
-              </div>
-              <div>
-                <p className="font-bold">Pregunta: ¿Cómo puedo citar la información de la plataforma?</p>
-                <p>
-                  Respuesta: Puedes contactarnos si quieres explorar los análisis para una ciudad que no se encuentra en la
-                  plataforma, puedes contactarnos.
-                </p>
-              </div>
-              <div>
-                <p className="font-bold">Pregunta: ¿Puedo usar la herramienta para mis proyectos?</p>
-                <p>
-                  Respuesta: Sí, la herramienta es de código abierto y está publicada en un repositorio de Github. Puedes modificar,distribuir y
-                  adaptar, siempre que le reconozca al ITDP la creación original.
-                </p>
-              </div>
-              <div>
-                <p className="font-bold">Pregunta: ¡Tengo más preguntas!</p>
-                <p>Respuesta: Envíanos un correo a ideamos@itdp.org.</p>
-              </div>
-              <div>
-                <p className="font-bold">Pregunta: ¿Dónde puedo descargar la información?</p>
-                <p>
-                  Respuesta: La información de accesibilidad y acceso a oportunidades puede descargarse dentro de la plataforma a través del
-                  botón “Descargar”. Por el momento no es posible descargar todos los datos al mismo tiempo, pero si lo necesitas ponte en
-                  contacto con nosotros.
-                </p>
-              </div>
-            </div>
+            <div className="space-y-4" dangerouslySetInnerHTML={{__html: marked.parse(data?.faq || '')}}/>
           </Grid>
         </Grid>
+        </div>
       </Container>
       <div className="my-32" />
       <div className="bg-black h-16 text-white flex items-center justify-between px-16">
