@@ -1,8 +1,4 @@
 import React, { memo } from 'react';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
-import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import { OPPORTUNITIES } from '../constants';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
@@ -15,7 +11,6 @@ function ControlsCard({
   reachableOpportunities,
   reachableFacilities,
 }) {
-  console.log('render')
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">
       <Card className="py-4 px-6 m-4 overflow-y-auto">

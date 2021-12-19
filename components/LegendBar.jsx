@@ -20,16 +20,14 @@ function LegendBar({
           {showLegend ? <LayersClearIcon /> : <LayersIcon />}
         </Fab>
       </div>
-      <div className={`z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:w-56 md:max-w-xl md:h-auto md:left-4 md:top-auto md:block ${!showLegend && 'hidden'}`}>
+      <div className={`z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:w-56 md:max-w-xl md:h-auto md:right-4 md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
-          
           {/* {
             populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
           } */}
           {
             current && legendTitle && legendDictionary && (
               <>
-              <Download data={geojson} filename={legendTitle} />
               <Legend title={legendTitle} items={legendDictionary} />
               </>
             )

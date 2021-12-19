@@ -304,15 +304,14 @@ function Map({ city, data, cities, onCityChange }) {
 
   const opportunitiesChartData = useMemo(() => {
     if (params.hexagon) {
+      console.log(cityData)
       return {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
-        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
-          return {
+        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
             label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.values(chartData[params.timeframe][transport].opportunities),
+            data: Object.keys(chartData[params.timeframe][transport].opportunities).map((opportunity) => cityData[opportunity] / chartData[params.timeframe][transport].opportunities[opportunity]),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
-          }
-        }),
+        })),
       }
     }
     return null
@@ -322,13 +321,11 @@ function Map({ city, data, cities, onCityChange }) {
     if (params.hexagon) {
       return {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].facilities),
-        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
-          return {
+        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
             label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.values(chartData[params.timeframe][transport].facilities),
+            data: Object.keys(chartData[params.timeframe][transport].facilities).map((facility) => cityData[facility] / chartData[params.timeframe][transport].facilities[facility]),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
-          }
-        }),
+        })),
       }
     }
     return null
@@ -347,22 +344,14 @@ function Map({ city, data, cities, onCityChange }) {
       city={cities?.[city]}
       onCityChange={handleCityChange}
       cities={Object.values(cities || {})}
+      geojson={geojson}
+      legendTitle={legend.title}
     />
       { city ? <ControlsCard
         title={cities[city]?.name}
-        hexagon={params.hexagon}
-        transport={params.transport}
-        timeframe={params.timeframe}
-        opportunity={params.opportunity}
         cityData={cityData}
-        geojson={geojson}
         reachableOpportunities={opportunitiesChartData}
         reachableFacilities={facilitiesChartData}
-        legendTitle={legend.title}
-        onMediumChange={handleTransportChange}
-        onTimeStepChange={handleTimeframeChange}
-        onOpportunityChange={handleOpportunityChange}
-        onEconomicLayerChange={handleEconomicChange}
       /> : null}
       {
         cities && !city ?(

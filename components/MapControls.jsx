@@ -7,6 +7,7 @@ import {
 } from '../constants';
 import Select from './Select'
 import ButtonGroup from './ButtonGroup'
+import Download from './Download';
 
 const TRANSPORT_ICONS = {
   caminando: <DirectionsWalkIcon fontSize='small'/>,
@@ -25,6 +26,8 @@ function MapControls({
   city, 
   onCityChange,
   cities,
+  geojson,
+  legendTitle,
 }) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
@@ -76,6 +79,8 @@ function MapControls({
           active: timeframe === step,
         }))}
       />
+      <div className="m-4" />
+      <Download data={geojson} filename={legendTitle} />
       <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden"></div>
     </div>
   );
