@@ -154,16 +154,18 @@ function Map({ city, data, cities, onCityChange }) {
           const json = JSON.parse(text);
           const incomingChartData = {};
           // Create 9 isochrones variant layers
-          [...TRANSPORTS].reverse().forEach((med, mediumIndex) => {
-            [...TIMEFRAMES].reverse().forEach((step) => {
-              const featureIds = Object.keys(json)
-              const filteredIds = featureIds.filter((id) => json[id][mediumIndex] && json[id][mediumIndex] <= step && data[id]);
+          [...TIMEFRAMES].reverse().forEach((step) => {
+            const featureIds = Object.keys(json)
+            const transportReach = TRANSPORTS.map((transport, index) => [transport, featureIds.filter((id) => json[id][index] && json[id][index] <= step && data[id])])
+            const sortedTransports = transportReach.sort((a, b)  => b[1].length - a[1].length);
+
+            sortedTransports.forEach(([transport, filteredIds], index) => {
               const filteredFeatures = filteredIds.map((id) => ({
                 ...data[id],
                 properties: {
                   ...data[id].properties,
-                  [med]: json[id][mediumIndex],
-                  description: `${json[id][mediumIndex]} minutos`
+                  [transport]: json[id][index],
+                  description: `${json[id][index]} minutos`
                 },
               }));
 
@@ -172,7 +174,7 @@ function Map({ city, data, cities, onCityChange }) {
                 ...data[featureId],
                 properties: {
                   ...data[featureId].properties,
-                  [med]: 1,
+                  [transport]: 1,
                   selected: true,
                   description: `15 minutos`
                 },
@@ -182,23 +184,23 @@ function Map({ city, data, cities, onCityChange }) {
                 map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
-                id: getHexagonId(featureId, med, step),
+                id: getHexagonId(featureId, transport, step),
                 features: filteredFeatures,
-                property: med,
+                property: transport,
                 maxValue: step,
                 visible: false,
                 beforeId: gridId,
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
-                colors: COLORS[TRANSPORT_COLORS[med]],
+                colors: COLORS[TRANSPORT_COLORS[transport]],
               });
               add({
                 map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
-                id: getHexagonId(featureId, med, step) + '-solid',
+                id: getHexagonId(featureId, transport, step) + '-solid',
                 features: filteredFeatures,
-                property: med,
+                property: transport,
                 maxValue: step,
                 solid:  true,
                 opacity: 1,
@@ -206,21 +208,21 @@ function Map({ city, data, cities, onCityChange }) {
                 beforeId: gridId,
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
-                colors: COLORS[TRANSPORT_COLORS[med]],
+                colors: COLORS[TRANSPORT_COLORS[transport]],
               });
-              map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
+              map.on('mousemove', getHexagonId(featureId, transport, step), (e) => {
                 popup
                   .setLngLat(e.lngLat)
                   .setHTML(e.features[0].properties.description)
                   .addTo(map);
               });
-              map.on('mouseleave', getHexagonId(featureId, med, step), () => {
+              map.on('mouseleave', getHexagonId(featureId, transport, step), () => {
                 popup.remove();
               });
               if (!(step in incomingChartData)) {
                 incomingChartData[step] = {};
               }
-              incomingChartData[step][med] = {
+              incomingChartData[step][transport] = {
                 facilities: {
                   Empresas: count(filteredFeatures, 'empresas'),
                   Clínicas: count(filteredFeatures, 'clinicas'),
@@ -330,7 +332,6 @@ function Map({ city, data, cities, onCityChange }) {
 
   const opportunitiesChartData = useMemo(() => {
     if (params.hexagon) {
-      console.log(cityData)
       return {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
@@ -364,7 +365,8 @@ function Map({ city, data, cities, onCityChange }) {
       onMediumChange={handleTransportChange}
       timeframe={params.timeframe}
       onTimeStepChange={handleTimeframeChange} 
-      disabled={!params.hexagon}
+      hexagonDisabled={!params.hexagon}
+      cityDisabled={!city}
       opportunity={params.opportunity}
       onOpportunityChange={handleOpportunityChange}
       city={cities?.[city]}

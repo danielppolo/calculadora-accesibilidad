@@ -20,9 +20,9 @@ export const TRANSPORT_TRANSLATIONS = {
   bus_actual: 'Transporte Público',
 };
 export const TRANSPORT_COLORS = {
-  caminando: 'green',
-  bicicleta: 'blue',
-  bus_actual: 'red',
+  caminando: 'yellow',
+  bicicleta: 'orange',
+  bus_actual: 'purple',
 };
 
 export const OPPORTUNITIES = {

@@ -22,7 +22,8 @@ function MapControls({
   onTimeStepChange,
   opportunity,
   onOpportunityChange,
-  disabled,
+  cityDisabled,
+  hexagonDisabled,
   city, 
   onCityChange,
   cities,
@@ -46,12 +47,12 @@ function MapControls({
           label: "Situacion actual",
           value: 'today',
         }]}
-        disabled={disabled}
+        disabled={cityDisabled}
         placeholder="Selecciona un escenario"
       />
       <div className="m-4" />
       <Select
-        disabled={disabled}
+        disabled={cityDisabled}
         options={Object.keys(OPPORTUNITIES).map((op) => ({
           label: OPPORTUNITIES[op],
           value: op,
@@ -65,7 +66,7 @@ function MapControls({
           icon: TRANSPORT_ICONS[mdm],
           // label: TRANSPORT_TRANSLATIONS[mdm],
           onClick: () => onMediumChange(mdm),
-          disabled,
+          disabled: hexagonDisabled,
           color: TRANSPORT_COLORS[mdm],
           active: transport.includes(mdm),
         }))}
@@ -75,7 +76,7 @@ function MapControls({
         options={TIMEFRAMES.map(step => ({
           label: `${step} min`,
           onClick: () => onTimeStepChange(step),
-          disabled,
+          disabled: hexagonDisabled,
           active: timeframe === step,
         }))}
       />
