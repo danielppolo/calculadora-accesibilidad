@@ -11,7 +11,7 @@ function Button({
   return (
     <button
       type="button"
-      className={`${variant === 'outlined' ? 'bg-white' : (bgColor || 'bg-black')} ${bgColor ? 'text-black' : 'text-white'} ${disabled && 'opacity-50'}  w-full h-10 text-lg flex items-center justify-center ${className}`}
+      className="relative w-full bg-black text-white flex items-center justify-center space-x-2 border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 cursor-default focus:outline-none focus:ring-1 focus:ring-black focus:border-black sm:text-sm disabled:opacity-50"
       {...otherProps}
     >
       {children}

@@ -15,7 +15,7 @@ export default function ButtonGroup({
           {...otherProps}
           type="button" 
           onClick={onClick}
-          className={`${index === 0 ? leftClasses : index === options.length - 1 ? rightClasses : middleClasses} ${(color && active) ? `text-${color}` : 'text-black'} pointer inline-flex flex-grow items-center justify-center py-2 px-4 text-sm font-medium bg-white border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 disabled:opacity-50`}
+          className={`${index === 0 ? leftClasses : index === options.length - 1 ? rightClasses : middleClasses} ${(color && active) ? `text-${color}` : 'text-black'} ${active ? 'bg-white' : 'bg-gray-200'} pointer inline-flex flex-grow items-center justify-center py-2 px-4 text-sm font-medium border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 disabled:opacity-50`}
           >
             {icon}
             {label}

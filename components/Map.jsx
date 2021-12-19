@@ -14,6 +14,7 @@ import ControlsCard from './ControlsCard';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers'
 import MapControls from './MapControls';
 import LayerControls from './LayerControls';
+import CitiesOverview from './CitiesOverview';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -241,8 +242,7 @@ function Map({ city, data, cities, onCityChange }) {
     }
   }, [map, mapLoaded, features])
 
-  const handleOpportunityChange = (event) => {
-    const nextOpportunity = event.target.value;
+  const handleOpportunityChange = (nextOpportunity) => {
     hideAll(map)
     hideAgebs(map)
     show(map, nextOpportunity);
@@ -308,7 +308,7 @@ function Map({ city, data, cities, onCityChange }) {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
           return {
-            // label,
+            label: TRANSPORT_TRANSLATIONS[transport],
             data: Object.values(chartData[params.timeframe][transport].opportunities),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
           }
@@ -324,7 +324,7 @@ function Map({ city, data, cities, onCityChange }) {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].facilities),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => {
           return {
-            // label,
+            label: TRANSPORT_TRANSLATIONS[transport],
             data: Object.values(chartData[params.timeframe][transport].facilities),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
           }
@@ -344,7 +344,7 @@ function Map({ city, data, cities, onCityChange }) {
       disabled={!params.hexagon}
       opportunity={params.opportunity}
       onOpportunityChange={handleOpportunityChange}
-      city={city}
+      city={cities?.[city]}
       onCityChange={handleCityChange}
       cities={Object.values(cities || {})}
     />
@@ -364,6 +364,13 @@ function Map({ city, data, cities, onCityChange }) {
         onOpportunityChange={handleOpportunityChange}
         onEconomicLayerChange={handleEconomicChange}
       /> : null}
+      {
+        cities && !city ?(
+            <CitiesOverview 
+            cities={Object.values(cities || {})}
+            />
+        ) : null
+      }
       {
         params.transport.length === 1 && ( 
           <LegendBar 

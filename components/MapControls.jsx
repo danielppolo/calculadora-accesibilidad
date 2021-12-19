@@ -27,14 +27,34 @@ function MapControls({
   cities,
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-96">
+    <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
+        value={city?.name}
         options={cities.map(ct => ({
           label: ct.name,
           value: ct.bucketName,
         }))}
         onChange={onCityChange}
         placeholder="Selecciona una ciudad"
+      />
+      <div className="m-4" />
+      <Select
+        options={[{
+          label: "Situacion actual",
+          value: 'today',
+        }]}
+        disabled={disabled}
+        placeholder="Selecciona un escenario"
+      />
+      <div className="m-4" />
+      <Select
+        disabled={disabled}
+        options={Object.keys(OPPORTUNITIES).map((op) => ({
+          label: OPPORTUNITIES[op],
+          value: op,
+        }))}
+        onChange={onOpportunityChange}
+        placeholder="Selecciona una oportunidad"
       />
       <div className="m-4" />
        <ButtonGroup
@@ -53,19 +73,10 @@ function MapControls({
           label: `${step} min`,
           onClick: () => onTimeStepChange(step),
           disabled,
+          active: timeframe === step,
         }))}
       />
-      <div className="m-4" />
-      <Select
-        disabled={disabled}
-        options={Object.keys(OPPORTUNITIES).map((op) => ({
-          label: OPPORTUNITIES[op],
-          value: op,
-        }))}
-        onChange={onOpportunityChange}
-        placeholder="Selecciona una oportunidad"
-      />
-      <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange"></div>
+      <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden"></div>
     </div>
   );
 }
