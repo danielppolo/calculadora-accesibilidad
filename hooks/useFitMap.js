@@ -14,7 +14,7 @@ const useFitMap = (map, features) => {
         padding: 200,
         maxZoom: 15,
         duration: 500,
-        offset: [offsetX, 0],
+        // offset: [offsetX, 0],
       });
     }
   }, [features, map]);

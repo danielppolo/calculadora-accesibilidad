@@ -16,7 +16,7 @@ export const TRANSPORTS = [
 ];
 export const TRANSPORT_TRANSLATIONS = {
   caminando: 'Caminando',
-  bicicleta: 'Bicileta',
+  bicicleta: 'Bicicleta',
   bus_actual: 'Transporte Público',
 };
 export const TRANSPORT_COLORS = {

@@ -12,6 +12,8 @@ import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
 import ControlsCard from './ControlsCard';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers'
+import MapControls from './MapControls';
+import LayerControls from './LayerControls';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -31,15 +33,7 @@ const displayCityMarkers = (map, cities, {onClick}) => {
   const cityMarkers = []
   Object.keys(cities).forEach(cty => {
     const marker = buildCityMarker()
-    marker.addEventListener('click', () => {
-      onClick(cty)
-      map.flyTo({
-        center: cities[cty].coordinates,
-        zoom: 11,
-        duration: 2000,
-        offset: [100, 50]
-        })
-    })
+    marker.addEventListener('click', () => { onClick(cty) })
     new mapboxgl.Marker(marker).setLngLat(cities[cty].coordinates).addTo(map)
     cityMarkers.push(marker)
   })
@@ -91,12 +85,22 @@ function Map({ city, data, cities, onCityChange }) {
   const getCurrentTimeframe = () => currentTimeframe
   const getCurrentTransport = () => currentTransport
   
+  const handleCityChange = (cty) => {
+    onCityChange(cty)
+    map.flyTo({
+      center: cities[cty].coordinates,
+      zoom: 11,
+      duration: 2000,
+      offset: [100, 50]
+      })
+  }
+
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
       cityMarkers.forEach(marker => marker.remove())
       setCityMarkers([])
     } else if (map && cities && !city && !cityMarkers.length) {
-      setCityMarkers(displayCityMarkers(map, cities, { onClick: onCityChange }))
+      setCityMarkers(displayCityMarkers(map, cities, { onClick: handleCityChange }))
     }    
   }, [map, cities, city, cityMarkers, onCityChange])
 
@@ -319,16 +323,29 @@ function Map({ city, data, cities, onCityChange }) {
     return null
   }, [chartData, params])
 
+  console.log(cities)
   return(
     <>
+    <MapControls
+      transport={params.transport}
+      onMediumChange={handleTransportChange}
+      timeframe={params.timeframe}
+      onTimeStepChange={handleTimeframeChange} 
+      disabled={!params.hexagon}
+      opportunity={params.opportunity}
+      onOpportunityChange={handleOpportunityChange}
+      city={city}
+      onCityChange={handleCityChange}
+      cities={Object.values(cities || {})}
+    />
       { city ? <ControlsCard
+        title={cities[city]?.name}
         hexagon={params.hexagon}
         transport={params.transport}
         timeframe={params.timeframe}
         opportunity={params.opportunity}
         cityData={cityData}
         geojson={geojson}
-        economicLayer={params.agebs}
         reachableOpportunities={buildChartData('opportunities')}
         reachableFacilities={buildChartData('facilities')}
         legendTitle={legend.title}
@@ -340,13 +357,17 @@ function Map({ city, data, cities, onCityChange }) {
       {
         params.transport.length === 1 && ( 
           <LegendBar 
-          geojson={geojson}
-          legendTitle={legend.title}
-          legendDictionary={legend.intervals}
-          current={current}
-        />
+            geojson={geojson}
+            legendTitle={legend.title}
+            legendDictionary={legend.intervals}
+            current={current}
+          />
         )
       }
+      <LayerControls 
+        economicLayer={params.agebs}
+        onEconomicLayerChange={handleEconomicChange}
+      />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading}/>
     </>)

@@ -19,7 +19,7 @@ function LegendBar({
           {showLegend ? <LayersClearIcon /> : <LayersIcon />}
         </Fab>
       </div>
-      <div className={`overflow-y-auto z-50 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:right-4 md:w-52 md:h-auto md:left-auto md:top-auto md:block ${!showLegend && 'hidden'}`}>
+      <div className={`overflow-y-auto z-50 shadow-xl fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:w-52 md:h-auto md:left-4 md:top-auto md:block ${!showLegend && 'hidden'}`}>
         <div className="space-y-4">
           {/* {
             populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)

@@ -2,13 +2,15 @@ import React from 'react';
 import LayerSwitch from './LayerSwitch';
 
 function LayerControls({
-  economicTiles,
-  onEconomicTilesChange,
+  economicLayer,
+  onEconomicLayerChange,
 }) {
   return (
-    <div>
+    <div className='fixed bottom-4 left-4'>
       <LayerSwitch
-        title="Usos de suelo urbano"
+        title="Capa de marginación"
+        onChange={onEconomicLayerChange}
+        checked={economicLayer}
       />
     </div>
   );

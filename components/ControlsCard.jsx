@@ -1,53 +1,23 @@
 import React from 'react';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Alert from '@mui/material/Alert';
-import Divider from '@mui/material/Divider';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import { MenuItem, TextField } from '@mui/material';
-import Button from '@mui/material/Button';
-import {
-  TRANSPORTS, OPPORTUNITIES, TIMEFRAMES, TRANSPORT_COLORS,
-} from '../constants';
+import { OPPORTUNITIES } from '../constants';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
-import LayerSwitch from './LayerSwitch';
 import Card from './Card';
-import Step from './Step';
 import Subtitle from './Subtitle';
 
-const TRANSPORT_ICONS = {
-  caminando: <DirectionsWalkIcon />,
-  bicicleta: <DirectionsBikeIcon />,
-  bus_actual: <DirectionsBusFilledIcon />,
-};
-
 function ControlsCard({
+  title,
   cityData,
-  transport,
-  onMediumChange,
-  timeframe,
-  onTimeStepChange,
-  onOpportunityChange,
-  opportunity,
-  hexagon,
   reachableOpportunities,
   reachableFacilities,
-  economicLayer,
-  onEconomicLayerChange,
 }) {
   return (
-    <Card className="p-6 fixed bottom-0 left-0 right-0  z-30 md:bottom-0 md:top-0 md:left-0 md:right-auto md:w-1/3 md:max-w-xl  overflow-y-auto">
-      <h1 className="text-3xl font-bold mb-4 text-black">
-        Calculadora
-        {' '}
-        <span className="font-medium">de accesibilidad de oportunidades</span>
-      </h1>
-      <p className="text-sm mb-6">La accesibilidad a oportunidades estima el acceso a empleos, hospitales, escuelas y puntos turísticos en diferentes modos de transporte sustentable para cada zona de una ciudad. Este proyecto tiene como objetivo mostrar las oportunidades en un radio de 150 kilómetros de Cancún a través de una herramienta interactiva.</p>
-
-      <Subtitle>Oportunidades en la zona</Subtitle>
+    <Card className="py-4 px-6 fixed bottom-0 left-0 right-0 shadow-xl z-30 md:bottom-0 md:top-4 md:right-4 md:left-auto md:w-96 md:max-w-xl overflow-y-auto">
+      <Subtitle>{title}</Subtitle>
       <p className="text-sm mb-4">Para toda la zona, se cuentan con el siguiente número de oportunidades totales:</p>
       <div>
         {
@@ -62,65 +32,8 @@ function ControlsCard({
             </div>
           ))
         }
-        <div className="mb-8" />
-        <p className="text-md font-medium mb-2 text-black">Oportunidad a visualizar</p>
-        <TextField
-          select
-          onChange={onOpportunityChange}
-          value={opportunity}
-          name="opportinuty"
-          label={opportunity ? '' : 'Selecciona oportunidad'}
-          fullWidth
-          InputLabelProps={{
-            shrink: false,
-          }}
-        >
-          {
-            Object.keys(OPPORTUNITIES)
-              .map((op) => <MenuItem value={op} key={op}>{OPPORTUNITIES[op]}</MenuItem>)
-          }
-        </TextField>
-
       </div>
-      <div className="mb-8" />
-      <Subtitle>Explora</Subtitle>
       <div className="mb-6" />
-      <Step number={1} title="Da click en un hexágono">
-        {!hexagon && <Alert variant="outlined" severity="warning">Da click sobre un hexágono para habilitar los controles</Alert>}
-      </Step>
-      <div className="mb-6" />
-      <Step number={2} title="Selecciona el tiempo">
-        <ButtonGroup size="medium" aria-label="large button group" fullWidth>
-          {
-            TIMEFRAMES.map((step) => (
-              <Button disabled={!hexagon} variant={timeframe === step ? 'contained' : 'outlined'} key={step} onClick={() => { onTimeStepChange(step); }}>
-                {step}
-                min
-              </Button>
-            ))
-          }
-        </ButtonGroup>
-      </Step>
-      <div className="mb-6" />
-      <Step number={3} title="Selecciona un modo de transporte sustentable.">
-        <ButtonGroup size="medium" aria-label="large button group" fullWidth>
-          {
-            TRANSPORTS.map((mdm) => (
-              <Button
-                disabled={!hexagon}
-                variant={transport.includes(mdm) ? 'contained' : 'outlined'}
-                key={mdm}
-                onClick={() => { onMediumChange(mdm); }}
-                color={TRANSPORT_COLORS[mdm]}
-              >
-                {TRANSPORT_ICONS[mdm]}
-              </Button>
-            ))
-          }
-        </ButtonGroup>
-      </Step>
-      <div className="mb-6" />
-      <Step number={4} title="Observa la isocrona y el histograma.">
         {
           reachableOpportunities && (
           <div>
@@ -141,25 +54,7 @@ function ControlsCard({
             </div>
           )
         }
-        {
-         !hexagon && (
-         <Alert variant="outlined" severity="warning">Da click sobre un hexágono para obtener más información</Alert>
-         )
-        }
-      </Step>
       <div className="mb-6" />
-      <Step number={5} title="Mostrar capa de referencia">
-        <LayerSwitch
-          title="Capa de marginación"
-          onChange={onEconomicLayerChange}
-          checked={economicLayer}
-        />
-      </Step>
-
-      <div className="mb-4 mt-4">
-        <Divider light />
-      </div>
-
       <Notes />
     </Card>
   );
