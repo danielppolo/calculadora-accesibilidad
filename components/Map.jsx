@@ -192,6 +192,22 @@ function Map({ city, data, cities, onCityChange }) {
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[med]],
               });
+              add({
+                map,
+                legendTitle: 'Tiempo de traslado',
+                unit: 'min',
+                id: getHexagonId(featureId, med, step) + '-solid',
+                features: filteredFeatures,
+                property: med,
+                maxValue: step,
+                solid:  true,
+                opacity: 1,
+                visible: false,
+                beforeId: gridId,
+                stepSize: Math.floor(step / 15),
+                reverseColors: true,
+                colors: COLORS[TRANSPORT_COLORS[med]],
+              });
               map.on('mousemove', getHexagonId(featureId, med, step), (e) => {
                 popup
                   .setLngLat(e.lngLat)
@@ -273,9 +289,13 @@ function Map({ city, data, cities, onCityChange }) {
   const handleTimeframeChange = (value) => {
     if (params.hexagon?.id) {
       hideAll(map)
-      params.transport.forEach(transport => {
-        show(map, getHexagonId(params.hexagon.id, transport, value));
-      })
+      if (params.transport.length ===  1) {
+        show(map, getHexagonId(params.hexagon.id, params.transport[0], value));
+      } else if (params.transport.length > 1) {
+        params.transport.forEach(transport => {
+          show(map, getHexagonId(params.hexagon.id, transport, value) + '-solid');
+        }) 
+      }
     }
     setParams({
       ...params,
@@ -286,13 +306,19 @@ function Map({ city, data, cities, onCityChange }) {
   
   const handleTransportChange = (value) => {
     if (params.hexagon?.id && value) {
-    let newTransportSelection
+      hideAll(map)
+      let newTransportSelection
       if (params.transport.includes(value)) {
-        hide(map, getHexagonId(params.hexagon.id, value, params.timeframe));
-         newTransportSelection = [...params.transport].filter((item) => item !== value);
+          newTransportSelection = [...params.transport].filter((item) => item !== value);
       } else {
-        show(map, getHexagonId(params.hexagon.id, value, params.timeframe));
-         newTransportSelection = [...params.transport, value]
+        newTransportSelection = [...params.transport, value]
+      }
+      if (newTransportSelection.length === 1) {
+        show(map, getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
+      } else if (newTransportSelection.length > 1) {
+        newTransportSelection.forEach(transport => {
+          show(map, getHexagonId(params.hexagon.id, transport, params.timeframe) + '-solid');
+        }) 
       }
       setParams({ 
         ...params, 

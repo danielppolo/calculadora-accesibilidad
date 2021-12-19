@@ -6,6 +6,7 @@
 .mapboxgl-popup-content {
   border-radius: 0;
   padding: 4px 8px;
+  border-radius: 4px;
 }
 .mapboxgl-popup.black-popup .mapboxgl-popup-content {
   font-family: sofia-pro, sans-serif !important;

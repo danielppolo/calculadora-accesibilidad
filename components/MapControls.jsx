@@ -80,7 +80,9 @@ function MapControls({
         }))}
       />
       <div className="m-4" />
-      <Download data={geojson} filename={legendTitle} />
+      {
+        geojson && transport.length === 1 && (<Download data={geojson} filename={legendTitle} />)
+      }
       <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden"></div>
     </div>
   );

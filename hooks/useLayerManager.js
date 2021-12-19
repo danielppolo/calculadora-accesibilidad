@@ -27,6 +27,7 @@ const useLayerManager = () => {
     reverseColors = false,
     colors = ['#f8dda1', '#f1bb43'],
     opacity = 0.5,
+    solid = false,
   }) => {
     if (map && !(id in state)) {
       const [color1, color2] = colors;
@@ -57,7 +58,7 @@ const useLayerManager = () => {
         // filter: ['>', ['get', property], 0],
         paint: {
           'fill-opacity': opacity,
-          'fill-color': getColor(property, reversedIntervals, colorIntervals),
+          'fill-color': solid ? color1 : getColor(property, reversedIntervals, colorIntervals),
           'fill-outline-color': ['case',
             ['has', 'selected'], ['rgba', 0, 0, 0, 1],
             ['rgba', 255, 0, 0, 0],
