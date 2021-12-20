@@ -74,16 +74,16 @@ export default function Home() {
         <div className="md:items-center md:space-x-16 md:flex">
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Una iniciativa de:</p>
-            <a target="_blank" href="https://mexico.itdp.org">
+            <a target="_blank" href="https://mexico.itdp.org" rel="noopener noreferrer">
               <img className="h-8" src="/itdp.png" alt="ITDP Logo" />
             </a>
           </div>
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Con apoyo de:</p>
-            <a target="_blank" href="https://www.iadb.org/es">
+            <a target="_blank" href="https://www.iadb.org/es" rel="noopener noreferrer">
               <img className="h-8" src="/bid.png" alt="BID Logo" />
             </a>
-            <a target="_blank" href="https://bidlab.org/es">
+            <a target="_blank" href="https://bidlab.org/es" rel="noopener noreferrer">
               <img className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
             </a>
           </div>
