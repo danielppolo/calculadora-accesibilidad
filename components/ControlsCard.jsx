@@ -26,7 +26,7 @@ function ControlsCard({
           <button
             onClick={() => setExpanded(false)}
             type="button"
-            className="text-black bg-white  font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center "
+            className="text-black bg-white font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center md:hidden"
           >
             {expanded ? <CloseIcon /> : <OpenInNewIcon />}
           </button>
