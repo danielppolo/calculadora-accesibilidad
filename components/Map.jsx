@@ -253,6 +253,7 @@ function Map({ city, data, cities, onCityChange }) {
               }
             });
           });
+          console.log(incomingChartData)
           setChartData(incomingChartData)
         } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
@@ -353,7 +354,7 @@ function Map({ city, data, cities, onCityChange }) {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
             label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.keys(chartData[params.timeframe][transport].opportunities).map((opportunity) => cityData[opportunity] / chartData[params.timeframe][transport].opportunities[opportunity]),
+            data: Object.keys(chartData[params.timeframe][transport].opportunities).map((opportunity) =>  chartData[params.timeframe][transport].opportunities[opportunity] / cityData[opportunity]),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
         })),
       }
@@ -367,7 +368,7 @@ function Map({ city, data, cities, onCityChange }) {
         labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].facilities),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
             label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.keys(chartData[params.timeframe][transport].facilities).map((facility) => cityData[facility] / chartData[params.timeframe][transport].facilities[facility]),
+            data: Object.keys(chartData[params.timeframe][transport].facilities).map((facility) =>  chartData[params.timeframe][transport].facilities[facility] / cityData[facility]),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
         })),
       }
