@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from '@mui/material';
+import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import {
   TRANSPORTS,
   TIMEFRAMES,
@@ -10,7 +12,7 @@ import {
 } from '../constants';
 import Select from './Select';
 import ButtonGroup from './ButtonGroup';
-import Download from './Download';
+import LayerSwitch from './LayerSwitch';
 
 function MapControls({
   transport,
@@ -25,9 +27,10 @@ function MapControls({
   city,
   onCityChange,
   cities,
-  geojson,
-  legendTitle,
   scenario,
+  economicLayer,
+  onEconomicLayerChange,
+  resetMap,
 }) {
   const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
   return (
@@ -88,9 +91,20 @@ function MapControls({
         }))}
       />
       <div className="m-4" />
-      {
-        geojson && transport.length === 1 && (<Download data={geojson} filename={legendTitle} />)
-      }
+      <LayerSwitch
+        title="Mostar marginación"
+        onChange={onEconomicLayerChange}
+        active={economicLayer}
+      >
+        <GppMaybeOutlinedIcon />
+      </LayerSwitch>
+      <div className="m-4" />
+      <LayerSwitch
+        title="Visualizar México"
+        onChange={resetMap}
+      >
+        <MapOutlinedIcon />
+      </LayerSwitch>
       <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden" />
     </div>
   );
@@ -104,13 +118,14 @@ MapControls.propTypes = {
   city: PropTypes.string.isRequired,
   scenario: PropTypes.string.isRequired,
   cities: PropTypes.object.isRequired,
-  geojson: PropTypes.object.isRequired,
-  legendTitle: PropTypes.string.isRequired,
   onMediumChange: PropTypes.func.isRequired,
   onTimeStepChange: PropTypes.func.isRequired,
   onScenarioChange: PropTypes.func.isRequired,
   onOpportunityChange: PropTypes.func.isRequired,
   onCityChange: PropTypes.func.isRequired,
+  economicLayer: PropTypes.bool.isRequired,
+  onEconomicLayerChange: PropTypes.func.isRequired,
+  resetMap: PropTypes.func.isRequired,
 };
 
 export default MapControls;

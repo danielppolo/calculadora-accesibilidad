@@ -11,7 +11,7 @@ const popup = new Popup({
 
 const useBaseGrid = () => {
   const load = useCallback((map, features, id) => {
-    if (map && features) {
+    if (map && features && !map.getSource(id)) {
       const filteredFeatures = features.map((feature) => ({
         ...feature,
         properties: {

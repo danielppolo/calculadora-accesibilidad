@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import LayerSwitch from './LayerSwitch';
 
 function LayerControls({
@@ -7,12 +8,14 @@ function LayerControls({
   onEconomicLayerChange,
 }) {
   return (
-    <div className="fixed bottom-4 left-4 z-30">
+    <div className="fixed left-1/2 top-4 z-30">
       <LayerSwitch
-        title="Capa de marginación"
+        title="Mostar marginación"
         onChange={onEconomicLayerChange}
-        checked={economicLayer}
-      />
+        active={economicLayer}
+      >
+        <GppMaybeOutlinedIcon />
+      </LayerSwitch>
     </div>
   );
 }

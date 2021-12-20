@@ -5,28 +5,28 @@ const MARGINALIZATION_TILES = [
     id: 'muy-alto',
     sourceLayer: 'muy-alto-4gqx10',
     url: 'mapbox://daniel-itdp.43cq9l5l',
-    color: '#EB4D74',
+    color: '#DA546F',
     label: 'Muy Alto',
   },
   {
     id: 'alto',
     sourceLayer: 'alto-9d92hn',
     url: 'mapbox://daniel-itdp.3o54h1cd',
-    color: '#E96030',
+    color: '#FE8840',
     label: 'Alto',
   },
   {
     id: 'medio',
     sourceLayer: 'medio-copnh9',
     url: 'mapbox://daniel-itdp.d6y0e1oe',
-    color: '#FBD900',
+    color: '#F1BB43',
     label: 'Medio',
   },
   {
     id: 'bajo',
     sourceLayer: 'bajo-binxq0',
     url: 'mapbox://daniel-itdp.7eb1ttdq',
-    color: '#3C60AC',
+    color: '#307DC6',
     label: 'Bajo',
   },
   {
@@ -40,7 +40,7 @@ const MARGINALIZATION_TILES = [
     id: 'otros',
     sourceLayer: 'otros-1qjpnd',
     url: 'mapbox://daniel-itdp.cnwsf9qk',
-    color: '#6BBE49',
+    color: '#54AC59',
     label: 'NA',
   },
 ];
@@ -49,25 +49,27 @@ const useMarginalizationLayers = () => {
   const load = useCallback((map) => {
     if (map) {
       MARGINALIZATION_TILES.forEach((ageb) => {
-        map.addSource(ageb.id, {
-          type: 'vector',
-          url: ageb.url,
-          minzoom: 6,
-          maxzoom: 14,
-        });
-        map.addLayer({
-          id: ageb.id,
-          type: 'fill',
-          source: ageb.id,
-          layout: {
-            visibility: 'none',
-          },
-          'source-layer': ageb.sourceLayer,
-          paint: {
-            'fill-color': ageb.color,
-            'fill-opacity': 0.5,
-          },
-        });
+        if (!map.getSource(ageb.id)) {
+          map.addSource(ageb.id, {
+            type: 'vector',
+            url: ageb.url,
+            minzoom: 6,
+            maxzoom: 14,
+          });
+          map.addLayer({
+            id: ageb.id,
+            type: 'fill',
+            source: ageb.id,
+            layout: {
+              visibility: 'none',
+            },
+            'source-layer': ageb.sourceLayer,
+            paint: {
+              'fill-color': ageb.color,
+              'fill-opacity': 0.5,
+            },
+          });
+        }
       });
     }
   }, []);

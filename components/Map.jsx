@@ -24,7 +24,6 @@ import useMap from '../hooks/useMap';
 import ControlsCard from './ControlsCard';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import MapControls from './MapControls';
-import LayerControls from './LayerControls';
 import CitiesOverview from './CitiesOverview';
 import displayCityMarkers from '../utils/displayCityMarkers';
 import getHexagonId from '../utils/getHexagonId';
@@ -101,6 +100,15 @@ function Map({
     [cities, map, onCityChange, router, setParams],
   );
 
+  const resetMap = () => {
+    map.flyTo({
+      center: MEXICO_COORDINATES,
+      zoom: 4.5,
+      duration: 2000,
+    });
+    onCityChange(undefined);
+  }
+
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
       cityMarkers.forEach((marker) => marker.remove());
@@ -112,33 +120,31 @@ function Map({
 
   useEffect(() => {
     if (map && mapLoaded && features.length > 0) {
-      if (!map.getSource(cityGridId(city))) {
-        loadBaseGrid(map, features, cityGridId(city));
-        // Load opportunities
-        Object.keys(OPPORTUNITIES).forEach((opp) => {
-          let maxValue = 0;
-          const filteredFeatures = features.filter((item) => {
-            if (item.properties[opp] > maxValue) {
-              maxValue = item.properties[opp];
-            }
-            return item.properties[opp] > 0;
-          });
-          if (!(opp in state)) {
-            add({
-              map,
-              legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
-              id: cityOpportunityId(opp, city),
-              features: filteredFeatures,
-              property: opp,
-              maxValue,
-              visible: false,
-              stepSize: 10,
-              beforeId: cityGridId(city),
-            });
+      loadBaseGrid(map, features, cityGridId(city));
+      loadAgebs(map) 
+      // Load opportunities
+      Object.keys(OPPORTUNITIES).forEach((opp) => {
+        let maxValue = 0;
+        const filteredFeatures = features.filter((item) => {
+          if (item.properties[opp] > maxValue) {
+            maxValue = item.properties[opp];
           }
+          return item.properties[opp] > 0;
         });
-      }
-      // loadAgebs(map) // FIXME: Load once.
+        if (!(opp in state)) {
+          add({
+            map,
+            legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
+            id: cityOpportunityId(opp, city),
+            features: filteredFeatures,
+            property: opp,
+            maxValue,
+            visible: false,
+            stepSize: 10,
+            beforeId: cityGridId(city),
+          });
+        }
+      });
     
       // Hexagon click listener
       map.on('click', cityGridId(city), async (e) => {
@@ -396,9 +402,10 @@ function Map({
         city={cities && city && cities[city]}
         onCityChange={handleCityChange}
         cities={Object.values(cities || {})}
-        geojson={geojson}
-        legendTitle={legend.title}
         scenario={scenario}
+        economicLayer={params.agebs}
+        onEconomicLayerChange={handleEconomicChange}
+        resetMap={resetMap}
       />
       { city ? (
         <ControlsCard
@@ -418,6 +425,8 @@ function Map({
       {
         params.transport.length === 1 && (
           <LegendBar
+            agebLegend={agebLegend}
+            ageb={params.agebs}
             geojson={geojson}
             legendTitle={legend.title}
             legendDictionary={legend.intervals}
@@ -425,10 +434,6 @@ function Map({
           />
         )
       }
-      <LayerControls
-        economicLayer={params.agebs}
-        onEconomicLayerChange={handleEconomicChange}
-      />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading} />
       <div className=" hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
