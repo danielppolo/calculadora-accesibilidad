@@ -78,6 +78,7 @@ function MapControls({
           !hexagonDisabled && transport.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
         }
         placement="right"
+        open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
         disableTouchListener
       >
         <div className="z-30 relative">
@@ -94,12 +95,12 @@ function MapControls({
         </div>
       </Tooltip>
       <div className="m-2 md:m-4" />
-      <Tooltip
+      {/* <Tooltip
         title="Selecciona un hexágono para habilitar  tiempo de traslado"
         placement="right"
         disableTouchListener
       >
-        <div className="z-30 relative">
+        <div className="z-30 relative"> */}
           <ButtonGroup
             options={TIMEFRAMES.map((step) => ({
               label: `${step} min`,
@@ -108,8 +109,8 @@ function MapControls({
               active: timeframe === step,
             }))}
           />
-        </div>
-      </Tooltip>
+        {/* </div>
+      </Tooltip> */}
       <div className="m-2 md:m-4" />
       <LayerSwitch
         disabled={cityDisabled}
