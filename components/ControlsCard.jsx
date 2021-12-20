@@ -19,7 +19,7 @@ function ControlsCard({
     <div className={`${expanded ? 'bottom-0' : '-bottom-2/3'} duration-500 fixed left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen`}>
       <Card
         onClick={() => setExpanded(!expanded)}
-        className="px-3 py-4 md:py-4 md:px-6 m-2 overflow-y-auto"
+        className="px-3 py-4 m-2 md:py-4 md:px-6 md:m-4 overflow-y-auto"
       >
         <div className="flex justify-between items-start">
           <Subtitle>{title}</Subtitle>
