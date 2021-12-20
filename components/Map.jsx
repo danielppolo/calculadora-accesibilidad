@@ -33,6 +33,7 @@ import count from '../utils/countFeatures';
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
 const cityGridId = (cityId) => `${cityId}-grid`;
+const cityOpportunityId = (opportunity, city) => `${opportunity}-${city}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
 const defaultTimeframe = TIMEFRAMES[1];
@@ -112,22 +113,23 @@ function Map({
     if (map && mapLoaded && features.length > 0) {
       loadBaseGrid(map, features, cityGridId(city));
       // loadAgebs(map) // FIXME: Load once.
+      
       // Load opportunities
-      Object.keys(OPPORTUNITIES).forEach((key) => {
+      Object.keys(OPPORTUNITIES).forEach((opp) => {
         let maxValue = 0;
         const filteredFeatures = features.filter((item) => {
-          if (item.properties[key] > maxValue) {
-            maxValue = item.properties[key];
+          if (item.properties[opp] > maxValue) {
+            maxValue = item.properties[opp];
           }
-          return item.properties[key] > 0;
+          return item.properties[opp] > 0;
         });
-        if (!(key in state)) {
+        if (!(opp in state)) {
           add({
             map,
-            legendTitle: `Número de ${OPPORTUNITIES[key].toLowerCase()}`,
-            id: key,
+            legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
+            id: cityOpportunityId(opp, city),
             features: filteredFeatures,
-            property: key,
+            property: opp,
             maxValue,
             visible: false,
             stepSize: 10,
@@ -272,7 +274,7 @@ function Map({
   const handleOpportunityChange = (nextOpportunity) => {
     hideAll(map);
     hideAgebs(map);
-    show(map, nextOpportunity);
+    show(map, cityOpportunityId(nextOpportunity, city));
     setParams({
       ...params,
       opportunity: nextOpportunity,

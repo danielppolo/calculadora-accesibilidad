@@ -7,7 +7,7 @@ function LayerControls({
   onEconomicLayerChange,
 }) {
   return (
-    <div className="fixed bottom-4 left-4">
+    <div className="fixed bottom-4 left-4 z-30">
       <LayerSwitch
         title="Capa de marginación"
         onChange={onEconomicLayerChange}
