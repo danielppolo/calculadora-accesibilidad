@@ -15,16 +15,19 @@ import useMarginalizationLayers from '../hooks/useMarginalizationLayers'
 import MapControls from './MapControls';
 import LayerControls from './LayerControls';
 import CitiesOverview from './CitiesOverview';
+import {useRouter} from 'next/router';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
-const buildCityMarker = () => {
+const buildCityMarker = (color) => {
   const container = document.createElement('div')
   container.className = 'flex items-center justify-center relative'
   const pulse = document.createElement('div')
-  pulse.className = 'animate-pulse bg-red absolute rounded-full h-4 w-4 opacity-5'
+  pulse.className = 'animate-pulse absolute rounded-full h-4 w-4 opacity-5'
+  pulse.style.backgroundColor = color
   const dot = document.createElement('div')
-  dot.className = 'bg-red absolute rounded-full h-2 w-2'
+  dot.className = 'absolute rounded-full h-2 w-2'
+  dot.style.backgroundColor = color
   container.appendChild(dot)
   container.appendChild(pulse)
   return container
@@ -33,7 +36,7 @@ const buildCityMarker = () => {
 const displayCityMarkers = (map, cities, {onClick}) => {
   const cityMarkers = []
   Object.keys(cities).forEach(cty => {
-    const marker = buildCityMarker()
+    const marker = buildCityMarker(cities[cty].color)
     marker.addEventListener('click', () => { onClick(cty) })
     new mapboxgl.Marker(marker).setLngLat(cities[cty].coordinates).addTo(map)
     cityMarkers.push(marker)
@@ -63,6 +66,7 @@ let currentTimeframe = defaultTimeframe
 let currentTransport =  [defaultTransport]
 
 function Map({ city, data, cities, onCityChange }) {
+  const router = useRouter();
   const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
   const {
     state,
@@ -148,8 +152,13 @@ function Map({ city, data, cities, onCityChange }) {
         setLoading(true)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
+        router.query = { 
+          ...router.query,
+          featureId
+        }
+        router.replace(router)
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/features/${featureId}.json`);
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/actual/${featureId}.json`);
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData = {};
@@ -224,11 +233,9 @@ function Map({ city, data, cities, onCityChange }) {
               }
               incomingChartData[step][transport] = {
                 facilities: {
-                  Empresas: count(filteredFeatures, 'empresas'),
-                  Clínicas: count(filteredFeatures, 'clinicas'),
-                  Escuelas: count(filteredFeatures, 'escuelas'),
-                  'Zonas turísticas': count(filteredFeatures, 'destinos'),
-                  Estaciones: count(filteredFeatures, 'Estaciones'),
+                  Empresas: count(filteredFeatures, 'empress'),
+                  Clínicas: count(filteredFeatures, 'clinics'),
+                  Escuelas: count(filteredFeatures, 'escuels'),
                 },
                 opportunities: {
                   'Personal ocupado': count(filteredFeatures, 'jobs_w'),

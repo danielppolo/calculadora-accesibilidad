@@ -2,6 +2,7 @@ import React from 'react';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import DirectionsCarFilled from '@mui/icons-material/DirectionsCarFilled'
 import {
   TRANSPORTS, TIMEFRAMES, TRANSPORT_COLORS, OPPORTUNITIES, TRANSPORT_TRANSLATIONS,
 } from '../constants';
@@ -13,6 +14,7 @@ const TRANSPORT_ICONS = {
   caminando: <DirectionsWalkIcon fontSize='small'/>,
   bicicleta: <DirectionsBikeIcon fontSize='small'/>,
   bus_actual: <DirectionsBusFilledIcon fontSize='small'/>,
+  automovil: <DirectionsCarFilled fontSize='small'/>,
 };
 
 function MapControls({
@@ -34,7 +36,7 @@ function MapControls({
     <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
         value={city?.name}
-        options={cities.map(ct => ({
+        options={cities.sort((a,b) => a.name.localeCompare(b.name)).map(ct => ({
           label: ct.name,
           value: ct.bucketName,
         }))}

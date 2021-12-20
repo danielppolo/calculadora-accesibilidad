@@ -10,10 +10,9 @@ const useCityData = (data) => {
         features: nextFeatures,
         metadata: {
           'Personal ocupado': count(nextFeatures, 'jobs_w'),
-          Empresas: count(nextFeatures, 'empresas'),
-          Clínicas: count(nextFeatures, 'clinicas'),
-          Escuelas: count(nextFeatures, 'escuelas'),
-          'Zonas turísticas': count(nextFeatures, 'destinos'),
+          Empresas: count(nextFeatures, 'empress'),
+          Clínicas: count(nextFeatures, 'clinics'),
+          Escuelas: count(nextFeatures, 'escuels'),
         },
       };
     }

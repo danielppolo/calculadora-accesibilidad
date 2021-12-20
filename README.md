@@ -36,12 +36,33 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Data
 The application uses GeoJSON to display the geometry on top of the map. To render everything properly, it needs every file to follow a specific format.
 
+## Storage
+The storage service of choice is AWS S3. All documents consumed by the application are located in the bucket `bucket_name`. The directory structure MUST follow the specified convention for the application to fetch.
+
+```markdown
+└── data
+│   └── <city>
+│       ├── main.json  # Dictionary of hexagons. (See Cities below)
+│       ├── <scenario>
+│       │    ├── <hexagon_id>.json  
+│       │    ├── <hexagon_id>.json
+│       │    │
+│       │    .
+│       └── <scenario>
+│            ├── <hexagon_id>.json
+│            ├── <hexagon_id>.json
+│            │
+│            .
+
+
+ ```
+
 ### Cities
 Functions as a dictionary of the hexagons that compose the city. 
-`<:city>.json`
+`<city>.json`
 ```json
 {
-  "<:hexagon_id>": {
+  "<hexagon_id>": {
     "type": "Feature",
     "geometry": {
       "type": "Polygon",
@@ -60,27 +81,10 @@ Functions as a dictionary of the hexagons that compose the city.
 
 ### Hexagon
 Represents all the relationships the hexagon has with his peers. There MUST exist a single JSON for every hexagon in the `<:city>.json`. 
-`<:hexagon_id>.json`
+`<hexagon_id>.json`
 ```json
 {
   "<:hexagon_id>": [<:walk_time>, <:bike_time>, <:car_time>],
   ...
 }
 ```
-
-
-## Storage
-The storage service of choice is AWS S3. All documents consumed by the application are located in the bucket `bucket_name`. The directory structure MUST follow the specified convention for the application to fetch.
-
- ```
-└── data
-│   └── cancun
-│       ├── main.json
-│       └── features
-│            ├── <:id>.json
-│            ├── <:id>.json
-│            │
-│            .
-
-
- ```

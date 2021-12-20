@@ -10,7 +10,7 @@ function CitiesChart({ data }) {
       }
 
       const config = {
-        type: 'bar',
+        type: 'pie',
         data,
         options: {
           indexAxis: 'y',
@@ -19,15 +19,16 @@ function CitiesChart({ data }) {
           },
           scales: {
             y: {
+              display: false,
               position: 'right',
               grid: {
-                display: false,
+                // display: false,
               },
             },
             x: {
               display: false,
               grid: {
-                display: false,
+                // display: false,
               },
             },
           },
@@ -41,7 +42,12 @@ function CitiesChart({ data }) {
     }
   }, [data]);
 
-  return <canvas id="cities-chart" width="200" height="120" />;
+  return (
+  <div className="flex justify-center m-8">
+    <div className="h-48 w-48 flex justify-center">
+      <canvas  id="cities-chart" />
+    </div>
+  </div>)
 }
 
 export default memo(CitiesChart);

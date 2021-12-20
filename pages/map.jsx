@@ -1,48 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useRouter } from 'next/router';
 import Map from '../components/Map';
-const contentful = require("contentful");
+
+const contentful = require('contentful');
 
 const client = contentful.createClient({
-  space: "f9qr8a787ywo",
-  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+  space: 'f9qr8a787ywo',
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
 });
-
-const cityName = 'fonatur-tren-maya';
 
 export default function Home() {
   const [cities, setCities] = useState();
   const [city, setCity] = useState();
   const [data, setData] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const cities = await client.getEntries({
+        const cmsCities = await client.getEntries({
           content_type: 'city',
-        })
-        const cityData = {}
-        cities.items.map(cty => cty.fields).filter(cty => !!cty.coordinates).forEach(cty => cityData[cty.bucketName] = cty)
-        setCities(cityData)
-      } catch(e) {
-        console.log(e)
+        });
+        const cityData = {};
+        cmsCities.items
+          .map((cty) => cty.fields)
+          .filter((cty) => !!cty.coordinates)
+          .forEach((cty) => {
+            cityData[cty.bucketName] = cty;
+          });
+        setCities(cityData);
+      } catch (e) {
+        console.log(e);
       }
-    }
-    fetchCities()
+    };
+    fetchCities();
   }, []);
 
   const handleCityChange = async (bucket) => {
     if (bucket && !data[bucket]) {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
-      const responseData = await response.json();
-      setData({
-        ...data,
-        [bucket]: responseData
-      });
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
+        const responseData = await response.json();
+        setData({
+          ...data,
+          [bucket]: responseData,
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
     setCity(bucket);
-  }
+    router.query = {
+      ...router.query,
+      city: bucket,
+    };
+    router.replace(router);
+  };
 
   return (
     <>
@@ -52,7 +67,7 @@ export default function Home() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Map city={city} cities={cities} data={data[city]} onCityChange={handleCityChange}/>
+      <Map city={city} cities={cities} data={data[city]} onCityChange={handleCityChange} />
     </>
   );
 }

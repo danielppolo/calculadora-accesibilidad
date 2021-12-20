@@ -13,24 +13,26 @@ export const TRANSPORTS = [
   'caminando',
   'bicicleta',
   'bus_actual',
+  'automovil',
 ];
 export const TRANSPORT_TRANSLATIONS = {
   caminando: 'Caminando',
   bicicleta: 'Bicicleta',
   bus_actual: 'Transporte Público',
+  automovil: 'Automóvil',
 };
 export const TRANSPORT_COLORS = {
   caminando: 'yellow',
   bicicleta: 'orange',
   bus_actual: 'purple',
+  automovil: 'red',
 };
 
 export const OPPORTUNITIES = {
   jobs_w: 'Personal ocupado',
-  empresas: 'Empresas',
-  clinicas: 'Clínicas',
-  escuelas: 'Escuelas',
-  destinos: 'Zonas turísticas',
+  empress: 'Empresas',
+  clinics: 'Clínicas',
+  escuels: 'Escuelas',
 };
 export const NUMBER_OF_BUCKETS = 10;
 export const CANCUN_COORDINATES = [-86.851404, 21.161788];
