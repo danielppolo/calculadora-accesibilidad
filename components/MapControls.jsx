@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Tooltip } from '@mui/material';
 import {
   TRANSPORTS,
   TIMEFRAMES,
@@ -15,6 +16,7 @@ function MapControls({
   transport,
   onMediumChange,
   timeframe,
+  opportunity,
   onTimeStepChange,
   onScenarioChange,
   onOpportunityChange,
@@ -25,7 +27,9 @@ function MapControls({
   cities,
   geojson,
   legendTitle,
+  scenario,
 }) {
+  const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
@@ -39,16 +43,18 @@ function MapControls({
       />
       <div className="m-4" />
       <Select
+        value={selectedScenario && selectedScenario.fields.name}
         options={city ? city.scenarios.map((sc) => ({
           label: sc.fields.name,
           value: sc.fields.bucketName,
         })) : []}
         onChange={onScenarioChange}
-        disabled={cityDisabled}
+        disabled={cityDisabled || city.scenarios.length <= 1}
         placeholder="Selecciona un escenario"
       />
       <div className="m-4" />
       <Select
+        value={OPPORTUNITIES[opportunity]}
         disabled={cityDisabled}
         options={Object.keys(OPPORTUNITIES).map((op) => ({
           label: OPPORTUNITIES[op],
@@ -58,16 +64,20 @@ function MapControls({
         placeholder="Selecciona una oportunidad"
       />
       <div className="m-4" />
-      <ButtonGroup
-        options={TRANSPORTS.map((mdm) => ({
-          icon: TRANSPORT_ICONS[mdm],
-          // label: TRANSPORT_TRANSLATIONS[mdm],
-          onClick: () => onMediumChange(mdm),
-          disabled: hexagonDisabled,
-          color: TRANSPORT_COLORS[mdm],
-          active: transport.includes(mdm),
-        }))}
-      />
+      <Tooltip title="Da click sobre un hexágono" placement="right" open={!cityDisabled && hexagonDisabled}>
+        <div>
+          <ButtonGroup
+            options={TRANSPORTS.map((mdm) => ({
+              icon: TRANSPORT_ICONS[mdm],
+              // label: TRANSPORT_TRANSLATIONS[mdm],
+              onClick: () => onMediumChange(mdm),
+              disabled: hexagonDisabled,
+              color: TRANSPORT_COLORS[mdm],
+              active: transport.includes(mdm),
+            }))}
+          />
+        </div>
+      </Tooltip>
       <div className="m-4" />
       <ButtonGroup
         options={TIMEFRAMES.map((step) => ({
@@ -92,6 +102,7 @@ MapControls.propTypes = {
   hexagonDisabled: PropTypes.bool.isRequired,
   cityDisabled: PropTypes.bool.isRequired,
   city: PropTypes.string.isRequired,
+  scenario: PropTypes.string.isRequired,
   cities: PropTypes.object.isRequired,
   geojson: PropTypes.object.isRequired,
   legendTitle: PropTypes.string.isRequired,

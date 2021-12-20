@@ -41,7 +41,7 @@ const defaultParams = {
   hexagon: undefined,
   transport: [defaultTransport],
   timeframe: defaultTimeframe,
-  opportunity: defaultOpportunity,
+  opportunity: undefined,
   agebs: false,
 };
 const popup = new Popup({
@@ -74,7 +74,7 @@ function Map({
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState(defaultParams);
   const [chartData, setChartData] = useState({});
-  const { load: loadBaseGrid } = useBaseGrid();
+  const { load: loadBaseGrid, state: gridState } = useBaseGrid();
   const {
     load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend,
   } = useMarginalizationLayers();
@@ -96,8 +96,9 @@ function Map({
         scenario: cities[cty].scenarios[0].fields.bucketName,
       };
       router.replace(router);
+      setParams(defaultParams);
     },
-    [cities, map, onCityChange, router],
+    [cities, map, onCityChange, router, setParams],
   );
 
   useEffect(() => {
@@ -111,33 +112,34 @@ function Map({
 
   useEffect(() => {
     if (map && mapLoaded && features.length > 0) {
-      loadBaseGrid(map, features, cityGridId(city));
-      // loadAgebs(map) // FIXME: Load once.
-      
-      // Load opportunities
-      Object.keys(OPPORTUNITIES).forEach((opp) => {
-        let maxValue = 0;
-        const filteredFeatures = features.filter((item) => {
-          if (item.properties[opp] > maxValue) {
-            maxValue = item.properties[opp];
-          }
-          return item.properties[opp] > 0;
-        });
-        if (!(opp in state)) {
-          add({
-            map,
-            legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
-            id: cityOpportunityId(opp, city),
-            features: filteredFeatures,
-            property: opp,
-            maxValue,
-            visible: false,
-            stepSize: 10,
-            beforeId: cityGridId(city),
+      if (!map.getSource(cityGridId(city))) {
+        loadBaseGrid(map, features, cityGridId(city));
+        // Load opportunities
+        Object.keys(OPPORTUNITIES).forEach((opp) => {
+          let maxValue = 0;
+          const filteredFeatures = features.filter((item) => {
+            if (item.properties[opp] > maxValue) {
+              maxValue = item.properties[opp];
+            }
+            return item.properties[opp] > 0;
           });
-        }
-      });
-
+          if (!(opp in state)) {
+            add({
+              map,
+              legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
+              id: cityOpportunityId(opp, city),
+              features: filteredFeatures,
+              property: opp,
+              maxValue,
+              visible: false,
+              stepSize: 10,
+              beforeId: cityGridId(city),
+            });
+          }
+        });
+      }
+      // loadAgebs(map) // FIXME: Load once.
+    
       // Hexagon click listener
       map.on('click', cityGridId(city), async (e) => {
         setLoading(true);
@@ -396,6 +398,7 @@ function Map({
         cities={Object.values(cities || {})}
         geojson={geojson}
         legendTitle={legend.title}
+        scenario={scenario}
       />
       { city ? (
         <ControlsCard
@@ -428,6 +431,7 @@ function Map({
       />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading} />
+      <div className=" hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
     </>
   );
 }
