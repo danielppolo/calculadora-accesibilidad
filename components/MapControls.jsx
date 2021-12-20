@@ -23,6 +23,7 @@ function MapControls({
   timeframe,
   onTimeStepChange,
   opportunity,
+  onScenarioChange,
   onOpportunityChange,
   cityDisabled,
   hexagonDisabled,
@@ -45,10 +46,11 @@ function MapControls({
       />
       <div className="m-4" />
       <Select
-        options={[{
-          label: "Situacion actual",
-          value: 'today',
-        }]}
+        options={city?.scenarios?.map(sc => ({
+          label: sc.fields.name,
+          value: sc.fields.bucketName,
+        })) || []}
+        onChange={onScenarioChange}
         disabled={cityDisabled}
         placeholder="Selecciona un escenario"
       />

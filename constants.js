@@ -1,4 +1,4 @@
-export const TIMEFRAMES = [60, 120, 180];
+export const TIMEFRAMES = [30, 60, 120];
 export const COLORS = {
   green: ['#54AC59', '#346B37'],
   blue: ['#307DC6', '#112D47'],

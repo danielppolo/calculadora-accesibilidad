@@ -80,12 +80,13 @@ function Map({ city, data, cities, onCityChange }) {
     geojson,
   } = useLayerManager(map);
   useFitMap(map, geojson?.features)
+  const [scenario, setScenario] = useState(city?.scenario?.[0]?.fields?.bucketName)
   const {features, metadata: cityData} = useCityData(data);
   const [cityMarkers, setCityMarkers] = useState([])
   const [loading, setLoading] = useState(false)
   const [params, setParams] = useState(defaultParams)
   const [chartData, setChartData] = useState({})
-  const { load: loadGrid, layerName: gridId } = useBaseGrid('grid')
+  const { load: loadGrid } = useBaseGrid()
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers()
   const getCurrentTimeframe = () => currentTimeframe
   const getCurrentTransport = () => currentTransport
@@ -112,17 +113,8 @@ function Map({ city, data, cities, onCityChange }) {
   useEffect(() => {
     if (map && mapLoaded && features.length > 0) {
       // Load base grid
-      loadGrid(map, features)
-      loadAgebs(map)
-      map.on('mousemove', gridId, (e) => {
-        popup
-          .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.description)
-          .addTo(map);
-      });
-      map.on('mouseleave', gridId, () => {
-        popup.remove();
-      });
+      loadGrid(map, features, `base-grid-${city}`)
+      // loadAgebs(map) // FIXME: Load once.
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((key) => {
         let maxValue = 0;
@@ -142,13 +134,13 @@ function Map({ city, data, cities, onCityChange }) {
             maxValue,
             visible: false,
             stepSize: 10,
-            beforeId: gridId,
+            beforeId: `base-grid-${city}`,
           });
         }
       });
 
       // Hexagon click listener
-      map.on('click', gridId, async (e) => {
+      map.on('click', `base-grid-${city}`, async (e) => {
         setLoading(true)
         const feature = e.features[0].properties
         const featureId = e.features[0].properties.h3_ddrs;
@@ -165,11 +157,9 @@ function Map({ city, data, cities, onCityChange }) {
           // Create 9 isochrones variant layers
           [...TIMEFRAMES].reverse().forEach((step) => {
             const featureIds = Object.keys(json)
-            const transportReach = TRANSPORTS.map((transport, index) => [transport, featureIds.filter((id) => json[id][index] && json[id][index] <= step && data[id])])
-            const sortedTransports = transportReach.sort((a, b)  => b[1].length - a[1].length);
-
-            sortedTransports.forEach(([transport, filteredIds], index) => {
-              const filteredFeatures = filteredIds.map((id) => ({
+            const transportReach = TRANSPORTS.map((transport, index) => {
+              const filteredIds = featureIds.filter((id) => json[id][index] && (json[id][index] <= step) && data[id])
+              const features = filteredIds.map((id) => ({
                 ...data[id],
                 properties: {
                   ...data[id].properties,
@@ -177,9 +167,8 @@ function Map({ city, data, cities, onCityChange }) {
                   description: `${json[id][index]} minutos`
                 },
               }));
-
               // Include clicked feature.
-              filteredFeatures.push({
+              features.push({
                 ...data[featureId],
                 properties: {
                   ...data[featureId].properties,
@@ -188,17 +177,20 @@ function Map({ city, data, cities, onCityChange }) {
                   description: `15 minutos`
                 },
               })
-              
+              return [transport, features]
+            })
+            const sortedTransports = transportReach.sort((a, b)  => b[1].length - a[1].length);
+            sortedTransports.forEach(([transport, features]) => {
               add({
                 map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
                 id: getHexagonId(featureId, transport, step),
-                features: filteredFeatures,
+                features: features,
                 property: transport,
                 maxValue: step,
                 visible: false,
-                beforeId: gridId,
+                beforeId: `base-grid-${city}`,
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[transport]],
@@ -208,13 +200,13 @@ function Map({ city, data, cities, onCityChange }) {
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
                 id: getHexagonId(featureId, transport, step) + '-solid',
-                features: filteredFeatures,
+                features: features,
                 property: transport,
                 maxValue: step,
                 solid:  true,
                 opacity: 1,
                 visible: false,
-                beforeId: gridId,
+                beforeId: `base-grid-${city}`,
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[transport]],
@@ -233,12 +225,12 @@ function Map({ city, data, cities, onCityChange }) {
               }
               incomingChartData[step][transport] = {
                 facilities: {
-                  Empresas: count(filteredFeatures, 'empress'),
-                  Clínicas: count(filteredFeatures, 'clinics'),
-                  Escuelas: count(filteredFeatures, 'escuels'),
+                  Empresas: count(features, 'empress'),
+                  Clínicas: count(features, 'clinics'),
+                  Escuelas: count(features, 'escuels'),
                 },
                 opportunities: {
-                  'Personal ocupado': count(filteredFeatures, 'jobs_w'),
+                  'Personal ocupado': count(features, 'jobs_w'),
                 }
               }
             });
@@ -368,6 +360,7 @@ function Map({ city, data, cities, onCityChange }) {
   return(
     <>
     <MapControls
+    onScenarioChange={setScenario}
       transport={params.transport}
       onMediumChange={handleTransportChange}
       timeframe={params.timeframe}

@@ -1,9 +1,16 @@
 import { useCallback } from 'react';
+import { Popup } from 'mapbox-gl';
 import { convertToGeoJSON } from '../utils';
 import { OPPORTUNITIES } from '../constants';
 
-const useBaseGrid = (id) => {
-  const load = useCallback((map, features) => {
+const popup = new Popup({
+  className: 'black-popup',
+  closeButton: false,
+  closeOnClick: false,
+});
+
+const useBaseGrid = () => {
+  const load = useCallback((map, features, id) => {
     if (map && features) {
       const filteredFeatures = features.map((feature) => ({
         ...feature,
@@ -37,12 +44,21 @@ const useBaseGrid = (id) => {
           ],
         },
       });
+
+      map.on('mousemove', id, (e) => {
+        popup
+          .setLngLat(e.lngLat)
+          .setHTML(e.features[0].properties.description)
+          .addTo(map);
+      });
+      map.on('mouseleave', id, () => {
+        popup.remove();
+      });
     }
   }, []);
 
   return {
     load,
-    layerName: id,
   };
 };
 

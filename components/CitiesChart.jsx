@@ -13,6 +13,7 @@ function CitiesChart({ data }) {
         type: 'pie',
         data,
         options: {
+          borderColor: '#F1F3EE',
           indexAxis: 'y',
           plugins: {
             legend: false,
@@ -43,11 +44,12 @@ function CitiesChart({ data }) {
   }, [data]);
 
   return (
-  <div className="flex justify-center m-8">
-    <div className="h-48 w-48 flex justify-center">
-      <canvas  id="cities-chart" />
+    <div className="flex justify-center m-8">
+      <div className="h-48 w-48 flex justify-center">
+        <canvas id="cities-chart" />
+      </div>
     </div>
-  </div>)
+  );
 }
 
 export default memo(CitiesChart);
