@@ -158,8 +158,8 @@ function Map({
             property: opp,
             maxValue,
             visible: false,
-            stepSize: 10,
-            colors: ['#54AC59', '#F1BB43'],
+            stepSize: 6,
+            colors: ['#7054BC', '#F1BB43'],
             beforeId: cityGridId(city),
           });
         }
@@ -440,18 +440,16 @@ function Map({
           />
         ) : null
       }
-      {
-        params.transport.length === 1 && (
-          <LegendBar
-            agebLegend={agebLegend}
-            ageb={params.agebs}
-            geojson={geojson}
-            legendTitle={legend.title}
-            legendDictionary={legend.intervals}
-            current={current}
-          />
-        )
-      }
+
+      <LegendBar
+        agebLegend={agebLegend}
+        ageb={params.agebs}
+        transportActive={params.transport.length === 1}
+        geojson={geojson}
+        legendTitle={legend.title}
+        legendDictionary={legend.intervals}
+        current={current}
+      />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading} />
       <CreditsCard />
