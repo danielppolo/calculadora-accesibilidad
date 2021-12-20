@@ -73,35 +73,44 @@ function MapControls({
         placeholder="Selecciona una oportunidad"
       />
       <div className="m-2 md:m-4" />
-      {/* <Tooltip
-        title="Da click sobre un hexágono"
+      <Tooltip
+        title={
+          !hexagonDisabled && transport.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
+        }
         placement="right"
-        open={!cityDisabled && hexagonDisabled}
+        open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
         disableTouchListener
-        classes="hidden opacity-0"
-      > */}
-      <div>
-        <ButtonGroup
-          options={TRANSPORTS.map((mdm) => ({
-            icon: TRANSPORT_ICONS[mdm],
-            // label: TRANSPORT_TRANSLATIONS[mdm],
-            onClick: () => onMediumChange(mdm),
-            disabled: hexagonDisabled,
-            color: TRANSPORT_COLORS[mdm],
-            active: transport.includes(mdm),
-          }))}
-        />
-      </div>
-      {/* </Tooltip> */}
+      >
+        <div className="z-30 relative">
+          <ButtonGroup
+            options={TRANSPORTS.map((mdm) => ({
+              icon: TRANSPORT_ICONS[mdm],
+              // label: TRANSPORT_TRANSLATIONS[mdm],
+              onClick: () => onMediumChange(mdm),
+              disabled: hexagonDisabled,
+              color: TRANSPORT_COLORS[mdm],
+              active: transport.includes(mdm),
+            }))}
+          />
+        </div>
+      </Tooltip>
       <div className="m-2 md:m-4" />
-      <ButtonGroup
-        options={TIMEFRAMES.map((step) => ({
-          label: `${step} min`,
-          onClick: () => onTimeStepChange(step),
-          disabled: hexagonDisabled,
-          active: timeframe === step,
-        }))}
-      />
+      <Tooltip
+        title="Selecciona un hexágono para habilitar  tiempo de traslado"
+        placement="right"
+        disableTouchListener
+      >
+        <div className="z-30 relative">
+          <ButtonGroup
+            options={TIMEFRAMES.map((step) => ({
+              label: `${step} min`,
+              onClick: () => onTimeStepChange(step),
+              disabled: hexagonDisabled,
+              active: timeframe === step,
+            }))}
+          />
+        </div>
+      </Tooltip>
       <div className="m-2 md:m-4" />
       <LayerSwitch
         disabled={cityDisabled}
