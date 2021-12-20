@@ -45,8 +45,9 @@ function MapControls({
         placeholder="Selecciona una ciudad"
       />
       {
-        city && city.scenarios.length > 1 ?(<>
-          <div className="m-2 md:m-4" />
+        city && city.scenarios.length > 1 ? (
+          <>
+            <div className="m-2 md:m-4" />
             <Select
               value={selectedScenario && selectedScenario.fields.name}
               options={city ? city.scenarios.map((sc) => ({
@@ -57,7 +58,8 @@ function MapControls({
               disabled={cityDisabled || city.scenarios.length <= 1}
               placeholder="Selecciona un escenario"
             />
-          </>) : null
+          </>
+        ) : null
       }
       <div className="m-2 md:m-4" />
       <Select
@@ -102,20 +104,28 @@ function MapControls({
       />
       <div className="m-2 md:m-4" />
       <LayerSwitch
+        disabled={cityDisabled}
         title="Mostar marginación"
         onChange={onEconomicLayerChange}
         active={economicLayer}
       >
         <GppMaybeOutlinedIcon />
       </LayerSwitch>
-      <div className="m-2 md:m-4" />
-      <LayerSwitch
-        title="Visualizar México"
-        onChange={resetMap}
-      >
-        <MapOutlinedIcon />
-      </LayerSwitch>
-      <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden" />
+      {
+        !cityDisabled && (
+          <>
+            <div className="m-2 md:m-4" />
+            <LayerSwitch
+              disabled={cityDisabled}
+              title="Visualizar México"
+              onChange={resetMap}
+            >
+              <MapOutlinedIcon />
+            </LayerSwitch>
+          </>
+        )
+      }
+      <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
     </div>
   );
 }

@@ -53,7 +53,9 @@ export default function Home() {
   return (
     <div>
       <div className="bg-blue h-16 px-4 text-white flex items-center justify-between relative md:px-16">
-        <img className="h-6" src="/logo-ideamos-blanco.png" alt="Logotipo" />
+        <a href="https://ideamos.mx/">
+          <img className="h-6" src="/logo-ideamos-blanco.png" alt="Logotipo" />
+        </a>
         <div id="desktop-menu" className="space-x-8 text-2xl hidden md:block">
           <a className="hover:opacity-70 duration-100" href="https://ideamos.mx/el-programa">El programa</a>
           <a className="hover:opacity-70 duration-100" href="https://ideamos.mx/indice-de-pilotos">Los pilotos</a>
@@ -72,12 +74,18 @@ export default function Home() {
         <div className="md:items-center md:space-x-16 md:flex">
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Una iniciativa de:</p>
-            <img className="h-8" src="/itdp.png" alt="ITDP Logo" />
+            <a target="_blank" href="https://mexico.itdp.org">
+              <img className="h-8" src="/itdp.png" alt="ITDP Logo" />
+            </a>
           </div>
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Con apoyo de:</p>
-            <img className="h-8" src="/bid.png" alt="BID Logo" />
-            <img className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
+            <a target="_blank" href="https://www.iadb.org/es">
+              <img className="h-8" src="/bid.png" alt="BID Logo" />
+            </a>
+            <a target="_blank" href="https://bidlab.org/es">
+              <img className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
+            </a>
           </div>
         </div>
         <div className="hidden md:block">
@@ -160,10 +168,18 @@ export default function Home() {
       <div className="my-32" />
       <div className="bg-black h-16 text-white flex items-center justify-between px-16">
         <div className="space-x-4 flex items-center">
-          <img className="h-5" src="/itdp.png" alt="ITDP Logo" />
-          <img className="h-3" src="/logo-ideamos-blanco.png" alt="Logotipo" />
-          <img className="h-5" src="/bid.png" alt="BID Logo" />
-          <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
+          <a href="https://mexico.itdp.org" target="_blank" rel="noopener noreferrer">
+            <img className="h-5" src="/itdp.png" alt="ITDP Logo" />
+          </a>
+          <a href="https://ideamos.mx/">
+            <img className="h-3" src="/logo-ideamos-blanco.png" alt="Logotipo" />
+          </a>
+          <a href="https://www.iadb.org/es" target="_blank" rel="noopener noreferrer">
+            <img className="h-5" src="/bid.png" alt="BID Logo" />
+          </a>
+          <a href="https://bidlab.org/es" target="_blank" rel="noopener noreferrer">
+            <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
+          </a>
         </div>
       </div>
     </div>

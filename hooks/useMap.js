@@ -15,7 +15,7 @@ const useMap = ({
       zoom: 4.5,
     });
     // mapInstance.addControl(new mapboxgl.NavigationControl());
-    mapInstance.addControl(new mapboxgl.ScaleControl());
+    // mapInstance.addControl(new mapboxgl.ScaleControl());
     mapInstance.on('load', () => {
       mapInstance.resize();
       setLoaded(true);

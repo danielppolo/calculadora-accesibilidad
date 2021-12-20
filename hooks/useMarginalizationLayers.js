@@ -1,46 +1,46 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 
 const MARGINALIZATION_TILES = [
   {
     id: 'muy-alto',
     sourceLayer: 'muy-alto-4gqx10',
     url: 'mapbox://daniel-itdp.43cq9l5l',
-    color: '#DA546F',
+    color: '#da546f',
     label: 'Muy Alto',
   },
   {
     id: 'alto',
     sourceLayer: 'alto-9d92hn',
     url: 'mapbox://daniel-itdp.3o54h1cd',
-    color: '#FE8840',
+    color: '#de6568',
     label: 'Alto',
   },
   {
     id: 'medio',
     sourceLayer: 'medio-copnh9',
     url: 'mapbox://daniel-itdp.d6y0e1oe',
-    color: '#F1BB43',
+    color: '#e27660',
     label: 'Medio',
   },
   {
     id: 'bajo',
     sourceLayer: 'bajo-binxq0',
     url: 'mapbox://daniel-itdp.7eb1ttdq',
-    color: '#307DC6',
+    color: '#e68859',
     label: 'Bajo',
   },
   {
     id: 'muy-bajo',
     sourceLayer: 'muy-bajo-6b30ev',
     url: 'mapbox://daniel-itdp.8dgonb06',
-    color: '#7456A4',
+    color: '#e99952',
     label: 'Muy Bajo',
   },
   {
     id: 'otros',
     sourceLayer: 'otros-1qjpnd',
     url: 'mapbox://daniel-itdp.cnwsf9qk',
-    color: '#54AC59',
+    color: '#edaa4a',
     label: 'NA',
   },
 ];

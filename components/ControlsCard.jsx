@@ -47,7 +47,7 @@ function ControlsCard({
         {
           reachableOpportunities && (
           <div>
-            <p className="text-sm font-medium mb-2 mt-4">Número de empleos alcanzados</p>
+            <p className="text-sm font-medium mb-2 mt-4">Empleos alcanzados desde hexágono por transporte (%)</p>
             <FacilitiesChart
               data={reachableOpportunities}
             />
@@ -57,7 +57,7 @@ function ControlsCard({
         {
           reachableFacilities && (
             <div>
-              <p className="text-sm font-medium mb-2 mt-4">Número de oportunidades alcanzados</p>
+              <p className="text-sm font-medium mb-2 mt-4">Oportunidades alcanzadas desde hexágono por transporte (%)</p>
               <PeopleChart
                 data={reachableFacilities}
               />

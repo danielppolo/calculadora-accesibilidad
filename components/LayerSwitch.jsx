@@ -7,13 +7,15 @@ function LayerSwitch({
   title,
   legend,
   children,
+  disabled,
 }) {
   return (
     <Tooltip title={title} placement="right" disableTouchListener>
       <button
+        disabled={disabled}
         onClick={onChange}
         type="button"
-        className={`${active ? 'text-red' : 'text-black'} bg-white border border-gray-300 hover:bg-gray-50 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+        className={`${active ? 'text-red' : 'text-black'} bg-white border border-gray-300 hover:bg-gray-50 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2  disabled:opacity-50`}
       >
         {children}
       </button>

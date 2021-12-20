@@ -44,7 +44,7 @@ function CitiesChart({ data }) {
   }, [data]);
 
   return (
-    <div className="flex justify-center m-8">
+    <div className="flex justify-center">
       <div className="h-48 w-48 flex justify-center">
         <canvas id="cities-chart" />
       </div>

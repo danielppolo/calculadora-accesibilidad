@@ -28,6 +28,7 @@ import CitiesOverview from './CitiesOverview';
 import displayCityMarkers from '../utils/displayCityMarkers';
 import getHexagonId from '../utils/getHexagonId';
 import count from '../utils/countFeatures';
+import CreditsCard from './CreditsCard';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -79,6 +80,24 @@ function Map({
   } = useMarginalizationLayers();
   const getCurrentTimeframe = () => currentTimeframe;
   const getCurrentTransport = () => currentTransport;
+  const handleOpportunityChange = useCallback((nextOpportunity) => {
+    hideAll(map);
+    hideAgebs(map);
+    show(map, cityOpportunityId(nextOpportunity, city));
+    setParams({
+      ...params,
+      opportunity: nextOpportunity,
+      hexagon: undefined,
+      agebs: false,
+    });
+    router.query = {
+      ...router.query,
+      opportunity: nextOpportunity,
+      featureId: undefined,
+    };
+    router.replace(router);
+  }, [city, hideAgebs, hideAll, map, params, router, show]);
+
   const handleCityChange = useCallback(
     (cty) => {
       map.flyTo({
@@ -107,7 +126,7 @@ function Map({
       duration: 2000,
     });
     onCityChange(undefined);
-  }
+  };
 
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
@@ -119,9 +138,9 @@ function Map({
   }, [map, cities, city, cityMarkers, onCityChange, handleCityChange]);
 
   useEffect(() => {
-    if (map && mapLoaded && features.length > 0) {
+    if (map && mapLoaded && city) {
       loadBaseGrid(map, features, cityGridId(city));
-      loadAgebs(map) 
+      loadAgebs(map);
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         let maxValue = 0;
@@ -141,11 +160,28 @@ function Map({
             maxValue,
             visible: false,
             stepSize: 10,
+            colors: ['#54AC59', '#F1BB43'],
             beforeId: cityGridId(city),
           });
         }
       });
-    
+
+      // Display default opportunity on city change.
+      show(map, cityOpportunityId(defaultOpportunity, city));
+      setParams({
+        ...params,
+        opportunity: defaultOpportunity,
+      });
+      router.query = {
+        ...router.query,
+        opportunity: defaultOpportunity,
+      };
+      router.replace(router);
+    }
+  }, [map, mapLoaded, city]);
+
+  useEffect(() => {
+    if (map && mapLoaded && features.length > 0) {
       // Hexagon click listener
       map.on('click', cityGridId(city), async (e) => {
         setLoading(true);
@@ -245,14 +281,15 @@ function Map({
               };
             });
           });
-          console.log(incomingChartData);
           setChartData(incomingChartData);
         } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
         } finally {
           setLoading(false);
         }
+
         hideAll(map);
+
         getCurrentTransport().forEach((transport) => {
           show(map, getHexagonId(featureId, transport, getCurrentTimeframe()));
         });
@@ -275,24 +312,6 @@ function Map({
     router.query = {
       ...router.query,
       scenario: sce,
-    };
-    router.replace(router);
-  };
-
-  const handleOpportunityChange = (nextOpportunity) => {
-    hideAll(map);
-    hideAgebs(map);
-    show(map, cityOpportunityId(nextOpportunity, city));
-    setParams({
-      ...params,
-      opportunity: nextOpportunity,
-      hexagon: undefined,
-      agebs: false,
-    });
-    router.query = {
-      ...router.query,
-      opportunity: nextOpportunity,
-      featureId: undefined,
     };
     router.replace(router);
   };
@@ -436,6 +455,7 @@ function Map({
       }
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading} />
+      <CreditsCard />
       <div className=" hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
     </>
   );

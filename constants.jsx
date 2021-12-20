@@ -31,10 +31,10 @@ export const TRANSPORT_TRANSLATIONS = {
 };
 
 export const TRANSPORT_COLORS = {
-  caminando: 'yellow',
-  bicicleta: 'orange',
-  bus_actual: 'purple',
-  automovil: 'red',
+  caminando: 'aqua',
+  bicicleta: 'green',
+  bus_actual: 'pink',
+  automovil: 'purple',
 };
 
 export const TRANSPORT_ICONS = {
