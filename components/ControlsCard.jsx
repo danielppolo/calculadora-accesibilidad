@@ -1,5 +1,7 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
+import CloseIcon from '@mui/icons-material/Close';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
@@ -12,10 +14,23 @@ function ControlsCard({
   reachableOpportunities,
   reachableFacilities,
 }) {
+  const [expanded, setExpanded] = useState(false);
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">
-      <Card className="py-4 px-6 m-4 overflow-y-auto">
-        <Subtitle>{title}</Subtitle>
+    <div className={`${expanded ? 'bottom-0' : '-bottom-2/3'} duration-500 fixed left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen`}>
+      <Card
+        onClick={() => setExpanded(!expanded)}
+        className="px-3 py-4 md:py-4 md:px-6 m-2 overflow-y-auto"
+      >
+        <div className="flex justify-between items-start">
+          <Subtitle>{title}</Subtitle>
+          <button
+            onClick={() => setExpanded(false)}
+            type="button"
+            className="text-black bg-white  font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center "
+          >
+            {expanded ? <CloseIcon /> : <OpenInNewIcon />}
+          </button>
+        </div>
         {
           Object.keys(cityData).map((key) => (
             <div key={key} className="flex flex-row items-center justify-between mb-0">

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 const useFitMap = (map, features) => {
   useEffect(() => {
     // Fit map to selected features.
-    if (map && features) {
+    if (map && features && features.length > 0) {
       const bounds = new mapboxgl.LngLatBounds();
       const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
       features.forEach((feature) => {

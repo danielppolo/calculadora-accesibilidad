@@ -34,7 +34,7 @@ function MapControls({
 }) {
   const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
+    <div className="fixed top-2 left-2 right-2 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
         value={city && city.name}
         options={cities.sort((a, b) => a.name.localeCompare(b.name)).map((ct) => ({
@@ -44,7 +44,7 @@ function MapControls({
         onChange={onCityChange}
         placeholder="Selecciona una ciudad"
       />
-      <div className="m-4" />
+      <div className="m-2 md:m-4" />
       <Select
         value={selectedScenario && selectedScenario.fields.name}
         options={city ? city.scenarios.map((sc) => ({
@@ -55,7 +55,7 @@ function MapControls({
         disabled={cityDisabled || city.scenarios.length <= 1}
         placeholder="Selecciona un escenario"
       />
-      <div className="m-4" />
+      <div className="m-2 md:m-4" />
       <Select
         value={OPPORTUNITIES[opportunity]}
         disabled={cityDisabled}
@@ -66,22 +66,28 @@ function MapControls({
         onChange={onOpportunityChange}
         placeholder="Selecciona una oportunidad"
       />
-      <div className="m-4" />
-      <Tooltip title="Da click sobre un hexágono" placement="right" open={!cityDisabled && hexagonDisabled}>
-        <div>
-          <ButtonGroup
-            options={TRANSPORTS.map((mdm) => ({
-              icon: TRANSPORT_ICONS[mdm],
-              // label: TRANSPORT_TRANSLATIONS[mdm],
-              onClick: () => onMediumChange(mdm),
-              disabled: hexagonDisabled,
-              color: TRANSPORT_COLORS[mdm],
-              active: transport.includes(mdm),
-            }))}
-          />
-        </div>
-      </Tooltip>
-      <div className="m-4" />
+      <div className="m-2 md:m-4" />
+      {/* <Tooltip
+        title="Da click sobre un hexágono"
+        placement="right"
+        open={!cityDisabled && hexagonDisabled}
+        disableTouchListener
+        classes="hidden opacity-0"
+      > */}
+      <div>
+        <ButtonGroup
+          options={TRANSPORTS.map((mdm) => ({
+            icon: TRANSPORT_ICONS[mdm],
+            // label: TRANSPORT_TRANSLATIONS[mdm],
+            onClick: () => onMediumChange(mdm),
+            disabled: hexagonDisabled,
+            color: TRANSPORT_COLORS[mdm],
+            active: transport.includes(mdm),
+          }))}
+        />
+      </div>
+      {/* </Tooltip> */}
+      <div className="m-2 md:m-4" />
       <ButtonGroup
         options={TIMEFRAMES.map((step) => ({
           label: `${step} min`,
@@ -90,7 +96,7 @@ function MapControls({
           active: timeframe === step,
         }))}
       />
-      <div className="m-4" />
+      <div className="m-2 md:m-4" />
       <LayerSwitch
         title="Mostar marginación"
         onChange={onEconomicLayerChange}
@@ -98,7 +104,7 @@ function MapControls({
       >
         <GppMaybeOutlinedIcon />
       </LayerSwitch>
-      <div className="m-4" />
+      <div className="m-2 md:m-4" />
       <LayerSwitch
         title="Visualizar México"
         onChange={resetMap}

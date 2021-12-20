@@ -9,7 +9,7 @@ function LayerSwitch({
   children,
 }) {
   return (
-    <Tooltip title={title} placement="right">
+    <Tooltip title={title} placement="right" disableTouchListener>
       <button
         onClick={onChange}
         type="button"
