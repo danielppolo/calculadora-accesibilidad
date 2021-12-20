@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import Fab from '@mui/material/Fab';
 import LayersIcon from '@mui/icons-material/Layers';
 import LayersClearIcon from '@mui/icons-material/LayersClear';
+import PropTypes from 'prop-types';
 import Legend from './Legend';
-import Download from './Download';
 
 function LegendBar({
-  geojson,
   legendTitle,
   legendDictionary,
-  current,
 }) {
   const [showLegend, setShowLegend] = useState(false);
 
@@ -26,9 +24,9 @@ function LegendBar({
             populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
           } */}
           {
-            current && legendTitle && legendDictionary && (
+            legendTitle && legendDictionary && (
               <>
-              <Legend title={legendTitle} items={legendDictionary} />
+                <Legend title={legendTitle} items={legendDictionary} />
               </>
             )
           }
@@ -37,5 +35,10 @@ function LegendBar({
     </>
   );
 }
+
+LegendBar.propTypes = {
+  legendTitle: PropTypes.string.isRequired,
+  legendDictionary: PropTypes.object.isRequired,
+};
 
 export default LegendBar;

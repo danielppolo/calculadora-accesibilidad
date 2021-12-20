@@ -1,3 +1,9 @@
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
+import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import DirectionsCarFilled from '@mui/icons-material/DirectionsCarFilled';
+import React from 'react';
+
 export const TIMEFRAMES = [30, 60, 120];
 export const COLORS = {
   green: ['#54AC59', '#346B37'],
@@ -9,23 +15,33 @@ export const COLORS = {
   orange: ['#FE8840', '#804520'],
   purple: ['#7054BC', '#251C3D'],
 };
+
 export const TRANSPORTS = [
   'caminando',
   'bicicleta',
   'bus_actual',
   'automovil',
 ];
+
 export const TRANSPORT_TRANSLATIONS = {
   caminando: 'Caminando',
   bicicleta: 'Bicicleta',
   bus_actual: 'Transporte Público',
   automovil: 'Automóvil',
 };
+
 export const TRANSPORT_COLORS = {
   caminando: 'yellow',
   bicicleta: 'orange',
   bus_actual: 'purple',
   automovil: 'red',
+};
+
+export const TRANSPORT_ICONS = {
+  caminando: <DirectionsWalkIcon fontSize="small" />,
+  bicicleta: <DirectionsBikeIcon fontSize="small" />,
+  bus_actual: <DirectionsBusFilledIcon fontSize="small" />,
+  automovil: <DirectionsCarFilled fontSize="small" />,
 };
 
 export const OPPORTUNITIES = {

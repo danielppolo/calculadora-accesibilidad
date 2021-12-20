@@ -1,33 +1,26 @@
 import React from 'react';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import DirectionsBikeIcon from '@mui/icons-material/DirectionsBike';
-import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
-import DirectionsCarFilled from '@mui/icons-material/DirectionsCarFilled'
+import PropTypes from 'prop-types';
 import {
-  TRANSPORTS, TIMEFRAMES, TRANSPORT_COLORS, OPPORTUNITIES, TRANSPORT_TRANSLATIONS,
+  TRANSPORTS,
+  TIMEFRAMES,
+  TRANSPORT_COLORS,
+  OPPORTUNITIES,
+  TRANSPORT_ICONS,
 } from '../constants';
-import Select from './Select'
-import ButtonGroup from './ButtonGroup'
+import Select from './Select';
+import ButtonGroup from './ButtonGroup';
 import Download from './Download';
-
-const TRANSPORT_ICONS = {
-  caminando: <DirectionsWalkIcon fontSize='small'/>,
-  bicicleta: <DirectionsBikeIcon fontSize='small'/>,
-  bus_actual: <DirectionsBusFilledIcon fontSize='small'/>,
-  automovil: <DirectionsCarFilled fontSize='small'/>,
-};
 
 function MapControls({
   transport,
   onMediumChange,
   timeframe,
   onTimeStepChange,
-  opportunity,
   onScenarioChange,
   onOpportunityChange,
   cityDisabled,
   hexagonDisabled,
-  city, 
+  city,
   onCityChange,
   cities,
   geojson,
@@ -36,8 +29,8 @@ function MapControls({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
-        value={city?.name}
-        options={cities.sort((a,b) => a.name.localeCompare(b.name)).map(ct => ({
+        value={city && city.name}
+        options={cities.sort((a, b) => a.name.localeCompare(b.name)).map((ct) => ({
           label: ct.name,
           value: ct.bucketName,
         }))}
@@ -46,10 +39,10 @@ function MapControls({
       />
       <div className="m-4" />
       <Select
-        options={city?.scenarios?.map(sc => ({
+        options={city ? city.scenarios.map((sc) => ({
           label: sc.fields.name,
           value: sc.fields.bucketName,
-        })) || []}
+        })) : []}
         onChange={onScenarioChange}
         disabled={cityDisabled}
         placeholder="Selecciona un escenario"
@@ -65,8 +58,8 @@ function MapControls({
         placeholder="Selecciona una oportunidad"
       />
       <div className="m-4" />
-       <ButtonGroup
-        options={TRANSPORTS.map(mdm => ({
+      <ButtonGroup
+        options={TRANSPORTS.map((mdm) => ({
           icon: TRANSPORT_ICONS[mdm],
           // label: TRANSPORT_TRANSLATIONS[mdm],
           onClick: () => onMediumChange(mdm),
@@ -77,7 +70,7 @@ function MapControls({
       />
       <div className="m-4" />
       <ButtonGroup
-        options={TIMEFRAMES.map(step => ({
+        options={TIMEFRAMES.map((step) => ({
           label: `${step} min`,
           onClick: () => onTimeStepChange(step),
           disabled: hexagonDisabled,
@@ -88,9 +81,25 @@ function MapControls({
       {
         geojson && transport.length === 1 && (<Download data={geojson} filename={legendTitle} />)
       }
-      <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden"></div>
+      <div className="text-black text-blue text-red text-green text-yellow text-purple text-pink text-orange hidden" />
     </div>
   );
 }
+
+MapControls.propTypes = {
+  transport: PropTypes.array.isRequired,
+  timeframe: PropTypes.number.isRequired,
+  hexagonDisabled: PropTypes.bool.isRequired,
+  cityDisabled: PropTypes.bool.isRequired,
+  city: PropTypes.string.isRequired,
+  cities: PropTypes.object.isRequired,
+  geojson: PropTypes.object.isRequired,
+  legendTitle: PropTypes.string.isRequired,
+  onMediumChange: PropTypes.func.isRequired,
+  onTimeStepChange: PropTypes.func.isRequired,
+  onScenarioChange: PropTypes.func.isRequired,
+  onOpportunityChange: PropTypes.func.isRequired,
+  onCityChange: PropTypes.func.isRequired,
+};
 
 export default MapControls;

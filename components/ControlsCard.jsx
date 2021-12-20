@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import PropTypes from 'prop-types';
 import FacilitiesChart from './FacilitiesChart';
 import PeopleChart from './PeopleChart';
 import Notes from './tren-maya/Notes';
@@ -14,7 +15,7 @@ function ControlsCard({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">
       <Card className="py-4 px-6 m-4 overflow-y-auto">
-      <Subtitle>{title}</Subtitle>
+        <Subtitle>{title}</Subtitle>
         {
           Object.keys(cityData).map((key) => (
             <div key={key} className="flex flex-row items-center justify-between mb-0">
@@ -27,7 +28,7 @@ function ControlsCard({
             </div>
           ))
         }
-      <div className="mb-6" />
+        <div className="mb-6" />
         {
           reachableOpportunities && (
           <div>
@@ -48,11 +49,18 @@ function ControlsCard({
             </div>
           )
         }
-      <div className="mb-6" />
-      <Notes />
-    </Card>
+        <div className="mb-6" />
+        <Notes />
+      </Card>
     </div>
   );
 }
+
+ControlsCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  cityData: PropTypes.object.isRequired,
+  reachableOpportunities: PropTypes.object.isRequired,
+  reachableFacilities: PropTypes.object.isRequired,
+};
 
 export default memo(ControlsCard);
