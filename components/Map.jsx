@@ -268,7 +268,7 @@ function Map({
         });
       });
     }
-  }, [map, mapLoaded, features]);
+  }, [map, mapLoaded, features, scenario]);
 
   const handleScenarioChange = (sce) => {
     setScenario(sce);

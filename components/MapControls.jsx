@@ -44,17 +44,21 @@ function MapControls({
         onChange={onCityChange}
         placeholder="Selecciona una ciudad"
       />
-      <div className="m-2 md:m-4" />
-      <Select
-        value={selectedScenario && selectedScenario.fields.name}
-        options={city ? city.scenarios.map((sc) => ({
-          label: sc.fields.name,
-          value: sc.fields.bucketName,
-        })) : []}
-        onChange={onScenarioChange}
-        disabled={cityDisabled || city.scenarios.length <= 1}
-        placeholder="Selecciona un escenario"
-      />
+      {
+        city && city.scenarios.length > 1 ?(<>
+          <div className="m-2 md:m-4" />
+            <Select
+              value={selectedScenario && selectedScenario.fields.name}
+              options={city ? city.scenarios.map((sc) => ({
+                label: sc.fields.name,
+                value: sc.fields.bucketName,
+              })) : []}
+              onChange={onScenarioChange}
+              disabled={cityDisabled || city.scenarios.length <= 1}
+              placeholder="Selecciona un escenario"
+            />
+          </>) : null
+      }
       <div className="m-2 md:m-4" />
       <Select
         value={OPPORTUNITIES[opportunity]}
