@@ -25,10 +25,10 @@ import ControlsCard from './ControlsCard';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import MapControls from './MapControls';
 import CitiesOverview from './CitiesOverview';
-import displayCityMarkers from '../utils/displayCityMarkers';
 import getHexagonId from '../utils/getHexagonId';
 import count from '../utils/countFeatures';
 import CreditsCard from './CreditsCard';
+import useCityMarkers from '../hooks/useCityMarkers';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -70,7 +70,7 @@ function Map({
   useFitMap(map, geojson.features);
   const [scenario, setScenario] = useState();
   const { features, metadata: cityData } = useCityData(data);
-  const [cityMarkers, setCityMarkers] = useState([]);
+  const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState(defaultParams);
   const [chartData, setChartData] = useState({});
@@ -130,12 +130,11 @@ function Map({
 
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
-      cityMarkers.forEach((marker) => marker.remove());
-      setCityMarkers([]);
+      removeCityMarkers()
     } else if (map && cities && !city && !cityMarkers.length) {
-      setCityMarkers(displayCityMarkers(map, cities, { onClick: handleCityChange }));
+      displayCityMarkers(map, cities, { onClick: handleCityChange })
     }
-  }, [map, cities, city, cityMarkers, onCityChange, handleCityChange]);
+  }, [map, cities, city, onCityChange, handleCityChange, displayCityMarkers]);
 
   useEffect(() => {
     if (map && mapLoaded && city) {
