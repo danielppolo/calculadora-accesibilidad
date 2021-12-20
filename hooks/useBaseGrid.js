@@ -1,16 +1,9 @@
 import { useCallback } from 'react';
-import { Popup } from 'mapbox-gl';
 import { convertToGeoJSON } from '../utils';
 import { OPPORTUNITIES } from '../constants';
 
-const popup = new Popup({
-  className: 'black-popup',
-  closeButton: false,
-  closeOnClick: false,
-});
-
 const useBaseGrid = () => {
-  const load = useCallback((map, features, id) => {
+  const load = useCallback((map, features, id, popup) => {
     if (map && features && !map.getSource(id)) {
       const filteredFeatures = features.map((feature) => ({
         ...feature,

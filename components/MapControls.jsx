@@ -81,7 +81,8 @@ function MapControls({
         open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
         disableTouchListener
       >
-          <ButtonGroup
+         <div>
+         <ButtonGroup
             options={TRANSPORTS.map((mdm) => ({
               icon: TRANSPORT_ICONS[mdm],
               // label: TRANSPORT_TRANSLATIONS[mdm],
@@ -91,6 +92,7 @@ function MapControls({
               active: transport.includes(mdm),
             }))}
           />
+         </div>
       </Tooltip>
       <div className="m-2 md:m-4" />
       {/* <Tooltip
@@ -98,6 +100,7 @@ function MapControls({
         placement="right"
         disableTouchListener
       > */}
+          <div>
           <ButtonGroup
             options={TIMEFRAMES.map((step) => ({
               label: `${step} min`,
@@ -106,6 +109,7 @@ function MapControls({
               active: timeframe === step,
             }))}
           />
+          </div>
         {/*  </Tooltip> */}
       <div className="m-2 md:m-4" />
       <LayerSwitch

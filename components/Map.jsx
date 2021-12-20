@@ -139,7 +139,7 @@ function Map({
 
   useEffect(() => {
     if (map && mapLoaded && city) {
-      loadBaseGrid(map, features, cityGridId(city));
+      loadBaseGrid(map, features, cityGridId(city), popup);
       loadAgebs(map);
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
