@@ -16,35 +16,12 @@ import MapControls from './MapControls';
 import LayerControls from './LayerControls';
 import CitiesOverview from './CitiesOverview';
 import {useRouter} from 'next/router';
+import displayCityMarkers from '../utils/displayCityMarkers';
+import getHexagonId from '../utils/getHexagonId';
+import count from '../utils/countFeatures';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
-const buildCityMarker = (color) => {
-  const container = document.createElement('div')
-  container.className = 'flex items-center justify-center relative'
-  const pulse = document.createElement('div')
-  pulse.className = 'animate-pulse absolute rounded-full h-4 w-4 opacity-5'
-  pulse.style.backgroundColor = color
-  const dot = document.createElement('div')
-  dot.className = 'absolute rounded-full h-2 w-2'
-  dot.style.backgroundColor = color
-  container.appendChild(dot)
-  container.appendChild(pulse)
-  return container
-}
-
-const displayCityMarkers = (map, cities, {onClick}) => {
-  const cityMarkers = []
-  Object.keys(cities).forEach(cty => {
-    const marker = buildCityMarker(cities[cty].color)
-    marker.addEventListener('click', () => { onClick(cty) })
-    new mapboxgl.Marker(marker).setLngLat(cities[cty].coordinates).addTo(map)
-    cityMarkers.push(marker)
-  })
-  return cityMarkers
-}
-
-const getHexagonId = (hexagonId, medium, step) => `${hexagonId}-${medium}-${step}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
 const defaultTimeframe = TIMEFRAMES[1];
@@ -55,7 +32,6 @@ const defaultParams = {
   opportunity: defaultOpportunity,
   agebs: false,
 }
-const count = (array, property) => array.reduce((acc, item) => acc + item.properties[property], 0);
 const popup = new Popup({
   className: 'black-popup',
   closeButton: false,
@@ -90,32 +66,6 @@ function Map({ city, data, cities, onCityChange }) {
   const { load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend } = useMarginalizationLayers()
   const getCurrentTimeframe = () => currentTimeframe
   const getCurrentTransport = () => currentTransport
-  
-  const handleCityChange = (cty) => {
-    map.flyTo({
-      center: cities[cty].coordinates,
-      zoom: 11,
-      duration: 2000,
-      offset: [100, 50]
-    })
-    onCityChange(cty)
-    setScenario(cities[cty].scenarios[0].fields.bucketName)
-    router.query = {
-      ...router.query,
-      city: cty,
-      scenario: cities[cty].scenarios[0].fields.bucketName,
-    };
-    router.replace(router);
-  }
-
-  const handleScenarioChange = (sce) => {
-    setScenario(sce)
-    router.query = {
-      ...router.query,
-      scenario: sce,
-    };
-    router.replace(router);
-  }
 
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
@@ -215,7 +165,7 @@ function Map({ city, data, cities, onCityChange }) {
                 map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
-                id: getHexagonId(featureId, transport, step) + '-solid',
+                id: getHexagonId(featureId, transport, step, { solid: true }),
                 features: features,
                 property: transport,
                 maxValue: step,
@@ -278,6 +228,32 @@ function Map({ city, data, cities, onCityChange }) {
     }
   }, [map, mapLoaded, features])
 
+  const handleCityChange = (cty) => {
+    map.flyTo({
+      center: cities[cty].coordinates,
+      zoom: 11,
+      duration: 2000,
+      offset: [100, 50]
+    })
+    onCityChange(cty)
+    setScenario(cities[cty].scenarios[0].fields.bucketName)
+    router.query = {
+      ...router.query,
+      city: cty,
+      scenario: cities[cty].scenarios[0].fields.bucketName,
+    };
+    router.replace(router);
+  }
+
+  const handleScenarioChange = (sce) => {
+    setScenario(sce)
+    router.query = {
+      ...router.query,
+      scenario: sce,
+    };
+    router.replace(router);
+  }
+
   const handleOpportunityChange = (nextOpportunity) => {
     hideAll(map)
     hideAgebs(map)
@@ -288,6 +264,12 @@ function Map({ city, data, cities, onCityChange }) {
       hexagon: undefined,
       agebs: false,
     })
+    router.query = {
+      ...router.query,
+      opportunity: nextOpportunity,
+      featureId: undefined,
+    };
+    router.replace(router);
   };
 
   const handleEconomicChange = () => {
@@ -313,7 +295,7 @@ function Map({ city, data, cities, onCityChange }) {
         show(map, getHexagonId(params.hexagon.id, params.transport[0], value));
       } else if (params.transport.length > 1) {
         params.transport.forEach(transport => {
-          show(map, getHexagonId(params.hexagon.id, transport, value) + '-solid');
+          show(map, getHexagonId(params.hexagon.id, transport, value, { solid: true }));
         }) 
       }
     }
@@ -322,6 +304,11 @@ function Map({ city, data, cities, onCityChange }) {
       timeframe: value,
     })
     currentTimeframe = value;
+    router.query = {
+      ...router.query,
+      timeframe: value,
+    };
+    router.replace(router);
   };
   
   const handleTransportChange = (value) => {
@@ -337,7 +324,7 @@ function Map({ city, data, cities, onCityChange }) {
         show(map, getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
       } else if (newTransportSelection.length > 1) {
         newTransportSelection.forEach(transport => {
-          show(map, getHexagonId(params.hexagon.id, transport, params.timeframe) + '-solid');
+          show(map, getHexagonId(params.hexagon.id, transport, params.timeframe, { solid: true }));
         }) 
       }
       setParams({ 
@@ -345,16 +332,26 @@ function Map({ city, data, cities, onCityChange }) {
         transport: newTransportSelection
       })
       currentTransport = newTransportSelection;
+      router.query = {
+        ...router.query,
+        transport: newTransportSelection.join(','),
+      };
+      router.replace(router);
     } 
   };
 
-  const opportunitiesChartData = useMemo(() => {
+  const buildChartDataset = useCallback((key) => {
     if (params.hexagon) {
       return {
-        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].opportunities),
+        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]][key]),
         datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
             label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.keys(chartData[params.timeframe][transport].opportunities).map((opportunity) =>  chartData[params.timeframe][transport].opportunities[opportunity] / cityData[opportunity]),
+            data: Object.keys(chartData[params.timeframe][transport][key])
+              .map((prop) => {
+                const value = chartData[params.timeframe][transport][key][prop]
+                const total = cityData[prop]
+                return (value / total) * 100
+              }),
             backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
         })),
       }
@@ -362,19 +359,8 @@ function Map({ city, data, cities, onCityChange }) {
     return null
   }, [chartData, params.timeframe, params.hexagon])
 
-  const facilitiesChartData = useMemo(() => {
-    if (params.hexagon) {
-      return {
-        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]].facilities),
-        datasets:  Object.keys(chartData[params.timeframe]).map((transport) => ({
-            label: TRANSPORT_TRANSLATIONS[transport],
-            data: Object.keys(chartData[params.timeframe][transport].facilities).map((facility) =>  chartData[params.timeframe][transport].facilities[facility] / cityData[facility]),
-            backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0]
-        })),
-      }
-    }
-    return null
-  }, [chartData, params.timeframe, params.hexagon])
+  const opportunitiesChartData = useMemo(() => buildChartDataset('opportunities'), [chartData, params.timeframe, params.hexagon])
+  const facilitiesChartData = useMemo(() => buildChartDataset('facilities'), [chartData, params.timeframe, params.hexagon])
 
   return(
     <>
