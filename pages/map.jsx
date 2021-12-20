@@ -52,11 +52,6 @@ export default function Home() {
       }
     }
     setCity(bucket);
-    router.query = {
-      ...router.query,
-      city: bucket,
-    };
-    router.replace(router);
   };
 
   return (

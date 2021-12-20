@@ -80,7 +80,7 @@ function Map({ city, data, cities, onCityChange }) {
     geojson,
   } = useLayerManager(map);
   useFitMap(map, geojson?.features)
-  const [scenario, setScenario] = useState(city?.scenario?.[0]?.fields?.bucketName)
+  const [scenario, setScenario] = useState()
   const {features, metadata: cityData} = useCityData(data);
   const [cityMarkers, setCityMarkers] = useState([])
   const [loading, setLoading] = useState(false)
@@ -92,13 +92,29 @@ function Map({ city, data, cities, onCityChange }) {
   const getCurrentTransport = () => currentTransport
   
   const handleCityChange = (cty) => {
-    onCityChange(cty)
     map.flyTo({
       center: cities[cty].coordinates,
       zoom: 11,
       duration: 2000,
       offset: [100, 50]
-      })
+    })
+    onCityChange(cty)
+    setScenario(cities[cty].scenarios[0].fields.bucketName)
+    router.query = {
+      ...router.query,
+      city: cty,
+      scenario: cities[cty].scenarios[0].fields.bucketName,
+    };
+    router.replace(router);
+  }
+
+  const handleScenarioChange = (sce) => {
+    setScenario(sce)
+    router.query = {
+      ...router.query,
+      scenario: sce,
+    };
+    router.replace(router);
   }
 
   useEffect(() => {
@@ -150,7 +166,7 @@ function Map({ city, data, cities, onCityChange }) {
         }
         router.replace(router)
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/actual/${featureId}.json`);
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/${scenario}/${featureId}.json`);
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData = {};
@@ -220,6 +236,8 @@ function Map({ city, data, cities, onCityChange }) {
               map.on('mouseleave', getHexagonId(featureId, transport, step), () => {
                 popup.remove();
               });
+
+              // Get chart data
               if (!(step in incomingChartData)) {
                 incomingChartData[step] = {};
               }
@@ -360,7 +378,7 @@ function Map({ city, data, cities, onCityChange }) {
   return(
     <>
     <MapControls
-    onScenarioChange={setScenario}
+      onScenarioChange={handleScenarioChange}
       transport={params.transport}
       onMediumChange={handleTransportChange}
       timeframe={params.timeframe}
