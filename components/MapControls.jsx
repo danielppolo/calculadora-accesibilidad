@@ -78,7 +78,6 @@ function MapControls({
           !hexagonDisabled && transport.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
         }
         placement="right"
-        open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
         disableTouchListener
       >
         <div className="z-30 relative">
