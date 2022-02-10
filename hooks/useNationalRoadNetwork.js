@@ -49,7 +49,10 @@ const useNationalRoadNetwork = () => {
 
   const legend = {
     title: 'Red vial',
-    intervals: [],
+    intervals: [{
+      color: '#000',
+      label:  'Red vial',
+    }],
   };
 
   return {

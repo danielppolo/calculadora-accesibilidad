@@ -4,6 +4,10 @@ import Legend from './Legend';
 import Download from './Download';
 
 function LegendBar({
+  roadLegend,
+  road,
+  densityLegend,
+  density,
   legendTitle,
   legendDictionary,
   agebLegend,
@@ -24,6 +28,12 @@ function LegendBar({
             ageb && agebLegend && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
           }
         {
+            density && densityLegend && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
+          }
+        {
+            road && roadLegend && (<Legend title={roadLegend.title} items={roadLegend.intervals} />)
+          }
+        {
             transportActive && legendTitle && legendDictionary && (
               <>
                 <Legend title={legendTitle} items={legendDictionary} />
@@ -36,6 +46,10 @@ function LegendBar({
 }
 
 LegendBar.propTypes = {
+  roadLegend:PropTypes.object.isRequired,
+  road:PropTypes.bool.isRequired,
+  densityLegend:PropTypes.object.isRequired,
+  density:PropTypes.bool.isRequired,
   legendTitle: PropTypes.string.isRequired,
   legendDictionary: PropTypes.object.isRequired,
   agebLegend: PropTypes.object.isRequired,

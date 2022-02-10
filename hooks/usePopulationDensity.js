@@ -8,7 +8,7 @@ const layer = {
   label: 'Densidad',
 }
 
-const colorIntervals = ["#ffeda0",10,"#ffeda0",20,"#fed976",50,"#feb24c",100,"#fd8d3c",200,"#fc4e2a",500,"#e31a1c",750,"hsl(348, 100%, 37%)",1000,"#bd0026"]
+const colorIntervals = [["#ffeda0",10],["#ffeda0",20],["#fed976",50],["#feb24c",100],["#fd8d3c",200],["#fc4e2a",500],["#e31a1c",750],["hsl(348, 100%, 37%)",1000],["#bd0026"]]
 
 const usePopulationDensity = () => {
   const load = useCallback((map) => {
@@ -29,7 +29,7 @@ const usePopulationDensity = () => {
           },
           'source-layer': layer.sourceLayer,
           paint: {
-            'fill-color': ["step",["get","Densidad"], ...colorIntervals],
+            'fill-color': ["step",["get","Densidad"], ...colorIntervals.flat()],
             'fill-opacity': 0.5,
           },
         });
@@ -51,9 +51,9 @@ const usePopulationDensity = () => {
 
   const legend = {
     title: 'Densidad de población',
-    intervals: colorIntervals.map((color, value) => ({
+    intervals: colorIntervals.map(([color, value], i) => ({
       color: color,
-      label: `${value} hab`,
+      label: `${value || '1000+'} hab`,
     })),
   };
 

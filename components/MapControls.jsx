@@ -118,46 +118,39 @@ function MapControls({
           </div>
         {/*  </Tooltip> */}
       <div className="m-2 md:m-4" />
-     <LayerSwitch
-        disabled={cityDisabled}
-        title="Mostar marginación"
-        onChange={onEconomicLayerChange}
-        active={economicLayer}
-      >
-        <GppMaybeOutlinedIcon />
-      </LayerSwitch>
-      <div className="m-2 md:m-4" />
+      <div className="flex justify-between">
       <LayerSwitch
-        disabled={cityDisabled}
-        title="Mostar densidad"
-        onChange={onDensityLayerChange}
-        active={densityLayer}
-      >
-        <AccessibilityNewIcon />
-      </LayerSwitch>
-      <div className="m-2 md:m-4" />
-      <LayerSwitch
-        disabled={cityDisabled}
-        title="Mostar red vial"
-        onChange={onRoadsLayerChange}
-        active={roadsLayer}
-      >
-        <DirectionsIcon />
-      </LayerSwitch>
-      {
-        !cityDisabled && (
-          <>
-            <div className="m-2 md:m-4" />
-            <LayerSwitch
-              disabled={cityDisabled}
-              title="Visualizar México"
-              onChange={resetMap}
-            >
-              <MapOutlinedIcon />
-            </LayerSwitch>
-          </>
-        )
-      }
+          disabled={cityDisabled}
+          title="Mostar marginación"
+          onChange={onEconomicLayerChange}
+          active={economicLayer}
+        >
+          <GppMaybeOutlinedIcon />
+        </LayerSwitch>
+        <LayerSwitch
+          disabled={cityDisabled}
+          title="Mostar densidad"
+          onChange={onDensityLayerChange}
+          active={densityLayer}
+        >
+          <AccessibilityNewIcon />
+        </LayerSwitch>
+        <LayerSwitch
+          disabled={cityDisabled}
+          title="Mostar red vial"
+          onChange={onRoadsLayerChange}
+          active={roadsLayer}
+        >
+          <DirectionsIcon />
+        </LayerSwitch>
+        <LayerSwitch
+          disabled={cityDisabled}
+          title="Visualizar México"
+          onChange={resetMap}
+        >
+          <MapOutlinedIcon />
+        </LayerSwitch>
+      </div>
       <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
     </div>
   );

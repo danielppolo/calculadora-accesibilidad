@@ -490,6 +490,10 @@ function Map({
       }
 
       <LegendBar
+        roadLegend={roadsLegend}
+        road={params.roads}
+        densityLegend={densityLegend}
+        density={params.density}
         agebLegend={agebLegend}
         ageb={params.agebs}
         transportActive={params.transport.length === 1}
