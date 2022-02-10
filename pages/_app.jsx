@@ -71,8 +71,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>Visualizador de accesibilidad urbana y acceso a oportunidades</title>
-        <meta name="description" content="Una plataforma para facilitar el diseño de soluciones de movilidad en ciudades mexicanas" />
+        <title>Visualizador de accesibilidad urbana</title>
+        <meta name="description" content="Este proyecto tiene como objetivo mostrar las oportunidades de las 20 zonas metropolitanas más grandes de México." />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
