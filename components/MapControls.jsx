@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip } from '@mui/material';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import {
   TRANSPORTS,
@@ -30,6 +31,8 @@ function MapControls({
   scenario,
   economicLayer,
   onEconomicLayerChange,
+  densityLayer,
+  onDensityLayerChange,
   resetMap,
 }) {
   const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
@@ -112,13 +115,22 @@ function MapControls({
           </div>
         {/*  </Tooltip> */}
       <div className="m-2 md:m-4" />
-      <LayerSwitch
+     <LayerSwitch
         disabled={cityDisabled}
         title="Mostar marginación"
         onChange={onEconomicLayerChange}
         active={economicLayer}
       >
         <GppMaybeOutlinedIcon />
+      </LayerSwitch>
+      <div className="m-2 md:m-4" />
+      <LayerSwitch
+        disabled={cityDisabled}
+        title="Mostar densidad"
+        onChange={onDensityLayerChange}
+        active={densityLayer}
+      >
+        <AccessibilityNewIcon />
       </LayerSwitch>
       {
         !cityDisabled && (
@@ -154,6 +166,8 @@ MapControls.propTypes = {
   onCityChange: PropTypes.func.isRequired,
   economicLayer: PropTypes.bool.isRequired,
   onEconomicLayerChange: PropTypes.func.isRequired,
+  densityLayer: PropTypes.bool.isRequired,
+  onDensityLayerChange: PropTypes.func.isRequired,
   resetMap: PropTypes.func.isRequired,
 };
 

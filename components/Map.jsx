@@ -19,7 +19,6 @@ import LegendBar from './LegendBar';
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
 import useCityData from '../hooks/useCityData';
-import useEconomicZones from '../hooks/useEconomicZones';
 import useMap from '../hooks/useMap';
 import ControlsCard from './ControlsCard';
 import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
@@ -29,6 +28,7 @@ import getHexagonId from '../utils/getHexagonId';
 import count from '../utils/countFeatures';
 import CreditsCard from './CreditsCard';
 import useCityMarkers from '../hooks/useCityMarkers';
+import usePopulationDensity from '../hooks/usePopulationDensity';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -43,6 +43,7 @@ const defaultParams = {
   timeframe: defaultTimeframe,
   opportunity: undefined,
   agebs: false,
+  density: false,
 };
 const popup = new Popup({
   className: 'black-popup',
@@ -78,6 +79,9 @@ function Map({
   const {
     load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend,
   } = useMarginalizationLayers();
+  const {
+    load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend,
+  } = usePopulationDensity();
   const getCurrentTimeframe = () => currentTimeframe;
   const getCurrentTransport = () => currentTransport;
   const handleOpportunityChange = useCallback((nextOpportunity) => {
@@ -140,6 +144,8 @@ function Map({
     if (map && mapLoaded && city) {
       loadBaseGrid(map, features, cityGridId(city), popup);
       loadAgebs(map);
+      loadDensity(map);
+      
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         let maxValue = 0;
@@ -331,6 +337,22 @@ function Map({
     }
   };
 
+  const handleDensityChange = () => {
+    if (params.density) {
+      hideDensity(map);
+      setParams({
+        ...params,
+        density: false,
+      });
+    } else {
+      showDensity(map);
+      setParams({
+        ...params,
+        density: true,
+      });
+    }
+  };
+
   const handleTimeframeChange = (value) => {
     if (params.hexagon.id) {
       hideAll(map);
@@ -423,6 +445,8 @@ function Map({
         scenario={scenario}
         economicLayer={params.agebs}
         onEconomicLayerChange={handleEconomicChange}
+        densityLayer={params.density}
+        onDensityLayerChange={handleDensityChange}
         resetMap={resetMap}
       />
       { city ? (
