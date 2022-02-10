@@ -4,6 +4,7 @@ import { Tooltip } from '@mui/material';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import DirectionsIcon from '@mui/icons-material/Directions';
 import {
   TRANSPORTS,
   TIMEFRAMES,
@@ -33,6 +34,8 @@ function MapControls({
   onEconomicLayerChange,
   densityLayer,
   onDensityLayerChange,
+  roadsLayer,
+  onRoadsLayerChange,
   resetMap,
 }) {
   const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
@@ -132,6 +135,15 @@ function MapControls({
       >
         <AccessibilityNewIcon />
       </LayerSwitch>
+      <div className="m-2 md:m-4" />
+      <LayerSwitch
+        disabled={cityDisabled}
+        title="Mostar red vial"
+        onChange={onRoadsLayerChange}
+        active={roadsLayer}
+      >
+        <DirectionsIcon />
+      </LayerSwitch>
       {
         !cityDisabled && (
           <>
@@ -168,6 +180,8 @@ MapControls.propTypes = {
   onEconomicLayerChange: PropTypes.func.isRequired,
   densityLayer: PropTypes.bool.isRequired,
   onDensityLayerChange: PropTypes.func.isRequired,
+  roadsLayer: PropTypes.bool.isRequired,
+  onRoadsLayerChange: PropTypes.func.isRequired,
   resetMap: PropTypes.func.isRequired,
 };
 

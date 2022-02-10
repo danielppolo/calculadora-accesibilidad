@@ -29,6 +29,7 @@ import count from '../utils/countFeatures';
 import CreditsCard from './CreditsCard';
 import useCityMarkers from '../hooks/useCityMarkers';
 import usePopulationDensity from '../hooks/usePopulationDensity';
+import useNationalRoadNetwork from '../hooks/useNationalRoadNetwork';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -44,6 +45,7 @@ const defaultParams = {
   opportunity: undefined,
   agebs: false,
   density: false,
+  raods: false,
 };
 const popup = new Popup({
   className: 'black-popup',
@@ -82,6 +84,9 @@ function Map({
   const {
     load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend,
   } = usePopulationDensity();
+  const {
+    load: loadRoads, show: showRoads, hide: hideRoads, legend: roadsLegend,
+  } = useNationalRoadNetwork();
   const getCurrentTimeframe = () => currentTimeframe;
   const getCurrentTransport = () => currentTransport;
   const handleOpportunityChange = useCallback((nextOpportunity) => {
@@ -145,6 +150,7 @@ function Map({
       loadBaseGrid(map, features, cityGridId(city), popup);
       loadAgebs(map);
       loadDensity(map);
+      loadRoads(map);
       
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
@@ -337,6 +343,22 @@ function Map({
     }
   };
 
+  const handleRoadChange = () => {
+    if (params.roads) {
+      hideRoads(map);
+      setParams({
+        ...params,
+        roads: false,
+      });
+    } else {
+      showRoads(map);
+      setParams({
+        ...params,
+        roads: true,
+      });
+    }
+  };
+
   const handleDensityChange = () => {
     if (params.density) {
       hideDensity(map);
@@ -447,6 +469,8 @@ function Map({
         onEconomicLayerChange={handleEconomicChange}
         densityLayer={params.density}
         onDensityLayerChange={handleDensityChange}
+        roadsLayer={params.roads}
+        onRoadsLayerChange={handleRoadChange}
         resetMap={resetMap}
       />
       { city ? (
