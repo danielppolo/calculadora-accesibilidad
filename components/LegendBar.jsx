@@ -21,9 +21,6 @@ function LegendBar({
         {
             transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
           }
-        {/* {
-            populationDensity && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
-          } */}
         {
             ageb && agebLegend && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
           }

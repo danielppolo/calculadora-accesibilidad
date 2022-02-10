@@ -101,11 +101,11 @@ function MapControls({
          </div>
       </Tooltip>
       <div className="m-2 md:m-4" />
-      {/* <Tooltip
-        title="Selecciona un hexágono para habilitar  tiempo de traslado"
+      <Tooltip
+        title="Selecciona el tiempo de traslado"
         placement="right"
         disableTouchListener
-      > */}
+      >
           <div>
           <ButtonGroup
             options={TIMEFRAMES.map((step) => ({
@@ -116,7 +116,7 @@ function MapControls({
             }))}
           />
           </div>
-        {/*  </Tooltip> */}
+         </Tooltip>
       <div className="m-2 md:m-4" />
       <div className="flex justify-between">
       <LayerSwitch
