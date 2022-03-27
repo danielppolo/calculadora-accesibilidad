@@ -18,7 +18,7 @@ function Notes() {
         onClose={() => setOpen(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        className="flex justify-center w-full h-screen place-items-center"
+        className="flex justify-center w-full h-screen place-items-center z-[1600]"
       >
         <div className="max-w-3xl max-h-screen bg-white px-4 lg:px-8 py-6  overflow-y-auto">
           <div className="mb-4 lg:hidden">

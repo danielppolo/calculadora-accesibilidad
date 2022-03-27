@@ -130,7 +130,7 @@ function Map({
         scenario: cities[cty].scenarios[0].fields.bucketName,
       };
       router.replace(router);
-      setParams(defaultParams);
+      setParams({...defaultParams});
     },
     [cities, map, onCityChange, router, setParams],
   );
@@ -141,7 +141,11 @@ function Map({
       zoom: 4.5,
       duration: 2000,
     });
+    hideAll(map);
     onCityChange(undefined);
+    setParams({...defaultParams});
+    router.query = {};
+    router.replace(router);
   };
 
   useEffect(() => {
@@ -354,7 +358,7 @@ function Map({
         });
       });
     }
-  }, [map, mapLoaded, features, scenario, params.visualization]);
+  }, [map, mapLoaded, features, scenario, params.visualization, city]);
 
   const handleScenarioChange = (sce) => {
     setScenario(sce);
@@ -373,10 +377,35 @@ function Map({
         agebs: false,
       });
     } else {
+      hideDensity(map);
+      hideRoads(map);
       showAgebs(map);
       setParams({
         ...params,
         agebs: true,
+        density: false,
+        roads: false,
+      });
+    }
+  };
+
+
+  const handleDensityChange = () => {
+    if (params.density) {
+      hideDensity(map);
+      setParams({
+        ...params,
+        density: false,
+      });
+    } else {
+      hideAgebs(map);
+      hideRoads(map);
+      showDensity(map);
+      setParams({
+        ...params,
+        density: true,
+        agebs: false,
+        roads: false,
       });
     }
   };
@@ -389,29 +418,18 @@ function Map({
         roads: false,
       });
     } else {
+      hideAgebs(map);
+      hideDensity(map);
       showRoads(map);
       setParams({
         ...params,
+        density: false,
+        agebs: false,
         roads: true,
       });
     }
   };
 
-  const handleDensityChange = () => {
-    if (params.density) {
-      hideDensity(map);
-      setParams({
-        ...params,
-        density: false,
-      });
-    } else {
-      showDensity(map);
-      setParams({
-        ...params,
-        density: true,
-      });
-    }
-  };
 
   const handleTimeframeChange = (value) => {
     if (params.hexagon && params.hexagon.id) {
