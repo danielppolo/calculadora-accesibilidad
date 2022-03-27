@@ -1,22 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from '@mui/material';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import DirectionsIcon from '@mui/icons-material/Directions';
-import {
-  TRANSPORTS,
-  TIMEFRAMES,
-  TRANSPORT_COLORS,
-  OPPORTUNITIES,
-  TRANSPORT_ICONS,
-} from '../constants';
+import { VISUALIZATIONS } from '../constants';
 import Select from './Select';
-import ButtonGroup from './ButtonGroup';
 import LayerSwitch from './LayerSwitch';
+import OpportunitiesControls from './controls/opportunities';
+import IsochronesControls from './controls/isochrones';
 
 function MapControls({
+  visualization,
+  onVisualizationChange,
   transport,
   onMediumChange,
   timeframe,
@@ -69,55 +65,40 @@ function MapControls({
       }
       <div className="m-2 md:m-4" />
       <Select
-        value={OPPORTUNITIES[opportunity]}
         disabled={cityDisabled}
-        options={Object.keys(OPPORTUNITIES).map((op) => ({
-          label: OPPORTUNITIES[op],
-          value: op,
+        value={VISUALIZATIONS[visualization]}
+        options={Object.keys(VISUALIZATIONS).map((key) => ({
+          label: VISUALIZATIONS[key],
+          value: key,
         }))}
-        onChange={onOpportunityChange}
-        placeholder="Selecciona una oportunidad"
+        onChange={onVisualizationChange}
+        placeholder="Selecciona una visualización"
       />
       <div className="m-2 md:m-4" />
-      <Tooltip
-        title={
-          !hexagonDisabled && transport.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
-        }
-        placement="right"
-        open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
-        disableTouchListener
-      >
-         <div>
-         <ButtonGroup
-            options={TRANSPORTS.map((mdm) => ({
-              icon: TRANSPORT_ICONS[mdm],
-              // label: TRANSPORT_TRANSLATIONS[mdm],
-              onClick: () => onMediumChange(mdm),
-              // disabled: hexagonDisabled,
-              color: TRANSPORT_COLORS[mdm],
-              active: transport.includes(mdm),
-            }))}
+      {
+        visualization === 'opportunities' && (
+          <OpportunitiesControls
+            transport={transport}
+            onMediumChange={onMediumChange}
+            timeframe={timeframe}
+            opportunity={opportunity}
+            onTimeStepChange={onTimeStepChange}
+            onOpportunityChange={onOpportunityChange}
+            cityDisabled={cityDisabled}
           />
-         </div>
-      </Tooltip>
-      <div className="m-2 md:m-4" />
-      <Tooltip
-        title="Selecciona el tiempo de traslado"
-        placement="right"
-        disableTouchListener
-      >
-          <div>
-          <ButtonGroup
-            options={TIMEFRAMES.map((step) => ({
-              label: `${step} min`,
-              onClick: () => onTimeStepChange(step),
-              // disabled: hexagonDisabled,
-              active: timeframe === step,
-            }))}
+        )
+      }
+      {
+        visualization === 'isocrones' && (
+          <IsochronesControls
+            transport={transport}
+            onMediumChange={onMediumChange}
+            timeframe={timeframe}
+            onTimeStepChange={onTimeStepChange}
+            hexagonDisabled={hexagonDisabled}
           />
-          </div>
-         </Tooltip>
-      <div className="m-2 md:m-4" />
+        )
+      }
       <div className="flex justify-between">
       <LayerSwitch
           disabled={cityDisabled}

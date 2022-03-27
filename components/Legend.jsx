@@ -8,7 +8,7 @@ const Swatch = ({
 );
 
 const LegendItem = ({ color, label }) => (
-  <div className="flex items-center">
+  <div className="flex items-center mb-1">
     <Swatch color={color} />
     <span className="ml-2 text-xs">{label}</span>
   </div>

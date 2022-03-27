@@ -4,7 +4,15 @@ import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import DirectionsCarFilled from '@mui/icons-material/DirectionsCarFilled';
 import React from 'react';
 
+export const VISUALIZATIONS = {
+  opportunities: "Oportunidades",
+  isocrones: "Alcance por medio de transporte",
+};
+
+export const OPPORTUNITY_TIMEFRAMES = [15, 30, 60];
+
 export const TIMEFRAMES = [30, 60, 120];
+
 export const COLORS = {
   green: ['#54AC59', '#346B37'],
   blue: ['#307DC6', '#112D47'],

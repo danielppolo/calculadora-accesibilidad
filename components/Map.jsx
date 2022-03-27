@@ -12,6 +12,7 @@ import {
   TRANSPORT_COLORS,
   COLORS,
   TRANSPORT_TRANSLATIONS,
+  OPPORTUNITY_TIMEFRAMES,
 } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
 import Loader from './Loader';
@@ -38,12 +39,13 @@ const cityGridId = (cityId) => `${cityId}-grid`;
 const cityOpportunityId = (opportunity, city) => `${city}-${opportunity}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
-const defaultTimeframe = TIMEFRAMES[1];
+const defaultTimeframe = 30;
 const defaultParams = {
+  visualization: 'opportunities',
+  opportunity: defaultOpportunity,
   hexagon: undefined,
-  transport: [defaultTransport],
-  timeframe: defaultTimeframe,
-  opportunity: undefined,
+  transport: [],
+  timeframe: undefined,
   agebs: false,
   density: false,
   raods: false,
@@ -76,7 +78,7 @@ function Map({
   const { features, metadata: cityData } = useCityData(data);
   const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
   const [loading, setLoading] = useState(false);
-  const [params, setParams] = useState(defaultParams);
+  const [params, setParams] = useState({...defaultParams});
   const [chartData, setChartData] = useState({});
   const { load: loadBaseGrid, state: gridState } = useBaseGrid();
   const {
@@ -90,6 +92,7 @@ function Map({
   } = useNationalRoadNetwork();
   const getCurrentTimeframe = () => currentTimeframe;
   const getCurrentTransport = () => currentTransport;
+  
   const handleOpportunityChange = useCallback((nextOpportunity) => {
     hideAll(map);
     hideAgebs(map);
@@ -99,6 +102,8 @@ function Map({
       opportunity: nextOpportunity,
       hexagon: undefined,
       agebs: false,
+      timeframe: undefined,
+      transport: []
     });
     router.query = {
       ...router.query,
@@ -116,6 +121,7 @@ function Map({
         duration: 2000,
         offset: [100, 50],
       });
+      hideAll(map);
       onCityChange(cty);
       setScenario(cities[cty].scenarios[0].fields.bucketName);
       router.query = {
@@ -181,7 +187,7 @@ function Map({
       // Load static map
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         TRANSPORTS.forEach((tra)=> {
-          TIMEFRAMES.forEach((tm) => {
+          OPPORTUNITY_TIMEFRAMES.forEach((tm) => {
             const key = getOpportunityId(opp, tra, tm)
 
             let maxValue = 0;
@@ -192,7 +198,6 @@ function Map({
               return item.properties[key] > 0;
             });
             if (!(key in state)) {
-              console.log(cityOpportunityId(key, city))
               add({
                 map,
                 legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()} alcanzables`,
@@ -225,7 +230,7 @@ function Map({
   }, [map, mapLoaded, city]);
 
   useEffect(() => {
-    if (map && mapLoaded && features.length > 0) {
+    if (map && mapLoaded && features.length > 0 && params.visualization === 'isocrones') {
       // Hexagon click listener
       map.on('click', cityGridId(city), async (e) => {
         setLoading(true);
@@ -349,7 +354,7 @@ function Map({
         });
       });
     }
-  }, [map, mapLoaded, features, scenario]);
+  }, [map, mapLoaded, features, scenario, params.visualization]);
 
   const handleScenarioChange = (sce) => {
     setScenario(sce);
@@ -420,12 +425,13 @@ function Map({
       }
     } else if (value) {
       hideAll(map);
-      show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport, value), city));
+      show(map, cityOpportunityId(getOpportunityId(params.opportunity, (params.transport || defaultTransport), value), city));
     }
 
     setParams({
       ...params,
       timeframe: value,
+      transport: params.transport || defaultTransport
     });
     currentTimeframe = value;
     router.query = {
@@ -463,14 +469,22 @@ function Map({
       router.replace(router);
     } else if (value) {
       hideAll(map);
-      show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, params.timeframe), city));
+      show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, (params.timeframe || defaultTimeframe)), city));
       setParams({
         ...params,
         transport: [value],
+        timeframe: params.timeframe || defaultTimeframe,
       });
       currentTransport = [value];
     }
   };
+
+  const handleVisualizationChange = (value) => {
+    setParams({
+      ...defaultParams,
+      visualization: value,
+    });
+  }
 
   const buildChartDataset = useCallback((key) => {
     if (params.hexagon) {
@@ -491,6 +505,7 @@ function Map({
     return null;
   }, [params.hexagon, params.timeframe, chartData, cityData]);
 
+  
   const opportunitiesChartData = useMemo(() => buildChartDataset('opportunities'), [buildChartDataset]);
   const facilitiesChartData = useMemo(() => buildChartDataset('facilities'), [buildChartDataset]);
 
@@ -516,6 +531,8 @@ function Map({
         onDensityLayerChange={handleDensityChange}
         roadsLayer={params.roads}
         onRoadsLayerChange={handleRoadChange}
+        visualization={params.visualization}
+        onVisualizationChange={handleVisualizationChange}
         resetMap={resetMap}
       />
       { city ? (
