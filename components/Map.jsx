@@ -197,7 +197,6 @@ function Map({
               }
               return item.properties[key] > 0;
             });
-            console.log(key, maxValue, filteredFeatures.length)
             if (!(key in state)) {
               add({
                 map,
@@ -426,13 +425,13 @@ function Map({
       }
     } else if (value) {
       hideAll(map);
-      show(map, cityOpportunityId(getOpportunityId(params.opportunity, (params.transport || defaultTransport), value), city));
+      show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value), city));
     }
 
     setParams({
       ...params,
       timeframe: value,
-      transport: params.transport || defaultTransport
+      transport: params.transport[0] ? params.transport : [defaultTransport],
     });
     currentTimeframe = value;
     router.query = {
