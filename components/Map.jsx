@@ -197,6 +197,7 @@ function Map({
               }
               return item.properties[key] > 0;
             });
+            console.log(key, maxValue, filteredFeatures.length)
             if (!(key in state)) {
               add({
                 map,
@@ -480,10 +481,14 @@ function Map({
   };
 
   const handleVisualizationChange = (value) => {
+    hideAll(map)
     setParams({
       ...defaultParams,
       visualization: value,
     });
+    if (value === 'opportunities') {
+      show(map, cityOpportunityId(defaultOpportunity, city));
+    }
   }
 
   const buildChartDataset = useCallback((key) => {
@@ -563,6 +568,7 @@ function Map({
         legendTitle={legend.title}
         legendDictionary={legend.intervals}
         current={current}
+        city={city}
       />
       <div id="map" className="w-screen h-screen" />
       <Loader loading={loading} />

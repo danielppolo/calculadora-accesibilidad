@@ -14,12 +14,13 @@ function LegendBar({
   ageb,
   geojson,
   transportActive,
+  city,
 }) {
   return (
     <div className="hidden md:block z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:w-80 md:max-w-xl md:h-auto md:right-4 md:top-auto md:block">
       <div className="space-y-4">
         {
-            transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
+            city && transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
           }
         {
             ageb && agebLegend && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
@@ -31,7 +32,7 @@ function LegendBar({
             road && roadLegend && (<Legend title={roadLegend.title} items={roadLegend.intervals} />)
           }
         {
-            legendTitle && legendDictionary && (
+            city && legendTitle && legendDictionary && (
               <>
                 <Legend title={legendTitle} items={legendDictionary} />
               </>
