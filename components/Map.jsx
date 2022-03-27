@@ -25,6 +25,7 @@ import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import MapControls from './MapControls';
 import CitiesOverview from './CitiesOverview';
 import getHexagonId from '../utils/getHexagonId';
+import getOpportunityId from '../utils/getOpportunityId';
 import count from '../utils/countFeatures';
 import CreditsCard from './CreditsCard';
 import useCityMarkers from '../hooks/useCityMarkers';
@@ -34,7 +35,7 @@ import useNationalRoadNetwork from '../hooks/useNationalRoadNetwork';
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
 const cityGridId = (cityId) => `${cityId}-grid`;
-const cityOpportunityId = (opportunity, city) => `${opportunity}-${city}`;
+const cityOpportunityId = (opportunity, city) => `${city}-${opportunity}`;
 const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
 const defaultTimeframe = TIMEFRAMES[1];
@@ -175,6 +176,38 @@ function Map({
             beforeId: cityGridId(city),
           });
         }
+      });
+      
+      // Load static map
+      Object.keys(OPPORTUNITIES).forEach((opp) => {
+        TRANSPORTS.forEach((tra)=> {
+          TIMEFRAMES.forEach((tm) => {
+            const key = getOpportunityId(opp, tra, tm)
+
+            let maxValue = 0;
+            const filteredFeatures = features.filter((item) => {
+              if (item.properties[key] > maxValue) {
+                maxValue = item.properties[key];
+              }
+              return item.properties[key] > 0;
+            });
+            if (!(key in state)) {
+              console.log(cityOpportunityId(key, city))
+              add({
+                map,
+                legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()} alcanzables`,
+                id: cityOpportunityId(key, city),
+                features: filteredFeatures,
+                property: key,
+                maxValue,
+                visible: false,
+                stepSize: 6,
+                colors: ['#7054BC', '#F1BB43'],
+                beforeId: cityGridId(city),
+              });
+            }
+          })
+        })
       });
 
       // Display default opportunity on city change.
@@ -376,7 +409,7 @@ function Map({
   };
 
   const handleTimeframeChange = (value) => {
-    if (params.hexagon.id) {
+    if (params.hexagon && params.hexagon.id) {
       hideAll(map);
       if (params.transport.length === 1) {
         show(map, getHexagonId(params.hexagon.id, params.transport[0], value));
@@ -385,7 +418,11 @@ function Map({
           show(map, getHexagonId(params.hexagon.id, transport, value, { solid: true }));
         });
       }
+    } else if (value) {
+      hideAll(map);
+      show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport, value), city));
     }
+
     setParams({
       ...params,
       timeframe: value,
@@ -399,7 +436,7 @@ function Map({
   };
 
   const handleTransportChange = (value) => {
-    if (params.hexagon.id && value) {
+    if (params.hexagon && params.hexagon.id && value) {
       hideAll(map);
       let newTransportSelection;
       if (params.transport.includes(value)) {
@@ -424,6 +461,14 @@ function Map({
         transport: newTransportSelection.join(','),
       };
       router.replace(router);
+    } else if (value) {
+      hideAll(map);
+      show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, params.timeframe), city));
+      setParams({
+        ...params,
+        transport: [value],
+      });
+      currentTransport = [value];
     }
   };
 

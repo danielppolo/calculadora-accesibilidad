@@ -93,7 +93,7 @@ function MapControls({
               icon: TRANSPORT_ICONS[mdm],
               // label: TRANSPORT_TRANSLATIONS[mdm],
               onClick: () => onMediumChange(mdm),
-              disabled: hexagonDisabled,
+              // disabled: hexagonDisabled,
               color: TRANSPORT_COLORS[mdm],
               active: transport.includes(mdm),
             }))}
@@ -111,7 +111,7 @@ function MapControls({
             options={TIMEFRAMES.map((step) => ({
               label: `${step} min`,
               onClick: () => onTimeStepChange(step),
-              disabled: hexagonDisabled,
+              // disabled: hexagonDisabled,
               active: timeframe === step,
             }))}
           />

@@ -43,6 +43,11 @@ export default function Home() {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
         const responseData = await response.json();
+        const properties = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/static.json`);
+        const propertiesData = await properties.json();
+        Object.keys(propertiesData).forEach((id) => {
+          Object.assign(responseData[id].properties, propertiesData[id])
+        })
         setData({
           ...data,
           [bucket]: responseData,
