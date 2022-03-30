@@ -58,7 +58,7 @@ export default function Select({
                     <>
                       <div className="flex items-center">
                         <span
-                          className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}
+                          className={classNames(selected ? 'font-semibold' : 'font-normal', 'block')}
                         >
                           {option.label}
                         </span>
