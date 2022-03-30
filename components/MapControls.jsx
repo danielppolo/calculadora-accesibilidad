@@ -9,7 +9,7 @@ import Select from './Select';
 import LayerSwitch from './LayerSwitch';
 import OpportunitiesControls from './controls/opportunities';
 import IsochronesControls from './controls/isochrones';
-
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 function MapControls({
   visualization,
   onVisualizationChange,
@@ -126,10 +126,10 @@ function MapControls({
         </LayerSwitch>
         <LayerSwitch
           disabled={cityDisabled}
-          title="Visualizar México"
+          title="Regresar"
           onChange={resetMap}
         >
-          <MapOutlinedIcon />
+          <RestartAltIcon />
         </LayerSwitch>
       </div>
       <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
