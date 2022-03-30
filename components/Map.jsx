@@ -60,7 +60,11 @@ let currentTimeframe = defaultTimeframe;
 let currentTransport = [defaultTransport];
 
 function Map({
-  city, data, cities, onCityChange,
+  city, 
+  data, 
+  cities, 
+  onCityChange,
+  onLoading,
 }) {
   const router = useRouter();
   const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
@@ -77,7 +81,6 @@ function Map({
   const [scenario, setScenario] = useState();
   const { features, metadata: cityData } = useCityData(data);
   const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
-  const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({...defaultParams});
   const [chartData, setChartData] = useState({});
   const { load: loadBaseGrid, state: gridState } = useBaseGrid();
@@ -237,7 +240,7 @@ function Map({
     if (map && mapLoaded && features.length > 0 && params.visualization === 'isocrones') {
       // Hexagon click listener
       map.on('click', cityGridId(city), async (e) => {
-        setLoading(true);
+        onLoading(true);
         const feature = e.features[0].properties;
         const featureId = e.features[0].properties.h3_ddrs;
         router.query = {
@@ -250,18 +253,24 @@ function Map({
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData = {};
+          const calculateTime = (time, transport) => {
+            if (transport === 'automovil') {
+              return Math.round(time * 1.6927)
+            }
+            return time
+          }
           // Create 9 isochrones variant layers
           [...TIMEFRAMES].reverse().forEach((step) => {
             const featureIds = Object.keys(json);
             const transportReach = TRANSPORTS.map((transport, index) => {
               const filteredIds = featureIds
-                .filter((id) => json[id][index] && (json[id][index] <= step) && data[id]);
+                .filter((id) => json[id][index] && (calculateTime(json[id][index], transport) <= step) && data[id]);
               const filteredFeatures = filteredIds.map((id) => ({
                 ...data[id],
                 properties: {
                   ...data[id].properties,
-                  [transport]: json[id][index],
-                  description: `${json[id][index]} minutos`,
+                  [transport]: calculateTime(json[id][index], transport),
+                  description: `${calculateTime(json[id][index], transport)} minutos`,
                 },
               }));
               // Include clicked feature.
@@ -338,7 +347,7 @@ function Map({
         } catch (e) {
           console.log(`Failed when downloading feature data: ${e.message}`);
         } finally {
-          setLoading(false);
+          onLoading(false);
         }
 
         hideAll(map);
@@ -588,9 +597,8 @@ function Map({
         city={city}
       />
       <div id="map" className="w-screen h-screen" />
-      <Loader loading={loading} />
       <CreditsCard />
-      <div className=" hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
+      <div className="hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
     </>
   );
 }

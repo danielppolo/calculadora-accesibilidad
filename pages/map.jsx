@@ -13,6 +13,7 @@ const client = contentful.createClient({
 
 export default function Home() {
   const [cities, setCities] = useState();
+  const [loading, setLoading] = useState(true);
   const [city, setCity] = useState();
   const [data, setData] = useState({});
   const router = useRouter();
@@ -34,12 +35,14 @@ export default function Home() {
       } catch (e) {
         console.log(e);
       }
+      setLoading(false)
     };
     fetchCities();
   }, []);
 
   const handleCityChange = async (bucket) => {
     if (bucket && !data[bucket]) {
+      setLoading(true);
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
         const responseData = await response.json();
@@ -55,6 +58,7 @@ export default function Home() {
       } catch (e) {
         console.log(e);
       }
+      setLoading(false);
     }
     setCity(bucket);
   };
@@ -63,11 +67,17 @@ export default function Home() {
     <>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={!cities}
+        open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Map city={city} cities={cities} data={data[city]} onCityChange={handleCityChange} />
+      <Map 
+      onLoading={setLoading}
+      city={city} 
+      cities={cities} 
+      data={data[city]} 
+      onCityChange={handleCityChange} 
+      />
     </>
   );
 }
