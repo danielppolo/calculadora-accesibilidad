@@ -5,8 +5,9 @@ import DirectionsCarFilled from '@mui/icons-material/DirectionsCarFilled';
 import React from 'react';
 
 export const VISUALIZATIONS = {
-  opportunities: "Oportunidades",
-  isocrones: "Alcance por medio de transporte",
+  opportunities: "Oportunidades por hexágono",
+  reachability: "Oportunidades alcanzables dentro de cada hexágono",
+  isocrones: "Área alcanzable por medio de transporte",
 };
 
 export const OPPORTUNITY_TIMEFRAMES = [15, 30, 60];

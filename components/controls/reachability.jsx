@@ -1,19 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  TRANSPORTS,
+  TRANSPORT_COLORS,
   OPPORTUNITIES,
+  TRANSPORT_ICONS,
+  OPPORTUNITY_TIMEFRAMES,
 } from '../../constants';
 import Select from '../Select';
+import ButtonGroup from '../ButtonGroup';
 
-function OpportunityControls({
+function ReachabilityControls({
+  transport,
+  onMediumChange,
+  timeframe,
   opportunity,
+  onTimeStepChange,
   onOpportunityChange,
   cityDisabled,
 }) {
   return (
+    <>
       <Select
-        id="opportunity"
-        label="Selecciona una oportunidad"
         value={OPPORTUNITIES[opportunity]}
         disabled={cityDisabled}
         options={Object.keys(OPPORTUNITIES).map((op) => ({
@@ -23,10 +31,31 @@ function OpportunityControls({
         onChange={onOpportunityChange}
         placeholder="Selecciona una oportunidad"
       />
+      <div className="m-2 md:m-4" />
+      <ButtonGroup
+        options={TRANSPORTS.map((mdm) => ({
+          icon: TRANSPORT_ICONS[mdm],
+          disabled: cityDisabled,
+          color: TRANSPORT_COLORS[mdm],
+          active: transport.includes(mdm),
+          onClick: () => onMediumChange(mdm),
+        }))}
+      />
+      <div className="m-2 md:m-4" />
+      <ButtonGroup
+        options={OPPORTUNITY_TIMEFRAMES.map((step) => ({
+          label: `${step} min`,
+          onClick: () => onTimeStepChange(step),
+          disabled: cityDisabled,
+          active: timeframe === step,
+        }))}
+      />
+      <div className="m-2 md:m-4" />
+    </>
   );
 }
 
-OpportunityControls.propTypes = {
+ReachabilityControls.propTypes = {
   transport: PropTypes.array.isRequired,
   timeframe: PropTypes.number.isRequired,
   hexagonDisabled: PropTypes.bool.isRequired,
@@ -48,4 +77,4 @@ OpportunityControls.propTypes = {
   resetMap: PropTypes.func.isRequired,
 };
 
-export default OpportunityControls;
+export default ReachabilityControls;

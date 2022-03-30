@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import { VISUALIZATIONS } from '../constants';
 import Select from './Select';
 import LayerSwitch from './LayerSwitch';
-import OpportunitiesControls from './controls/opportunities';
+import OpportunityControls from './controls/opportunities';
+import ReachabilityControls from './controls/reachability';
 import IsochronesControls from './controls/isochrones';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 function MapControls({
@@ -72,12 +72,21 @@ function MapControls({
           value: key,
         }))}
         onChange={onVisualizationChange}
-        placeholder="Selecciona una visualización"
+        placeholder="Selecciona un tipo de visualización"
       />
       <div className="m-2 md:m-4" />
       {
         visualization === 'opportunities' && (
-          <OpportunitiesControls
+          <OpportunityControls
+            opportunity={opportunity}
+            onOpportunityChange={onOpportunityChange}
+            cityDisabled={cityDisabled}
+          />
+        )
+      }
+      {
+        visualization === 'reachability' && (
+          <ReachabilityControls
             transport={transport}
             onMediumChange={onMediumChange}
             timeframe={timeframe}
@@ -99,6 +108,7 @@ function MapControls({
           />
         )
       }
+       <div className="m-2 md:m-4" />
       <div className="flex justify-between">
       <LayerSwitch
           disabled={cityDisabled}

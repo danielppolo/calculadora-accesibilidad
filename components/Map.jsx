@@ -15,7 +15,6 @@ import {
   OPPORTUNITY_TIMEFRAMES,
 } from '../constants';
 import useLayerManager from '../hooks/useLayerManager';
-import Loader from './Loader';
 import LegendBar from './LegendBar';
 import useBaseGrid from '../hooks/useBaseGrid';
 import useFitMap from '../hooks/useFitMap';
@@ -41,8 +40,8 @@ const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 const defaultTransport = TRANSPORTS[0];
 const defaultTimeframe = 30;
 const defaultParams = {
-  visualization: 'opportunities',
-  opportunity: defaultOpportunity,
+  visualization: undefined,
+  opportunity: undefined,
   hexagon: undefined,
   transport: [],
   timeframe: undefined,
@@ -227,7 +226,7 @@ function Map({
       });
 
       // Display default opportunity on city change.
-      show(map, cityOpportunityId(defaultOpportunity, city));
+      // show(map, cityOpportunityId(defaultOpportunity, city));
       setParams({
         ...params,
         opportunity: defaultOpportunity,
@@ -512,12 +511,27 @@ function Map({
 
   const handleVisualizationChange = (value) => {
     hideAll(map)
-    setParams({
-      ...defaultParams,
-      visualization: value,
-    });
     if (value === 'opportunities') {
       show(map, cityOpportunityId(defaultOpportunity, city));
+      setParams({
+        ...defaultParams,
+        opportunity: defaultOpportunity,
+        visualization: value,
+      });
+    } else if (value === 'reachability') {
+      show(map, cityOpportunityId(getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeframe), city));
+      setParams({
+        ...defaultParams,
+        opportunity: defaultOpportunity,
+        transport: [defaultTransport],
+        timeframe: defaultTimeframe,
+        visualization: value,
+      });
+    } else {
+      setParams({
+        ...defaultParams,
+        visualization: value,
+      });
     }
   }
 
