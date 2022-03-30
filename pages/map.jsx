@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useRouter } from 'next/router';
 import Map from '../components/Map';
 
 const contentful = require('contentful');
@@ -16,7 +15,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState();
   const [data, setData] = useState({});
-  const router = useRouter();
 
   useEffect(() => {
     const fetchCities = async () => {

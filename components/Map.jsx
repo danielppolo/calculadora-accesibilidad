@@ -25,6 +25,7 @@ import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
 import MapControls from './MapControls';
 import CitiesOverview from './CitiesOverview';
 import getHexagonId from '../utils/getHexagonId';
+import calculateTime, {calculateTimeForOpp} from '../utils/calculateTime';
 import getOpportunityId from '../utils/getOpportunityId';
 import count from '../utils/countFeatures';
 import CreditsCard from './CreditsCard';
@@ -199,14 +200,21 @@ function Map({
         TRANSPORTS.forEach((tra)=> {
           OPPORTUNITY_TIMEFRAMES.forEach((tm) => {
             const key = getOpportunityId(opp, tra, tm)
-
+            
             let maxValue = 0;
-            const filteredFeatures = features.filter((item) => {
+            const filteredFeatures = features.map((item) => ({
+              ...item,
+              properties: {
+                ...item.properties,
+                [key]: calculateTimeForOpp(item.properties[key], tra),
+              }
+            })).filter((item) => {
               if (item.properties[key] > maxValue) {
                 maxValue = item.properties[key];
               }
               return item.properties[key] > 0;
             });
+
             if (!(key in state)) {
               add({
                 map,
@@ -256,12 +264,6 @@ function Map({
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData = {};
-          const calculateTime = (time, transport) => {
-            if (transport === 'automovil') {
-              return Math.round(time * 1.6927)
-            }
-            return time
-          }
           // Create 9 isochrones variant layers
           [...TIMEFRAMES].reverse().forEach((step) => {
             const featureIds = Object.keys(json);
