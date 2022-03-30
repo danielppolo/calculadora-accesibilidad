@@ -19,25 +19,37 @@ function LegendBar({
   return (
     <div className="hidden z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:h-auto md:top-auto md:inline-flex md:right-auto">
       <div className="inline-flex space-x-4">
-      {
-            city && legendTitle && legendDictionary && (
-              <>
-                <Legend title={legendTitle} items={legendDictionary} />
-              </>
+        {
+          city && legendTitle && legendDictionary && (
+            <div className='flex-col align-bottom justify-end space-y-4'>
+              {
+                  city && transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
+                }
+              <Legend title={legendTitle} items={legendDictionary} />
+            </div>
             )
           }
         {
-            city && transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
-          }
+          ageb && agebLegend && (
+            <div className='flex items-end'>
+              <Legend title={agebLegend.title} items={agebLegend.intervals} />
+            </div>
+          )
+        }
         {
-            ageb && agebLegend && (<Legend title={agebLegend.title} items={agebLegend.intervals} />)
-          }
+          density && densityLegend && (
+            <div className='flex items-end'>
+              <Legend title={densityLegend.title} items={densityLegend.intervals} />
+            </div>
+          )
+        }
         {
-            density && densityLegend && (<Legend title={densityLegend.title} items={densityLegend.intervals} />)
-          }
-        {
-            road && roadLegend && (<Legend title={roadLegend.title} items={roadLegend.intervals} />)
-          }
+          road && roadLegend && (
+            <div className='flex items-end'>
+              <Legend title={roadLegend.title} items={roadLegend.intervals} />
+            </div>
+          )
+        }
        
       </div>
     </div>

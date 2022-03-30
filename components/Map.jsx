@@ -48,7 +48,6 @@ const defaultParams = {
   timeframe: undefined,
   agebs: false,
   density: false,
-  raods: false,
 };
 const popup = new Popup({
   className: 'black-popup',
@@ -116,6 +115,11 @@ function Map({
     router.replace(router);
   }, [city, hideAgebs, hideAll, map, params, router, show]);
 
+  const resetParams = () => {
+    setParams({...defaultParams});
+    currentTimeframe = defaultTimeframe;
+    currentTransport = [defaultTransport];
+  }
   const handleCityChange = useCallback(
     (cty) => {
       map.flyTo({
@@ -133,7 +137,7 @@ function Map({
         scenario: cities[cty].scenarios[0].fields.bucketName,
       };
       router.replace(router);
-      setParams({...defaultParams});
+      resetParams()
     },
     [cities, map, onCityChange, router, setParams],
   );
@@ -146,7 +150,7 @@ function Map({
     });
     hideAll(map);
     onCityChange(undefined);
-    setParams({...defaultParams});
+    resetParams()
     router.query = {};
     router.replace(router);
   };
