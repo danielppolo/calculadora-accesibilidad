@@ -15,7 +15,7 @@ function CitiesOverview({
         </p>
         <div className="mb-8" />
         <div>
-          <p className="text-xs text-center font-medium mb-4">Acceso a oportunidades por ciudad</p>
+          <p className="text-xs text-center font-medium mb-4">Número de oportunidades promedio alcanzables por persona</p>
           <CitiesChart
             data={{
               labels: cities.map((city) => city.name),
