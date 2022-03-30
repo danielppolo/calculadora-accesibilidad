@@ -17,8 +17,15 @@ function LegendBar({
   city,
 }) {
   return (
-    <div className="hidden md:block z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:w-80 md:max-w-xl md:h-auto md:right-4 md:top-auto md:block">
-      <div className="space-y-4">
+    <div className="hidden z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:h-auto md:top-auto md:inline-flex md:right-auto">
+      <div className="inline-flex space-x-4">
+      {
+            city && legendTitle && legendDictionary && (
+              <>
+                <Legend title={legendTitle} items={legendDictionary} />
+              </>
+            )
+          }
         {
             city && transportActive && Object.keys(geojson).length > 0 && (<Download data={geojson} filename={legendTitle} />)
           }
@@ -31,13 +38,7 @@ function LegendBar({
         {
             road && roadLegend && (<Legend title={roadLegend.title} items={roadLegend.intervals} />)
           }
-        {
-            city && legendTitle && legendDictionary && (
-              <>
-                <Legend title={legendTitle} items={legendDictionary} />
-              </>
-            )
-          }
+       
       </div>
     </div>
   );
