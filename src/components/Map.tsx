@@ -145,12 +145,14 @@ function Map({
         timeframe: undefined,
         transport: []
       });
-      router.query = {
-        ...router.query,
-        opportunity: nextOpportunity,
-        featureId: undefined,
-      };
-      router.replace(router);
+
+      router.replace({
+        query: {
+          ...router.query,
+          opportunity: nextOpportunity,
+          featureId: undefined,
+        }
+      });
     }
   }, [city, hideAgebs, hideAll, map, params, router, show]);
 
@@ -175,12 +177,13 @@ function Map({
         setScenario(nextScenario);
       }
 
-      router.query = {
-        ...router.query,
-        city: nextCity,
-        scenario: nextScenario,
-      };
-      router.replace(router);
+      router.replace({
+        query: {
+          ...router.query,
+          city: nextCity,
+          scenario: nextScenario,
+        }
+      });
       resetParams()
     },
     [cities, map, onCityChange, router, setParams],
@@ -195,8 +198,7 @@ function Map({
     hideAll(map);
     onCityChange?.(undefined);
     resetParams()
-    router.query = {};
-    router.replace(router);
+    router.replace({ query: {} });
   };
 
   useEffect(() => {
@@ -285,11 +287,13 @@ function Map({
         ...params,
         opportunity: defaultOpportunity,
       });
-      router.query = {
-        ...router.query,
-        opportunity: defaultOpportunity,
-      };
-      router.replace(router);
+
+      router.replace({
+        query: {
+          ...router.query,
+          opportunity: defaultOpportunity,
+        }
+      });
     }
   }, [map, mapLoaded, city]);
 
@@ -300,13 +304,14 @@ function Map({
         onLoading?.(true);
         const feature = event.features?.[0]?.properties;
         const featureId = event.features?.[0]?.properties?.h3_ddrs;
-        router.query = {
-          ...router.query,
-          featureId,
-        };
-        router.replace(router);
+        router.replace({
+          query: {
+            ...router.query,
+            featureId,
+          }
+        });
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL} / ${city} / ${scenario} / ${featureId}.json`);
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/${scenario}/${featureId}.json`);
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData: CustomChartData = {};
@@ -422,11 +427,13 @@ function Map({
 
   const handleScenarioChange = (nextScenario: string) => {
     setScenario(nextScenario);
-    router.query = {
-      ...router.query,
-      scenario: nextScenario,
-    };
-    router.replace(router);
+
+    router.replace({
+      query: {
+        ...router.query,
+        scenario: nextScenario,
+      }
+    });
   };
 
   const handleEconomicChange = () => {
@@ -514,11 +521,13 @@ function Map({
       transport: params.transport[0] ? params.transport : [defaultTransport],
     });
     currentTimeFrame = value;
-    router.query = {
-      ...router.query,
-      timeframe: value.toString(),
-    };
-    router.replace(router);
+
+    router.replace({
+      query: {
+        ...router.query,
+        timeframe: value.toString(),
+      }
+    });
   };
 
   const handleTransportChange = (value: string) => {
@@ -542,11 +551,13 @@ function Map({
         transport: newTransportSelection,
       });
       currentTransport = newTransportSelection;
-      router.query = {
-        ...router.query,
-        transport: newTransportSelection.join(','),
-      };
-      router.replace(router);
+
+      router.replace({
+        query: {
+          ...router.query,
+          transport: newTransportSelection.join(','),
+        }
+      });
     } else if (value) {
       hideAll(map);
       if (params.opportunity && city) {
