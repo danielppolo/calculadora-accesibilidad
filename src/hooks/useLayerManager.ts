@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Gradient from 'javascript-color-gradient';
-import { NUMBER_OF_BUCKETS } from '../constants';
+import { NUMBER_OF_BUCKETS } from 'src/constants';
 import {
   getIntervals, getColor, getLegend, convertToGeoJSON,
-} from '../utils';
+} from 'src/utils';
 import { Map } from 'mapbox-gl';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Legend } from 'src/types';
 
 interface AddOptions {
   map: Map;
@@ -24,18 +25,11 @@ interface AddOptions {
   solid?: boolean;
 }
 
-type Legend = {
-  title: string;
-  intervals: {
-    color: string;
-    label: string;
-  }[]
-}
 
 const useLayerManager = () => {
   const [state] = useState<Record<string, boolean>>({});
   const [legends] = useState<Record<string, Legend>>({});
-  const [geojson] = useState<Record<string, FeatureCollection>>({});
+  const [geojson] = useState<Record<string, FeatureCollection<Polygon>>>({});
   const [current, setCurrent] = useState<string | undefined>(undefined);
 
   const add = ({
@@ -104,23 +98,25 @@ const useLayerManager = () => {
     }
   };
 
-  const show = (map: Map, id: string) => {
-    if (id in state && map) {
+  const show = (map?: Map, id?: string) => {
+    if (id && id in state && map) {
       map.setLayoutProperty(id, 'visibility', 'visible');
       setCurrent(id);
     }
   };
 
-  const hide = (map: Map, id = null) => {
+  const hide = (map?: Map, id = undefined) => {
     if (id && map && id in state) {
       map.setLayoutProperty(id, 'visibility', 'none');
     }
   };
 
-  const hideAll = (map: Map) => {
-    Object.keys(state).forEach((layerId) => {
-      map.setLayoutProperty(layerId, 'visibility', 'none');
-    });
+  const hideAll = (map?: Map) => {
+    if (map) {
+      Object.keys(state).forEach((layerId) => {
+        map.setLayoutProperty(layerId, 'visibility', 'none');
+      });
+    }
   };
 
   return {
@@ -130,8 +126,8 @@ const useLayerManager = () => {
     hideAll,
     show,
     current,
-    geojson: current ? geojson[current] : {} as Record<string, FeatureCollection>,
-    legend: current ? legends[current] : [],
+    geojson: current ? geojson[current] : {} as FeatureCollection<Polygon>,
+    legend: current ? legends[current] : {} as Legend,
   };
 };
 export default useLayerManager;

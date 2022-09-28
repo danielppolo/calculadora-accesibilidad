@@ -8,14 +8,14 @@ import { LngLatLike } from 'mapbox-gl';
 export const VISUALIZATIONS = {
   opportunities: "Oportunidades por hexágono",
   reachability: "Oportunidades alcanzables dentro de cada hexágono",
-  isocrones: "Área alcanzable por medio de transporte",
+  isochrones: "Área alcanzable por medio de transporte",
 };
 
-export const OPPORTUNITY_TIMEFRAMES = [15, 30, 60];
+export const OPPORTUNITY_TIMEFRAMES = [15, 30, 60] as const;
 
-export const TIMEFRAMES = [30, 60, 120];
+export const TIMEFRAMES = [30, 60, 120] as const;
 
-export const COLORS = {
+export const COLORS: Record<string, [string, string]> = {
   green: ['#54AC59', '#346B37'],
   blue: ['#307DC6', '#112D47'],
   red: ['#DA546F', '#59232E'],
@@ -31,7 +31,7 @@ export const TRANSPORTS = [
   'bicicleta',
   'bus_actual',
   'automovil',
-];
+] as const;
 
 export const TRANSPORT_TRANSLATIONS = {
   caminando: 'Caminando',
@@ -45,7 +45,7 @@ export const TRANSPORT_COLORS = {
   bicicleta: 'green',
   bus_actual: 'pink',
   automovil: 'purple',
-};
+} as const;
 
 export const TRANSPORT_ICONS = {
   caminando: <DirectionsWalkIcon fontSize="small" />,

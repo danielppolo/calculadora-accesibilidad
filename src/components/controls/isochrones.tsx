@@ -1,39 +1,46 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Tooltip } from '@mui/material';
 import {
   TRANSPORTS,
   TIMEFRAMES,
   TRANSPORT_COLORS,
   TRANSPORT_ICONS,
-} from '../../constants';
-import ButtonGroup from '../ButtonGroup';
+} from 'src/constants';
+import ButtonGroup from 'src/components/ButtonGroup';
 
+
+interface IsochronesControlsProps {
+  transport?: string[];
+  timeframe?: number;
+  hexagonDisabled?: boolean;
+  onMediumChange?: (medium: string) => void;
+  onTimeStepChange?: (timeStep: number) => void;
+}
 function IsochronesControls({
   transport,
-  onMediumChange,
   timeframe,
+  hexagonDisabled = false,
+  onMediumChange,
   onTimeStepChange,
-  hexagonDisabled,
-}) {
+}: IsochronesControlsProps) {
   return (
     <>
       <Tooltip
         title={
-          !hexagonDisabled && transport.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
+          !hexagonDisabled && transport?.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
         }
         placement="right"
-        open={hexagonDisabled || (!hexagonDisabled && transport.length === 1)}
+        open={hexagonDisabled || (!hexagonDisabled && transport?.length === 1)}
         disableTouchListener
       >
         <div>
           <ButtonGroup
             options={TRANSPORTS.map((mdm) => ({
               icon: TRANSPORT_ICONS[mdm],
-              onClick: () => onMediumChange(mdm),
+              onClick: () => onMediumChange?.(mdm),
               disabled: hexagonDisabled,
               color: TRANSPORT_COLORS[mdm],
-              active: transport.includes(mdm),
+              active: transport?.includes(mdm) ?? false,
             }))}
           />
         </div>
@@ -48,7 +55,7 @@ function IsochronesControls({
           <ButtonGroup
             options={TIMEFRAMES.map((step) => ({
               label: `${step} min`,
-              onClick: () => onTimeStepChange(step),
+              onClick: () => onTimeStepChange?.(step),
               disabled: hexagonDisabled,
               active: timeframe === step,
             }))}
@@ -60,26 +67,5 @@ function IsochronesControls({
   );
 }
 
-IsochronesControls.propTypes = {
-  transport: PropTypes.array.isRequired,
-  timeframe: PropTypes.number.isRequired,
-  hexagonDisabled: PropTypes.bool.isRequired,
-  cityDisabled: PropTypes.bool.isRequired,
-  city: PropTypes.string.isRequired,
-  scenario: PropTypes.string.isRequired,
-  cities: PropTypes.object.isRequired,
-  onMediumChange: PropTypes.func.isRequired,
-  onTimeStepChange: PropTypes.func.isRequired,
-  onScenarioChange: PropTypes.func.isRequired,
-  onOpportunityChange: PropTypes.func.isRequired,
-  onCityChange: PropTypes.func.isRequired,
-  economicLayer: PropTypes.bool.isRequired,
-  onEconomicLayerChange: PropTypes.func.isRequired,
-  densityLayer: PropTypes.bool.isRequired,
-  onDensityLayerChange: PropTypes.func.isRequired,
-  roadsLayer: PropTypes.bool.isRequired,
-  onRoadsLayerChange: PropTypes.func.isRequired,
-  resetMap: PropTypes.func.isRequired,
-};
 
 export default IsochronesControls;

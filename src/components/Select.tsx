@@ -2,11 +2,24 @@ import React, { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
+
+type Option = {
+  value: string;
+  label: string;
 }
 
-export default function Select({
+interface SelectProps {
+  options: Option[];
+  disabled?: boolean;
+  placeholder?: string;
+  value?: string;
+  variant?: 'light' | 'dark';
+  icon?: React.ReactNode;
+  onChange?: (value: string) => void;
+}
+
+function Select({
   options,
   onChange,
   disabled,
@@ -14,12 +27,12 @@ export default function Select({
   value,
   variant,
   icon,
-}) {
+}: SelectProps) {
   const [selected, setSelected] = useState({});
 
-  const handleChange = (option) => {
+  const handleChange = (option: Option) => {
     setSelected(option);
-    onChange && onChange(option.value);
+    onChange?.(option.value);
   };
 
   return (
@@ -32,8 +45,8 @@ export default function Select({
             </span>
             <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               {
-                  icon || <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-                }
+                icon || <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              }
             </span>
           </Listbox.Button>
 
@@ -85,3 +98,5 @@ export default function Select({
     </Listbox>
   );
 }
+
+export default Select;

@@ -1,5 +1,6 @@
 import { Map } from 'mapbox-gl';
 import React, { useCallback } from 'react';
+import { Legend } from 'src/types';
 
 const layer = {
   id: 'red-vial',
@@ -48,7 +49,7 @@ const useNationalRoadNetwork = () => {
     }
   }, []);
 
-  const legend = {
+  const legend: Legend = {
     title: 'Red vial',
     intervals: [{
       color: '#000',

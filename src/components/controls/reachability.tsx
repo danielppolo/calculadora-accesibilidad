@@ -1,31 +1,40 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   TRANSPORTS,
   TRANSPORT_COLORS,
   OPPORTUNITIES,
   TRANSPORT_ICONS,
   OPPORTUNITY_TIMEFRAMES,
-} from '../../constants';
-import Select from '../Select';
-import ButtonGroup from '../ButtonGroup';
+} from 'src/constants';
+import Select from 'src/components/Select';
+import ButtonGroup from 'src/components/ButtonGroup';
+
+interface ReachabilityControlsProps {
+  transport?: string[];
+  timeframe?: number;
+  opportunity?: string;
+  cityDisabled?: boolean;
+  onMediumChange?: (medium: string) => void;
+  onTimeStepChange?: (timeStep: number) => void;
+  onOpportunityChange?: (opportunity: string) => void;
+}
 
 function ReachabilityControls({
   transport,
-  onMediumChange,
   timeframe,
   opportunity,
+  cityDisabled,
+  onMediumChange,
   onTimeStepChange,
   onOpportunityChange,
-  cityDisabled,
-}) {
+}: ReachabilityControlsProps) {
   return (
     <>
       <Select
-        value={OPPORTUNITIES[opportunity]}
+        value={opportunity && OPPORTUNITIES[opportunity as keyof typeof OPPORTUNITIES]}
         disabled={cityDisabled}
         options={Object.keys(OPPORTUNITIES).map((op) => ({
-          label: OPPORTUNITIES[op],
+          label: OPPORTUNITIES[op as keyof typeof OPPORTUNITIES],
           value: op,
         }))}
         onChange={onOpportunityChange}
@@ -37,15 +46,15 @@ function ReachabilityControls({
           icon: TRANSPORT_ICONS[mdm],
           disabled: cityDisabled,
           color: TRANSPORT_COLORS[mdm],
-          active: transport.includes(mdm),
-          onClick: () => onMediumChange(mdm),
+          active: transport?.includes(mdm) ?? false,
+          onClick: () => onMediumChange?.(mdm),
         }))}
       />
       <div className="m-2 md:m-4" />
       <ButtonGroup
         options={OPPORTUNITY_TIMEFRAMES.map((step) => ({
           label: `${step} min`,
-          onClick: () => onTimeStepChange(step),
+          onClick: () => onTimeStepChange?.(step),
           disabled: cityDisabled,
           active: timeframe === step,
         }))}
@@ -55,26 +64,5 @@ function ReachabilityControls({
   );
 }
 
-ReachabilityControls.propTypes = {
-  transport: PropTypes.array.isRequired,
-  timeframe: PropTypes.number.isRequired,
-  hexagonDisabled: PropTypes.bool.isRequired,
-  cityDisabled: PropTypes.bool.isRequired,
-  city: PropTypes.string.isRequired,
-  scenario: PropTypes.string.isRequired,
-  cities: PropTypes.object.isRequired,
-  onMediumChange: PropTypes.func.isRequired,
-  onTimeStepChange: PropTypes.func.isRequired,
-  onScenarioChange: PropTypes.func.isRequired,
-  onOpportunityChange: PropTypes.func.isRequired,
-  onCityChange: PropTypes.func.isRequired,
-  economicLayer: PropTypes.bool.isRequired,
-  onEconomicLayerChange: PropTypes.func.isRequired,
-  densityLayer: PropTypes.bool.isRequired,
-  onDensityLayerChange: PropTypes.func.isRequired,
-  roadsLayer: PropTypes.bool.isRequired,
-  onRoadsLayerChange: PropTypes.func.isRequired,
-  resetMap: PropTypes.func.isRequired,
-};
 
 export default ReachabilityControls;

@@ -1,9 +1,9 @@
-import { Feature } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 import { useMemo } from 'react';
+import count from 'src/utils/countFeatures';
 
-const count = (array: Array<Feature>, property: string) => array.reduce((acc, item) => acc + item.properties?.[property] ?? 0, 0);
 
-const useCityData = (data?: Record<string, Feature>) => {
+const useCityData = (data?: Record<string, Feature<Polygon>>) => {
 
   const cityData = useMemo(() => {
     if (data) {
@@ -20,7 +20,12 @@ const useCityData = (data?: Record<string, Feature>) => {
     }
     return {
       features: [],
-      metadata: {},
+      metadata: {
+        'Personal ocupado': 0,
+        Empresas: 0,
+        Clínicas: 0,
+        Escuelas: 0,
+      },
     };
   }, [data]);
 

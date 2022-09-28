@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LngLatLike, Map } from 'mapbox-gl';
-import useCityBoundaries from './useCityBoundaries';
+import useCityBoundaries from 'src/hooks/useCityBoundaries';
 
 interface UseMapParams {
   center: LngLatLike;

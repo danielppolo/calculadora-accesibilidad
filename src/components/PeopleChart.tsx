@@ -1,8 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
-import Chart from 'chart.js/auto';
+import Chart, { ChartData } from 'chart.js/auto';
 
-function PeopleChart({ data }) {
-  const [activeChart, setActiveChart] = useState();
+interface PeopleChartProps {
+  data: ChartData<"bar">
+}
+
+function PeopleChart({ data }: PeopleChartProps) {
+  const [activeChart, setActiveChart] = useState<Chart | undefined>();
   useEffect(() => {
     if (data) {
       if (activeChart) {
@@ -14,7 +18,9 @@ function PeopleChart({ data }) {
         data,
         options: {
           plugins: {
-            legend: false,
+            legend: {
+              display: false
+            },
           },
           scales: {
             y: {
@@ -23,8 +29,6 @@ function PeopleChart({ data }) {
                 color: '#e6e6dc',
               },
             },
-          },
-          scales: {
             x: {
               grid: {
                 color: '#e6e6dc',
@@ -32,12 +36,14 @@ function PeopleChart({ data }) {
             },
           },
         },
-      };
-      const chart = new Chart(
-        document.getElementById('people-chart'),
-        config,
-      );
-      setActiveChart(chart);
+      } as const;
+
+      const chartContainer = document.getElementById('people-chart') as HTMLCanvasElement
+
+      if (chartContainer !== null) {
+        const chart = new Chart(chartContainer, config);
+        setActiveChart(chart);
+      }
     }
   }, [data]);
 

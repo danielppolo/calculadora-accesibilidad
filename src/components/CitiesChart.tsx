@@ -1,8 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
-import Chart from 'chart.js/auto';
+import Chart, { ChartData } from 'chart.js/auto';
 
-function CitiesChart({ data }) {
-  const [activeChart, setActiveChart] = useState();
+interface CitiesChartProps {
+  data: ChartData<"pie">
+}
+
+function CitiesChart({ data }: CitiesChartProps) {
+  const [activeChart, setActiveChart] = useState<Chart | undefined>();
   useEffect(() => {
     if (data) {
       if (activeChart) {
@@ -16,7 +20,9 @@ function CitiesChart({ data }) {
           borderColor: '#F1F3EE',
           indexAxis: 'y',
           plugins: {
-            legend: false,
+            legend: {
+              display: false
+            },
           },
           scales: {
             y: {
@@ -34,12 +40,14 @@ function CitiesChart({ data }) {
             },
           },
         },
-      };
-      const chart = new Chart(
-        document.getElementById('cities-chart'),
-        config,
-      );
-      setActiveChart(chart);
+      } as const;
+
+      const chartContainer = document.getElementById('cities-chart') as HTMLCanvasElement
+
+      if (chartContainer !== null) {
+        const chart = new Chart(chartContainer, config);
+        setActiveChart(chart);
+      }
     }
   }, [data]);
 

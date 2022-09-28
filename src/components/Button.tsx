@@ -1,13 +1,11 @@
 import React from 'react';
 
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+
 function Button({
   children,
-  bgColor,
-  className,
-  variant = 'solid',
-  disabled,
   ...otherProps
-}) {
+}: ButtonProps) {
   return (
     <button
       type="button"

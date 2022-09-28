@@ -1,19 +1,26 @@
 import React, { memo, useState } from 'react';
-import PropTypes from 'prop-types';
 import CloseIcon from '@mui/icons-material/Close';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import FacilitiesChart from './FacilitiesChart';
-import PeopleChart from './PeopleChart';
-import Notes from './tren-maya/Notes';
-import Card from './Card';
-import Subtitle from './Subtitle';
+import FacilitiesChart from 'src/components/FacilitiesChart';
+import PeopleChart from 'src/components/PeopleChart';
+import Notes from 'src/components/Notes';
+import Card from 'src/components/Card';
+import Subtitle from 'src/components/Subtitle';
+import { ChartData } from 'chart.js';
+
+interface ControlsCardProps {
+  title?: string;
+  cityData: Record<string, number>;
+  reachableOpportunities?: ChartData<"bar">;
+  reachableFacilities?: ChartData<"bar">;
+}
 
 function ControlsCard({
   title,
   cityData,
   reachableOpportunities,
   reachableFacilities,
-}) {
+}: ControlsCardProps) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div className={`${expanded ? 'bottom-0' : '-bottom-2/3'} duration-500 fixed left-0 right-0 z-30 md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen`}>
@@ -46,12 +53,12 @@ function ControlsCard({
         <div className="mb-6" />
         {
           reachableOpportunities && (
-          <div>
-            <p className="text-sm font-medium mb-2 mt-4">% de empleos de la ciudad alcanzables desde hexágono</p>
-            <FacilitiesChart
-              data={reachableOpportunities}
-            />
-          </div>
+            <div>
+              <p className="text-sm font-medium mb-2 mt-4">% de empleos de la ciudad alcanzables desde hexágono</p>
+              <FacilitiesChart
+                data={reachableOpportunities}
+              />
+            </div>
           )
         }
         {
@@ -71,11 +78,6 @@ function ControlsCard({
   );
 }
 
-ControlsCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  cityData: PropTypes.object.isRequired,
-  reachableOpportunities: PropTypes.object.isRequired,
-  reachableFacilities: PropTypes.object.isRequired,
-};
+
 
 export default memo(ControlsCard);

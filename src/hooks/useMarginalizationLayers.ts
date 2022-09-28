@@ -1,5 +1,6 @@
 import { Map } from 'mapbox-gl';
 import { useCallback } from 'react';
+import { Legend } from 'src/types';
 
 const MARGINALIZATION_TILES = [
   {
@@ -91,7 +92,7 @@ const useMarginalizationLayers = () => {
     }
   }, []);
 
-  const legend = {
+  const legend: Legend = {
     title: 'Marginación por AGEB',
     intervals: MARGINALIZATION_TILES.map((ageb) => ({
       color: ageb.color,

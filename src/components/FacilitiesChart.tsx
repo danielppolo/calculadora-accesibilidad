@@ -1,8 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
-import Chart from 'chart.js/auto';
+import Chart, { ChartData } from 'chart.js/auto';
 
-function FacilitiesChart({ data }) {
-  const [activeChart, setActiveChart] = useState();
+interface FacilitiesChartProps {
+  data: ChartData<"bar">
+}
+
+function FacilitiesChart({ data }: FacilitiesChartProps) {
+  const [activeChart, setActiveChart] = useState<Chart | undefined>();
   useEffect(() => {
     if (data) {
       if (activeChart) {
@@ -14,14 +18,8 @@ function FacilitiesChart({ data }) {
         data,
         options: {
           plugins: {
-            legend: false,
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                color: '#e6e6dc',
-              },
+            legend: {
+              display: false
             },
           },
           scales: {
@@ -30,14 +28,23 @@ function FacilitiesChart({ data }) {
                 color: '#e6e6dc',
               },
             },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#e6e6dc',
+              },
+            },
           },
         },
-      };
-      const chart = new Chart(
-        document.getElementById('facilities-chart'),
-        config,
-      );
-      setActiveChart(chart);
+      } as const;
+
+      const chartContainer = document.getElementById('facilities-chart') as HTMLCanvasElement
+
+      if (chartContainer !== null) {
+        const chart = new Chart(chartContainer, config);
+        setActiveChart(chart);
+      }
+
     }
   }, [data]);
 

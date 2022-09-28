@@ -1,7 +1,7 @@
 import mapboxgl, { Popup, Map, Marker } from 'mapbox-gl';
 import { useState } from 'react';
 import { City } from 'src/types';
-import buildCityMarker from '../utils/buildCityMarker';
+import buildCityMarker from 'src/utils/buildCityMarker';
 
 type DisplayOptions = {
   onClick?: (city: string) => void;
@@ -51,7 +51,7 @@ const useCityMarkers = () => {
   };
 
 
-  return [display, remove, cityMarkers]
+  return [display, remove, cityMarkers] as const
 };
 
 export default useCityMarkers;

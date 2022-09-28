@@ -1,5 +1,5 @@
 import { Map } from 'mapbox-gl';
-import useLayer from './useLayer';
+import useLayer from 'src/hooks/useLayer';
 
 const useCityBoundaries = () => {
   return (map: Map) => {

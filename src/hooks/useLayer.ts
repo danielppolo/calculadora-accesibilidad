@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { FillPaint, Map, Popup, LinePaint } from 'mapbox-gl';
+import { Legend } from 'src/types';
 
 interface MapboxLayer {
   id: string;
@@ -74,7 +75,7 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
     });
   }, [layerList]);
 
-  const legend = {
+  const legend: Legend = {
     title,
     intervals: layerList.map((layer) => ({
       color: layer.color,

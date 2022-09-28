@@ -2,7 +2,6 @@ import mapboxgl, { Popup } from 'mapbox-gl';
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import {
   MEXICO_COORDINATES,
@@ -13,27 +12,27 @@ import {
   COLORS,
   TRANSPORT_TRANSLATIONS,
   OPPORTUNITY_TIMEFRAMES,
-} from '../constants';
-import useLayerManager from '../hooks/useLayerManager';
-import LegendBar from './LegendBar';
-import useBaseGrid from '../hooks/useBaseGrid';
-import useFitMap from '../hooks/useFitMap';
-import useCityData from '../hooks/useCityData';
-import useMap from '../hooks/useMap';
-import ControlsCard from './ControlsCard';
-import useMarginalizationLayers from '../hooks/useMarginalizationLayers';
-import MapControls from './MapControls';
-import CitiesOverview from './CitiesOverview';
-import getHexagonId from '../utils/getHexagonId';
-import calculateTime, { calculateTimeForOpp } from '../utils/calculateTime';
-import getOpportunityId from '../utils/getOpportunityId';
-import count from '../utils/countFeatures';
-import CreditsCard from './CreditsCard';
-import useCityMarkers from '../hooks/useCityMarkers';
-import usePopulationDensity from '../hooks/usePopulationDensity';
-import useNationalRoadNetwork from '../hooks/useNationalRoadNetwork';
+} from 'src/constants';
+import useLayerManager from 'src/hooks/useLayerManager';
+import LegendBar from 'src/components/LegendBar';
+import useBaseGrid from 'src/hooks/useBaseGrid';
+import useFitMap from 'src/hooks/useFitMap';
+import useCityData from 'src/hooks/useCityData';
+import useMap from 'src/hooks/useMap';
+import ControlsCard from 'src/components/ControlsCard';
+import useMarginalizationLayers from 'src/hooks/useMarginalizationLayers';
+import MapControls from 'src/components/MapControls';
+import CitiesOverview from 'src/components/CitiesOverview';
+import getHexagonId from 'src/utils/getHexagonId';
+import calculateTime, { calculateTimeForOpp } from 'src/utils/calculateTime';
+import getOpportunityId from 'src/utils/getOpportunityId';
+import count from 'src/utils/countFeatures';
+import CreditsCard from 'src/components/CreditsCard';
+import useCityMarkers from 'src/hooks/useCityMarkers';
+import usePopulationDensity from 'src/hooks/usePopulationDensity';
+import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { City } from 'src/types';
-import { Feature } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
 
@@ -54,7 +53,7 @@ type Params = {
   roads: boolean;
 }
 
-const cityGridId = (cityId: string) => `${cityId}-grid`;
+const cityGridId = (cityId?: string) => `${cityId ?? ''}-grid`;
 
 const cityOpportunityId = (opportunity: string, city: string) => `${city}-${opportunity}`;
 
@@ -62,7 +61,7 @@ const defaultOpportunity = Object.keys(OPPORTUNITIES)[0];
 
 const defaultTransport = TRANSPORTS[0];
 
-const defaultTimeframe = 30;
+const defaultTimeFrame = 30;
 
 const defaultParams: Params = {
   visualization: undefined,
@@ -81,20 +80,25 @@ const popup = new Popup({
   closeOnClick: false,
 });
 
-let currentTimeframe = defaultTimeframe;
-let currentTransport = [defaultTransport];
+let currentTimeFrame = defaultTimeFrame;
+let currentTransport: string[] = [defaultTransport];
 
 interface MapProps {
   city?: string;
-  data?: Record<string, Feature>;
+  data?: Record<string, Feature<Polygon>>;
   cities?: Record<string, City>;
-  onCityChange?: (bucketName: string) => void;
+  onCityChange?: (bucketName?: string) => void;
   onLoading?: (loading: boolean) => void;
 }
 
+type CustomChartData = Record<number, Record<string, {
+  facilities: Record<string, number>;
+  opportunities: Record<string, number>;
+}>>
+
 function Map({
   city,
-  data,
+  data = {},
   cities,
   onCityChange,
   onLoading,
@@ -103,7 +107,6 @@ function Map({
   const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
   const {
     state,
-    current,
     legend,
     add,
     show,
@@ -115,8 +118,8 @@ function Map({
   const { features, metadata: cityData } = useCityData(data);
   const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
   const [params, setParams] = useState({ ...defaultParams });
-  const [chartData, setChartData] = useState({});
-  const { load: loadBaseGrid, state: gridState } = useBaseGrid();
+  const [chartData, setChartData] = useState<CustomChartData>({});
+  const { load: loadBaseGrid } = useBaseGrid();
   const {
     load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend,
   } = useMarginalizationLayers();
@@ -126,49 +129,56 @@ function Map({
   const {
     load: loadRoads, show: showRoads, hide: hideRoads, legend: roadsLegend,
   } = useNationalRoadNetwork();
-  const getCurrentTimeframe = () => currentTimeframe;
+  const getCurrentTimeFrame = () => currentTimeFrame;
   const getCurrentTransport = () => currentTransport;
 
   const handleOpportunityChange = useCallback((nextOpportunity) => {
-    hideAll(map);
-    hideAgebs(map);
-    show(map, cityOpportunityId(nextOpportunity, city));
-    setParams({
-      ...params,
-      opportunity: nextOpportunity,
-      hexagon: undefined,
-      agebs: false,
-      timeframe: undefined,
-      transport: []
-    });
-    router.query = {
-      ...router.query,
-      opportunity: nextOpportunity,
-      featureId: undefined,
-    };
-    router.replace(router);
+    if (city) {
+      hideAll(map);
+      hideAgebs(map);
+      show(map, cityOpportunityId(nextOpportunity, city));
+      setParams({
+        ...params,
+        opportunity: nextOpportunity,
+        hexagon: undefined,
+        agebs: false,
+        timeframe: undefined,
+        transport: []
+      });
+      router.query = {
+        ...router.query,
+        opportunity: nextOpportunity,
+        featureId: undefined,
+      };
+      router.replace(router);
+    }
   }, [city, hideAgebs, hideAll, map, params, router, show]);
 
   const resetParams = () => {
     setParams({ ...defaultParams });
-    currentTimeframe = defaultTimeframe;
+    currentTimeFrame = defaultTimeFrame;
     currentTransport = [defaultTransport];
   }
   const handleCityChange = useCallback(
-    (cty: string) => {
-      map.flyTo({
-        center: cities[cty].coordinates,
+    (nextCity: string) => {
+      map?.flyTo({
+        center: cities?.[nextCity]?.coordinates,
         zoom: 11,
         duration: 2000,
         offset: [100, 50],
       });
       hideAll(map);
-      onCityChange?.(cty);
-      setScenario(cities[cty].scenarios[0].fields.bucketName);
+      onCityChange?.(nextCity);
+
+      const nextScenario = cities?.[nextCity]?.scenarios?.[0]?.fields?.bucketName
+      if (nextScenario) {
+        setScenario(nextScenario);
+      }
+
       router.query = {
         ...router.query,
-        city: cty,
-        scenario: cities[cty].scenarios[0].fields.bucketName,
+        city: nextCity,
+        scenario: nextScenario,
       };
       router.replace(router);
       resetParams()
@@ -177,13 +187,13 @@ function Map({
   );
 
   const resetMap = () => {
-    map.flyTo({
+    map?.flyTo({
       center: MEXICO_COORDINATES,
       zoom: 4.5,
       duration: 2000,
     });
     hideAll(map);
-    onCityChange(undefined);
+    onCityChange?.(undefined);
     resetParams()
     router.query = {};
     router.replace(router);
@@ -208,15 +218,17 @@ function Map({
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         let maxValue = 0;
         const filteredFeatures = features.filter((item) => {
-          if (item.properties[opp] > maxValue) {
-            maxValue = item.properties[opp];
+          const value = item.properties?.[opp] ?? 0;
+          if (value > maxValue) {
+            maxValue = value;
           }
-          return item.properties[opp] > 0;
+          return value > 0;
         });
         if (!(opp in state)) {
+          const oppLabel = OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase()
           add({
             map,
-            legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()}`,
+            legendTitle: `Número de ${oppLabel}`,
             id: cityOpportunityId(opp, city),
             features: filteredFeatures,
             property: opp,
@@ -240,7 +252,7 @@ function Map({
               ...item,
               properties: {
                 ...item.properties,
-                [key]: calculateTimeForOpp(item.properties[key], tra),
+                [key]: calculateTimeForOpp(item?.properties?.[key], tra),
               }
             })).filter((item) => {
               if (item.properties[key] > maxValue) {
@@ -252,7 +264,7 @@ function Map({
             if (!(key in state)) {
               add({
                 map,
-                legendTitle: `Número de ${OPPORTUNITIES[opp].toLowerCase()} alcanzables`,
+                legendTitle: `Número de ${OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase()} alcanzables`,
                 id: cityOpportunityId(key, city),
                 features: filteredFeatures,
                 property: key,
@@ -282,22 +294,22 @@ function Map({
   }, [map, mapLoaded, city]);
 
   useEffect(() => {
-    if (map && mapLoaded && features.length > 0 && params.visualization === 'isocrones') {
+    if (map && mapLoaded && features.length > 0 && params.visualization === 'isochrones') {
       // Hexagon click listener
-      map.on('click', cityGridId(city), async (e) => {
-        onLoading(true);
-        const feature = e.features[0].properties;
-        const featureId = e.features[0].properties.h3_ddrs;
+      map.on('click', cityGridId(city), async (event) => {
+        onLoading?.(true);
+        const feature = event.features?.[0]?.properties;
+        const featureId = event.features?.[0]?.properties?.h3_ddrs;
         router.query = {
           ...router.query,
           featureId,
         };
         router.replace(router);
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/${scenario}/${featureId}.json`);
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL} / ${city} / ${scenario} / ${featureId}.json`);
           const text = await response.text();
           const json = JSON.parse(text);
-          const incomingChartData = {};
+          const incomingChartData: CustomChartData = {};
           // Create 9 isochrones variant layers
           [...TIMEFRAMES].reverse().forEach((step) => {
             const featureIds = Object.keys(json);
@@ -322,7 +334,7 @@ function Map({
                   description: '15 minutos',
                 },
               });
-              return [transport, filteredFeatures];
+              return [transport, filteredFeatures] as const;
             });
             const sortedTransports = transportReach.sort((a, b) => b[1].length - a[1].length);
             sortedTransports.forEach(([transport, features]) => {
@@ -354,12 +366,12 @@ function Map({
                 beforeId: cityGridId(city),
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
-                colors: COLORS[TRANSPORT_COLORS[transport]],
+                colors: COLORS[TRANSPORT_COLORS[transport as keyof typeof TRANSPORT_COLORS]],
               });
               map.on('mousemove', getHexagonId(featureId, transport, step), (e) => {
                 popup
-                  .setLngLat(e.lngLat)
-                  .setHTML(e.features[0].properties.description)
+                  .setLngLat(event.lngLat)
+                  .setHTML(event.features?.[0]?.properties?.description)
                   .addTo(map);
               });
               map.on('mouseleave', getHexagonId(featureId, transport, step), () => {
@@ -383,20 +395,20 @@ function Map({
             });
           });
           setChartData(incomingChartData);
-        } catch (e) {
-          console.log(`Failed when downloading feature data: ${e.message}`);
+        } catch (error: any) {
+          console.log(`Failed when downloading feature data: ${error.message}`);
         } finally {
-          onLoading(false);
+          onLoading?.(false);
         }
 
         hideAll(map);
 
         getCurrentTransport().forEach((transport) => {
-          show(map, getHexagonId(featureId, transport, getCurrentTimeframe()));
+          show(map, getHexagonId(featureId, transport, getCurrentTimeFrame()));
         });
         setParams({
           ...params,
-          timeframe: getCurrentTimeframe(),
+          timeframe: getCurrentTimeFrame(),
           transport: getCurrentTransport(),
           opportunity: undefined,
           hexagon: {
@@ -486,12 +498,14 @@ function Map({
         show(map, getHexagonId(params.hexagon.id, params.transport[0], value));
       } else if (params.transport.length > 1) {
         params.transport.forEach((transport) => {
-          show(map, getHexagonId(params.hexagon.id, transport, value, { solid: true }));
+          show(map, getHexagonId(params?.hexagon?.id, transport, value, { solid: true }));
         });
       }
     } else if (value) {
       hideAll(map);
-      show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value), city));
+      if (params.opportunity && city) {
+        show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value), city));
+      }
     }
 
     setParams({
@@ -499,15 +513,15 @@ function Map({
       timeframe: value,
       transport: params.transport[0] ? params.transport : [defaultTransport],
     });
-    currentTimeframe = value;
+    currentTimeFrame = value;
     router.query = {
       ...router.query,
-      timeframe: value,
+      timeframe: value.toString(),
     };
     router.replace(router);
   };
 
-  const handleTransportChange = (value) => {
+  const handleTransportChange = (value: string) => {
     if (params.hexagon && params.hexagon.id && value) {
       hideAll(map);
       let newTransportSelection;
@@ -520,7 +534,7 @@ function Map({
         show(map, getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
       } else if (newTransportSelection.length > 1) {
         newTransportSelection.forEach((transport) => {
-          show(map, getHexagonId(params.hexagon.id, transport, params.timeframe, { solid: true }));
+          show(map, getHexagonId(params?.hexagon?.id, transport, params.timeframe, { solid: true }));
         });
       }
       setParams({
@@ -535,11 +549,13 @@ function Map({
       router.replace(router);
     } else if (value) {
       hideAll(map);
-      show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, (params.timeframe || defaultTimeframe)), city));
+      if (params.opportunity && city) {
+        show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, (params.timeframe || defaultTimeFrame)), city));
+      }
       setParams({
         ...params,
         transport: [value],
-        timeframe: params.timeframe || defaultTimeframe,
+        timeframe: params.timeframe || defaultTimeFrame,
       });
       currentTransport = [value];
     }
@@ -548,19 +564,23 @@ function Map({
   const handleVisualizationChange = (value: string) => {
     hideAll(map)
     if (value === 'opportunities') {
-      show(map, cityOpportunityId(defaultOpportunity, city));
+      if (city) {
+        show(map, cityOpportunityId(defaultOpportunity, city));
+      }
       setParams({
         ...defaultParams,
         opportunity: defaultOpportunity,
         visualization: value,
       });
     } else if (value === 'reachability') {
-      show(map, cityOpportunityId(getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeframe), city));
+      if (city) {
+        show(map, cityOpportunityId(getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeFrame), city));
+      }
       setParams({
         ...defaultParams,
         opportunity: defaultOpportunity,
         transport: [defaultTransport],
-        timeframe: defaultTimeframe,
+        timeframe: defaultTimeFrame,
         visualization: value,
       });
     } else {
@@ -571,23 +591,25 @@ function Map({
     }
   }
 
-  const buildChartDataset = useCallback((key) => {
-    if (params.hexagon) {
+  const buildChartDataset = useCallback((key: 'facilities' | 'opportunities') => {
+    if (params.hexagon && typeof params.timeframe !== 'undefined') {
+      const timeData = chartData[params.timeframe];
       return {
-        labels: Object.keys(chartData[params.timeframe][TRANSPORTS[0]][key]),
-        datasets: Object.keys(chartData[params.timeframe]).map((transport) => ({
-          label: TRANSPORT_TRANSLATIONS[transport],
-          data: Object.keys(chartData[params.timeframe][transport][key])
-            .map((prop) => {
-              const value = chartData[params.timeframe][transport][key][prop];
-              const total = cityData[prop];
+        labels: Object.keys(timeData[TRANSPORTS[0]][key]),
+        datasets: Object.keys(timeData).map((transport) => ({
+          label: TRANSPORT_TRANSLATIONS[transport as keyof typeof TRANSPORT_TRANSLATIONS],
+          data: Object.keys(timeData[transport][key])
+            .map((prop: string) => {
+              const value = timeData[transport][key][prop] ?? 0;
+              const total = cityData[prop as keyof typeof cityData] ?? 0;
               return (value / total) * 100;
             }),
-          backgroundColor: COLORS[TRANSPORT_COLORS[transport]][0],
+          backgroundColor: COLORS[TRANSPORT_COLORS[transport as keyof typeof TRANSPORT_COLORS]][0],
         })),
       };
     }
-    return null;
+
+    return undefined;
   }, [params.hexagon, params.timeframe, chartData, cityData]);
 
 
@@ -606,7 +628,7 @@ function Map({
         cityDisabled={!city}
         opportunity={params.opportunity}
         onOpportunityChange={handleOpportunityChange}
-        city={cities && city && cities[city]}
+        city={(!!cities && !!city) ? cities[city] : undefined}
         onCityChange={handleCityChange}
         cities={Object.values(cities || {})}
         scenario={scenario}
@@ -622,7 +644,7 @@ function Map({
       />
       {city ? (
         <ControlsCard
-          title={cities[city].name}
+          title={cities?.[city].name}
           cityData={cityData}
           reachableOpportunities={opportunitiesChartData}
           reachableFacilities={facilitiesChartData}
@@ -647,7 +669,6 @@ function Map({
         geojson={geojson}
         legendTitle={legend.title}
         legendDictionary={legend.intervals}
-        current={current}
         city={city}
       />
       <div id="map" className="w-screen h-screen" />

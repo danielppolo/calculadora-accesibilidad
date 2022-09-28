@@ -12,6 +12,6 @@ const transportDic = {
   'bus_actual': 'tp',
 }
 
-const getOpportunityId = (opportunity, transport, minutes) => `${opportunityDic[opportunity]}_${transportDic[transport]}_${minutes}`
+const getOpportunityId = (opportunity: string, transport: string, minutes: number) => `${opportunityDic[opportunity as keyof typeof opportunityDic]}_${transportDic[transport as keyof typeof transportDic]}_${minutes}`
 
 export default getOpportunityId

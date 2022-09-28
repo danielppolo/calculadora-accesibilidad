@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Map from '../components/Map';
+import Map from 'src/components/Map';
 import { City } from 'src/types';
-import { Feature } from 'geojson';
+import { Feature, Polygon } from 'geojson';
 
 const contentful = require('contentful');
 
@@ -16,7 +16,7 @@ export default function Home() {
   const [cities, setCities] = useState<Record<string, City>>({});
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState<string | undefined>();
-  const [data, setData] = useState<Record<string, Record<string, Feature>>>({});
+  const [data, setData] = useState<Record<string, Record<string, Feature<Polygon>>>>({});
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -40,7 +40,7 @@ export default function Home() {
     fetchCities();
   }, []);
 
-  const handleCityChange = async (bucket: string) => {
+  const handleCityChange = async (bucket?: string) => {
     if (bucket && !data[bucket]) {
       setLoading(true);
       try {
