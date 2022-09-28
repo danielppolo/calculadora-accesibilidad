@@ -3,40 +3,25 @@
 require 'csv'
 require 'json'
 
-filepath = 'data/src/matrix_v3.csv'
+filepath = 'data/src/cities/VALLE DE MÉXICO/ttm_120min_9.csv'
 
 polygons = {}
 csv_options = { col_sep: ',', quote_char: '"', headers: :first_row }
-headers = %w[destination origin Transporte Tracar Trabici car bicicleta Caminando]
+headers = %w[destination origin id automovil tp caminando bicicleta origin_xcoord origin_ycoord destination_xcoord destination_ycoord]
 
-# "destination","origin","id","bicicleta_TM","bicicleta","bus_mejora_TM","bus_actual_TM","bus_actual","TM_caminando","caminando","origin_xcoord","origin_ycoord","destination_xcoord","destination_ycoord"
-
-# destination origin transport transport-bike car bike walk
 CSV.foreach(filepath, csv_options) do |row|
   polygons[row['origin']] = {} unless polygons.key?(row['origin'])
 
   polygons[row['origin']][row['destination']] = [
     row['caminando'].to_i,
     row['bicicleta'].to_i,
-    row['bus_actual'].to_i,
-    row['TM_caminando'].to_i,
-    row['bus_actual_TM'].to_i,
-    row['bicicleta_TM'].to_i,
-    row['bus_mejora_TM'].to_i
+    row['tp'].to_i,
+    row['automovil'].to_i
   ]
 end
 
 polygons.keys.each do |origin|
-  File.open("data/output/features_v3/#{origin}.json", 'wb') do |file|
+  File.open("data/output/cities/valle-de-mexico/actual/#{origin}.json", 'wb') do |file|
     file.write(JSON.generate(polygons[origin]))
   end
 end
-
-# [ "caminando",
-#   "bicicleta",
-#   "bus_actual",
-#   "TM_caminando",
-#   "bus_actual_TM",
-#   "bicicleta_TM",
-#   "bus_mejora_TM
-#  ]

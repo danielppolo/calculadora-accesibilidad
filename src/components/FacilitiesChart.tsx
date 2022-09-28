@@ -1,0 +1,47 @@
+import React, { memo, useEffect, useState } from 'react';
+import Chart from 'chart.js/auto';
+
+function FacilitiesChart({ data }) {
+  const [activeChart, setActiveChart] = useState();
+  useEffect(() => {
+    if (data) {
+      if (activeChart) {
+        activeChart.destroy();
+      }
+
+      const config = {
+        type: 'bar',
+        data,
+        options: {
+          plugins: {
+            legend: false,
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#e6e6dc',
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                color: '#e6e6dc',
+              },
+            },
+          },
+        },
+      };
+      const chart = new Chart(
+        document.getElementById('facilities-chart'),
+        config,
+      );
+      setActiveChart(chart);
+    }
+  }, [data]);
+
+  return <canvas id="facilities-chart" width="200" height="120" />;
+}
+
+export default memo(FacilitiesChart);

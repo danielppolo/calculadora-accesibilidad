@@ -1,7 +1,10 @@
 {
   "extends": [
-    "next"
-    // "airbnb",
-    // "airbnb/hooks"
-  ]
+    "next",
+    "airbnb",
+    "airbnb/hooks"
+  ],
+  "rules": {
+    "import/extensions": "never"
+  }
 }
