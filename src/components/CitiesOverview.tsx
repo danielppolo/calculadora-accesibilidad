@@ -24,7 +24,7 @@ function CitiesOverview({
             data={{
               labels: cities.map((city) => city.name),
               datasets: [{
-                data: cities.map((city) => city.chart),
+                data: cities.map((city) => city.metadata?.totalOpportunities ?? 0),
                 backgroundColor: cities.map((city) => city.color),
               }],
             }}

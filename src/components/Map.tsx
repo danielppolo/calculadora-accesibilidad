@@ -34,10 +34,10 @@ import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { City } from 'src/types';
 import { Feature, Polygon } from 'geojson';
 
-const accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN
+const accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
 if (accessToken) {
-  mapboxgl.accessToken = accessToken
+  mapboxgl.accessToken = accessToken;
 }
 
 type Params = {
@@ -53,6 +53,18 @@ type Params = {
   roads: boolean;
 }
 
+interface MapProps {
+  city?: string;
+  data?: Record<string, Feature<Polygon>>;
+  cities?: Record<string, City>;
+  onCityChange?: (bucketName?: string) => void;
+  onLoading?: (loading: boolean) => void;
+}
+
+type CustomChartData = Record<number, Record<string, {
+  facilities: Record<string, number>;
+  opportunities: Record<string, number>;
+}>>
 const cityGridId = (cityId?: string) => `${cityId ?? ''}-grid`;
 
 const cityOpportunityId = (opportunity: string, city: string) => `${city}-${opportunity}`;
@@ -82,19 +94,6 @@ const popup = new Popup({
 
 let currentTimeFrame = defaultTimeFrame;
 let currentTransport: string[] = [defaultTransport];
-
-interface MapProps {
-  city?: string;
-  data?: Record<string, Feature<Polygon>>;
-  cities?: Record<string, City>;
-  onCityChange?: (bucketName?: string) => void;
-  onLoading?: (loading: boolean) => void;
-}
-
-type CustomChartData = Record<number, Record<string, {
-  facilities: Record<string, number>;
-  opportunities: Record<string, number>;
-}>>
 
 function Map({
   city,
@@ -143,7 +142,7 @@ function Map({
         hexagon: undefined,
         agebs: false,
         timeframe: undefined,
-        transport: []
+        transport: [],
       });
 
       router.replace({
@@ -151,7 +150,7 @@ function Map({
           ...router.query,
           opportunity: nextOpportunity,
           featureId: undefined,
-        }
+        },
       });
     }
   }, [city, hideAgebs, hideAll, map, params, router, show]);
@@ -160,7 +159,7 @@ function Map({
     setParams({ ...defaultParams });
     currentTimeFrame = defaultTimeFrame;
     currentTransport = [defaultTransport];
-  }
+  };
   const handleCityChange = useCallback(
     (nextCity: string) => {
       map?.flyTo({
@@ -172,7 +171,7 @@ function Map({
       hideAll(map);
       onCityChange?.(nextCity);
 
-      const nextScenario = cities?.[nextCity]?.scenarios?.[0]?.fields?.bucketName
+      const nextScenario = cities?.[nextCity]?.scenarios?.[0]?.bucketName;
       if (nextScenario) {
         setScenario(nextScenario);
       }
@@ -182,9 +181,9 @@ function Map({
           ...router.query,
           city: nextCity,
           scenario: nextScenario,
-        }
+        },
       });
-      resetParams()
+      resetParams();
     },
     [cities, map, onCityChange, router, setParams],
   );
@@ -197,15 +196,15 @@ function Map({
     });
     hideAll(map);
     onCityChange?.(undefined);
-    resetParams()
+    resetParams();
     router.replace({ query: {} });
   };
 
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
-      removeCityMarkers()
+      removeCityMarkers();
     } else if (map && cities && !city && !cityMarkers.length) {
-      displayCityMarkers(map, cities, { onClick: handleCityChange })
+      displayCityMarkers(map, cities, { onClick: handleCityChange });
     }
   }, [map, cities, city, onCityChange, handleCityChange, displayCityMarkers]);
 
@@ -227,7 +226,7 @@ function Map({
           return value > 0;
         });
         if (!(opp in state)) {
-          const oppLabel = OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase()
+          const oppLabel = OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase();
           add({
             map,
             legendTitle: `Número de ${oppLabel}`,
@@ -247,7 +246,7 @@ function Map({
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         TRANSPORTS.forEach((tra) => {
           OPPORTUNITY_TIMEFRAMES.forEach((tm) => {
-            const key = getOpportunityId(opp, tra, tm)
+            const key = getOpportunityId(opp, tra, tm);
 
             let maxValue = 0;
             const filteredFeatures = features.map((item) => ({
@@ -255,7 +254,7 @@ function Map({
               properties: {
                 ...item.properties,
                 [key]: calculateTimeForOpp(item?.properties?.[key], tra),
-              }
+              },
             })).filter((item) => {
               if (item.properties[key] > maxValue) {
                 maxValue = item.properties[key];
@@ -277,8 +276,8 @@ function Map({
                 beforeId: cityGridId(city),
               });
             }
-          })
-        })
+          });
+        });
       });
 
       // Display default opportunity on city change.
@@ -292,7 +291,7 @@ function Map({
         query: {
           ...router.query,
           opportunity: defaultOpportunity,
-        }
+        },
       });
     }
   }, [map, mapLoaded, city]);
@@ -308,7 +307,7 @@ function Map({
           query: {
             ...router.query,
             featureId,
-          }
+          },
         });
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/${scenario}/${featureId}.json`);
@@ -432,7 +431,7 @@ function Map({
       query: {
         ...router.query,
         scenario: nextScenario,
-      }
+      },
     });
   };
 
@@ -455,7 +454,6 @@ function Map({
       });
     }
   };
-
 
   const handleDensityChange = () => {
     if (params.density) {
@@ -497,7 +495,6 @@ function Map({
     }
   };
 
-
   const handleTimeframeChange = (value: number) => {
     if (params.hexagon && params.hexagon.id) {
       hideAll(map);
@@ -526,7 +523,7 @@ function Map({
       query: {
         ...router.query,
         timeframe: value.toString(),
-      }
+      },
     });
   };
 
@@ -556,7 +553,7 @@ function Map({
         query: {
           ...router.query,
           transport: newTransportSelection.join(','),
-        }
+        },
       });
     } else if (value) {
       hideAll(map);
@@ -573,7 +570,7 @@ function Map({
   };
 
   const handleVisualizationChange = (value: string) => {
-    hideAll(map)
+    hideAll(map);
     if (value === 'opportunities') {
       if (city) {
         show(map, cityOpportunityId(defaultOpportunity, city));
@@ -600,7 +597,7 @@ function Map({
         visualization: value,
       });
     }
-  }
+  };
 
   const buildChartDataset = useCallback((key: 'facilities' | 'opportunities') => {
     if (params.hexagon && typeof params.timeframe !== 'undefined') {
@@ -622,7 +619,6 @@ function Map({
 
     return undefined;
   }, [params.hexagon, params.timeframe, chartData, cityData]);
-
 
   const opportunitiesChartData = useMemo(() => buildChartDataset('opportunities'), [buildChartDataset]);
   const facilitiesChartData = useMemo(() => buildChartDataset('facilities'), [buildChartDataset]);

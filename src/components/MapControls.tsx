@@ -60,7 +60,7 @@ function MapControls({
   onRoadsLayerChange,
   resetMap,
 }: MapControlsProps) {
-  const selectedScenario = city && city.scenarios.find((sc) => sc.fields.bucketName === scenario);
+  const selectedScenario = city && city.scenarios.find((sc) => sc.bucketName === scenario);
   return (
     <div className="fixed top-2 left-2 right-2 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
@@ -77,10 +77,10 @@ function MapControls({
           <>
             <div className="m-2 md:m-4" />
             <Select
-              value={selectedScenario && selectedScenario.fields.name}
+              value={selectedScenario && selectedScenario.name}
               options={city ? city.scenarios.map((sc) => ({
-                label: sc.fields.name,
-                value: sc.fields.bucketName,
+                label: sc.name,
+                value: sc.bucketName,
               })) : []}
               onChange={onScenarioChange}
               disabled={cityDisabled || city.scenarios.length <= 1}
@@ -172,6 +172,5 @@ function MapControls({
     </div>
   );
 }
-
 
 export default MapControls;

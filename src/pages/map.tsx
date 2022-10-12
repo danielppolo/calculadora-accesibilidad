@@ -4,39 +4,35 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Map from 'src/components/Map';
 import { City } from 'src/types';
 import { Feature, Polygon } from 'geojson';
+import getCities from 'src/adapters/contentful/getCities';
 
-const contentful = require('contentful');
-
-const client = contentful.createClient({
-  space: 'f9qr8a787ywo',
-  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-});
+type UUID = string;
+type FeatureDictionary = Record<UUID, Feature<Polygon>>
+type CityDictionary = Record<City['code'], City>
+type MapsData = Record<City['code'], FeatureDictionary>
 
 export default function Home() {
-  const [cities, setCities] = useState<Record<string, City>>({});
+  const [cityDictionary, setCityDictionary] = useState<CityDictionary>({});
   const [loading, setLoading] = useState(true);
-  const [city, setCity] = useState<string | undefined>();
-  const [data, setData] = useState<Record<string, Record<string, Feature<Polygon>>>>({});
+  const [currentCityCode, setCurrentCityCode] = useState<City['code'] | undefined>();
+  const [data, setData] = useState<MapsData>({});
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const cmsCities = await client.getEntries({
-          content_type: 'city',
+        const nextCityDictionary: CityDictionary = {};
+        const contentfulCities = await getCities();
+
+        contentfulCities.forEach((city: City) => {
+          nextCityDictionary[city.code] = city;
         });
-        const cityData: Record<string, City> = {};
-        cmsCities.items
-          .map((cty: any) => cty.fields)
-          .filter((cty: City) => !!cty.coordinates)
-          .forEach((cty: City) => {
-            cityData[cty.bucketName] = cty;
-          });
-        setCities(cityData);
-      } catch (e) {
-        console.log(e);
+        setCityDictionary(nextCityDictionary);
+      } catch (error) {
+        console.log(error);
       }
-      setLoading(false)
+      setLoading(false);
     };
+
     fetchCities();
   }, []);
 
@@ -44,13 +40,17 @@ export default function Home() {
     if (bucket && !data[bucket]) {
       setLoading(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/main.json`,
+        );
         const responseData = await response.json();
-        const properties = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/static.json`);
+        const properties = await fetch(
+          `${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${bucket}/static.json`,
+        );
         const propertiesData = await properties.json();
         Object.keys(propertiesData).forEach((id) => {
-          Object.assign(responseData[id].properties, propertiesData[id])
-        })
+          Object.assign(responseData[id].properties, propertiesData[id]);
+        });
 
         setData({
           ...data,
@@ -61,7 +61,7 @@ export default function Home() {
       }
       setLoading(false);
     }
-    setCity(bucket);
+    setCurrentCityCode(bucket);
   };
 
   return (
@@ -74,9 +74,9 @@ export default function Home() {
       </Backdrop>
       <Map
         onLoading={setLoading}
-        city={city}
-        cities={cities}
-        data={city ? data[city] : undefined}
+        city={currentCityCode}
+        cities={cityDictionary}
+        data={currentCityCode ? data[currentCityCode] : undefined}
         onCityChange={handleCityChange}
       />
     </>
