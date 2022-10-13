@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { LngLatLike, Map } from 'mapbox-gl';
+import mapboxgl, { LngLatLike, Map } from 'mapbox-gl';
 import useCityBoundaries from 'src/hooks/useCityBoundaries';
+
+const accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
+
+if (accessToken) {
+  mapboxgl.accessToken = accessToken;
+}
 
 interface UseMapParams {
   center: LngLatLike;
@@ -18,11 +24,10 @@ const useMap = ({
 }: UseMapParams) => {
   const [map, setMap] = useState<Map | undefined>(undefined);
   const [loaded, setLoaded] = useState(false);
-  const loadBoundaries = useCityBoundaries()
-
+  const loadBoundaries = useCityBoundaries();
 
   useEffect(() => {
-    const mapInstance = createMap(center)
+    const mapInstance = createMap(center);
     // mapInstance.addControl(new mapboxgl.NavigationControl());
     // mapInstance.addControl(new mapboxgl.ScaleControl());
     mapInstance.on('load', () => {
@@ -30,7 +35,7 @@ const useMap = ({
       setLoaded(true);
       // loadBoundaries(mapInstance)
     });
-    setMap(mapInstance)
+    setMap(mapInstance);
   }, []);
 
   return [map, loaded] as const;

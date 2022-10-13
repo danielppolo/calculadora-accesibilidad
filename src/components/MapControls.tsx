@@ -60,14 +60,14 @@ function MapControls({
   onRoadsLayerChange,
   resetMap,
 }: MapControlsProps) {
-  const selectedScenario = city && city.scenarios.find((sc) => sc.bucketName === scenario);
+  const selectedScenario = city && city.scenarios.find((sc) => sc.code === scenario);
   return (
     <div className="fixed top-2 left-2 right-2 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
       <Select
         value={city && city.name}
         options={cities?.sort((a, b) => a.name.localeCompare(b.name)).map((ct) => ({
           label: ct.name,
-          value: ct.bucketName,
+          value: ct.code,
         })) ?? []}
         onChange={onCityChange}
         placeholder="Selecciona una ciudad"
@@ -80,7 +80,7 @@ function MapControls({
               value={selectedScenario && selectedScenario.name}
               options={city ? city.scenarios.map((sc) => ({
                 label: sc.name,
-                value: sc.bucketName,
+                value: sc.code,
               })) : []}
               onChange={onScenarioChange}
               disabled={cityDisabled || city.scenarios.length <= 1}

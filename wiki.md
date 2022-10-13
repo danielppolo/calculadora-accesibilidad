@@ -174,7 +174,7 @@ Ejemplo:
 Este archivo está almacenado en el directorio relativo a la ciudad en AWS con el nombre `:hex_code.json`, siendo `:hex_code` definido previamente en Contentful.
 
 ```
-/calculadora_oportunidades/v1/cities/:city_code/hex_grid/:hex_code.json
+/calculadora_oportunidades/v1/cities/:city_code/grids/:grid_code.json
 ```
 
 
@@ -678,3 +678,15 @@ type LandingPage = {
 * Comparacion habilitada para todos los mapas de tipo isocrona.
 * Buckets solo sirven para isocronas (NOT)
 .
+
+
+
+
+
+## Guides
+
+#### Register a new city
+1. Create a new city in Contentful
+2. Update the `/cities.json` and replace the current in AWS
+3. Add the directory in AWS
+4. 

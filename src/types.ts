@@ -1,4 +1,5 @@
-import { LngLatLike } from "mapbox-gl";
+import { LngLatLike } from 'mapbox-gl';
+import { Feature, Polygon } from 'geojson';
 
 export type Scenario = {
   bucketName: string;
@@ -14,93 +15,26 @@ export type Legend = {
 }
 
 // Platform
-export type City = {
-  // Nombre de la ciudad. Visible para el usuario.
+export type Property = {
+  // Nombre de la propiedad. Visible para el usuario.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
-  code: string;  
-  // País al que pertenece.
-  country: Country;  
-  // Esconde/muestra la ciudad en la calculadora.
-  active: boolean;
-  // Representa las coordenadas centro de la ciudad.
-  coordinates: LngLatLike;
-  // Color en formato HEX. Usado para charts, etc.
-  color: string;
-  // Visualización por default que se muestra cuando se selecciona la ciudad.
-  defaultVisualization: Visualization;
-  // Visualizaciones disponibles para la ciudad.
-  visualizations: Visualization[];
-  // Visualizaciones de Mapbox disponibles para la ciudad.
-  staticVisualizations: StaticVisualization[];
-  
-  metadata: {
-    // Total de oportunidades en la ciudad. Usado en charts.
-    totalOpportunities?: number;
-  }
-}
-
-export type Country = {
-  // Nombre del país. Visible para el usuario.
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar el país en las distintas partes del código.
+  // Código único en formato snake_case. Se usa para referenciar la propiedad en las distintas partes del código.
   code: string;
-  // Esconde/muestra la ciudad en la calculadora.
-  active: boolean;  
-  // Visualizaciones de Mapbox disponibles para el país.
-  staticVisualizations: StaticVisualization[]; 
 }
 
-export type HEXGrid = {
+export type Grid = {
   // Unique code in snake_case. Represents the variant.
   code: string;
   // Tamaño del hexágono base.
   size: number;
 }
 
-
 export type Transport = {
   // Nombre del transporte. Visible para el usuario.
   name: string;
   // Código único en formato snake_case. Se usa para referenciar el transport en las distintas partes del código.
-  code: string;    
+  code: string;
 }
-
-export type Visualization = {
-  // Ciudad a la que pertenece la visualización.
-  city: City;
-  // Nombre de la visualización. Visible para el usuario. 
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
-  code: string;    
-  // Default variant to display.
-  defaultVariant: VisualizationVariant;
-  // Variants for the visualization. E.g. Different time. 
-  variants: VisualizationVariant[];
-  // HEX Grid que usa la visualización.
-  hexGrid: string;
-}
-
-
-export type VisualizationVariant = {
-  // Nombre de la visualización. Visible para el usuario. 
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
-  code: string;  
-  // Proveedor de datos para la visualización.
-  dataProvider: DataProvider;  
-  // Unidad de los valores
-  unit: 'minutes' | 'hours' | 'seconds'; // TBD
-  // Buckets para filtrar los valores. (En caso de requerir filtro)
-  buckets: number[];
-  // Tipo de visualización. Determina su display e interactividad.
-  type: 'isocrone' | 'static';
-  // Default static visualization. Enabled when users select viz.
-  defaultStaticVisualizations: StaticVisualization[];
-  // Controles activados por default
-  defaultProperties: Properties[]
-}
-
 
 export type DataProvider = {
    // Código único en formato snake_case. Se usa para referenciar el proveedor de datos en las distintas partes del código.
@@ -111,23 +45,6 @@ export type DataProvider = {
   url: string;
   // Dirección URL del asset a mostrar.
   logotype: string;
-}
-
-
-export type Properties = {
-  // Nombre de la propiedad. Visible para el usuario.
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar la propiedad en las distintas partes del código.
-  code: string;    
-}
-
-export type StaticVisualization = {
-   // Nombre de la visualización. Visible para el usuario en la leyenda.
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
-  code: string;  
-  // Layers que component el mapa. 
-  mapboxTilesets: MapboxTileset[];
 }
 
 export type MapboxTileset = {
@@ -142,17 +59,96 @@ export type MapboxTileset = {
   // Layer name. Visible to the user.
   name: 'Agricultura';
   // Geometry fill color in HEX code.
-  fillColor: string; 
+  fillColor: string;
   // Geometry fill opacity. 0-1.
   fillOpacity: 0.3;
   // Geometry line color in HEX code.
-  lineColor: string; 
+  lineColor: string;
   // Geometry line opacity. 0-1.
   lineOpacity: 0.3;
   // Geometry line width in pixels.
   lineWidth: 0.3;
 }
 
+export type StaticVisualization = {
+   // Nombre de la visualización. Visible para el usuario en la leyenda.
+  name: string;
+  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
+  code: string;
+  // Layers que component el mapa.
+  mapboxTilesets: MapboxTileset[];
+}
+
+export type VisualizationVariant = {
+  // Nombre de la visualización. Visible para el usuario.
+  name: string;
+  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
+  code: string;
+  // Proveedor de datos para la visualización.
+  dataProvider: DataProvider;
+  // Unidad de los valores
+  unit: 'minutes' | 'hours' | 'seconds'; // TBD
+  // Buckets para filtrar los valores. (En caso de requerir filtro)
+  buckets: number[];
+  // Tipo de visualización. Determina su display e interactividad.
+  type: 'isocrone' | 'static';
+  // Default static visualization. Enabled when users select viz.
+  defaultStaticVisualizations: StaticVisualization[];
+  // Controles activados por default
+  properties: Property[]
+  // Controles activados por default
+  defaultProperties: Property[]
+}
+
+export type Visualization = {
+  // Nombre de la visualización. Visible para el usuario.
+  name: string;
+  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
+  code: string;
+  // Default variant to display.
+  defaultVariant: VisualizationVariant;
+  // Variants for the visualization. E.g. Different time.
+  variants: VisualizationVariant[];
+  // HEX Grid que usa la visualización.
+  grid: Grid;
+}
+
+export type Country = {
+  // Nombre del país. Visible para el usuario.
+  name: string;
+  // Código único en formato snake_case. Se usa para referenciar el país en las distintas partes del código.
+  code: string;
+  // Esconde/muestra la ciudad en la calculadora.
+  active: boolean;
+  // Visualizaciones de Mapbox disponibles para el país.
+  staticVisualizations: StaticVisualization[];
+}
+
+export type City = {
+  // Nombre de la ciudad. Visible para el usuario.
+  name: string;
+  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
+  code: string;
+  // País al que pertenece.
+  country: Country;
+  // Esconde/muestra la ciudad en la calculadora.
+  active: boolean;
+  // Representa las coordenadas centro de la ciudad.
+  coordinates: LngLatLike;
+  // Color en formato HEX. Usado para charts, etc.
+  color: string;
+  // Visualización por default que se muestra cuando se selecciona la ciudad.
+  defaultVisualization: Visualization;
+  // Visualizaciones disponibles para la ciudad.
+  visualizations: Visualization[];
+  // Visualizaciones de Mapbox disponibles para la ciudad.
+  staticVisualizations: StaticVisualization[];
+
+  metadata: {
+    // Total de oportunidades en la ciudad. Usado en charts.
+    totalOpportunities?: number;
+  }
+}
 
 // Landing
 export type LandingPage = {
@@ -174,4 +170,8 @@ export type LandingPage = {
   gif: string;
   faq: string;
   map: string;
-} 
+}
+
+export type UUID = string;
+export type FeatureDictionary = Record<UUID, Feature<Polygon>>
+export type CityDictionary = Record<City['code'], City>
