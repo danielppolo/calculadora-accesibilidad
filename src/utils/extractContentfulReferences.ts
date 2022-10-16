@@ -2,6 +2,9 @@
 function isReference(object: any): boolean {
   return !!object?.fields;
 }
+/**
+ * Recursively extracts the fields from Contentful references.
+ */
 
 function extractReferences(object: any): any {
   if (!object) return object;

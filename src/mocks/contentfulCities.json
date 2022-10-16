@@ -1,0 +1,1234 @@
+[{
+    "metadata": {
+        "tags": []
+    },
+    "sys": {
+        "space": {
+            "sys": {
+                "type": "Link",
+                "linkType": "Space",
+                "id": "f9qr8a787ywo"
+            }
+        },
+        "id": "124wPTITDKNCj1E5DM3Q3C",
+        "type": "Entry",
+        "createdAt": "2021-12-19T23:10:59.556Z",
+        "updatedAt": "2022-10-16T18:10:15.472Z",
+        "environment": {
+            "sys": {
+                "id": "master",
+                "type": "Link",
+                "linkType": "Environment"
+            }
+        },
+        "revision": 10,
+        "contentType": {
+            "sys": {
+                "type": "Link",
+                "linkType": "ContentType",
+                "id": "city"
+            }
+        },
+        "locale": "en-US"
+    },
+    "fields": {
+        "name": "Chihuahua",
+        "active": true,
+        "bucketName": "chihuahua",
+        "coordinates": {
+            "lon": -106.06428278205193,
+            "lat": 28.628180783461158
+        },
+        "chart": 1135,
+        "color": "#7054BC",
+        "metadata": {
+            "totalOpportunities": 1135
+        },
+        "code": "chihuahua",
+        "country": {
+            "metadata": {
+                "tags": []
+            },
+            "sys": {
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "f9qr8a787ywo"
+                    }
+                },
+                "id": "4a8GLhHjysZTRpRBdrayZ3",
+                "type": "Entry",
+                "createdAt": "2022-10-12T04:49:49.902Z",
+                "updatedAt": "2022-10-12T04:49:49.902Z",
+                "environment": {
+                    "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                    }
+                },
+                "revision": 1,
+                "contentType": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "country"
+                    }
+                },
+                "locale": "en-US"
+            },
+            "fields": {
+                "name": "México",
+                "code": "mexico",
+                "active": true
+            }
+        },
+        "defaultVisualization": {
+            "metadata": {
+                "tags": []
+            },
+            "sys": {
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "f9qr8a787ywo"
+                    }
+                },
+                "id": "7Du4aScT1rDYpmtqBCLpTy",
+                "type": "Entry",
+                "createdAt": "2022-10-13T05:25:17.076Z",
+                "updatedAt": "2022-10-13T05:25:17.076Z",
+                "environment": {
+                    "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                    }
+                },
+                "revision": 1,
+                "contentType": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "visualization"
+                    }
+                },
+                "locale": "en-US"
+            },
+            "fields": {
+                "name": "Oportunidades por hexágono",
+                "code": "oportunidades-por-hexagono",
+                "variants": [{
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "6UUpL3u2MGXg4pSiISnirT",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:16:20.872Z",
+                        "updatedAt": "2022-10-13T05:16:20.872Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "visualizationVariant"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "name": "Situación actual",
+                        "code": "actual",
+                        "type": "fixed"
+                    }
+                }],
+                "defaultVariant": {
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "6UUpL3u2MGXg4pSiISnirT",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:16:20.872Z",
+                        "updatedAt": "2022-10-13T05:16:20.872Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "visualizationVariant"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "name": "Situación actual",
+                        "code": "actual",
+                        "type": "fixed"
+                    }
+                },
+                "grid": {
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "3vU4SbqOnJKkbLdfQBkw6k",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:13:20.930Z",
+                        "updatedAt": "2022-10-13T05:13:20.930Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "hexGrid"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "code": "seven",
+                        "size": 7
+                    }
+                },
+                "properties": [{
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "4L2BvvhgmGVNcE9huEEvX1",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:23:34.069Z",
+                            "updatedAt": "2022-10-13T05:23:34.069Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "60 minutos",
+                            "code": "60m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "35nyz6eAveNxwgQFyaXBbB",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:23:11.389Z",
+                            "updatedAt": "2022-10-13T05:23:11.389Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "30 minutos",
+                            "code": "30m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3V2WGN1XWgC8PXL4l94z80",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:22:51.533Z",
+                            "updatedAt": "2022-10-13T05:22:51.533Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "15 minutos",
+                            "code": "15m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "13eUASmPJwmDrnRyILpLn0",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:58.460Z",
+                            "updatedAt": "2022-10-13T05:18:58.460Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Trabajos",
+                            "code": "trabajos"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "5QWK5PJU7hmrxwOE2lOhZA",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:15.426Z",
+                            "updatedAt": "2022-10-13T05:18:15.426Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Escuelas",
+                            "code": "escuelas"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "47yMQoJRFRipgfYkC6mV78",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:00.690Z",
+                            "updatedAt": "2022-10-13T05:18:00.690Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Empresas",
+                            "code": "empresas"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "1n4ld58ctFtTPO7OuOC1lp",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:43.294Z",
+                            "updatedAt": "2022-10-13T05:15:43.294Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Transporte público",
+                            "code": "publico"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "VzGhxw1wugkrZJOpGKdyv",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:26.681Z",
+                            "updatedAt": "2022-10-13T05:15:26.681Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Bicicleta",
+                            "code": "bici"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3gcKEs0eHDJpabSKmQKa1w",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:06.687Z",
+                            "updatedAt": "2022-10-13T05:15:06.687Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Automóvil",
+                            "code": "auto"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3hCjHwLZqlHhtEebDSi5tE",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:14:47.840Z",
+                            "updatedAt": "2022-10-13T05:14:47.840Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Caminando",
+                            "code": "caminando"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "1h15j9RpGByKqqV7dWIuQK",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:14:25.908Z",
+                            "updatedAt": "2022-10-13T05:14:25.908Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Clínicas",
+                            "code": "clinicas"
+                        }
+                    }
+                ]
+            }
+        },
+        "visualizations": [{
+            "metadata": {
+                "tags": []
+            },
+            "sys": {
+                "space": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "f9qr8a787ywo"
+                    }
+                },
+                "id": "7Du4aScT1rDYpmtqBCLpTy",
+                "type": "Entry",
+                "createdAt": "2022-10-13T05:25:17.076Z",
+                "updatedAt": "2022-10-13T05:25:17.076Z",
+                "environment": {
+                    "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                    }
+                },
+                "revision": 1,
+                "contentType": {
+                    "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "visualization"
+                    }
+                },
+                "locale": "en-US"
+            },
+            "fields": {
+                "name": "Oportunidades por hexágono",
+                "code": "oportunidades-por-hexagono",
+                "variants": [{
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "6UUpL3u2MGXg4pSiISnirT",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:16:20.872Z",
+                        "updatedAt": "2022-10-13T05:16:20.872Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "visualizationVariant"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "name": "Situación actual",
+                        "code": "actual",
+                        "type": "fixed"
+                    }
+                }],
+                "defaultVariant": {
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "6UUpL3u2MGXg4pSiISnirT",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:16:20.872Z",
+                        "updatedAt": "2022-10-13T05:16:20.872Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "visualizationVariant"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "name": "Situación actual",
+                        "code": "actual",
+                        "type": "fixed"
+                    }
+                },
+                "grid": {
+                    "metadata": {
+                        "tags": []
+                    },
+                    "sys": {
+                        "space": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "Space",
+                                "id": "f9qr8a787ywo"
+                            }
+                        },
+                        "id": "3vU4SbqOnJKkbLdfQBkw6k",
+                        "type": "Entry",
+                        "createdAt": "2022-10-13T05:13:20.930Z",
+                        "updatedAt": "2022-10-13T05:13:20.930Z",
+                        "environment": {
+                            "sys": {
+                                "id": "master",
+                                "type": "Link",
+                                "linkType": "Environment"
+                            }
+                        },
+                        "revision": 1,
+                        "contentType": {
+                            "sys": {
+                                "type": "Link",
+                                "linkType": "ContentType",
+                                "id": "hexGrid"
+                            }
+                        },
+                        "locale": "en-US"
+                    },
+                    "fields": {
+                        "code": "seven",
+                        "size": 7
+                    }
+                },
+                "properties": [{
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "4L2BvvhgmGVNcE9huEEvX1",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:23:34.069Z",
+                            "updatedAt": "2022-10-13T05:23:34.069Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "60 minutos",
+                            "code": "60m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "35nyz6eAveNxwgQFyaXBbB",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:23:11.389Z",
+                            "updatedAt": "2022-10-13T05:23:11.389Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "30 minutos",
+                            "code": "30m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3V2WGN1XWgC8PXL4l94z80",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:22:51.533Z",
+                            "updatedAt": "2022-10-13T05:22:51.533Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "15 minutos",
+                            "code": "15m"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "13eUASmPJwmDrnRyILpLn0",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:58.460Z",
+                            "updatedAt": "2022-10-13T05:18:58.460Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Trabajos",
+                            "code": "trabajos"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "5QWK5PJU7hmrxwOE2lOhZA",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:15.426Z",
+                            "updatedAt": "2022-10-13T05:18:15.426Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Escuelas",
+                            "code": "escuelas"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "47yMQoJRFRipgfYkC6mV78",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:18:00.690Z",
+                            "updatedAt": "2022-10-13T05:18:00.690Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Empresas",
+                            "code": "empresas"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "1n4ld58ctFtTPO7OuOC1lp",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:43.294Z",
+                            "updatedAt": "2022-10-13T05:15:43.294Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Transporte público",
+                            "code": "publico"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "VzGhxw1wugkrZJOpGKdyv",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:26.681Z",
+                            "updatedAt": "2022-10-13T05:15:26.681Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Bicicleta",
+                            "code": "bici"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3gcKEs0eHDJpabSKmQKa1w",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:15:06.687Z",
+                            "updatedAt": "2022-10-13T05:15:06.687Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Automóvil",
+                            "code": "auto"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "3hCjHwLZqlHhtEebDSi5tE",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:14:47.840Z",
+                            "updatedAt": "2022-10-13T05:14:47.840Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Caminando",
+                            "code": "caminando"
+                        }
+                    },
+                    {
+                        "metadata": {
+                            "tags": []
+                        },
+                        "sys": {
+                            "space": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "Space",
+                                    "id": "f9qr8a787ywo"
+                                }
+                            },
+                            "id": "1h15j9RpGByKqqV7dWIuQK",
+                            "type": "Entry",
+                            "createdAt": "2022-10-13T05:14:25.908Z",
+                            "updatedAt": "2022-10-13T05:14:25.908Z",
+                            "environment": {
+                                "sys": {
+                                    "id": "master",
+                                    "type": "Link",
+                                    "linkType": "Environment"
+                                }
+                            },
+                            "revision": 1,
+                            "contentType": {
+                                "sys": {
+                                    "type": "Link",
+                                    "linkType": "ContentType",
+                                    "id": "property"
+                                }
+                            },
+                            "locale": "en-US"
+                        },
+                        "fields": {
+                            "name": "Clínicas",
+                            "code": "clinicas"
+                        }
+                    }
+                ]
+            }
+        }]
+    }
+}]

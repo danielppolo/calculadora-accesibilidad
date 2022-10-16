@@ -4,6 +4,9 @@
     "airbnb",
     "airbnb/hooks"
   ],
+  "env": {
+    "jest/globals": true
+  },
   "rules": {
     "import/extensions": 0,
     "react/require-default-props": 0,
