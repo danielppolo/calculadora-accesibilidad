@@ -7,9 +7,9 @@ import {
 import { Map } from 'mapbox-gl';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend } from 'src/types';
+import useMap from './useMap';
 
 interface AddOptions {
-  map: Map;
   legendTitle: string;
   id: string;
   features: Feature<Polygon>[];
@@ -25,15 +25,14 @@ interface AddOptions {
   solid?: boolean;
 }
 
-
 const useLayerManager = () => {
+  const map = useMap();
   const [state] = useState<Record<string, boolean>>({});
   const [legends] = useState<Record<string, Legend>>({});
   const [geojson] = useState<Record<string, FeatureCollection<Polygon>>>({});
   const [current, setCurrent] = useState<string | undefined>(undefined);
 
   const add = ({
-    map,
     legendTitle,
     id,
     features,
@@ -98,20 +97,20 @@ const useLayerManager = () => {
     }
   };
 
-  const show = (map?: Map, id?: string) => {
+  const show = (id?: string) => {
     if (id && id in state && map) {
       map.setLayoutProperty(id, 'visibility', 'visible');
       setCurrent(id);
     }
   };
 
-  const hide = (map?: Map, id = undefined) => {
+  const hide = (id = undefined) => {
     if (id && map && id in state) {
       map.setLayoutProperty(id, 'visibility', 'none');
     }
   };
 
-  const hideAll = (map?: Map) => {
+  const hideAll = () => {
     if (map) {
       Object.keys(state).forEach((layerId) => {
         map.setLayoutProperty(layerId, 'visibility', 'none');

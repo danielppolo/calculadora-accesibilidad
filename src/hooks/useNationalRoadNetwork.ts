@@ -1,6 +1,6 @@
-import { Map } from 'mapbox-gl';
 import React, { useCallback } from 'react';
 import { Legend } from 'src/types';
+import useMap from './useMap';
 
 const layer = {
   id: 'red-vial',
@@ -8,46 +8,41 @@ const layer = {
   url: 'mapbox://daniel-itdp.0a0m3fxb',
   color: '#ff0000',
   label: 'Red vial',
-}
+};
 
 const useNationalRoadNetwork = () => {
-  const load = useCallback((map?: Map) => {
-    if (map) {
-      if (!map.getSource(layer.id)) {
-        map.addSource(layer.id, {
-          type: 'vector',
-          url: layer.url,
-          minzoom: 6,
-          maxzoom: 14,
-        });
-        map.addLayer({
-          id: layer.id,
-          type: 'line',
-          source: layer.id,
-          layout: {
-            visibility: 'none',
-          },
-          'source-layer': layer.sourceLayer,
-          paint: {
-            'line-color': '#000',
-            'line-opacity': 0.25,
-          },
-        });
-      }
+  const map = useMap();
+  const load = useCallback(() => {
+    if (!map.getSource(layer.id)) {
+      map.addSource(layer.id, {
+        type: 'vector',
+        url: layer.url,
+        minzoom: 6,
+        maxzoom: 14,
+      });
+      map.addLayer({
+        id: layer.id,
+        type: 'line',
+        source: layer.id,
+        layout: {
+          visibility: 'none',
+        },
+        'source-layer': layer.sourceLayer,
+        paint: {
+          'line-color': '#000',
+          'line-opacity': 0.25,
+        },
+      });
     }
-  }, []);
+  }, [map]);
 
-  const show = useCallback((map?: Map) => {
-    if (map) {
-      map.setLayoutProperty(layer.id, 'visibility', 'visible');
-    }
-  }, []);
+  const show = useCallback(() => {
+    map.setLayoutProperty(layer.id, 'visibility', 'visible');
+  }, [map]);
 
-  const hide = useCallback((map?: Map) => {
-    if (map) {
-      map.setLayoutProperty(layer.id, 'visibility', 'none');
-    }
-  }, []);
+  const hide = useCallback(() => {
+    map.setLayoutProperty(layer.id, 'visibility', 'none');
+  }, [map]);
 
   const legend: Legend = {
     title: 'Red vial',

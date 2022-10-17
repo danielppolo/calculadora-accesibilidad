@@ -20,6 +20,7 @@ const useBaseGrid = ({
   popup,
 }: UseBaseGridParams) => {
   const map = useMap();
+
   useEffect(() => {
     if (gridCode && cityCode) {
       const id = getGridId(cityCode, gridCode);
@@ -50,7 +51,7 @@ const useBaseGrid = ({
           source: id,
           paint: {
             'fill-opacity': 0.7,
-            'fill-color': 'red',
+            'fill-color': 'transparent',
             'fill-outline-color': [
               'rgba',
               0,

@@ -1,6 +1,6 @@
-import { Map } from 'mapbox-gl';
 import { useCallback } from 'react';
 import { Legend } from 'src/types';
+import useMap from './useMap';
 
 const MARGINALIZATION_TILES = [
   {
@@ -48,49 +48,44 @@ const MARGINALIZATION_TILES = [
 ];
 
 const useMarginalizationLayers = () => {
-  const load = useCallback((map?: Map) => {
-    if (map) {
-      MARGINALIZATION_TILES.forEach((ageb) => {
-        if (!map.getSource(ageb.id)) {
-          map.addSource(ageb.id, {
-            type: 'vector',
-            url: ageb.url,
-            minzoom: 6,
-            maxzoom: 14,
-          });
-          map.addLayer({
-            id: ageb.id,
-            type: 'fill',
-            source: ageb.id,
-            layout: {
-              visibility: 'none',
-            },
-            'source-layer': ageb.sourceLayer,
-            paint: {
-              'fill-color': ageb.color,
-              'fill-opacity': 0.5,
-            },
-          });
-        }
-      });
-    }
-  }, []);
+  const map = useMap();
+  const load = useCallback(() => {
+    MARGINALIZATION_TILES.forEach((ageb) => {
+      if (!map.getSource(ageb.id)) {
+        map.addSource(ageb.id, {
+          type: 'vector',
+          url: ageb.url,
+          minzoom: 6,
+          maxzoom: 14,
+        });
+        map.addLayer({
+          id: ageb.id,
+          type: 'fill',
+          source: ageb.id,
+          layout: {
+            visibility: 'none',
+          },
+          'source-layer': ageb.sourceLayer,
+          paint: {
+            'fill-color': ageb.color,
+            'fill-opacity': 0.5,
+          },
+        });
+      }
+    });
+  }, [map]);
 
-  const show = useCallback((map?: Map) => {
-    if (map) {
-      MARGINALIZATION_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'visible');
-      });
-    }
-  }, []);
+  const show = useCallback(() => {
+    MARGINALIZATION_TILES.forEach((ageb) => {
+      map.setLayoutProperty(ageb.id, 'visibility', 'visible');
+    });
+  }, [map]);
 
-  const hide = useCallback((map?: Map) => {
-    if (map) {
-      MARGINALIZATION_TILES.forEach((ageb) => {
-        map.setLayoutProperty(ageb.id, 'visibility', 'none');
-      });
-    }
-  }, []);
+  const hide = useCallback(() => {
+    MARGINALIZATION_TILES.forEach((ageb) => {
+      map.setLayoutProperty(ageb.id, 'visibility', 'none');
+    });
+  }, [map]);
 
   const legend: Legend = {
     title: 'Marginación por AGEB',

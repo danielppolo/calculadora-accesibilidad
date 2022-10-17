@@ -1,7 +1,7 @@
 import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
-import mapboxgl, { Popup } from 'mapbox-gl';
+import { Popup } from 'mapbox-gl';
 import { useRouter } from 'next/router';
 import {
   MEXICO_COORDINATES,
@@ -154,9 +154,9 @@ function MapLayer({
 
   const handleOpportunityChange = useCallback((nextOpportunity) => {
     if (city) {
-      hideAll(map);
-      hideAgebs(map);
-      show(map, cityOpportunityId(nextOpportunity, city));
+      hideAll();
+      hideAgebs();
+      show(cityOpportunityId(nextOpportunity, city));
       setParams({
         ...params,
         opportunity: nextOpportunity,
@@ -183,10 +183,10 @@ function MapLayer({
   };
   const handleCityChange = useCallback(
     (nextCity: string) => {
-      hideAll(map);
+      hideAll();
       onCityChange?.(nextCity);
 
-      map?.flyTo({
+      map.flyTo({
         center: config?.[nextCity]?.coordinates,
         zoom: 11,
         duration: 2000,
@@ -217,7 +217,7 @@ function MapLayer({
       zoom: 4.5,
       duration: 2000,
     });
-    hideAll(map);
+    hideAll();
     onCityChange?.(undefined);
     resetParams();
     router.replace({ query: {} });
@@ -227,15 +227,15 @@ function MapLayer({
     if (city && cityMarkers.length > 0) {
       removeCityMarkers();
     } else if (config && !city && !cityMarkers.length) {
-      displayCityMarkers(map, config, { onClick: handleCityChange });
+      displayCityMarkers(config, { onClick: handleCityChange });
     }
-  }, [map, config, city, onCityChange, handleCityChange, displayCityMarkers]);
+  }, [config, city, handleCityChange, displayCityMarkers]);
 
   useEffect(() => {
     if (city && features.length) {
-      loadAgebs(map);
-      loadDensity(map);
-      loadRoads(map);
+      loadAgebs();
+      loadDensity();
+      loadRoads();
 
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
@@ -247,10 +247,9 @@ function MapLayer({
           }
           return value > 0;
         });
-        if (!(opp in state)) {
+        if (!(opp in state) && current.gridCode) {
           const oppLabel = OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase();
           add({
-            map,
             legendTitle: `Número de ${oppLabel}`,
             id: cityOpportunityId(opp, city),
             features: filteredFeatures,
@@ -259,7 +258,7 @@ function MapLayer({
             visible: false,
             stepSize: 6,
             colors: ['#7054BC', '#F1BB43'],
-            beforeId: cityGridId(city),
+            beforeId: getGridId(city, current.gridCode),
           });
         }
       });
@@ -284,9 +283,8 @@ function MapLayer({
               return item.properties[key] > 0;
             });
 
-            if (!(key in state)) {
+            if (!(key in state) && city && current.gridCode) {
               add({
-                map,
                 legendTitle: `Número de ${OPPORTUNITIES[opp as keyof typeof OPPORTUNITIES].toLowerCase()} alcanzables`,
                 id: cityOpportunityId(key, city),
                 features: filteredFeatures,
@@ -295,7 +293,7 @@ function MapLayer({
                 visible: false,
                 stepSize: 6,
                 colors: ['#7054BC', '#F1BB43'],
-                beforeId: cityGridId(city),
+                beforeId: getGridId(city, current.gridCode),
               });
             }
           });
@@ -319,9 +317,9 @@ function MapLayer({
   }, [features]);
 
   useEffect(() => {
-    if (features.length > 0 && params.visualization === 'isochrones') {
+    if (features.length > 0 && params.visualization === 'isochrones' && city && current.gridCode) {
       // Hexagon click listener
-      map.on('click', cityGridId(city), async (event) => {
+      map.on('click', getGridId(city, current.gridCode), async (event) => {
         onLoading?.(true);
         const feature = event.features?.[0]?.properties;
         const featureId = event.features?.[0]?.properties?.h3_ddrs;
@@ -369,7 +367,6 @@ function MapLayer({
             const sortedTransports = transportReach.sort((a, b) => b[1].length - a[1].length);
             sortedTransports.forEach(([transport, transportFeatures]) => {
               add({
-                map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
                 id: getHexagonId(featureId, transport, step),
@@ -377,13 +374,12 @@ function MapLayer({
                 property: transport,
                 maxValue: step,
                 visible: false,
-                beforeId: cityGridId(city),
+                beforeId: getGridId(city, current.gridCode),
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[transport]],
               });
               add({
-                map,
                 legendTitle: 'Tiempo de traslado',
                 unit: 'min',
                 id: getHexagonId(featureId, transport, step, { solid: true }),
@@ -393,7 +389,7 @@ function MapLayer({
                 solid: true,
                 opacity: 1,
                 visible: false,
-                beforeId: cityGridId(city),
+                beforeId: getGridId(city, current.gridCode),
                 stepSize: Math.floor(step / 15),
                 reverseColors: true,
                 colors: COLORS[TRANSPORT_COLORS[transport as keyof typeof TRANSPORT_COLORS]],
@@ -431,10 +427,10 @@ function MapLayer({
           onLoading?.(false);
         }
 
-        hideAll(map);
+        hideAll();
 
         getCurrentTransport().forEach((transport) => {
-          show(map, getHexagonId(featureId, transport, getCurrentTimeFrame()));
+          show(getHexagonId(featureId, transport, getCurrentTimeFrame()));
         });
         setParams({
           ...params,
@@ -463,15 +459,15 @@ function MapLayer({
 
   const handleEconomicChange = () => {
     if (params.agebs) {
-      hideAgebs(map);
+      hideAgebs();
       setParams({
         ...params,
         agebs: false,
       });
     } else {
-      hideDensity(map);
-      hideRoads(map);
-      showAgebs(map);
+      hideDensity();
+      hideRoads();
+      showAgebs();
       setParams({
         ...params,
         agebs: true,
@@ -483,15 +479,15 @@ function MapLayer({
 
   const handleDensityChange = () => {
     if (params.density) {
-      hideDensity(map);
+      hideDensity();
       setParams({
         ...params,
         density: false,
       });
     } else {
-      hideAgebs(map);
-      hideRoads(map);
-      showDensity(map);
+      hideAgebs();
+      hideRoads();
+      showDensity();
       setParams({
         ...params,
         density: true,
@@ -503,15 +499,15 @@ function MapLayer({
 
   const handleRoadChange = () => {
     if (params.roads) {
-      hideRoads(map);
+      hideRoads();
       setParams({
         ...params,
         roads: false,
       });
     } else {
-      hideAgebs(map);
-      hideDensity(map);
-      showRoads(map);
+      hideAgebs();
+      hideDensity();
+      showRoads();
       setParams({
         ...params,
         density: false,
@@ -523,19 +519,18 @@ function MapLayer({
 
   const handleTimeframeChange = (value: number) => {
     if (params.hexagon && params.hexagon.id) {
-      hideAll(map);
+      hideAll();
       if (params.transport.length === 1) {
-        show(map, getHexagonId(params.hexagon.id, params.transport[0], value));
+        show(getHexagonId(params.hexagon.id, params.transport[0], value));
       } else if (params.transport.length > 1) {
         params.transport.forEach((transport) => {
-          show(map, getHexagonId(params?.hexagon?.id, transport, value, { solid: true }));
+          show(getHexagonId(params?.hexagon?.id, transport, value, { solid: true }));
         });
       }
     } else if (value) {
-      hideAll(map);
+      hideAll();
       if (params.opportunity && city) {
         show(
-          map,
           cityOpportunityId(
             getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value),
             city,
@@ -561,7 +556,7 @@ function MapLayer({
 
   const handleTransportChange = (value: string) => {
     if (params.hexagon && params.hexagon.id && value) {
-      hideAll(map);
+      hideAll();
       let newTransportSelection;
       if (params.transport.includes(value)) {
         newTransportSelection = [...params.transport].filter((item) => item !== value);
@@ -569,11 +564,10 @@ function MapLayer({
         newTransportSelection = [...params.transport, value];
       }
       if (newTransportSelection.length === 1) {
-        show(map, getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
+        show(getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
       } else if (newTransportSelection.length > 1) {
         newTransportSelection.forEach((transport) => {
           show(
-            map,
             getHexagonId(params?.hexagon?.id, transport, params.timeframe, { solid: true }),
           );
         });
@@ -591,10 +585,9 @@ function MapLayer({
         },
       });
     } else if (value) {
-      hideAll(map);
+      hideAll();
       if (params.opportunity && city) {
         show(
-          map,
           cityOpportunityId(
             getOpportunityId(
               params.opportunity,
@@ -615,10 +608,10 @@ function MapLayer({
   };
 
   const handleVisualizationChange = (value: string) => {
-    hideAll(map);
+    hideAll();
     if (value === 'opportunities') {
       if (city) {
-        show(map, cityOpportunityId(defaultOpportunity, city));
+        show(cityOpportunityId(defaultOpportunity, city));
       }
       setParams({
         ...defaultParams,
@@ -628,7 +621,6 @@ function MapLayer({
     } else if (value === 'reachability') {
       if (city) {
         show(
-          map,
           cityOpportunityId(
             getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeFrame),
             city,

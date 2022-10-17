@@ -2,19 +2,15 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {
-  MEXICO_COORDINATES,
-} from 'src/constants';
-import useMap from 'src/hooks/useMap';
+
 import {
   City, FeatureDictionary,
 } from 'src/types';
 import { getGrid, getVisualization } from 'src/utils/api';
-import CircularProgress from '@mui/material/CircularProgress';
-import Backdrop from '@mui/material/Backdrop';
 import useConfig from 'src/hooks/data/useConfig';
 import MapLayer from './MapLayer';
 import MapProvider from './MapProvider';
+import LoadingOverlay from './LoadingOverlay';
 
 type Code = string;
 
@@ -128,12 +124,7 @@ function Map() {
 
   return (
     <>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading || configLoading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <LoadingOverlay open={loading || configLoading} />
       <MapProvider>
         <MapLayer
           mapData={mapData}
