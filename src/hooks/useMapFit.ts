@@ -1,16 +1,20 @@
 import { Feature, Polygon } from 'geojson';
-import mapboxgl, { Map } from 'mapbox-gl';
+import { LngLatBounds } from 'mapbox-gl';
 import { useEffect } from 'react';
+import useMap from './useMap';
 
-const useFitMap = (map?: Map, features?: Feature<Polygon>[]) => {
+const useMapFit = (features?: Feature<Polygon>[]) => {
+  const map = useMap();
+
   useEffect(() => {
     // Fit map to selected features.
-    if (map && features && features.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
+    if (features?.length) {
+      const bounds = new LngLatBounds();
       const offsetX = window.innerWidth > 600 ? window.innerWidth / 12 : 0;
       features.forEach((feature) => {
         bounds.extend(feature.geometry.coordinates[0][0] as [number, number]);
       });
+
       map.fitBounds(bounds, {
         padding: 200,
         maxZoom: 15,
@@ -21,4 +25,4 @@ const useFitMap = (map?: Map, features?: Feature<Polygon>[]) => {
   }, [features, map]);
 };
 
-export default useFitMap;
+export default useMapFit;

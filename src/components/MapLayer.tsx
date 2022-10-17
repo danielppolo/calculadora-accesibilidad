@@ -16,7 +16,7 @@ import {
 import useLayerManager from 'src/hooks/useLayerManager';
 import LegendBar from 'src/components/LegendBar';
 import useBaseGrid from 'src/hooks/useBaseGrid';
-import useFitMap from 'src/hooks/useFitMap';
+import useMapFit from 'src/hooks/useMapFit';
 import useCityData from 'src/hooks/useCityData';
 import ControlsCard from 'src/components/ControlsCard';
 import useMarginalizationLayers from 'src/hooks/useMarginalizationLayers';
@@ -134,10 +134,10 @@ function MapLayer({
     hideAll,
     geojson,
   } = useLayerManager();
-  useFitMap(map, geojson?.features);
+  useMapFit(geojson?.features);
+
   const [scenario, setScenario] = useState<string | undefined>();
   const { metadata: cityData } = useCityData(grid);
-  const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
   const [params, setParams] = useState({ ...defaultParams });
   const [chartData, setChartData] = useState<CustomChartData>({});
   const {
@@ -211,6 +211,12 @@ function MapLayer({
     [config, map, onCityChange, router, setParams],
   );
 
+  useCityMarkers({
+    hide: !!current.cityCode,
+    config,
+    onClick: handleCityChange,
+  });
+
   const resetMap = () => {
     map.flyTo({
       center: MEXICO_COORDINATES,
@@ -222,14 +228,6 @@ function MapLayer({
     resetParams();
     router.replace({ query: {} });
   };
-
-  useEffect(() => {
-    if (city && cityMarkers.length > 0) {
-      removeCityMarkers();
-    } else if (config && !city && !cityMarkers.length) {
-      displayCityMarkers(config, { onClick: handleCityChange });
-    }
-  }, [config, city, handleCityChange, displayCityMarkers]);
 
   useEffect(() => {
     if (city && features.length) {
