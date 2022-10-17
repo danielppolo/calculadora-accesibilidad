@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Legend } from 'src/types';
 import useMap from './useMap';
 
@@ -49,7 +49,8 @@ const MARGINALIZATION_TILES = [
 
 const useMarginalizationLayers = () => {
   const map = useMap();
-  const load = useCallback(() => {
+
+  useEffect(() => {
     MARGINALIZATION_TILES.forEach((ageb) => {
       if (!map.getSource(ageb.id)) {
         map.addSource(ageb.id, {
@@ -98,7 +99,6 @@ const useMarginalizationLayers = () => {
   return {
     show,
     hide,
-    load,
     legend,
   };
 };

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Legend } from 'src/types';
 import useMap from './useMap';
 
@@ -12,7 +12,7 @@ const layer = {
 
 const useNationalRoadNetwork = () => {
   const map = useMap();
-  const load = useCallback(() => {
+  useEffect(() => {
     if (!map.getSource(layer.id)) {
       map.addSource(layer.id, {
         type: 'vector',
@@ -55,7 +55,6 @@ const useNationalRoadNetwork = () => {
   return {
     show,
     hide,
-    load,
     legend,
   };
 };

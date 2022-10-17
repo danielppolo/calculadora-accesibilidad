@@ -118,6 +118,7 @@ function MapLayer({
   [current.cityCode, current.gridCode, mapData]);
   const city = current.cityCode;
   const features = useMemo(() => (grid ? Object.values(grid) : []), [grid]);
+
   useBaseGrid({
     features,
     cityCode: current?.cityCode,
@@ -141,13 +142,13 @@ function MapLayer({
   const [params, setParams] = useState({ ...defaultParams });
   const [chartData, setChartData] = useState<CustomChartData>({});
   const {
-    load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend,
+    show: showAgebs, hide: hideAgebs, legend: agebLegend,
   } = useMarginalizationLayers();
   const {
-    load: loadDensity, show: showDensity, hide: hideDensity, legend: densityLegend,
+    show: showDensity, hide: hideDensity, legend: densityLegend,
   } = usePopulationDensity();
   const {
-    load: loadRoads, show: showRoads, hide: hideRoads, legend: roadsLegend,
+    show: showRoads, hide: hideRoads, legend: roadsLegend,
   } = useNationalRoadNetwork();
   const getCurrentTimeFrame = () => currentTimeFrame;
   const getCurrentTransport = () => currentTransport;
@@ -174,18 +175,16 @@ function MapLayer({
         },
       });
     }
-  }, [city, hideAgebs, hideAll, map, params, router, show]);
+  }, [city, hideAgebs, hideAll, params, router, show]);
 
   const resetParams = () => {
     setParams({ ...defaultParams });
     currentTimeFrame = defaultTimeFrame;
     currentTransport = [defaultTransport];
   };
+
   const handleCityChange = useCallback(
     (nextCity: string) => {
-      hideAll();
-      onCityChange?.(nextCity);
-
       map.flyTo({
         center: config?.[nextCity]?.coordinates,
         zoom: 11,
@@ -193,22 +192,17 @@ function MapLayer({
         offset: [100, 50],
       });
 
-      // FIXME: Done in Map. Used defaultVisualization
-      const nextScenario = config?.[nextCity]?.scenarios?.[0]?.bucketName;
-      if (nextScenario) {
-        setScenario(nextScenario);
-      }
-
+      hideAll();
+      onCityChange?.(nextCity);
       router.replace({
         query: {
           ...router.query,
           city: nextCity,
-          scenario: nextScenario,
         },
       });
       resetParams();
     },
-    [config, map, onCityChange, router, setParams],
+    [config, hideAll, map, onCityChange, router],
   );
 
   useCityMarkers({
@@ -231,10 +225,6 @@ function MapLayer({
 
   useEffect(() => {
     if (city && features.length) {
-      loadAgebs();
-      loadDensity();
-      loadRoads();
-
       // Load opportunities
       Object.keys(OPPORTUNITIES).forEach((opp) => {
         let maxValue = 0;
