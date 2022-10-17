@@ -2,7 +2,6 @@ import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 import { Popup } from 'mapbox-gl';
-import { useRouter } from 'next/router';
 import {
   MEXICO_COORDINATES,
   TRANSPORTS,
@@ -35,6 +34,7 @@ import {
 } from 'src/types';
 import { getGridId } from 'src/utils/getLayerIds';
 import useMap from 'src/hooks/useMap';
+import { getVisualizationForFeature } from 'src/utils/api';
 
 type Params = {
   visualization?: string;
@@ -126,7 +126,6 @@ function MapLayer({
     popup,
   });
   const map = useMap();
-  const router = useRouter();
   const {
     state,
     legend,
@@ -137,7 +136,6 @@ function MapLayer({
   } = useLayerManager();
   useMapFit(geojson?.features);
 
-  const [scenario, setScenario] = useState<string | undefined>();
   const { metadata: cityData } = useCityData(grid);
   const [params, setParams] = useState({ ...defaultParams });
   const [chartData, setChartData] = useState<CustomChartData>({});
@@ -166,16 +164,8 @@ function MapLayer({
         timeframe: undefined,
         transport: [],
       });
-
-      router.replace({
-        query: {
-          ...router.query,
-          opportunity: nextOpportunity,
-          featureId: undefined,
-        },
-      });
     }
-  }, [city, hideAgebs, hideAll, params, router, show]);
+  }, [city, hideAgebs, hideAll, params, show]);
 
   const resetParams = () => {
     setParams({ ...defaultParams });
@@ -194,15 +184,9 @@ function MapLayer({
 
       hideAll();
       onCityChange?.(nextCity);
-      router.replace({
-        query: {
-          ...router.query,
-          city: nextCity,
-        },
-      });
       resetParams();
     },
-    [config, hideAll, map, onCityChange, router],
+    [config, hideAll, map, onCityChange],
   );
 
   useCityMarkers({
@@ -220,7 +204,6 @@ function MapLayer({
     hideAll();
     onCityChange?.(undefined);
     resetParams();
-    router.replace({ query: {} });
   };
 
   useEffect(() => {
@@ -294,31 +277,30 @@ function MapLayer({
         ...params,
         opportunity: defaultOpportunity,
       });
-
-      router.replace({
-        query: {
-          ...router.query,
-          opportunity: defaultOpportunity,
-        },
-      });
     }
   }, [features]);
 
   useEffect(() => {
-    if (features.length > 0 && params.visualization === 'isochrones' && city && current.gridCode) {
+    if (features.length > 0
+      && params.visualization === 'isochrones'
+      && current.cityCode
+      && current.gridCode) {
       // Hexagon click listener
-      map.on('click', getGridId(city, current.gridCode), async (event) => {
-        onLoading?.(true);
-        const feature = event.features?.[0]?.properties;
-        const featureId = event.features?.[0]?.properties?.h3_ddrs;
-        router.replace({
-          query: {
-            ...router.query,
+      map.on('click', getGridId(current.cityCode, current.gridCode), async (event) => {
+        if (
+          current.visualizationCode
+          && current.cityCode
+          && current.variantCode
+        ) {
+          onLoading?.(true);
+          const feature = event.features?.[0]?.properties;
+          const featureId = event.features?.[0]?.properties?.h3_ddrs;
+          const response = await getVisualizationForFeature(
+            current.cityCode,
+            current.visualizationCode,
+            current.variantCode,
             featureId,
-          },
-        });
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_BUCKET_BASE_URL}/${city}/${scenario}/${featureId}.json`);
+          );
           const text = await response.text();
           const json = JSON.parse(text);
           const incomingChartData: CustomChartData = {};
@@ -329,8 +311,8 @@ function MapLayer({
               const filteredIds = featureIds
                 .filter(
                   (id) => json[id][index]
-                   && (calculateTime(json[id][index], transport) <= step)
-                   && grid[id],
+                       && (calculateTime(json[id][index], transport) <= step)
+                       && grid[id],
                 );
               const filteredFeatures = filteredIds.map((id) => ({
                 ...grid[id],
@@ -354,95 +336,101 @@ function MapLayer({
             });
             const sortedTransports = transportReach.sort((a, b) => b[1].length - a[1].length);
             sortedTransports.forEach(([transport, transportFeatures]) => {
-              add({
-                legendTitle: 'Tiempo de traslado',
-                unit: 'min',
-                id: getHexagonId(featureId, transport, step),
-                features: transportFeatures,
-                property: transport,
-                maxValue: step,
-                visible: false,
-                beforeId: getGridId(city, current.gridCode),
-                stepSize: Math.floor(step / 15),
-                reverseColors: true,
-                colors: COLORS[TRANSPORT_COLORS[transport]],
-              });
-              add({
-                legendTitle: 'Tiempo de traslado',
-                unit: 'min',
-                id: getHexagonId(featureId, transport, step, { solid: true }),
-                features: transportFeatures,
-                property: transport,
-                maxValue: step,
-                solid: true,
-                opacity: 1,
-                visible: false,
-                beforeId: getGridId(city, current.gridCode),
-                stepSize: Math.floor(step / 15),
-                reverseColors: true,
-                colors: COLORS[TRANSPORT_COLORS[transport as keyof typeof TRANSPORT_COLORS]],
-              });
-              map.on('mousemove', getHexagonId(featureId, transport, step), (e) => {
-                popup
-                  .setLngLat(event.lngLat)
-                  .setHTML(event.features?.[0]?.properties?.description)
-                  .addTo(map);
-              });
-              map.on('mouseleave', getHexagonId(featureId, transport, step), () => {
-                popup.remove();
-              });
+              if (current.cityCode && current.gridCode) {
+                add({
+                  legendTitle: 'Tiempo de traslado',
+                  unit: 'min',
+                  id: getHexagonId(featureId, transport, step),
+                  features: transportFeatures,
+                  property: transport,
+                  maxValue: step,
+                  visible: false,
+                  beforeId: getGridId(current.cityCode, current.gridCode),
+                  stepSize: Math.floor(step / 15),
+                  reverseColors: true,
+                  colors: COLORS[TRANSPORT_COLORS[transport]],
+                });
+                add({
+                  legendTitle: 'Tiempo de traslado',
+                  unit: 'min',
+                  id: getHexagonId(featureId, transport, step, { solid: true }),
+                  features: transportFeatures,
+                  property: transport,
+                  maxValue: step,
+                  solid: true,
+                  opacity: 1,
+                  visible: false,
+                  beforeId: getGridId(current.cityCode, current.gridCode),
+                  stepSize: Math.floor(step / 15),
+                  reverseColors: true,
+                  colors: COLORS[TRANSPORT_COLORS[transport as keyof typeof TRANSPORT_COLORS]],
+                });
+                map.on('mousemove', getHexagonId(featureId, transport, step), (e) => {
+                  popup
+                    .setLngLat(event.lngLat)
+                    .setHTML(event.features?.[0]?.properties?.description)
+                    .addTo(map);
+                });
+                map.on('mouseleave', getHexagonId(featureId, transport, step), () => {
+                  popup.remove();
+                });
 
-              // Get chart data
-              if (!(step in incomingChartData)) {
-                incomingChartData[step] = {};
+                // Get chart data
+                if (!(step in incomingChartData)) {
+                  incomingChartData[step] = {};
+                }
+                incomingChartData[step][transport] = {
+                  facilities: {
+                    Empresas: count(transportFeatures, 'empress'),
+                    Clínicas: count(transportFeatures, 'clinics'),
+                    Escuelas: count(transportFeatures, 'escuels'),
+                  },
+                  opportunities: {
+                    'Personal ocupado': count(transportFeatures, 'jobs_w'),
+                  },
+                };
               }
-              incomingChartData[step][transport] = {
-                facilities: {
-                  Empresas: count(transportFeatures, 'empress'),
-                  Clínicas: count(transportFeatures, 'clinics'),
-                  Escuelas: count(transportFeatures, 'escuels'),
-                },
-                opportunities: {
-                  'Personal ocupado': count(transportFeatures, 'jobs_w'),
-                },
-              };
             });
           });
           setChartData(incomingChartData);
-        } catch (error: any) {
-          console.log(`Failed when downloading feature data: ${error.message}`);
-        } finally {
           onLoading?.(false);
+          hideAll();
+          getCurrentTransport().forEach((transport) => {
+            show(getHexagonId(featureId, transport, getCurrentTimeFrame()));
+          });
+          setParams({
+            ...params,
+            timeframe: getCurrentTimeFrame(),
+            transport: getCurrentTransport(),
+            opportunity: undefined,
+            hexagon: {
+              id: featureId,
+              ...feature,
+            },
+          });
         }
-
-        hideAll();
-
-        getCurrentTransport().forEach((transport) => {
-          show(getHexagonId(featureId, transport, getCurrentTimeFrame()));
-        });
-        setParams({
-          ...params,
-          timeframe: getCurrentTimeFrame(),
-          transport: getCurrentTransport(),
-          opportunity: undefined,
-          hexagon: {
-            id: featureId,
-            ...feature,
-          },
-        });
       });
     }
-  }, [map, features, scenario, params.visualization, city]);
+  }, [
+    map,
+    features,
+    params.visualization,
+    current.cityCode,
+    params,
+    current.visualizationCode,
+    current.variantCode,
+    current.gridCode,
+    onLoading,
+    hideAll,
+    grid,
+    add,
+    show,
+  ]);
 
-  const handleScenarioChange = (nextScenario: string) => {
-    setScenario(nextScenario);
-
-    router.replace({
-      query: {
-        ...router.query,
-        scenario: nextScenario,
-      },
-    });
+  const handleVariantChange = (variantCode: string) => {
+    if (current.cityCode && current.visualizationCode) {
+      onVariantChange?.(current.cityCode, current.visualizationCode, variantCode);
+    }
   };
 
   const handleEconomicChange = () => {
@@ -533,13 +521,6 @@ function MapLayer({
       transport: params.transport[0] ? params.transport : [defaultTransport],
     });
     currentTimeFrame = value;
-
-    router.replace({
-      query: {
-        ...router.query,
-        timeframe: value.toString(),
-      },
-    });
   };
 
   const handleTransportChange = (value: string) => {
@@ -565,13 +546,6 @@ function MapLayer({
         transport: newTransportSelection,
       });
       currentTransport = newTransportSelection;
-
-      router.replace({
-        query: {
-          ...router.query,
-          transport: newTransportSelection.join(','),
-        },
-      });
     } else if (value) {
       hideAll();
       if (params.opportunity && city) {
@@ -595,18 +569,18 @@ function MapLayer({
     }
   };
 
-  const handleVisualizationChange = (value: string) => {
+  const handleVisualizationChange = (visualizationCode: string) => {
     hideAll();
-    if (value === 'opportunities') {
+    if (visualizationCode === 'opportunities') {
       if (city) {
         show(cityOpportunityId(defaultOpportunity, city));
       }
       setParams({
         ...defaultParams,
         opportunity: defaultOpportunity,
-        visualization: value,
+        visualization: visualizationCode,
       });
-    } else if (value === 'reachability') {
+    } else if (visualizationCode === 'reachability') {
       if (city) {
         show(
           cityOpportunityId(
@@ -620,13 +594,17 @@ function MapLayer({
         opportunity: defaultOpportunity,
         transport: [defaultTransport],
         timeframe: defaultTimeFrame,
-        visualization: value,
+        visualization: visualizationCode,
       });
     } else {
       setParams({
         ...defaultParams,
-        visualization: value,
+        visualization: visualizationCode,
       });
+    }
+
+    if (current.cityCode) {
+      onVisualizationChange?.(current.cityCode, visualizationCode);
     }
   };
 
@@ -660,14 +638,16 @@ function MapLayer({
         cityCode={current.cityCode}
         visualizationCode={current.visualizationCode}
         variantCode={current.variantCode}
+        onVariantChange={handleVariantChange}
+        onVisualizationChange={handleVisualizationChange}
+        onCityChange={handleCityChange}
+        //
         transport={params.transport}
         timeframe={params.timeframe}
         hexagonDisabled={!params.hexagon}
         opportunity={params.opportunity}
         city={(!!config && !!city) ? config[city] : undefined}
-        onCityChange={handleCityChange}
         cities={Object.values(config || {})}
-        scenario={scenario}
         economicLayer={params.agebs}
         densityLayer={params.density}
         roadsLayer={params.roads}
@@ -677,10 +657,8 @@ function MapLayer({
         onOpportunityChange={handleOpportunityChange}
         onMediumChange={handleTransportChange}
         onTimeStepChange={handleTimeframeChange}
-        onScenarioChange={handleScenarioChange}
         onEconomicLayerChange={handleEconomicChange}
         onDensityLayerChange={handleDensityChange}
-        onVisualizationChange={handleVisualizationChange}
       />
       {city ? (
         <ControlsCard

@@ -18,6 +18,9 @@ interface MapControlsProps {
   cityCode?: string,
   visualizationCode?: string,
   variantCode?: string,
+  onCityChange?: (cityCode: string) => void;
+  onVariantChange?: (variantCode: string) => void;
+  onVisualizationChange?: (visualizationCode: string) => void;
 
   visualization?: string;
   transport?: string[];
@@ -26,17 +29,13 @@ interface MapControlsProps {
   hexagonDisabled?: boolean;
   city?: City;
   cities?: City[],
-  scenario?: string;
   economicLayer?: boolean;
   densityLayer?: boolean;
   roadsLayer?: boolean;
   onDensityLayerChange?: () => void;
-  onVisualizationChange?: (viz: string) => void;
   onMediumChange?: (medium: string) => void;
   onTimeStepChange?: (timeStep: number) => void;
-  onScenarioChange?: (scenario: string) => void;
   onOpportunityChange?: (opportunity: string) => void;
-  onCityChange?: (city: string) => void;
   onEconomicLayerChange?: () => void;
   onRoadsLayerChange?: () => void;
   resetMap?: () => void;
@@ -54,7 +53,6 @@ function MapControls({
   hexagonDisabled = false,
   city,
   cities,
-  scenario,
   economicLayer,
   densityLayer,
   roadsLayer,
@@ -64,7 +62,7 @@ function MapControls({
   onVisualizationChange,
   onMediumChange,
   onTimeStepChange,
-  onScenarioChange,
+  onVariantChange,
   onOpportunityChange,
   onRoadsLayerChange,
   resetMap,
@@ -89,7 +87,7 @@ function MapControls({
               visualizations={city.visualizations}
               disabled={!city}
               value={selectedViz?.name}
-              onChange={onScenarioChange}
+              onChange={onVisualizationChange}
             />
           </>
         ) : null
@@ -102,7 +100,7 @@ function MapControls({
               variants={selectedViz?.variants}
               disabled={!city}
               value={selectedVariant?.name}
-              onChange={onVisualizationChange}
+              onChange={onVariantChange}
             />
           </>
         )
