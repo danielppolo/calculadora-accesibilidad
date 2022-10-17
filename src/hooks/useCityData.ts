@@ -2,9 +2,7 @@ import { Feature, Polygon } from 'geojson';
 import { useMemo } from 'react';
 import count from 'src/utils/countFeatures';
 
-
 const useCityData = (data?: Record<string, Feature<Polygon>>) => {
-
   const cityData = useMemo(() => {
     if (data) {
       const nextFeatures = Object.values(data);

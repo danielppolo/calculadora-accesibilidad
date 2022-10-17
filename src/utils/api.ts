@@ -1,5 +1,5 @@
-import grid from 'src/stubs/grid.json';
-import visualization from 'src/stubs/viz.json';
+import grid from 'src/mocks/grid.json';
+import visualization from 'src/mocks/viz.json';
 
 import { FeatureDictionary, UUID } from 'src/types';
 

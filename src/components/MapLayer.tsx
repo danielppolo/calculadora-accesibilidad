@@ -30,7 +30,11 @@ import CreditsCard from 'src/components/CreditsCard';
 import useCityMarkers from 'src/hooks/useCityMarkers';
 import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
-import { City, CityDictionary, FeatureDictionary } from 'src/types';
+import {
+  City, Code, Config, FeatureDictionary,
+} from 'src/types';
+import { getGridId } from 'src/utils/getLayerIds';
+import useMap from 'src/hooks/useMap';
 
 type Params = {
   visualization?: string;
@@ -45,12 +49,25 @@ type Params = {
   roads: boolean;
 }
 
+type Current = {
+  cityCode?: string,
+  gridCode?: string,
+  visualizationCode?: string,
+  variantCode?: string,
+}
+
+type MapData = Record<City['code'], {
+  grids: Record<Code, FeatureDictionary>,
+  visualizations: Record<Code, Record<string, Record<Code, any>>>,
+}>;
+
 interface MapLayerProps {
-  map: mapboxgl.Map;
-  city?: City['code'];
-  grid?: FeatureDictionary;
-  cities?: CityDictionary;
-  onCityChange?: (bucketName?: string) => void;
+  current?: Current;
+  mapData?: MapData;
+  config?: Config;
+  onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
+  onCityChange?: (cityCode?: string) => void;
+  onVariantChange?: (cityCode: string, visualizationCode: string, variantCode: string) => void;
   onLoading?: (loading: boolean) => void;
 }
 
@@ -58,7 +75,6 @@ type CustomChartData = Record<number, Record<string, {
   facilities: Record<string, number>;
   opportunities: Record<string, number>;
 }>>
-const cityGridId = (cityId?: string) => `${cityId ?? ''}-grid`;
 
 const cityOpportunityId = (opportunity: string, city: string) => `${city}-${opportunity}`;
 
@@ -89,13 +105,26 @@ let currentTimeFrame = defaultTimeFrame;
 let currentTransport: string[] = [defaultTransport];
 
 function MapLayer({
-  map,
-  city,
-  grid = {},
-  cities = {},
+  config = {},
+  current = {},
+  mapData = {},
   onCityChange,
+  onVisualizationChange,
+  onVariantChange,
   onLoading,
 }: MapLayerProps) {
+  const grid = useMemo(() => (current.cityCode && current.gridCode
+    ? mapData[current.cityCode].grids[current.gridCode] : {}),
+  [current.cityCode, current.gridCode, mapData]);
+  const city = current.cityCode;
+  const features = useMemo(() => (grid ? Object.values(grid) : []), [grid]);
+  useBaseGrid({
+    features,
+    cityCode: current?.cityCode,
+    gridCode: current?.gridCode,
+    popup,
+  });
+  const map = useMap();
   const router = useRouter();
   const {
     state,
@@ -107,11 +136,10 @@ function MapLayer({
   } = useLayerManager();
   useFitMap(map, geojson?.features);
   const [scenario, setScenario] = useState<string | undefined>();
-  const { features, metadata: cityData } = useCityData(grid);
+  const { metadata: cityData } = useCityData(grid);
   const [displayCityMarkers, removeCityMarkers, cityMarkers] = useCityMarkers();
   const [params, setParams] = useState({ ...defaultParams });
   const [chartData, setChartData] = useState<CustomChartData>({});
-  const { load: loadBaseGrid } = useBaseGrid();
   const {
     load: loadAgebs, show: showAgebs, hide: hideAgebs, legend: agebLegend,
   } = useMarginalizationLayers();
@@ -155,16 +183,18 @@ function MapLayer({
   };
   const handleCityChange = useCallback(
     (nextCity: string) => {
+      hideAll(map);
+      onCityChange?.(nextCity);
+
       map?.flyTo({
-        center: cities?.[nextCity]?.coordinates,
+        center: config?.[nextCity]?.coordinates,
         zoom: 11,
         duration: 2000,
         offset: [100, 50],
       });
-      hideAll(map);
-      onCityChange?.(nextCity);
 
-      const nextScenario = cities?.[nextCity]?.scenarios?.[0]?.bucketName;
+      // FIXME: Done in Map. Used defaultVisualization
+      const nextScenario = config?.[nextCity]?.scenarios?.[0]?.bucketName;
       if (nextScenario) {
         setScenario(nextScenario);
       }
@@ -178,11 +208,11 @@ function MapLayer({
       });
       resetParams();
     },
-    [cities, map, onCityChange, router, setParams],
+    [config, map, onCityChange, router, setParams],
   );
 
   const resetMap = () => {
-    map?.flyTo({
+    map.flyTo({
       center: MEXICO_COORDINATES,
       zoom: 4.5,
       duration: 2000,
@@ -196,14 +226,13 @@ function MapLayer({
   useEffect(() => {
     if (city && cityMarkers.length > 0) {
       removeCityMarkers();
-    } else if (map && cities && !city && !cityMarkers.length) {
-      displayCityMarkers(map, cities, { onClick: handleCityChange });
+    } else if (config && !city && !cityMarkers.length) {
+      displayCityMarkers(map, config, { onClick: handleCityChange });
     }
-  }, [map, cities, city, onCityChange, handleCityChange, displayCityMarkers]);
+  }, [map, config, city, onCityChange, handleCityChange, displayCityMarkers]);
 
   useEffect(() => {
-    if (map && city) {
-      loadBaseGrid(map, features, cityGridId(city), popup);
+    if (city && features.length) {
       loadAgebs(map);
       loadDensity(map);
       loadRoads(map);
@@ -287,10 +316,10 @@ function MapLayer({
         },
       });
     }
-  }, [map, city]);
+  }, [features]);
 
   useEffect(() => {
-    if (map && features.length > 0 && params.visualization === 'isochrones') {
+    if (features.length > 0 && params.visualization === 'isochrones') {
       // Hexagon click listener
       map.on('click', cityGridId(city), async (event) => {
         onLoading?.(true);
@@ -312,7 +341,11 @@ function MapLayer({
             const featureIds = Object.keys(json);
             const transportReach = TRANSPORTS.map((transport, index) => {
               const filteredIds = featureIds
-                .filter((id) => json[id][index] && (calculateTime(json[id][index], transport) <= step) && grid[id]);
+                .filter(
+                  (id) => json[id][index]
+                   && (calculateTime(json[id][index], transport) <= step)
+                   && grid[id],
+                );
               const filteredFeatures = filteredIds.map((id) => ({
                 ...grid[id],
                 properties: {
@@ -501,7 +534,13 @@ function MapLayer({
     } else if (value) {
       hideAll(map);
       if (params.opportunity && city) {
-        show(map, cityOpportunityId(getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value), city));
+        show(
+          map,
+          cityOpportunityId(
+            getOpportunityId(params.opportunity, params.transport[0] || defaultTransport, value),
+            city,
+          ),
+        );
       }
     }
 
@@ -533,7 +572,10 @@ function MapLayer({
         show(map, getHexagonId(params.hexagon.id, newTransportSelection[0], params.timeframe));
       } else if (newTransportSelection.length > 1) {
         newTransportSelection.forEach((transport) => {
-          show(map, getHexagonId(params?.hexagon?.id, transport, params.timeframe, { solid: true }));
+          show(
+            map,
+            getHexagonId(params?.hexagon?.id, transport, params.timeframe, { solid: true }),
+          );
         });
       }
       setParams({
@@ -551,7 +593,17 @@ function MapLayer({
     } else if (value) {
       hideAll(map);
       if (params.opportunity && city) {
-        show(map, cityOpportunityId(getOpportunityId(params.opportunity, value, (params.timeframe || defaultTimeFrame)), city));
+        show(
+          map,
+          cityOpportunityId(
+            getOpportunityId(
+              params.opportunity,
+              value,
+              (params.timeframe || defaultTimeFrame),
+            ),
+            city,
+          ),
+        );
       }
       setParams({
         ...params,
@@ -575,7 +627,13 @@ function MapLayer({
       });
     } else if (value === 'reachability') {
       if (city) {
-        show(map, cityOpportunityId(getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeFrame), city));
+        show(
+          map,
+          cityOpportunityId(
+            getOpportunityId(defaultOpportunity, defaultTransport, defaultTimeFrame),
+            city,
+          ),
+        );
       }
       setParams({
         ...defaultParams,
@@ -628,9 +686,9 @@ function MapLayer({
         cityDisabled={!city}
         opportunity={params.opportunity}
         onOpportunityChange={handleOpportunityChange}
-        city={(!!cities && !!city) ? cities[city] : undefined}
+        city={(!!config && !!city) ? config[city] : undefined}
         onCityChange={handleCityChange}
-        cities={Object.values(cities || {})}
+        cities={Object.values(config || {})}
         scenario={scenario}
         economicLayer={params.agebs}
         onEconomicLayerChange={handleEconomicChange}
@@ -644,16 +702,16 @@ function MapLayer({
       />
       {city ? (
         <ControlsCard
-          title={cities?.[city].name}
+          title={config?.[city].name}
           cityData={cityData}
           reachableOpportunities={opportunitiesChartData}
           reachableFacilities={facilitiesChartData}
         />
       ) : null}
       {
-        cities && !city ? (
+        config && !city ? (
           <CitiesOverview
-            cities={Object.values(cities || {})}
+            cities={Object.values(config || {})}
           />
         ) : null
       }

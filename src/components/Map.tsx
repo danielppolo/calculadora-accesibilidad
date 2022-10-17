@@ -1,101 +1,150 @@
 import React, {
-  useEffect, useState,
+  useEffect,
+  useState,
 } from 'react';
-import mapboxgl from 'mapbox-gl';
 import {
   MEXICO_COORDINATES,
 } from 'src/constants';
-import useLayerManager from 'src/hooks/useLayerManager';
 import useMap from 'src/hooks/useMap';
 import {
-  City, CityDictionary, FeatureDictionary,
+  City, FeatureDictionary,
 } from 'src/types';
-import getCities from 'src/adapters/contentful/getCities';
 import { getGrid, getVisualization } from 'src/utils/api';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import useConfig from 'src/hooks/data/useConfig';
 import MapLayer from './MapLayer';
+import MapProvider from './MapProvider';
 
 type Code = string;
 
-type MapsData = Record<City['code'], {
+type MapData = Record<City['code'], {
   grids: Record<Code, FeatureDictionary>,
   visualizations: Record<Code, Record<string, Record<Code, any>>>,
 }>;
 
-function Map() {
-  const [map, mapLoaded] = useMap({ center: MEXICO_COORDINATES });
-  const [cityDictionary, setCityDictionary] = useState<CityDictionary>({});
-  const [loading, setLoading] = useState(true);
-  const [currentCity, setCurrentCityCode] = useState<
-    City['code'] | undefined
-  >();
-  const [data, setData] = useState<MapsData>({});
+type Current = {
+  cityCode?: string,
+  gridCode?: string,
+  visualizationCode?: string,
+  variantCode?: string,
+}
 
-  useEffect(() => {
-    const fetchCities = async () => {
-      const nextCityDictionary: CityDictionary = {};
-      const contentfulCities = await getCities();
-
-      contentfulCities.forEach((city: City) => {
-        nextCityDictionary[city.code] = city;
-      });
-      setCityDictionary(nextCityDictionary);
-      setLoading(false);
+const generateMapData = (cities: City[]): MapData => {
+  const data: MapData = {};
+  cities.forEach((city) => {
+    data[city.code] = {
+      grids: {},
+      visualizations: {},
     };
+  });
+  return data;
+};
 
-    fetchCities();
-  }, []);
-
-  const handleCityChange = async (cityCode?: string) => {
-    if (cityCode && !data[cityCode]) {
-      setLoading(true);
-      const { defaultVisualization } = cityDictionary[cityCode];
-      if (defaultVisualization) {
-        const defaultVariantCode = defaultVisualization?.defaultVariant?.code;
-        const defaultGridCode = defaultVisualization?.grid?.code;
-        const grid = await getGrid(cityCode, defaultGridCode);
-        const defaultVisualizationData = await getVisualization(
-          cityCode,
-          defaultVisualization.code,
-          defaultVariantCode,
-        );
-        console.log(defaultVisualizationData);
-        // Object.keys(propertiesData).forEach((id) => {
-        //   Object.assign(grid[id].properties, propertiesData[id]);
-        // });
-
-        setData({
-          ...data,
-          [cityCode]: grid,
-        });
-      }
-
-      setLoading(false);
+function Map() {
+  const { config, loading: configLoading } = useConfig();
+  const [loading, setLoading] = useState(false);
+  const [mapData, setMapData] = useState<MapData>({});
+  const [current, setCurrent] = useState<Current>();
+  useEffect(() => {
+    if (config) {
+      setMapData(generateMapData(Object.values(config)));
     }
-    setCurrentCityCode(cityCode);
+  }, [config]);
+
+  const handleVariantChange = async (
+    cityCode: string,
+    visualizationCode: string,
+    visualizationVariantCode: string,
+  ) => {
+    const visualization = config[cityCode].visualizations
+      .find((viz) => viz.code === visualizationCode);
+    const gridCode = visualization?.grid?.code;
+    if (gridCode) {
+      const variantData = await getVisualization(
+        cityCode,
+        visualizationCode,
+        visualizationVariantCode,
+      );
+      // Object.keys(propertiesData).forEach((id) => {
+      //   Object.assign(grid[id].properties, propertiesData[id]);
+      // });
+
+      const newData = { ...mapData };
+      if (!newData[cityCode].visualizations[visualizationCode]) {
+        newData[cityCode].visualizations[visualizationCode] = {};
+      }
+      newData[cityCode].visualizations[visualizationCode][visualizationVariantCode] = variantData;
+      setCurrent({
+        cityCode,
+        gridCode,
+        visualizationCode,
+        variantCode: visualizationVariantCode,
+      });
+      setMapData(newData);
+    }
   };
+
+  const handleVisualizationChange = async (
+    cityCode: string,
+    visualizationCode: string,
+  ) => {
+    setLoading(true);
+    const visualization = config[cityCode].visualizations
+      .find((viz) => viz.code === visualizationCode);
+    const defaultVariantCode = visualization?.defaultVariant?.code;
+    const gridCode = visualization?.grid?.code;
+
+    if (defaultVariantCode && gridCode) {
+      await handleVariantChange(cityCode, visualizationCode, defaultVariantCode);
+    }
+
+    if (gridCode) {
+      const grid = await getGrid(cityCode, gridCode);
+      const newData = { ...mapData };
+      newData[cityCode].grids[gridCode] = grid;
+      setMapData(newData);
+      setCurrent((state) => ({ ...state, gridCode }));
+    }
+
+    if (visualization?.code) {
+      setCurrent((state) => ({ ...state, visualizationCode }));
+    }
+
+    setLoading(false);
+  };
+
+  const handleCityChange = (cityCode?: string) => {
+    if (cityCode) {
+      const { defaultVisualization } = config[cityCode];
+
+      if (defaultVisualization) {
+        handleVisualizationChange(cityCode, defaultVisualization.code);
+      }
+    }
+
+    setCurrent((state) => ({ ...state, cityCode }));
+  };
+
   return (
     <>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
+        open={loading || configLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <div id="map" className="w-screen h-screen" />
-      {
-        map && mapLoaded && (
+      <MapProvider>
         <MapLayer
-          map={map}
-          city={currentCity}
-          cities={cityDictionary}
-          grid={currentCity ? data[currentCity] : undefined}
+          mapData={mapData}
+          current={current}
+          config={config}
           onLoading={setLoading}
           onCityChange={handleCityChange}
+          onVisualizationChange={handleVisualizationChange}
+          onVariantChange={handleVariantChange}
         />
-        )
-      }
+      </MapProvider>
     </>
   );
 }

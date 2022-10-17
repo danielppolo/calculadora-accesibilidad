@@ -172,6 +172,11 @@ export type LandingPage = {
   map: string;
 }
 
+export type Code = string;
 export type UUID = string;
 export type FeatureDictionary = Record<UUID, Feature<Polygon>>
-export type CityDictionary = Record<City['code'], City>
+export type Config = Record<City['code'], City>
+export type MapData = Record<City['code'], {
+  grids: Record<Code, FeatureDictionary>,
+  visualizations: Record<Code, Record<string, Record<Code, any>>>,
+}>;
