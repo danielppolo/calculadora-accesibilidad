@@ -657,28 +657,30 @@ function MapLayer({
   return (
     <>
       <MapControls
-        onScenarioChange={handleScenarioChange}
+        cityCode={current.cityCode}
+        visualizationCode={current.visualizationCode}
+        variantCode={current.variantCode}
         transport={params.transport}
-        onMediumChange={handleTransportChange}
         timeframe={params.timeframe}
-        onTimeStepChange={handleTimeframeChange}
         hexagonDisabled={!params.hexagon}
-        cityDisabled={!city}
         opportunity={params.opportunity}
-        onOpportunityChange={handleOpportunityChange}
         city={(!!config && !!city) ? config[city] : undefined}
         onCityChange={handleCityChange}
         cities={Object.values(config || {})}
         scenario={scenario}
         economicLayer={params.agebs}
-        onEconomicLayerChange={handleEconomicChange}
         densityLayer={params.density}
-        onDensityLayerChange={handleDensityChange}
         roadsLayer={params.roads}
-        onRoadsLayerChange={handleRoadChange}
         visualization={params.visualization}
-        onVisualizationChange={handleVisualizationChange}
         resetMap={resetMap}
+        onRoadsLayerChange={handleRoadChange}
+        onOpportunityChange={handleOpportunityChange}
+        onMediumChange={handleTransportChange}
+        onTimeStepChange={handleTimeframeChange}
+        onScenarioChange={handleScenarioChange}
+        onEconomicLayerChange={handleEconomicChange}
+        onDensityLayerChange={handleDensityChange}
+        onVisualizationChange={handleVisualizationChange}
       />
       {city ? (
         <ControlsCard

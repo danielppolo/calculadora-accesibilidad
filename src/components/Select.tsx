@@ -21,12 +21,12 @@ interface SelectProps {
 
 function Select({
   options,
-  onChange,
   disabled,
   placeholder,
   value,
   variant,
   icon,
+  onChange,
 }: SelectProps) {
   const [selected, setSelected] = useState({});
 
