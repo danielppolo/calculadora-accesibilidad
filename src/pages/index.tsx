@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 import React, { useState, useEffect } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
@@ -6,7 +7,8 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
 
-const contentful = require('contentful');
+import contentful from 'contentful';
+import Image from 'next/image';
 
 marked.setOptions({
   gfm: true,
@@ -14,18 +16,18 @@ marked.setOptions({
 
 const client = contentful.createClient({
   space: 'f9qr8a787ywo',
-  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
+  accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
 const Button = () => (
-  <Link href="/map">
-    <button className="bg-blue rounded-full px-4 py-2 text-white font-medium">Accede a la plataforma</button>
+  <Link passHref href="/map">
+    <button type="button" className="bg-blue rounded-full px-4 py-2 text-white font-medium">Accede a la plataforma</button>
   </Link>
 );
 
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -52,7 +54,7 @@ export default function Home() {
     <div>
       <div className="bg-blue h-16 px-4 text-white flex items-center justify-between relative md:px-16">
         <a href="https://ideamos.mx/">
-          <img className="h-6" src="/logo-ideamos-blanco.png" alt="Logotipo" />
+          <Image className="h-6" src="/logo-ideamos-blanco.png" alt="Logotipo" />
         </a>
         <div id="desktop-menu" className="space-x-8 text-2xl hidden md:block">
           <a className="hover:opacity-70 duration-100" href="https://ideamos.mx/el-programa">El programa</a>
@@ -73,22 +75,22 @@ export default function Home() {
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Una iniciativa de:</p>
             <a target="_blank" href="https://mexico.itdp.org" rel="noopener noreferrer">
-              <img className="h-8" src="/itdp.png" alt="ITDP Logo" />
+              <Image className="h-8" src="/itdp.png" alt="ITDP Logo" />
             </a>
           </div>
           <div className="space-x-8 flex items-center h-12">
             <p className="font-bold text-xl">Con apoyo de:</p>
             <a target="_blank" href="https://www.iadb.org/es" rel="noopener noreferrer">
-              <img className="h-8" src="/bid.png" alt="BID Logo" />
+              <Image className="h-8" src="/bid.png" alt="BID Logo" />
             </a>
             <a target="_blank" href="https://bidlab.org/es" rel="noopener noreferrer">
-              <img className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
+              <Image className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
             </a>
           </div>
         </div>
         <div className="hidden md:block">
           <a href="https://github.com/ITDPmx/calculadora-accesibilidad">
-            <img className="h-6" src="/github.png" alt="Github Logo" />
+            <Image className="h-6" src="/github.png" alt="Github Logo" />
           </a>
         </div>
       </div>
@@ -107,26 +109,26 @@ export default function Home() {
 
           <Grid container spacing={3} className="my-8">
             <Grid item xs={12} lg={3}>
-              <img className="w-full object-cover h-48 mb-8" src={`https:${data?.feature1img?.fields?.file?.url}`} alt="Img" />
+              <Image className="w-full object-cover h-48 mb-8" src={`https:${data?.feature1Image?.fields?.file?.url}`} alt="Img" />
               <div className="text-sm" dangerouslySetInnerHTML={{ __html: marked.parse(data?.feature1 || '') }} />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <img className="w-full object-cover h-48 mb-8" src={`https:${data?.feature2img?.fields?.file?.url}`} alt="Img" />
+              <Image className="w-full object-cover h-48 mb-8" src={`https:${data?.feature2Image?.fields?.file?.url}`} alt="Img" />
               <div className="text-sm" dangerouslySetInnerHTML={{ __html: marked.parse(data?.feature2 || '') }} />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <img className="w-full object-cover h-48 mb-8" src={`https:${data?.feature3img?.fields?.file?.url}`} alt="Img" />
+              <Image className="w-full object-cover h-48 mb-8" src={`https:${data?.feature3Image?.fields?.file?.url}`} alt="Img" />
               <div className="text-sm" dangerouslySetInnerHTML={{ __html: marked.parse(data?.feature3 || '') }} />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <img className="w-full object-cover h-48 mb-8" src={`https:${data?.feature4img?.fields?.file?.url}`} alt="Img" />
+              <Image className="w-full object-cover h-48 mb-8" src={`https:${data?.feature4Image?.fields?.file?.url}`} alt="Img" />
               <div className="text-sm" dangerouslySetInnerHTML={{ __html: marked.parse(data?.feature4 || '') }} />
             </Grid>
           </Grid>
 
           <Grid container spacing={4} className="my-16">
             <Grid item xs={12} lg={6}>
-              <img className="object-cover w-full h-full" src={`https:${data?.section1img?.fields?.file?.url}`} alt="" />
+              <Image className="object-cover w-full h-full" src={`https:${data?.section1Image?.fields?.file?.url}`} alt="" />
             </Grid>
             <Grid item xs={12} lg={6}>
               <div dangerouslySetInnerHTML={{ __html: marked.parse(data?.sectionTwo || '') }} />
@@ -135,7 +137,7 @@ export default function Home() {
 
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <img className="h-96 w-full object-cover" src={`https:${data?.map?.fields?.file?.url}`} alt="Mapa" />
+              <Image className="h-96 w-full object-cover" src={`https:${data?.map?.fields?.file?.url}`} alt="Mapa" />
             </Grid>
           </Grid>
 
@@ -145,13 +147,13 @@ export default function Home() {
               <Button />
             </Grid>
             <Grid item xs={12} lg={6}>
-              <img className="h-full w-full object-cover" src={`https:${data?.section2img?.fields?.file?.url}`} alt="GIF" />
+              <Image className="h-full w-full object-cover" src={`https:${data?.section2Image?.fields?.file?.url}`} alt="GIF" />
             </Grid>
           </Grid>
 
           <Grid container spacing={3} className="my-12">
             <Grid item xs={12}>
-              <img className="w-full object-cover h-96" src={`https:${data?.gif?.fields?.file?.url}`} alt="" />
+              <Image className="w-full object-cover h-96" src={`https:${data?.gif?.fields?.file?.url}`} alt="" />
             </Grid>
           </Grid>
 
@@ -167,16 +169,16 @@ export default function Home() {
       <div className="bg-black h-16 text-white flex items-center justify-between px-16">
         <div className="space-x-4 flex items-center">
           <a href="https://mexico.itdp.org" target="_blank" rel="noopener noreferrer">
-            <img className="h-5" src="/itdp.png" alt="ITDP Logo" />
+            <Image className="h-5" src="/itdp.png" alt="ITDP Logo" />
           </a>
           <a href="https://ideamos.mx/">
-            <img className="h-3" src="/logo-ideamos-blanco.png" alt="Logotipo" />
+            <Image className="h-3" src="/logo-ideamos-blanco.png" alt="Logotipo" />
           </a>
           <a href="https://www.iadb.org/es" target="_blank" rel="noopener noreferrer">
-            <img className="h-5" src="/bid.png" alt="BID Logo" />
+            <Image className="h-5" src="/bid.png" alt="BID Logo" />
           </a>
           <a href="https://bidlab.org/es" target="_blank" rel="noopener noreferrer">
-            <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
+            <Image className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
           </a>
         </div>
       </div>

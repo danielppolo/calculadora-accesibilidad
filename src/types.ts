@@ -95,8 +95,6 @@ export type VisualizationVariant = {
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
   // Controles activados por default
-  properties: Property[]
-  // Controles activados por default
   defaultProperties: Property[]
 }
 
@@ -111,6 +109,8 @@ export type Visualization = {
   variants: VisualizationVariant[];
   // HEX Grid que usa la visualización.
   grid: Grid;
+  // Controles activados por default
+  properties: Property[]
 }
 
 export type Country = {
