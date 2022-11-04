@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import DirectionsIcon from '@mui/icons-material/Directions';
@@ -9,15 +9,17 @@ import OpportunityControls from 'src/components/controls/opportunities';
 import ReachabilityControls from 'src/components/controls/reachability';
 import IsochronesControls from 'src/components/controls/isochrones';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { City } from 'src/types';
+import { City, Property } from 'src/types';
 import CityPicker from './CityPicker';
 import VisualizationPicker from './VisualizationPicker';
 import VariantPicker from './VariantPicker';
+import ButtonGroup from './ButtonGroup';
 
 interface MapControlsProps {
-  cityCode?: string,
-  visualizationCode?: string,
-  variantCode?: string,
+  cityCode?: string;
+  visualizationCode?: string;
+  variantCode?: string;
+  filterData?: any;
   onCityChange?: (cityCode: string) => void;
   onVariantChange?: (variantCode: string) => void;
   onVisualizationChange?: (visualizationCode: string) => void;
@@ -28,7 +30,7 @@ interface MapControlsProps {
   opportunity?: string;
   hexagonDisabled?: boolean;
   city?: City;
-  cities?: City[],
+  cities?: City[];
   economicLayer?: boolean;
   densityLayer?: boolean;
   roadsLayer?: boolean;
@@ -41,10 +43,29 @@ interface MapControlsProps {
   resetMap?: () => void;
 }
 
+const buildFilters = (
+  filterData: Record<string, any>,
+  properties: Record<string, Property>
+) => {
+  // TODO: Refactor
+  const firstLevelKeys = Object.keys(filterData);
+  const secondLevelKeys = Object.keys(filterData[firstLevelKeys[0]]);
+  const thirdLevelKeys = Object.keys(
+    filterData[firstLevelKeys[0]][secondLevelKeys[0]]
+  );
+
+  return [
+    firstLevelKeys.map((key) => properties[key]).filter(Boolean),
+    secondLevelKeys.map((key) => properties[key]).filter(Boolean),
+    thirdLevelKeys.map((key) => properties[key]).filter(Boolean),
+  ];
+};
+
 function MapControls({
   cityCode,
   visualizationCode,
   variantCode,
+  filterData,
 
   visualization,
   timeframe,
@@ -67,46 +88,67 @@ function MapControls({
   onRoadsLayerChange,
   resetMap,
 }: MapControlsProps) {
-  const selectedViz = city?.visualizations.find((viz) => viz.code === visualizationCode);
-  const selectedVariant = selectedViz?.variants.find((variant) => variant.code === variantCode);
+  const selectedViz = city?.visualizations.find(
+    (viz) => viz.code === visualizationCode
+  );
+  const selectedVariant = selectedViz?.variants.find(
+    (variant) => variant.code === variantCode
+  );
   const showVisualizationPicker = city?.visualizations?.length;
   const showVariantPicker = selectedViz?.variants?.length;
+  const filters = useMemo(() => {
+    const properties: Record<string, Property> = {};
+
+    if (selectedViz) {
+      selectedViz.properties.forEach((property) => {
+        properties[property.code] = property;
+      });
+
+      return buildFilters(filterData, properties);
+    }
+    return [];
+  }, [filterData, selectedViz]);
 
   return (
-    <div className="fixed top-2 left-2 right-2 z-30 md:top-4 md:left-4 md:w-80 md:max-w-xl">
-      <CityPicker
-        cities={cities}
-        value={city?.name}
-        onChange={onCityChange}
-      />
-      {
-        showVisualizationPicker ? (
-          <>
-            <div className="m-2 md:m-4" />
-            <VisualizationPicker
-              visualizations={city.visualizations}
-              disabled={!city}
-              value={selectedViz?.name}
-              onChange={onVisualizationChange}
-            />
-          </>
-        ) : null
-      }
-      {
-        showVariantPicker && (
-          <>
-            <div className="m-2 md:m-4" />
-            <VariantPicker
-              variants={selectedViz?.variants}
-              disabled={!city}
-              value={selectedVariant?.name}
-              onChange={onVariantChange}
-            />
-          </>
-        )
-      }
-      <div className="m-2 md:m-4" />
-      {
+    <div className="fixed top-2 left-2 right-2 p-4 z-30 backdrop-blur-2xl md:top-0 md:left-0 bottom-0 md:w-80 md:max-w-xl">
+      <CityPicker cities={cities} value={city?.name} onChange={onCityChange} />
+      {showVisualizationPicker ? (
+        <>
+          <div className="m-2 md:m-4" />
+          <VisualizationPicker
+            visualizations={city.visualizations}
+            disabled={!city}
+            value={selectedViz?.name}
+            onChange={onVisualizationChange}
+          />
+        </>
+      ) : null}
+      {showVariantPicker && (
+        <>
+          <div className="m-2 md:m-4" />
+          <VariantPicker
+            variants={selectedViz?.variants}
+            disabled={!city}
+            value={selectedVariant?.name}
+            onChange={onVariantChange}
+          />
+        </>
+      )}
+      <div className="mb-6" />
+      {filters.map((filter) => (
+        <>
+          <ButtonGroup
+            options={filter.map((option) => ({
+              label: option.name,
+              value: option.code,
+              active: true,
+              onClick: () => undefined,
+            }))}
+          />
+          <div className="mb-6" />
+        </>
+      ))}
+      {/* {
         visualization === 'opportunities' && (
           <OpportunityControls
             opportunity={opportunity}
@@ -138,7 +180,7 @@ function MapControls({
             hexagonDisabled={hexagonDisabled}
           />
         )
-      }
+      } */}
       <div className="m-2 md:m-4" />
       <div className="flex justify-between">
         <LayerSwitch
@@ -165,11 +207,7 @@ function MapControls({
         >
           <DirectionsIcon />
         </LayerSwitch>
-        <LayerSwitch
-          disabled={!city}
-          title="Regresar"
-          onChange={resetMap}
-        >
+        <LayerSwitch disabled={!city} title="Regresar" onChange={resetMap}>
           <RestartAltIcon />
         </LayerSwitch>
       </div>

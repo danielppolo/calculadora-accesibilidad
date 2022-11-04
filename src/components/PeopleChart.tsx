@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Chart, { ChartData } from 'chart.js/auto';
 
 interface PeopleChartProps {
-  data: ChartData<"bar">
+  data: ChartData<'bar'>;
 }
 
 function PeopleChart({ data }: PeopleChartProps) {
@@ -19,7 +19,7 @@ function PeopleChart({ data }: PeopleChartProps) {
         options: {
           plugins: {
             legend: {
-              display: false
+              display: false,
             },
           },
           scales: {
@@ -38,7 +38,9 @@ function PeopleChart({ data }: PeopleChartProps) {
         },
       } as const;
 
-      const chartContainer = document.getElementById('people-chart') as HTMLCanvasElement
+      const chartContainer = document.getElementById(
+        'people-chart'
+      ) as HTMLCanvasElement;
 
       if (chartContainer !== null) {
         const chart = new Chart(chartContainer, config);

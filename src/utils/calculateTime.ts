@@ -1,15 +1,18 @@
 const calculateTime = (time: number, transport: string) => {
   if (transport === 'automovil') {
-    return Math.round(time * 1.6927)
+    return Math.round(time * 1.6927);
   }
-  return time
-}
+  return time;
+};
 
-export const calculateTimeForOpp = (opportunities: number, transport: string) => {
+export const calculateTimeForOpp = (
+  opportunities: number,
+  transport: string
+) => {
   if (transport === 'automovil') {
-    return Math.round(opportunities * 0.6927)
+    return Math.round(opportunities * 0.6927);
   }
-  return opportunities
-}
+  return opportunities;
+};
 
-export default calculateTime
+export default calculateTime;

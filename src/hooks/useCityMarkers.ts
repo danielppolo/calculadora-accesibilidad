@@ -5,18 +5,14 @@ import buildCityMarker from 'src/utils/buildCityMarker';
 import useMap from './useMap';
 
 interface UseCityMarkersParams {
-  config: Config,
+  config: Config;
   onClick?: (city: string) => void;
   hide?: boolean;
 }
 
 const popups: Popup[] = [];
 
-const useCityMarkers = ({
-  hide,
-  config,
-  onClick,
-}: UseCityMarkersParams) => {
+const useCityMarkers = ({ hide, config, onClick }: UseCityMarkersParams) => {
   const map = useMap();
   const [cityMarkers, setCityMarkers] = useState<HTMLDivElement[]>([]);
 
@@ -30,7 +26,9 @@ const useCityMarkers = ({
           closeOnClick: false,
         });
         const marker = buildCityMarker(config[cty].color);
-        marker.addEventListener('click', () => { onClick?.(cty); });
+        marker.addEventListener('click', () => {
+          onClick?.(cty);
+        });
         marker.addEventListener('mousemove', () => {
           popup
             .setLngLat(config[cty].coordinates)

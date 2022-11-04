@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Chart, { ChartData } from 'chart.js/auto';
 
 interface CitiesChartProps {
-  data: ChartData<"pie">
+  data: ChartData<'pie'>;
 }
 
 function CitiesChart({ data }: CitiesChartProps) {
@@ -21,7 +21,7 @@ function CitiesChart({ data }: CitiesChartProps) {
           indexAxis: 'y',
           plugins: {
             legend: {
-              display: false
+              display: false,
             },
           },
           scales: {
@@ -42,7 +42,9 @@ function CitiesChart({ data }: CitiesChartProps) {
         },
       } as const;
 
-      const chartContainer = document.getElementById('cities-chart') as HTMLCanvasElement
+      const chartContainer = document.getElementById(
+        'cities-chart'
+      ) as HTMLCanvasElement;
 
       if (chartContainer !== null) {
         const chart = new Chart(chartContainer, config);

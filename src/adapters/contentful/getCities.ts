@@ -11,7 +11,7 @@ const client = contentful.createClient({
 async function getCities(): Promise<City[]> {
   const contentfulCities = await client.getEntries({
     content_type: 'city',
-    include: 5
+    include: 5,
   });
 
   return extractReferences(contentfulCities.items);

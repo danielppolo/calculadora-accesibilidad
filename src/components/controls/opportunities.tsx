@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  OPPORTUNITIES,
-} from 'src/constants';
+import { OPPORTUNITIES } from 'src/constants';
 import Select from 'src/components/Select';
 
 interface OpportunityControlsProps {
@@ -17,7 +15,9 @@ function OpportunityControls({
 }: OpportunityControlsProps) {
   return (
     <Select
-      value={opportunity && OPPORTUNITIES[opportunity as keyof typeof OPPORTUNITIES]}
+      value={
+        opportunity && OPPORTUNITIES[opportunity as keyof typeof OPPORTUNITIES]
+      }
       disabled={cityDisabled}
       options={Object.keys(OPPORTUNITIES).map((op) => ({
         label: OPPORTUNITIES[op as keyof typeof OPPORTUNITIES],
@@ -28,6 +28,5 @@ function OpportunityControls({
     />
   );
 }
-
 
 export default OpportunityControls;

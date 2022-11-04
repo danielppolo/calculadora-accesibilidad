@@ -3,10 +3,10 @@ import { VisualizationVariant } from 'src/types';
 import Select from './Select';
 
 interface VariantPickerProps {
-    variants?: VisualizationVariant[];
-    value?: string;
-    disabled?: boolean;
-    onChange?: (city: string) => void;
+  variants?: VisualizationVariant[];
+  value?: string;
+  disabled?: boolean;
+  onChange?: (city: string) => void;
 }
 
 function VariantPicker({
@@ -21,6 +21,7 @@ function VariantPicker({
 
   return (
     <Select
+      label="Escenario"
       disabled={disabled}
       value={value}
       options={variants.map((variant) => ({

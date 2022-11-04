@@ -19,7 +19,7 @@ const useCityBoundaries = () => {
         'line-opacity': 0.25,
       },
     });
-  }
-}
+  };
+};
 
 export default useCityBoundaries;

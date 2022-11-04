@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from 'react';
 import Chart, { ChartData } from 'chart.js/auto';
 
 interface FacilitiesChartProps {
-  data: ChartData<"bar">
+  data: ChartData<'bar'>;
 }
 
 function FacilitiesChart({ data }: FacilitiesChartProps) {
@@ -19,7 +19,7 @@ function FacilitiesChart({ data }: FacilitiesChartProps) {
         options: {
           plugins: {
             legend: {
-              display: false
+              display: false,
             },
           },
           scales: {
@@ -38,13 +38,14 @@ function FacilitiesChart({ data }: FacilitiesChartProps) {
         },
       } as const;
 
-      const chartContainer = document.getElementById('facilities-chart') as HTMLCanvasElement
+      const chartContainer = document.getElementById(
+        'facilities-chart'
+      ) as HTMLCanvasElement;
 
       if (chartContainer !== null) {
         const chart = new Chart(chartContainer, config);
         setActiveChart(chart);
       }
-
     }
   }, [data]);
 

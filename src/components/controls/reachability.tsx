@@ -31,7 +31,10 @@ function ReachabilityControls({
   return (
     <>
       <Select
-        value={opportunity && OPPORTUNITIES[opportunity as keyof typeof OPPORTUNITIES]}
+        value={
+          opportunity &&
+          OPPORTUNITIES[opportunity as keyof typeof OPPORTUNITIES]
+        }
         disabled={cityDisabled}
         options={Object.keys(OPPORTUNITIES).map((op) => ({
           label: OPPORTUNITIES[op as keyof typeof OPPORTUNITIES],
@@ -63,6 +66,5 @@ function ReachabilityControls({
     </>
   );
 }
-
 
 export default ReachabilityControls;

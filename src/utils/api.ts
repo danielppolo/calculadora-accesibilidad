@@ -17,7 +17,7 @@ export const getCities = async () => {
 
 export const getGrid = async (
   cityCode: string,
-  gridCode: string,
+  gridCode: string
 ): Promise<FeatureDictionary> => {
   try {
     // const response = await fetch(`${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`);
@@ -33,7 +33,7 @@ export const getGrid = async (
 export const getVisualization = async (
   cityCode: string,
   visualizationCode: string,
-  visualizationVariantCode: string,
+  visualizationVariantCode: string
 ): Promise<Record<UUID, any>> => {
   try {
     // const response = await fetch(`${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}.json`);
@@ -50,10 +50,12 @@ export const getVisualizationForFeature = async (
   cityCode: string,
   visualizationCode: string,
   visualizationVariantCode: string,
-  featureId: string,
+  featureId: string
 ) => {
   try {
-    const response = await fetch(`${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}/${featureId}.json`);
+    const response = await fetch(
+      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}/${featureId}.json`
+    );
     const data = await response.json();
     return data;
   } catch (error) {

@@ -6,9 +6,9 @@ import React from 'react';
 import { LngLatLike } from 'mapbox-gl';
 
 export const VISUALIZATIONS = {
-  opportunities: "Oportunidades por hexágono",
-  reachability: "Oportunidades alcanzables dentro de cada hexágono",
-  isochrones: "Área alcanzable por medio de transporte",
+  opportunities: 'Oportunidades por hexágono',
+  reachability: 'Oportunidades alcanzables dentro de cada hexágono',
+  isochrones: 'Área alcanzable por medio de transporte',
 };
 
 export const OPPORTUNITY_TIMEFRAMES = [15, 30, 60] as const;

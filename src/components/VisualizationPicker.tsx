@@ -3,10 +3,10 @@ import { Visualization } from 'src/types';
 import Select from './Select';
 
 interface VisualizationPickerProps {
-    visualizations?: Visualization[];
-    value?: string;
-    disabled?: boolean;
-    onChange?: (city: string) => void;
+  visualizations?: Visualization[];
+  value?: string;
+  disabled?: boolean;
+  onChange?: (city: string) => void;
 }
 
 function VisualizationPicker({
@@ -17,11 +17,14 @@ function VisualizationPicker({
 }: VisualizationPickerProps) {
   return (
     <Select
+      label="Mapa"
       value={value}
-      options={visualizations?.map((viz) => ({
-        label: viz.name,
-        value: viz.code,
-      })) || []}
+      options={
+        visualizations?.map((viz) => ({
+          label: viz.name,
+          value: viz.code,
+        })) || []
+      }
       onChange={onChange}
       disabled={disabled}
       placeholder="Selecciona una visualización"

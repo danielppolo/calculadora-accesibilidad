@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import Gradient from 'javascript-color-gradient';
 import { NUMBER_OF_BUCKETS } from 'src/constants';
-import {
-  getIntervals, getColor, getLegend, convertToGeoJSON,
-} from 'src/utils';
+import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
 import { Map } from 'mapbox-gl';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend } from 'src/types';
@@ -57,8 +55,12 @@ const useLayerManager = () => {
         .setColorGradient(color1, color2)
         .setMidpoint(stepSize)
         .getColors();
-      const colorIntervals = reverseColors ? [...colorGradient].reverse() : colorGradient;
-      const legendColorIntervals = reverseColors ? colorGradient : [...colorGradient].reverse();
+      const colorIntervals = reverseColors
+        ? [...colorGradient].reverse()
+        : colorGradient;
+      const legendColorIntervals = reverseColors
+        ? colorGradient
+        : [...colorGradient].reverse();
       const geojsonFeatures = convertToGeoJSON(features);
 
       map.addSource(id, {
@@ -66,23 +68,30 @@ const useLayerManager = () => {
         data: geojsonFeatures,
       });
 
-      map.addLayer({
-        id,
-        type: 'fill',
-        source: id,
-        layout: {
-          visibility: visible ? 'visible' : 'none',
+      map.addLayer(
+        {
+          id,
+          type: 'fill',
+          source: id,
+          layout: {
+            visibility: visible ? 'visible' : 'none',
+          },
+          // filter: ['>', ['get', property], 0],
+          paint: {
+            'fill-opacity': opacity,
+            'fill-color': solid
+              ? color1
+              : getColor(property, reversedIntervals, colorIntervals),
+            'fill-outline-color': [
+              'case',
+              ['has', 'selected'],
+              ['rgba', 0, 0, 0, 1],
+              ['rgba', 255, 0, 0, 0],
+            ],
+          },
         },
-        // filter: ['>', ['get', property], 0],
-        paint: {
-          'fill-opacity': opacity,
-          'fill-color': solid ? color1 : getColor(property, reversedIntervals, colorIntervals),
-          'fill-outline-color': ['case',
-            ['has', 'selected'], ['rgba', 0, 0, 0, 1],
-            ['rgba', 255, 0, 0, 0],
-          ],
-        },
-      }, beforeId);
+        beforeId
+      );
 
       state[id] = true;
       geojson[id] = geojsonFeatures;
@@ -125,8 +134,8 @@ const useLayerManager = () => {
     hideAll,
     show,
     current,
-    geojson: current ? geojson[current] : {} as FeatureCollection<Polygon>,
-    legend: current ? legends[current] : {} as Legend,
+    geojson: current ? geojson[current] : ({} as FeatureCollection<Polygon>),
+    legend: current ? legends[current] : ({} as Legend),
   };
 };
 export default useLayerManager;

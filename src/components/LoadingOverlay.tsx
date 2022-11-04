@@ -3,12 +3,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
 
 interface LoadingOverlayProps {
-    open: boolean;
+  open: boolean;
 }
 
-function LoadingOverlay({
-  open,
-}: LoadingOverlayProps) {
+function LoadingOverlay({ open }: LoadingOverlayProps) {
   return (
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

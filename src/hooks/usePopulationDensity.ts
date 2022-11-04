@@ -10,7 +10,17 @@ const layer = {
   label: 'Densidad',
 };
 
-const colorIntervals = [['#ffeda0', 10], ['#ffeda0', 20], ['#fed976', 50], ['#feb24c', 100], ['#fd8d3c', 200], ['#fc4e2a', 500], ['#e31a1c', 750], ['hsl(348, 100%, 37%)', 1000], ['#bd0026']] as const;
+const colorIntervals = [
+  ['#ffeda0', 10],
+  ['#ffeda0', 20],
+  ['#fed976', 50],
+  ['#feb24c', 100],
+  ['#fd8d3c', 200],
+  ['#fc4e2a', 500],
+  ['#e31a1c', 750],
+  ['hsl(348, 100%, 37%)', 1000],
+  ['#bd0026'],
+] as const;
 
 const usePopulationDensity = () => {
   const map = useMap();

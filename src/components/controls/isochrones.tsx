@@ -8,7 +8,6 @@ import {
 } from 'src/constants';
 import ButtonGroup from 'src/components/ButtonGroup';
 
-
 interface IsochronesControlsProps {
   transport?: string[];
   timeframe?: number;
@@ -27,7 +26,9 @@ function IsochronesControls({
     <>
       <Tooltip
         title={
-          !hexagonDisabled && transport?.length === 1 ? 'Selecciona dos o más modos de transporte para comparar' : 'Selecciona un hexágono para habilitar transporte'
+          !hexagonDisabled && transport?.length === 1
+            ? 'Selecciona dos o más modos de transporte para comparar'
+            : 'Selecciona un hexágono para habilitar transporte'
         }
         placement="right"
         open={hexagonDisabled || (!hexagonDisabled && transport?.length === 1)}
@@ -66,6 +67,5 @@ function IsochronesControls({
     </>
   );
 }
-
 
 export default IsochronesControls;

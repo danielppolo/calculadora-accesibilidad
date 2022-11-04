@@ -1,11 +1,6 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {
-  City, FeatureDictionary,
-} from 'src/types';
+import { City, FeatureDictionary } from 'src/types';
 import { getGrid, getVisualization } from 'src/utils/api';
 import useConfig from 'src/hooks/data/useConfig';
 import MapLayer from './MapLayer';
@@ -14,17 +9,20 @@ import LoadingOverlay from './LoadingOverlay';
 
 type Code = string;
 
-type MapData = Record<City['code'], {
-  grids: Record<Code, FeatureDictionary>,
-  visualizations: Record<Code, Record<string, Record<Code, any>>>,
-}>;
+type MapData = Record<
+  City['code'],
+  {
+    grids: Record<Code, FeatureDictionary>;
+    visualizations: Record<Code, Record<string, Record<Code, any>>>;
+  }
+>;
 
 type Current = {
-  cityCode?: string,
-  gridCode?: string,
-  visualizationCode?: string,
-  variantCode?: string,
-}
+  cityCode?: string;
+  gridCode?: string;
+  visualizationCode?: string;
+  variantCode?: string;
+};
 
 const generateMapData = (cities: City[]): MapData => {
   const data: MapData = {};
@@ -51,16 +49,17 @@ function Map() {
   const handleVariantChange = async (
     cityCode: string,
     visualizationCode: string,
-    visualizationVariantCode: string,
+    visualizationVariantCode: string
   ) => {
-    const visualization = config[cityCode].visualizations
-      .find((viz) => viz.code === visualizationCode);
+    const visualization = config[cityCode].visualizations.find(
+      (viz) => viz.code === visualizationCode
+    );
     const gridCode = visualization?.grid?.code;
     if (gridCode) {
       const variantData = await getVisualization(
         cityCode,
         visualizationCode,
-        visualizationVariantCode,
+        visualizationVariantCode
       );
       // Object.keys(propertiesData).forEach((id) => {
       //   Object.assign(grid[id].properties, propertiesData[id]);
@@ -70,7 +69,9 @@ function Map() {
       if (!newData[cityCode].visualizations[visualizationCode]) {
         newData[cityCode].visualizations[visualizationCode] = {};
       }
-      newData[cityCode].visualizations[visualizationCode][visualizationVariantCode] = variantData;
+      newData[cityCode].visualizations[visualizationCode][
+        visualizationVariantCode
+      ] = variantData;
       setCurrent({
         cityCode,
         gridCode,
@@ -83,16 +84,21 @@ function Map() {
 
   const handleVisualizationChange = async (
     cityCode: string,
-    visualizationCode: string,
+    visualizationCode: string
   ) => {
     setLoading(true);
-    const visualization = config[cityCode].visualizations
-      .find((viz) => viz.code === visualizationCode);
+    const visualization = config[cityCode].visualizations.find(
+      (viz) => viz.code === visualizationCode
+    );
     const defaultVariantCode = visualization?.defaultVariant?.code;
     const gridCode = visualization?.grid?.code;
 
     if (defaultVariantCode && gridCode) {
-      await handleVariantChange(cityCode, visualizationCode, defaultVariantCode);
+      await handleVariantChange(
+        cityCode,
+        visualizationCode,
+        defaultVariantCode
+      );
     }
 
     if (gridCode) {

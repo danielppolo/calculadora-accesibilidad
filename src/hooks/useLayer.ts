@@ -15,65 +15,69 @@ interface MapboxLayer {
 }
 
 const useLayer = (layerList: MapboxLayer[], title = '') => {
+  const load = useCallback(
+    (map: Map) => {
+      layerList.forEach((layer) => {
+        const { id, sourceLayer, url, type, popup, popupDescriptionKey } =
+          layer;
+        map.addSource(id, {
+          type: 'vector',
+          url,
+          minzoom: 6,
+          maxzoom: 16,
+        });
+        map.addLayer({
+          id,
+          type,
+          source: id,
+          layout: {
+            visibility: 'none',
+          },
+          'source-layer': sourceLayer,
+          paint: layer?.paint as any,
+        });
 
-  const load = useCallback((map: Map) => {
-    layerList.forEach((layer) => {
-      const {
-        id,
-        sourceLayer,
-        url,
-        type,
-        popup,
-        popupDescriptionKey,
-      } = layer;
-      map.addSource(id, {
-        type: 'vector',
-        url: url,
-        minzoom: 6,
-        maxzoom: 16,
+        if (popup && popupDescriptionKey) {
+          const popup = new Popup({
+            className: 'black-popup',
+            closeButton: false,
+            closeOnClick: false,
+            anchor: 'top',
+          });
+          map.on('mouseenter', id, (e) => {
+            const description =
+              popupDescriptionKey &&
+              e?.features?.[0]?.properties?.[popupDescriptionKey];
+            if (description) {
+              popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+            }
+          });
+          map.on('mouseleave', id, () => {
+            popup.remove();
+          });
+        }
       });
-      map.addLayer({
-        id: id,
-        type: type,
-        source: id,
-        layout: {
-          visibility: 'none',
-        },
-        'source-layer': sourceLayer,
-        paint: layer?.paint as any,
+    },
+    [layerList]
+  );
+
+  const show = useCallback(
+    (map: Map) => {
+      layerList.forEach((layer) => {
+        map.setLayoutProperty(layer.id, 'visibility', 'visible');
       });
+    },
+    [layerList]
+  );
 
-      if (popup && popupDescriptionKey) {
-        const popup = new Popup({
-          className: 'black-popup',
-          closeButton: false,
-          closeOnClick: false,
-          anchor: 'top',
-        });
-        map.on('mouseenter', id, (e) => {
-          const description = popupDescriptionKey && e?.features?.[0]?.properties?.[popupDescriptionKey];
-          if (description) {
-            popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
-          }
-        });
-        map.on('mouseleave', id, () => {
-          popup.remove();
-        });
-      }
-    });
-  }, [layerList]);
-
-  const show = useCallback((map: Map) => {
-    layerList.forEach((layer) => {
-      map.setLayoutProperty(layer.id, 'visibility', 'visible');
-    });
-  }, [layerList]);
-
-  const hide = useCallback((map: Map) => {
-    layerList.forEach((layer) => {
-      map.setLayoutProperty(layer.id, 'visibility', 'none');
-    });
-  }, [layerList]);
+  const hide = useCallback(
+    (map: Map) => {
+      layerList.forEach((layer) => {
+        map.setLayoutProperty(layer.id, 'visibility', 'none');
+      });
+    },
+    [layerList]
+  );
 
   const legend: Legend = {
     title,

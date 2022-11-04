@@ -12,15 +12,16 @@ if (accessToken) {
   mapboxgl.accessToken = accessToken;
 }
 
-const createMap = (center: LngLatLike) => new Map({
-  container: 'map',
-  style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
-  center,
-  zoom: 4.5,
-});
+const createMap = (center: LngLatLike) =>
+  new Map({
+    container: 'map',
+    style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
+    center,
+    zoom: 4.5,
+  });
 
 interface MapProviderProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 function MapProvider({ children }: MapProviderProps) {

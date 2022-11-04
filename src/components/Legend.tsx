@@ -14,9 +14,7 @@ interface LegendProps {
   items: LegendItemProps[];
 }
 
-const Swatch = ({
-  color,
-}: SwatchProps) => (
+const Swatch = ({ color }: SwatchProps) => (
   <div className="h-4 w-4" style={{ backgroundColor: color, opacity: 0.5 }} />
 );
 
@@ -27,22 +25,17 @@ const LegendItem = ({ color, label }: LegendItemProps) => (
   </div>
 );
 
-function Legend({
-  title,
-  items,
-}: LegendProps) {
+function Legend({ title, items }: LegendProps) {
   return (
     <Card className="md:w-80 md:max-w-xl h-1/3 z-50 p-4 pt-2 w-full md:h-auto">
       <h3 className="text-base font-semibold pb-2">{title}</h3>
-      {
-        items.map(({ color, label }) => (<LegendItem key={label} color={color} label={label} />))
-      }
+      {items.map(({ color, label }) => (
+        <LegendItem key={label} color={color} label={label} />
+      ))}
     </Card>
   );
 }
 
-Legend.propTypes = {
-
-};
+Legend.propTypes = {};
 
 export default Legend;
