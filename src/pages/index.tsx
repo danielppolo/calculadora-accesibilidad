@@ -7,8 +7,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
 
-import contentful from 'contentful';
-import Image from 'next/image';
+const contentful = require('contentful');
 
 marked.setOptions({
   gfm: true,
@@ -55,15 +54,12 @@ export default function Home() {
     </Backdrop>;
   }
 
+  console.log(data);
   return (
     <div>
       <div className="bg-blue h-16 px-4 text-white flex items-center justify-between relative md:px-16">
         <a href="https://ideamos.mx/">
-          <Image
-            className="h-6"
-            src="/logo-ideamos-blanco.png"
-            alt="Logotipo"
-          />
+          <img className="h-6" src="/logo-ideamos-blanco.png" alt="Logotipo" />
         </a>
         <div id="desktop-menu" className="space-x-8 text-2xl hidden md:block">
           <a
@@ -136,7 +132,7 @@ export default function Home() {
               href="https://mexico.itdp.org"
               rel="noopener noreferrer"
             >
-              <Image className="h-8" src="/itdp.png" alt="ITDP Logo" />
+              <img className="h-8" src="/itdp.png" alt="ITDP Logo" />
             </a>
           </div>
           <div className="space-x-8 flex items-center h-12">
@@ -146,20 +142,20 @@ export default function Home() {
               href="https://www.iadb.org/es"
               rel="noopener noreferrer"
             >
-              <Image className="h-8" src="/bid.png" alt="BID Logo" />
+              <img className="h-8" src="/bid.png" alt="BID Logo" />
             </a>
             <a
               target="_blank"
               href="https://bidlab.org/es"
               rel="noopener noreferrer"
             >
-              <Image className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
+              <img className="h-8" src="/bid-lab.png" alt="BID LAB Logo" />
             </a>
           </div>
         </div>
         <div className="hidden md:block">
           <a href="https://github.com/ITDPmx/calculadora-accesibilidad">
-            <Image className="h-6" src="/github.png" alt="Github Logo" />
+            <img className="h-6" src="/github.png" alt="Github Logo" />
           </a>
         </div>
       </div>
@@ -193,9 +189,9 @@ export default function Home() {
 
           <Grid container spacing={3} className="my-8">
             <Grid item xs={12} lg={3}>
-              <Image
+              <img
                 className="w-full object-cover h-48 mb-8"
-                src={`https:${data?.feature1Image?.fields?.file?.url}`}
+                src={`https:${data?.feature1img?.fields?.file?.url}`}
                 alt="Img"
               />
               <div
@@ -206,9 +202,9 @@ export default function Home() {
               />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <Image
+              <img
                 className="w-full object-cover h-48 mb-8"
-                src={`https:${data?.feature2Image?.fields?.file?.url}`}
+                src={`https:${data?.feature2img?.fields?.file?.url}`}
                 alt="Img"
               />
               <div
@@ -219,9 +215,9 @@ export default function Home() {
               />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <Image
+              <img
                 className="w-full object-cover h-48 mb-8"
-                src={`https:${data?.feature3Image?.fields?.file?.url}`}
+                src={`https:${data?.feature3img?.fields?.file?.url}`}
                 alt="Img"
               />
               <div
@@ -232,9 +228,9 @@ export default function Home() {
               />
             </Grid>
             <Grid item xs={12} lg={3}>
-              <Image
+              <img
                 className="w-full object-cover h-48 mb-8"
-                src={`https:${data?.feature4Image?.fields?.file?.url}`}
+                src={`https:${data?.feature4img?.fields?.file?.url}`}
                 alt="Img"
               />
               <div
@@ -248,9 +244,9 @@ export default function Home() {
 
           <Grid container spacing={4} className="my-16">
             <Grid item xs={12} lg={6}>
-              <Image
+              <img
                 className="object-cover w-full h-full"
-                src={`https:${data?.section1Image?.fields?.file?.url}`}
+                src={`https:${data?.section1img?.fields?.file?.url}`}
                 alt=""
               />
             </Grid>
@@ -265,7 +261,7 @@ export default function Home() {
 
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Image
+              <img
                 className="h-96 w-full object-cover"
                 src={`https:${data?.map?.fields?.file?.url}`}
                 alt="Mapa"
@@ -283,9 +279,9 @@ export default function Home() {
               <Button />
             </Grid>
             <Grid item xs={12} lg={6}>
-              <Image
+              <img
                 className="h-full w-full object-cover"
-                src={`https:${data?.section2Image?.fields?.file?.url}`}
+                src={`https:${data?.section2img?.fields?.file?.url}`}
                 alt="GIF"
               />
             </Grid>
@@ -293,7 +289,7 @@ export default function Home() {
 
           <Grid container spacing={3} className="my-12">
             <Grid item xs={12}>
-              <Image
+              <img
                 className="w-full object-cover h-96"
                 src={`https:${data?.gif?.fields?.file?.url}`}
                 alt=""
@@ -324,10 +320,10 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Image className="h-5" src="/itdp.png" alt="ITDP Logo" />
+            <img className="h-5" src="/itdp.png" alt="ITDP Logo" />
           </a>
           <a href="https://ideamos.mx/">
-            <Image
+            <img
               className="h-3"
               src="/logo-ideamos-blanco.png"
               alt="Logotipo"
@@ -338,14 +334,14 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Image className="h-5" src="/bid.png" alt="BID Logo" />
+            <img className="h-5" src="/bid.png" alt="BID Logo" />
           </a>
           <a
             href="https://bidlab.org/es"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Image className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
+            <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
           </a>
         </div>
       </div>
