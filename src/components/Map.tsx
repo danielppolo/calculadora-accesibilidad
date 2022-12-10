@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { City, FeatureDictionary } from 'src/types';
 import { getGrid, getVisualization } from 'src/utils/api';
 import useConfig from 'src/hooks/data/useConfig';
+import { useRouter } from 'next/router';
 import MapLayer from './MapLayer';
 import MapProvider from './MapProvider';
 import LoadingOverlay from './LoadingOverlay';
@@ -36,6 +37,7 @@ const generateMapData = (cities: City[]): MapData => {
 };
 
 function Map() {
+  const router = useRouter();
   const { config, loading: configLoading } = useConfig();
   const [loading, setLoading] = useState(false);
   const [mapData, setMapData] = useState<MapData>({});
@@ -79,6 +81,15 @@ function Map() {
         variantCode: visualizationVariantCode,
       });
       setMapData(newData);
+
+      router.push(router, {
+        query: {
+          ...router.query,
+          city: cityCode,
+          visualization: visualizationCode,
+          variant: visualizationVariantCode,
+        },
+      });
     }
   };
 

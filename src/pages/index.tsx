@@ -7,6 +7,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const contentful = require('contentful');
 
 marked.setOptions({
@@ -266,6 +267,7 @@ export default function Home() {
                 src={`https:${data?.map?.fields?.file?.url}`}
                 alt="Mapa"
               />
+              <legend className="text-xs text-center">{data?.mapLegend}</legend>
             </Grid>
           </Grid>
 
@@ -294,6 +296,7 @@ export default function Home() {
                 src={`https:${data?.gif?.fields?.file?.url}`}
                 alt=""
               />
+              <legend className="text-xs text-center">{data?.gifLegend}</legend>
             </Grid>
           </Grid>
 

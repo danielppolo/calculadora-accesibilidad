@@ -94,8 +94,6 @@ export type VisualizationVariant = {
   type: 'isocrone' | 'static';
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
-  // Controles activados por default
-  defaultProperties: Property[];
 };
 
 export type Filter = {
@@ -105,6 +103,8 @@ export type Filter = {
   code: string;
   // Controles activados por default
   properties: Property[];
+  // Controles activados por default
+  defaultProperty: Property;
 };
 
 export type Visualization = {

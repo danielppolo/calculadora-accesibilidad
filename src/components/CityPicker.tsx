@@ -11,7 +11,7 @@ interface CityPickerProps {
 function CityPicker({ cities, value, onChange }: CityPickerProps) {
   const sortedCities =
     cities?.sort((a, b) => a.name.localeCompare(b.name)) || [];
-  console.log(sortedCities);
+
   return (
     <Select
       label="Ciudad"

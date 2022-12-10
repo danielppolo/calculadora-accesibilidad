@@ -20,7 +20,7 @@
         "@mui/styled-engine-sc": "^5.0.0",
         "@types/geojson": "^7946.0.10",
         "chart.js": "^3.5.1",
-        "contentful": "^9.2.5",
+        "contentful": "^9.2.14",
         "javascript-color-gradient": "^2.4.4",
         "mapbox-gl": "^2.10.0",
         "marked": "^4.0.8",

@@ -10,6 +10,7 @@ import ReachabilityControls from 'src/components/controls/reachability';
 import IsochronesControls from 'src/components/controls/isochrones';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { City, Property } from 'src/types';
+import { useRouter } from 'next/router';
 import CityPicker from './CityPicker';
 import VisualizationPicker from './VisualizationPicker';
 import VariantPicker from './VariantPicker';
@@ -43,24 +44,6 @@ interface MapControlsProps {
   resetMap?: () => void;
 }
 
-const buildFilters = (
-  filterData: Record<string, any>,
-  properties: Record<string, Property>
-) => {
-  // TODO: Refactor
-  const firstLevelKeys = Object.keys(filterData);
-  const secondLevelKeys = Object.keys(filterData[firstLevelKeys[0]]);
-  const thirdLevelKeys = Object.keys(
-    filterData[firstLevelKeys[0]][secondLevelKeys[0]]
-  );
-
-  return [
-    firstLevelKeys.map((key) => properties[key]).filter(Boolean),
-    secondLevelKeys.map((key) => properties[key]).filter(Boolean),
-    thirdLevelKeys.map((key) => properties[key]).filter(Boolean),
-  ];
-};
-
 function MapControls({
   cityCode,
   visualizationCode,
@@ -88,6 +71,7 @@ function MapControls({
   onRoadsLayerChange,
   resetMap,
 }: MapControlsProps) {
+  const router = useRouter();
   const selectedViz = city?.visualizations.find(
     (viz) => viz.code === visualizationCode
   );
@@ -96,18 +80,6 @@ function MapControls({
   );
   const showVisualizationPicker = city?.visualizations?.length;
   const showVariantPicker = selectedViz?.variants?.length;
-  const filters = useMemo(() => {
-    const properties: Record<string, Property> = {};
-
-    if (selectedViz) {
-      selectedViz.properties.forEach((property) => {
-        properties[property.code] = property;
-      });
-
-      return buildFilters(filterData, properties);
-    }
-    return [];
-  }, [filterData, selectedViz]);
 
   return (
     <div className="fixed top-2 left-2 right-2 p-4 z-30 backdrop-blur-2xl md:top-0 md:left-0 bottom-0 md:w-80 md:max-w-xl">
@@ -134,18 +106,27 @@ function MapControls({
           />
         </>
       )}
-      <div className="mb-6" />
-      {filters.map((filter) => (
+      {selectedViz?.filters?.map((filter) => (
         <>
-          <ButtonGroup
-            options={filter.map((option) => ({
+          <div className="m-2 md:m-4" />
+          <Select
+            label={filter.name}
+            // disabled={disabled}
+            value={filter.defaultProperty.name}
+            options={filter.properties.map((option) => ({
               label: option.name,
               value: option.code,
-              active: true,
-              onClick: () => undefined,
             }))}
+            onChange={(value) =>
+              router.push(router, {
+                query: {
+                  ...router.query,
+                  [filter.code]: value,
+                },
+              })
+            }
+            placeholder="Selecciona un escenario"
           />
-          <div className="mb-6" />
         </>
       ))}
       {/* {

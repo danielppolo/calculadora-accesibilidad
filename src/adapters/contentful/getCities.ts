@@ -1,6 +1,7 @@
 import { City } from 'src/types';
 import extractReferences from 'src/utils/extractContentfulReferences';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const contentful = require('contentful');
 
 const client = contentful.createClient({
