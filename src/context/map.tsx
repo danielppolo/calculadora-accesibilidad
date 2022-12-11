@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import mapboxgl, { LngLatLike, Map } from 'mapbox-gl';
 
 import { MEXICO_COORDINATES } from 'src/constants';
-import MapContext from 'src/context/MapContext';
-
 // import useCityBoundaries from 'src/hooks/useCityBoundaries';
+
+interface Context {
+  map: mapboxgl.Map | undefined;
+}
+
+interface MapProviderProps {
+  children: React.ReactNode;
+}
+
+const MapContext = React.createContext<Context>({ map: undefined });
 
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN;
 
@@ -19,10 +27,6 @@ const createMap = (center: LngLatLike) =>
     center,
     zoom: 4.5,
   });
-
-interface MapProviderProps {
-  children: React.ReactNode;
-}
 
 function MapProvider({ children }: MapProviderProps) {
   const [map, setMap] = useState<Map | undefined>(undefined);
@@ -48,5 +52,10 @@ function MapProvider({ children }: MapProviderProps) {
     </MapContext.Provider>
   );
 }
+
+/**
+ * Map is present because provider does not render children until map is loaded.
+ */
+export const useMap = () => useContext(MapContext).map as mapboxgl.Map;
 
 export default MapProvider;

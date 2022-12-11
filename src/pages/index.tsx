@@ -55,7 +55,6 @@ export default function Home() {
     </Backdrop>;
   }
 
-  console.log(data);
   return (
     <div>
       <div className="bg-blue h-16 px-4 text-white flex items-center justify-between relative md:px-16">

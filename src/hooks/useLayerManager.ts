@@ -2,10 +2,9 @@ import { useState } from 'react';
 import Gradient from 'javascript-color-gradient';
 import { NUMBER_OF_BUCKETS } from 'src/constants';
 import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
-import { Map } from 'mapbox-gl';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend } from 'src/types';
-import useMap from './useMap';
+import { useMap } from 'src/context/map';
 
 interface AddOptions {
   legendTitle: string;

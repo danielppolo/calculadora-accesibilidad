@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { Legend } from 'src/types';
-import useMap from './useMap';
+import { useMap } from 'src/context/map';
 
 const MARGINALIZATION_TILES = [
   {

@@ -11,15 +11,13 @@ import IsochronesControls from 'src/components/controls/isochrones';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { City, Property } from 'src/types';
 import { useRouter } from 'next/router';
-import CityPicker from './CityPicker';
-import VisualizationPicker from './VisualizationPicker';
-import VariantPicker from './VariantPicker';
-import ButtonGroup from './ButtonGroup';
+import { useMapParams } from 'src/context/mapParams';
+import CityPicker from '../CityPicker';
+import VisualizationPicker from '../VisualizationPicker';
+import VariantPicker from '../VariantPicker';
+import ButtonGroup from '../ButtonGroup';
 
-interface MapControlsProps {
-  cityCode?: string;
-  visualizationCode?: string;
-  variantCode?: string;
+interface ControlsProps {
   filterData?: any;
   onCityChange?: (cityCode: string) => void;
   onVariantChange?: (variantCode: string) => void;
@@ -44,10 +42,7 @@ interface MapControlsProps {
   resetMap?: () => void;
 }
 
-function MapControls({
-  cityCode,
-  visualizationCode,
-  variantCode,
+function Controls({
   filterData,
 
   visualization,
@@ -70,19 +65,20 @@ function MapControls({
   onOpportunityChange,
   onRoadsLayerChange,
   resetMap,
-}: MapControlsProps) {
+}: ControlsProps) {
   const router = useRouter();
+  const current = useMapParams();
   const selectedViz = city?.visualizations.find(
-    (viz) => viz.code === visualizationCode
+    (viz) => viz.code === current.visualizationCode
   );
   const selectedVariant = selectedViz?.variants.find(
-    (variant) => variant.code === variantCode
+    (variant) => variant.code === current.variantCode
   );
   const showVisualizationPicker = city?.visualizations?.length;
   const showVariantPicker = selectedViz?.variants?.length;
 
   return (
-    <div className="fixed top-2 left-2 right-2 p-4 z-30 backdrop-blur-2xl md:top-0 md:left-0 bottom-0 md:w-80 md:max-w-xl">
+    <>
       <CityPicker cities={cities} value={city?.name} onChange={onCityChange} />
       {showVisualizationPicker ? (
         <>
@@ -193,8 +189,8 @@ function MapControls({
         </LayerSwitch>
       </div>
       <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
-    </div>
+    </>
   );
 }
 
-export default MapControls;
+export default Controls;

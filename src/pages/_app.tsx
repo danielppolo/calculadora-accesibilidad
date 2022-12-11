@@ -2,11 +2,23 @@
 import React from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-
+import { QueryClientProvider, QueryClient } from 'react-query';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'src/styles/globals.css';
 import 'src/styles/overrides.css';
 import 'tailwindcss/tailwind.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchIntervalInBackground: false,
+      staleTime: Infinity,
+    },
+  },
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -34,7 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           media="all"
         />
       </Head>
-      <Component {...pageProps} />
+      <QueryClientProvider client={queryClient}>
+        <Component {...pageProps} />
+      </QueryClientProvider>
       <div
         id="popup"
         className="bg-gray-800 text-white fixed rounded-sm p-2 text-xs"

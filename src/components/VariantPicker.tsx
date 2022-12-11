@@ -1,34 +1,32 @@
 import React from 'react';
-import { VisualizationVariant } from 'src/types';
+import { useMapParams } from 'src/context/mapParams';
+import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
+import useCurrentVisualizationVariant from 'src/hooks/data/useCurrentVisualizationVariant';
 import Select from './Select';
 
-interface VariantPickerProps {
-  variants?: VisualizationVariant[];
-  value?: string;
-  disabled?: boolean;
-  onChange?: (city: string) => void;
-}
-
-function VariantPicker({
-  variants = [],
-  value,
-  disabled,
-  onChange,
-}: VariantPickerProps) {
-  if (variants?.length <= 1) {
-    return null;
-  }
+function VariantPicker() {
+  const { onVariantChange, cityCode, visualizationCode } = useMapParams();
+  const currentVisualization = useCurrentVisualization();
+  const variants = currentVisualization?.variants;
+  const currentVisualizationVariant = useCurrentVisualizationVariant();
+  const isDisabled = !cityCode;
 
   return (
     <Select
       label="Escenario"
-      disabled={disabled}
-      value={value}
-      options={variants.map((variant) => ({
-        label: variant.name,
-        value: variant.code,
-      }))}
-      onChange={onChange}
+      disabled={isDisabled}
+      value={currentVisualizationVariant?.name}
+      options={
+        variants?.map((variant) => ({
+          label: variant.name,
+          value: variant.code,
+        })) ?? []
+      }
+      onChange={(nextVariant) => {
+        if (cityCode && visualizationCode) {
+          onVariantChange?.(cityCode, visualizationCode, nextVariant);
+        }
+      }}
       placeholder="Selecciona un escenario"
     />
   );

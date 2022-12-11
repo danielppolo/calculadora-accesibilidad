@@ -1,22 +1,23 @@
 import { Popup, Marker } from 'mapbox-gl';
 import { useEffect, useState } from 'react';
-import { Config } from 'src/types';
 import buildCityMarker from 'src/utils/buildCityMarker';
-import useMap from './useMap';
-
-interface UseCityMarkersParams {
-  config: Config;
-  onClick?: (city: string) => void;
-  hide?: boolean;
-}
+import { useMap } from 'src/context/map';
+import { useMapParams } from 'src/context/mapParams';
+import useConfig from './data/useConfig';
 
 const popups: Popup[] = [];
 
-const useCityMarkers = ({ hide, config, onClick }: UseCityMarkersParams) => {
+const useCityMarkers = () => {
   const map = useMap();
+  const { data: config } = useConfig();
+  const { cityCode, onCityChange } = useMapParams();
   const [cityMarkers, setCityMarkers] = useState<HTMLDivElement[]>([]);
 
   useEffect(() => {
+    if (!config) {
+      return;
+    }
+
     const display = () => {
       const markers: HTMLDivElement[] = [];
       Object.keys(config).forEach((cty) => {
@@ -27,7 +28,7 @@ const useCityMarkers = ({ hide, config, onClick }: UseCityMarkersParams) => {
         });
         const marker = buildCityMarker(config[cty].color);
         marker.addEventListener('click', () => {
-          onClick?.(cty);
+          onCityChange?.(cty);
         });
         marker.addEventListener('mousemove', () => {
           popup
@@ -51,12 +52,12 @@ const useCityMarkers = ({ hide, config, onClick }: UseCityMarkersParams) => {
       setCityMarkers([]);
     };
 
-    if (hide && cityMarkers.length > 0) {
+    if (cityCode && cityMarkers.length > 0) {
       remove();
-    } else if (config && !hide && !cityMarkers.length) {
+    } else if (config && !cityCode && !cityMarkers.length) {
       display();
     }
-  }, [config, cityMarkers, cityMarkers.length, hide, map, onClick]);
+  }, [config, cityMarkers, cityMarkers.length, map, onCityChange, cityCode]);
 };
 
 export default useCityMarkers;

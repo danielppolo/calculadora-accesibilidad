@@ -1,21 +1,21 @@
 import React from 'react';
-import { City } from 'src/types';
+import { useMapParams } from 'src/context/mapParams';
+import useConfig from 'src/hooks/data/useConfig';
+import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import Select from './Select';
 
-interface CityPickerProps {
-  cities?: City[];
-  value?: string;
-  onChange?: (city: string) => void;
-}
-
-function CityPicker({ cities, value, onChange }: CityPickerProps) {
+function CityPicker() {
+  const { data: config } = useConfig();
+  const currentCity = useCurrentCity();
+  const { onCityChange } = useMapParams();
+  const cities = config ? Object.values(config) : [];
   const sortedCities =
     cities?.sort((a, b) => a.name.localeCompare(b.name)) || [];
 
   return (
     <Select
       label="Ciudad"
-      value={value}
+      value={currentCity?.name}
       options={
         sortedCities.map((city) => ({
           label: city.name,
@@ -23,7 +23,7 @@ function CityPicker({ cities, value, onChange }: CityPickerProps) {
           category: city.country.name,
         })) ?? []
       }
-      onChange={onChange}
+      onChange={onCityChange}
       placeholder="Selecciona una ciudad"
     />
   );

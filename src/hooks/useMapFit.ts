@@ -1,7 +1,7 @@
 import { Feature, Polygon } from 'geojson';
 import { LngLatBounds } from 'mapbox-gl';
 import { useEffect } from 'react';
-import useMap from './useMap';
+import { useMap } from 'src/context/map';
 
 const useMapFit = (features?: Feature<Polygon>[]) => {
   const map = useMap();

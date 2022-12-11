@@ -15,44 +15,72 @@ export const getCities = async () => {
   }
 };
 
+export type GetGridParams = {
+  cityCode?: string;
+  gridCode?: string;
+};
+
+export type GetGridReturn = FeatureDictionary;
+
 export const getGrid = async (
-  cityCode: string,
-  gridCode: string
-): Promise<FeatureDictionary> => {
+  params: GetGridParams
+): Promise<GetGridReturn> => {
   try {
-    // const response = await fetch(`${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`);
-    // const data = await response.json();
     //   FIXME: Remove this stub
     return grid as any;
+
+    // const response = await fetch(`${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`);
+    // const data = await response.json();
     return data;
   } catch (error) {
     return {};
   }
 };
+
+export type GetVisualizationParams = {
+  cityCode?: string;
+  visualizationCode?: string;
+  visualizationVariantCode?: string;
+};
+
+export type GetVisualizationReturn = Record<UUID, any>;
 
 export const getVisualization = async (
-  cityCode: string,
-  visualizationCode: string,
-  visualizationVariantCode: string
-): Promise<Record<UUID, any>> => {
+  params: GetVisualizationParams
+): Promise<GetVisualizationReturn> => {
   try {
-    // const response = await fetch(`${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}.json`);
-    // const data = await response.json();
     //   FIXME: Remove this stub
     return visualization;
+
+    const response = await fetch(
+      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}.json`
+    );
+    const data = await response.json();
     return data;
   } catch (error) {
     return {};
   }
 };
 
-export const getVisualizationForFeature = async (
-  cityCode: string,
-  visualizationCode: string,
-  visualizationVariantCode: string,
-  featureId: string
-) => {
+export type GetVisualizationForFeatureParams = {
+  cityCode?: string;
+  visualizationCode?: string;
+  visualizationVariantCode?: string;
+  featureId?: string;
+};
+
+export type GetVisualizationForFeatureReturn = Record<string, any>;
+
+export const getVisualizationForFeature = async ({
+  cityCode,
+  visualizationCode,
+  visualizationVariantCode,
+  featureId,
+}: GetVisualizationForFeatureParams): Promise<GetVisualizationForFeatureReturn> => {
   try {
+    //   FIXME: Remove this stub
+    return visualization;
+
     const response = await fetch(
       `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}/${featureId}.json`
     );

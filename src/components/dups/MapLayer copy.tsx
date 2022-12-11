@@ -12,12 +12,12 @@ import {
 } from 'src/constants';
 import useLayerManager from 'src/hooks/useLayerManager';
 import LegendBar from 'src/components/LegendBar';
-import useBaseGrid from 'src/hooks/useBaseGrid';
+import useBaseGrid from 'src/hooks/useGridRender';
 import useMapFit from 'src/hooks/useMapFit';
 import useCityData from 'src/hooks/useCityData';
 import ControlsCard from 'src/components/ControlsCard';
 import useMarginalizationLayers from 'src/hooks/useMarginalizationLayers';
-import MapControls from 'src/components/MapControls';
+import MapControls from 'src/components/Controls';
 import CitiesOverview from 'src/components/CitiesOverview';
 import getHexagonId from 'src/utils/getHexagonId';
 import calculateTime, { calculateTimeForOpp } from 'src/utils/calculateTime';
@@ -29,27 +29,14 @@ import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { City, Code, Config, FeatureDictionary } from 'src/types';
 import { getGridId } from 'src/utils/getLayerIds';
-import useMap from 'src/hooks/useMap';
+import { useMap } from 'src/context/map';
 import { getVisualizationForFeature } from 'src/utils/api';
+import { useMapParams } from 'src/context/mapParams';
 
 type Params = {
-  visualization?: string;
-  opportunity?: string;
-  hexagon?: {
-    id: string;
-  };
-  transport: string[];
-  timeframe?: number;
   agebs: boolean;
   density: boolean;
   roads: boolean;
-};
-
-type Current = {
-  cityCode?: string;
-  gridCode?: string;
-  visualizationCode?: string;
-  variantCode?: string;
 };
 
 type MapData = Record<
@@ -61,17 +48,8 @@ type MapData = Record<
 >;
 
 interface MapLayerProps {
-  current?: Current;
   mapData?: MapData;
   config?: Config;
-  onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
-  onCityChange?: (cityCode?: string) => void;
-  onVariantChange?: (
-    cityCode: string,
-    visualizationCode: string,
-    variantCode: string
-  ) => void;
-  onLoading?: (loading: boolean) => void;
 }
 
 type CustomChartData = Record<
@@ -95,11 +73,6 @@ const defaultTransport = TRANSPORTS[0];
 const defaultTimeFrame = 30;
 
 const defaultParams: Params = {
-  visualization: undefined,
-  opportunity: undefined,
-  hexagon: undefined,
-  transport: [],
-  timeframe: undefined,
   agebs: false,
   density: false,
   roads: false,
@@ -114,15 +87,8 @@ const popup = new Popup({
 let currentTimeFrame = defaultTimeFrame;
 let currentTransport: string[] = [defaultTransport];
 
-function MapLayer({
-  config = {},
-  current = {},
-  mapData = {},
-  onCityChange,
-  onVisualizationChange,
-  onVariantChange,
-  onLoading,
-}: MapLayerProps) {
+function MapLayer({ config = {}, mapData = {} }: MapLayerProps) {
+  const current = useMapParams();
   const grid = useMemo(
     () =>
       current.cityCode && current.gridCode
@@ -197,7 +163,7 @@ function MapLayer({
         show(cityOpportunityId(nextOpportunity, city));
         setParams({
           ...params,
-          opportunity: nextOpportunity,
+          // opportunity: nextOpportunity,
           hexagon: undefined,
           agebs: false,
           timeframe: undefined,
@@ -224,10 +190,10 @@ function MapLayer({
       });
 
       hideAll();
-      onCityChange?.(nextCity);
+      current.onCityChange?.(nextCity);
       resetParams();
     },
-    [config, hideAll, map, onCityChange]
+    [map, config, hideAll, current]
   );
 
   useCityMarkers({
@@ -243,7 +209,7 @@ function MapLayer({
       duration: 2000,
     });
     hideAll();
-    onCityChange?.(undefined);
+    current.onCityChange?.(undefined);
     resetParams();
   };
 
@@ -321,7 +287,7 @@ function MapLayer({
       // show(map, cityOpportunityId(defaultOpportunity, city));
       setParams({
         ...params,
-        opportunity: defaultOpportunity,
+        // opportunity: defaultOpportunity,
       });
     }
   }, [features]);
@@ -329,7 +295,7 @@ function MapLayer({
   useEffect(() => {
     if (
       features.length > 0 &&
-      params.visualization === 'isochrones' &&
+      current.visualization === 'relative' &&
       current.cityCode &&
       current.gridCode
     ) {
@@ -343,7 +309,8 @@ function MapLayer({
             current.cityCode &&
             current.variantCode
           ) {
-            onLoading?.(true);
+            // FIXME:
+            // onLoading?.(true);
             const feature = event.features?.[0]?.properties;
             const featureId = event.features?.[0]?.properties?.h3_ddrs;
             const response = await getVisualizationForFeature(
@@ -464,7 +431,8 @@ function MapLayer({
               });
             });
             setChartData(incomingChartData);
-            onLoading?.(false);
+            // FIXME:
+            // onLoading?.(false);
             hideAll();
             getCurrentTransport().forEach((transport) => {
               show(getHexagonId(featureId, transport, getCurrentTimeFrame()));
@@ -492,7 +460,6 @@ function MapLayer({
     current.visualizationCode,
     current.variantCode,
     current.gridCode,
-    onLoading,
     hideAll,
     grid,
     add,
@@ -501,7 +468,7 @@ function MapLayer({
 
   const handleVariantChange = (variantCode: string) => {
     if (current.cityCode && current.visualizationCode) {
-      onVariantChange?.(
+      current.onVariantChange?.(
         current.cityCode,
         current.visualizationCode,
         variantCode
@@ -700,7 +667,7 @@ function MapLayer({
     }
 
     if (current.cityCode) {
-      onVisualizationChange?.(current.cityCode, visualizationCode);
+      current.onVisualizationChange?.(current.cityCode, visualizationCode);
     }
   };
 
@@ -745,9 +712,6 @@ function MapLayer({
   return (
     <>
       <MapControls
-        cityCode={current.cityCode}
-        visualizationCode={current.visualizationCode}
-        variantCode={current.variantCode}
         onVariantChange={handleVariantChange}
         onVisualizationChange={handleVisualizationChange}
         onCityChange={handleCityChange}
@@ -790,7 +754,7 @@ function MapLayer({
         density={params.density}
         agebLegend={agebLegend}
         ageb={params.agebs}
-        transportActive={params.transport.length === 1}
+        // transportActive={params.transport.length === 1}
         geojson={geojson}
         legendTitle={legend.title}
         legendDictionary={legend.intervals}
