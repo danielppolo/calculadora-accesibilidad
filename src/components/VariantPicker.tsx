@@ -5,7 +5,10 @@ import useCurrentVisualizationVariant from 'src/hooks/data/useCurrentVisualizati
 import Select from './Select';
 
 function VariantPicker() {
-  const { onVariantChange, cityCode, visualizationCode } = useMapParams();
+  const {
+    onVariantChange,
+    state: { cityCode, visualizationCode },
+  } = useMapParams();
   const currentVisualization = useCurrentVisualization();
   const variants = currentVisualization?.variants;
   const currentVisualizationVariant = useCurrentVisualizationVariant();

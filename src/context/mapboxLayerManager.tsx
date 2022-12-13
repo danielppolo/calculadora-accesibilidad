@@ -5,6 +5,7 @@ import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend } from 'src/types';
 import { useMap } from 'src/context/map';
+import popup from 'src/utils/popup';
 
 interface AddOptions {
   legendTitle: string;
@@ -58,6 +59,43 @@ const geojson: Record<string, FeatureCollection<Polygon>> = {};
 function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   const map = useMap();
   const [current, setCurrent] = useState<string | undefined>(undefined);
+
+  const handleMouseEnter = useCallback(
+    (event: mapboxgl.MapMouseEvent) => {
+      popup
+        .setLngLat(event.lngLat)
+        .setHTML(`${event?.features?.[0]?.properties?.description}`)
+        .addTo(map);
+    },
+    [map]
+  );
+
+  const handleMouseMove = useCallback((event: mapboxgl.MapMouseEvent) => {
+    popup
+      .setLngLat(event.lngLat)
+      .setHTML(`${event?.features?.[0]?.properties?.description}`);
+  }, []);
+
+  const handleMouseLeave = useCallback((e: mapboxgl.MapMouseEvent) => {
+    popup.remove();
+  }, []);
+
+  const unregisterMouseListeners = useCallback(() => {
+    Object.keys(state).forEach((id) => {
+      map.off('mouseenter', id, handleMouseEnter);
+      map.off('mousemove', id, handleMouseMove);
+      map.off('mouseleave', id, handleMouseLeave);
+    });
+  }, [handleMouseEnter, handleMouseLeave, handleMouseMove, map]);
+
+  const registerMouseListeners = useCallback(
+    (id: string) => {
+      map.on('mouseenter', id, handleMouseEnter);
+      map.on('mousemove', id, handleMouseMove);
+      map.on('mouseleave', id, handleMouseLeave);
+    },
+    [handleMouseEnter, handleMouseLeave, handleMouseMove, map]
+  );
 
   const add = useCallback(
     ({
@@ -137,17 +175,30 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     },
     [map]
   );
+  const hideAll = useCallback(() => {
+    if (map) {
+      Object.keys(state).forEach((layerId) => {
+        map.setLayoutProperty(layerId, 'visibility', 'none');
+      });
+    } else {
+      // TODO: Sentry
+    }
+  }, [map]);
 
   const show = useCallback(
     (id?: string) => {
       if (id && id in state && map) {
+        hideAll();
+        unregisterMouseListeners();
+        registerMouseListeners(id);
+
         map.setLayoutProperty(id, 'visibility', 'visible');
         setCurrent(id);
       } else {
         // TODO: Sentry
       }
     },
-    [map]
+    [hideAll, map, registerMouseListeners, unregisterMouseListeners]
   );
 
   const hide = useCallback(
@@ -160,16 +211,6 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     },
     [map]
   );
-
-  const hideAll = useCallback(() => {
-    if (map) {
-      Object.keys(state).forEach((layerId) => {
-        map.setLayoutProperty(layerId, 'visibility', 'none');
-      });
-    } else {
-      // TODO: Sentry
-    }
-  }, [map]);
 
   return (
     <MapboxLayerManagerContext.Provider

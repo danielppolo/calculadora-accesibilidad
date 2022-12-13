@@ -20,7 +20,10 @@ import ButtonGroup from './ButtonGroup';
 
 function Controls() {
   const currentCity = useCurrentCity();
-  const { onFiltersChange, filters } = useMapParams();
+  const {
+    onFiltersChange,
+    state: { filters },
+  } = useMapParams();
   const currentVisualization = useCurrentVisualization();
   const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = currentVisualization?.variants?.length;

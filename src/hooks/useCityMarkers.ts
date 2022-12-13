@@ -10,7 +10,10 @@ const popups: Popup[] = [];
 const useCityMarkers = () => {
   const map = useMap();
   const { data: config } = useConfig();
-  const { cityCode, onCityChange } = useMapParams();
+  const {
+    state: { cityCode },
+    onCityChange,
+  } = useMapParams();
   const [cityMarkers, setCityMarkers] = useState<HTMLDivElement[]>([]);
 
   useEffect(() => {

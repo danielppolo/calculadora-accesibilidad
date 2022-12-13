@@ -67,12 +67,12 @@ function Controls({
   resetMap,
 }: ControlsProps) {
   const router = useRouter();
-  const current = useMapParams();
+  const { state } = useMapParams();
   const selectedViz = city?.visualizations.find(
-    (viz) => viz.code === current.visualizationCode
+    (viz) => viz.code === state.visualizationCode
   );
   const selectedVariant = selectedViz?.variants.find(
-    (variant) => variant.code === current.variantCode
+    (variant) => variant.code === state.variantCode
   );
   const showVisualizationPicker = city?.visualizations?.length;
   const showVariantPicker = selectedViz?.variants?.length;

@@ -5,7 +5,7 @@ import { generateVariantId } from 'src/utils';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 
-interface MapParamsState {
+export interface MapParamsState {
   gridCode?: string;
   cityCode?: string;
   visualizationCode?: string;
@@ -13,7 +13,8 @@ interface MapParamsState {
   hexagonId?: string;
   filters?: Record<string, string>;
 }
-interface MapParamsContext extends MapParamsState {
+interface MapParamsContext {
+  state: MapParamsState;
   onVariantChange?: (
     cityCode: string,
     visualizationCode: string,
@@ -37,6 +38,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const { data: config } = useConfig();
   const [current, setCurrent] = useState<MapParamsState>({});
   const { show, hideAll } = useMapboxLayerManager();
+
   const handleVariantChange = useCallback(
     (cityCode: string, visualizationCode: string, variantCode: string) => {
       const visualization = config?.[cityCode].visualizations.find(
@@ -129,7 +131,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           filters: nextFilters,
         });
 
-        hideAll();
         show(id);
 
         return {
@@ -138,7 +139,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         };
       });
     },
-    [show, hideAll]
+    [show]
   );
 
   const handleReset = () => {
@@ -162,7 +163,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   return (
     <MapParamsContext.Provider
       value={{
-        ...current,
+        state: current,
         onVariantChange: handleVariantChange,
         onVisualizationChange: handleVisualizationChange,
         onCityChange: handleCityChange,

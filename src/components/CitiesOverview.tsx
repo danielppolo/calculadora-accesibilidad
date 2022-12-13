@@ -6,7 +6,9 @@ import useConfig from 'src/hooks/data/useConfig';
 
 function CitiesOverview() {
   const { data: config } = useConfig();
-  const { cityCode } = useMapParams();
+  const {
+    state: { cityCode },
+  } = useMapParams();
   const cities = Object.values(config ?? {});
 
   if (cityCode) return null;
