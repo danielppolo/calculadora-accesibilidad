@@ -23,6 +23,10 @@ interface AddOptions {
   solid?: boolean;
 }
 
+type MapMouseEvent = mapboxgl.MapMouseEvent & {
+  features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
+} & mapboxgl.EventData;
+
 interface MapboxLayerManagerParams {
   state?: Record<string, boolean>;
   current?: string | undefined;
@@ -61,7 +65,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   const [current, setCurrent] = useState<string | undefined>(undefined);
 
   const handleMouseEnter = useCallback(
-    (event: mapboxgl.MapMouseEvent) => {
+    (event: MapMouseEvent) => {
       popup
         .setLngLat(event.lngLat)
         .setHTML(`${event?.features?.[0]?.properties?.description}`)
@@ -70,13 +74,13 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     [map]
   );
 
-  const handleMouseMove = useCallback((event: mapboxgl.MapMouseEvent) => {
+  const handleMouseMove = useCallback((event: MapMouseEvent) => {
     popup
       .setLngLat(event.lngLat)
       .setHTML(`${event?.features?.[0]?.properties?.description}`);
   }, []);
 
-  const handleMouseLeave = useCallback((e: mapboxgl.MapMouseEvent) => {
+  const handleMouseLeave = useCallback(() => {
     popup.remove();
   }, []);
 

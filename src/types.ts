@@ -31,13 +31,6 @@ export type Grid = {
   size: number;
 };
 
-export type Transport = {
-  // Nombre del transporte. Visible para el usuario.
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar el transport en las distintas partes del código.
-  code: string;
-};
-
 export type DataProvider = {
   // Código único en formato snake_case. Se usa para referenciar el proveedor de datos en las distintas partes del código.
   code: string;
@@ -93,7 +86,7 @@ export type VisualizationVariant = {
   // Buckets para filtrar los valores. (En caso de requerir filtro)
   buckets: number[];
   // Tipo de visualización. Determina su display e interactividad.
-  type: 'isocrone' | 'static';
+  type: 'relative' | 'fixed';
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
 };

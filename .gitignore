@@ -35,5 +35,6 @@ yarn-error.log*
 
 # data
 data
+data_aws
 
 aws

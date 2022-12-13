@@ -15,19 +15,29 @@ export interface MapParamsState {
 }
 interface MapParamsContext {
   state: MapParamsState;
-  onVariantChange?: (
+  onVariantChange: (
     cityCode: string,
     visualizationCode: string,
     variantCode: string
   ) => void;
-  onVisualizationChange?: (cityCode: string, visualizationCode: string) => void;
-  onCityChange?: (cityCode?: string) => void;
-  onHexagonChange?: (hexagonId: string) => void;
-  onFiltersChange?: (filters: Record<string, string>) => void;
-  onReset?: () => void;
+  onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
+  onCityChange: (cityCode: string) => void;
+  onHexagonChange: (hexagonId: string) => void;
+  onFiltersChange: (filters: Record<string, string>) => void;
+  onReset: () => void;
 }
 
-const MapParamsContext = React.createContext<MapParamsContext>({});
+const initialContext = {
+  state: {},
+  onVariantChange: () => undefined,
+  onVisualizationChange: () => undefined,
+  onCityChange: () => undefined,
+  onHexagonChange: () => undefined,
+  onFiltersChange: () => undefined,
+  onReset: () => undefined,
+};
+
+const MapParamsContext = React.createContext<MapParamsContext>(initialContext);
 
 interface MapParamsProviderProps {
   children: React.ReactNode;
@@ -150,14 +160,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       duration: 2000,
     });
     hideAll();
-    return setCurrent({
-      cityCode: undefined,
-      gridCode: undefined,
-      visualizationCode: undefined,
-      variantCode: undefined,
-      hexagonId: undefined,
-      filters: undefined,
-    });
+    return setCurrent(initialContext.state);
   };
 
   return (

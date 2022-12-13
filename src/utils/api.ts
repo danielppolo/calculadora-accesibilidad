@@ -22,15 +22,15 @@ export type GetGridParams = {
 
 export type GetGridReturn = FeatureDictionary;
 
-export const getGrid = async (
-  params: GetGridParams
-): Promise<GetGridReturn> => {
+export const getGrid = async ({
+  cityCode,
+  gridCode,
+}: GetGridParams): Promise<GetGridReturn> => {
   try {
-    //   FIXME: Remove this stub
-    return grid as any;
-
-    // const response = await fetch(`${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`);
-    // const data = await response.json();
+    const response = await fetch(
+      `${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`
+    );
+    const data = await response.json();
     return data;
   } catch (error) {
     return {};
@@ -45,13 +45,12 @@ export type GetVisualizationParams = {
 
 export type GetVisualizationReturn = Record<UUID, any>;
 
-export const getVisualization = async (
-  params: GetVisualizationParams
-): Promise<GetVisualizationReturn> => {
+export const getVisualization = async ({
+  cityCode,
+  visualizationCode,
+  variantCode,
+}: GetVisualizationParams): Promise<GetVisualizationReturn> => {
   try {
-    //   FIXME: Remove this stub
-    return visualization;
-
     const response = await fetch(
       `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}.json`
     );
