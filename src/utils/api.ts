@@ -77,9 +77,6 @@ export const getVisualizationForFeature = async ({
   featureId,
 }: GetVisualizationForFeatureParams): Promise<GetVisualizationForFeatureReturn> => {
   try {
-    //   FIXME: Remove this stub
-    return visualization;
-
     const response = await fetch(
       `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}/${featureId}.json`
     );

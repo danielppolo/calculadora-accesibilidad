@@ -23,7 +23,10 @@ interface MapParamsContext {
   onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
   onCityChange: (cityCode: string) => void;
   onHexagonChange: (hexagonId: string) => void;
-  onFiltersChange: (filters: Record<string, string>) => void;
+  onFiltersChange: (
+    filters: Record<string, string>,
+    method: 'merge' | 'reset'
+  ) => void;
   onReset: () => void;
 }
 
@@ -119,7 +122,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   );
 
   const handleHexagonChange = useCallback((hexagonId: string) => {
-    console.log(hexagonId);
     return setCurrent((state) => ({
       ...state,
       hexagonId,
@@ -127,17 +129,18 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   }, []);
 
   const handleFiltersChange = useCallback(
-    (filters: Record<string, string>) => {
+    (filters: Record<string, string>, method: 'merge' | 'reset') => {
       return setCurrent((state) => {
-        const nextFilters = {
-          ...state.filters,
-          ...filters,
-        };
+        const nextFilters =
+          method === 'reset'
+            ? filters
+            : {
+                ...state.filters,
+                ...filters,
+              };
 
         const id = generateVariantId({
-          cityCode: state.cityCode,
-          visualizationCode: state.visualizationCode,
-          variantCode: state.variantCode,
+          ...state,
           filters: nextFilters,
         });
 

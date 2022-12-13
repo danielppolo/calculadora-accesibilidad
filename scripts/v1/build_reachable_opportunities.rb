@@ -10,17 +10,17 @@ raw_data = File.read(filepath)
 data = JSON.parse(raw_data)
 
 opportunities = {
-  'c' => 'clinicas',
-  'e' => 'empresas',
-  't' => 'trabajos',
-  's' => 'escuelas'
+  'c' => 'clinics',
+  'e' => 'companies',
+  't' => 'jobs',
+  's' => 'schools'
 }
 
 transports = {
-  'a' => 'auto',
-  'c' => 'caminando',
-  'tp' => 'publico',
-  'b' => 'bici'
+  'a' => 'car',
+  'c' => 'walk',
+  'tp' => 'public',
+  'b' => 'bike'
 }
 
 data.each do |key, properties|
@@ -37,6 +37,9 @@ data.each do |key, properties|
   end
 end
 
-File.open('data_aws/output/chihuahua/current.json', 'wb') do |file|
+directory_name = 'data_aws/output/chihuahua/reachable'
+Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
+File.open('data_aws/output/chihuahua/reachable/current.json', 'wb') do |file|
   file.write(JSON.generate(transformed_data))
 end

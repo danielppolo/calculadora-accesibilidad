@@ -58,7 +58,9 @@ function Controls() {
               label: option.name,
               value: option.code,
             }))}
-            onChange={(value) => onFiltersChange?.({ [filter.code]: value })}
+            onChange={(value) =>
+              onFiltersChange?.({ [filter.code]: value }, 'merge')
+            }
             placeholder="Selecciona un escenario"
           />
         </div>

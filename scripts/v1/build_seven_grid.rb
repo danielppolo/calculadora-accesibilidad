@@ -12,6 +12,9 @@ data.each do |_key, value|
   value['properties'] = {}
 end
 
-File.open('data_aws/output/chihuahua/seven.json', 'wb') do |file|
+directory_name = 'data_aws/output/chihuahua/grids'
+Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
+File.open('data_aws/output/chihuahua/grids/seven.json', 'wb') do |file|
   file.write(JSON.generate(data))
 end
