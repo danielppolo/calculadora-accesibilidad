@@ -20,7 +20,7 @@ import ButtonGroup from './ButtonGroup';
 
 function Controls() {
   const currentCity = useCurrentCity();
-  const { onFiltersChange } = useMapParams();
+  const { onFiltersChange, filters } = useMapParams();
   const currentVisualization = useCurrentVisualization();
   const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = currentVisualization?.variants?.length;
@@ -46,7 +46,11 @@ function Controls() {
           <Select
             label={filter.name}
             // disabled={disabled}
-            value={filter.defaultProperty.name}
+            value={
+              filter.properties.find(
+                (prop) => prop.code === filters?.[filter.code]
+              )?.name
+            }
             options={filter.properties.map((option) => ({
               label: option.name,
               value: option.code,

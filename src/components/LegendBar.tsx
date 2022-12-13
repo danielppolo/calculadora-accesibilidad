@@ -24,16 +24,17 @@ function LegendBar() {
 
   return (
     <div>
-      <div className="inline-flex space-x-4">
+      <div>
         {currentCity && legend?.title && legend?.intervals && (
-          <div className="flex-col align-bottom justify-end space-y-4">
+          <div className="w-full">
+            <Legend title={legend?.title} items={legend?.intervals} />
+
             {currentCity &&
               // transportActive &&
               geojson &&
               Object.keys(geojson).length > 0 && (
                 <Download data={geojson} filename={legend?.title} />
               )}
-            <Legend title={legend?.title} items={legend?.intervals} />
           </div>
         )}
         {/* {ageb && agebLegend && (

@@ -6,7 +6,7 @@ import GlobalControls from './GlobalControls';
 
 function Sidebar() {
   return (
-    <div className="fixed top-2 left-2 right-2 p-4 z-30 backdrop-blur-2xl md:top-0 md:left-0 bottom-0 md:w-80 md:max-w-xl">
+    <div className="fixed top-2 left-2 right-2 p-4 z-30 bg-white md:top-0 md:left-0 bottom-0 md:w-80 md:max-w-xl">
       <Controls />
       {/* <Charts /> */}
       <LegendBar />
