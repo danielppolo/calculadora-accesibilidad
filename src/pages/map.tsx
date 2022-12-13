@@ -1,31 +1,27 @@
 import React from 'react';
 
-import useConfig from 'src/hooks/data/useConfig';
 import MapProvider from 'src/context/map';
 import MapParamsProvider from 'src/context/mapParams';
-import Sidebar from 'src/components/Sidebar';
 import LoadingOverlay from 'src/components/LoadingOverlay';
-import CreditsCard from 'src/components/CreditsCard';
-import CitiesOverview from 'src/components/CitiesOverview';
+import MapboxLayerManagerProvider from 'src/context/mapboxLayerManager';
+import Map from 'src/components/Map';
+import { useIsFetching } from 'react-query';
 
-function Map() {
-  const { data: config, isLoading } = useConfig();
+function MapPage() {
+  const isFetching = useIsFetching();
 
   return (
     <>
-      <LoadingOverlay open={isLoading} />
       <MapProvider>
-        <MapParamsProvider config={config}>
-          <Sidebar config={config} />
-          <CreditsCard />
-
-          {config ? (
-            <CitiesOverview cities={Object.values(config || {})} />
-          ) : null}
-        </MapParamsProvider>
+        <MapboxLayerManagerProvider>
+          <MapParamsProvider>
+            <Map />
+          </MapParamsProvider>
+        </MapboxLayerManagerProvider>
       </MapProvider>
+      <LoadingOverlay open={isFetching > 0} />
     </>
   );
 }
 
-export default Map;
+export default MapPage;

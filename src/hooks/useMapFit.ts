@@ -1,10 +1,12 @@
-import { Feature, Polygon } from 'geojson';
 import { LngLatBounds } from 'mapbox-gl';
 import { useEffect } from 'react';
 import { useMap } from 'src/context/map';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 
-const useMapFit = (features?: Feature<Polygon>[]) => {
+const useMapFit = () => {
   const map = useMap();
+  const { geojson } = useMapboxLayerManager();
+  const features = geojson?.features;
 
   useEffect(() => {
     // Fit map to selected features.

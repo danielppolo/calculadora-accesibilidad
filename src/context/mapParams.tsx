@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Config } from 'src/types';
+import React, { useCallback, useContext, useState } from 'react';
+import useConfig from 'src/hooks/data/useConfig';
 import { useMap } from './map';
 
 interface MapParamsContext {
@@ -24,95 +24,101 @@ const MapParamsContext = React.createContext<MapParamsContext>({});
 
 interface MapParamsProviderProps {
   children: React.ReactNode;
-  config?: Config;
 }
 
-function MapParamsProvider({ children, config }: MapParamsProviderProps) {
+function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
+  const { data: config } = useConfig();
   const [current, setCurrent] = useState<MapParamsContext>({});
 
-  const handleVariantChange = (
-    cityCode: string,
-    visualizationCode: string,
-    visualizationVariantCode: string
-  ) => {
-    const visualization = config?.[cityCode].visualizations.find(
-      (viz) => viz.code === visualizationCode
-    );
-    const gridCode = visualization?.grid?.code;
-
-    if (gridCode) {
-      setCurrent({
-        cityCode,
-        gridCode,
-        visualizationCode,
-        variantCode: visualizationVariantCode,
-      });
-    } else {
-      // TODO:
-    }
-  };
-
-  const handleVisualizationChange = (
-    cityCode: string,
-    visualizationCode: string
-  ) => {
-    const visualization = config?.[cityCode].visualizations.find(
-      (viz) => viz.code === visualizationCode
-    );
-    const defaultVariantCode = visualization?.defaultVariant?.code;
-    const gridCode = visualization?.grid?.code;
-
-    if (defaultVariantCode) {
-      return handleVariantChange(
-        cityCode,
-        visualizationCode,
-        defaultVariantCode
+  const handleVariantChange = useCallback(
+    (
+      cityCode: string,
+      visualizationCode: string,
+      variantCode: string
+    ) => {
+      const visualization = config?.[cityCode].visualizations.find(
+        (viz) => viz.code === visualizationCode
       );
-    }
+      const gridCode = visualization?.grid?.code;
 
-    return setCurrent((state) => ({
-      ...state,
-      cityCode,
-      visualizationCode,
-      gridCode,
-    }));
-  };
-
-  const handleCityChange = (cityCode?: string) => {
-    if (cityCode) {
-      map.flyTo({
-        center: config?.[cityCode]?.coordinates,
-        zoom: 11,
-        duration: 2000,
-        offset: [100, 50],
-      });
-
-      const defaultVisualization = config?.[cityCode]?.defaultVisualization;
-
-      if (defaultVisualization) {
-        return handleVisualizationChange(cityCode, defaultVisualization.code);
+      if (gridCode) {
+        setCurrent({
+          cityCode,
+          gridCode,
+          visualizationCode,
+          variantCode: variantCode,
+        });
+      } else {
+        // TODO:
       }
-    }
+    },
+    [config]
+  );
 
-    return setCurrent((state) => ({ ...state, cityCode }));
-  };
+  const handleVisualizationChange = useCallback(
+    (cityCode: string, visualizationCode: string) => {
+      const visualization = config?.[cityCode].visualizations.find(
+        (viz) => viz.code === visualizationCode
+      );
+      const defaultVariantCode = visualization?.defaultVariant?.code;
+      const gridCode = visualization?.grid?.code;
 
-  const handleHexagonChange = (hexagonId: string) => {
+      if (defaultVariantCode) {
+        return handleVariantChange(
+          cityCode,
+          visualizationCode,
+          defaultVariantCode
+        );
+      }
+
+      return setCurrent((state) => ({
+        ...state,
+        cityCode,
+        visualizationCode,
+        gridCode,
+      }));
+    },
+    [config, handleVariantChange]
+  );
+
+  const handleCityChange = useCallback(
+    (cityCode?: string) => {
+      if (cityCode) {
+        map.flyTo({
+          center: config?.[cityCode]?.coordinates,
+          zoom: 11,
+          duration: 2000,
+          offset: [100, 50],
+        });
+
+        const defaultVisualization = config?.[cityCode]?.defaultVisualization;
+
+        if (defaultVisualization) {
+          return handleVisualizationChange(cityCode, defaultVisualization.code);
+        }
+      }
+
+      return setCurrent((state) => ({ ...state, cityCode }));
+    },
+    [config, handleVisualizationChange, map]
+  );
+
+  const handleHexagonChange = useCallback((hexagonId: string) => {
     console.log(hexagonId);
     return setCurrent((state) => ({
       ...state,
       hexagonId,
     }));
-  };
+  }, []);
 
-  const handleFiltersChange = (filters: Record<string, string>) => {
+  const handleFiltersChange = useCallback((filters: Record<string, string>) => {
     console.log(filters);
     return setCurrent((state) => ({
       ...state,
       filters,
     }));
-  };
+  }, []);
 
   return (
     <MapParamsContext.Provider

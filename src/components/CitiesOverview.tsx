@@ -1,13 +1,12 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 import Card from 'src/components/Card';
 import CitiesChart from 'src/components/CitiesChart';
-import { City } from 'src/types';
+import useConfig from 'src/hooks/data/useConfig';
 
-interface CitiesOverviewProps {
-  cities?: City[];
-}
-function CitiesOverview({ cities = [] }: CitiesOverviewProps) {
+function CitiesOverview() {
+  const { data: config } = useConfig();
+  const cities = Object.values(config ?? {});
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 hidden md:block md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">
       <Card className="py-4 px-6 m-4 overflow-y-auto">
@@ -39,9 +38,5 @@ function CitiesOverview({ cities = [] }: CitiesOverviewProps) {
     </div>
   );
 }
-
-CitiesOverview.propTypes = {
-  cities: PropTypes.array.isRequired,
-};
 
 export default memo(CitiesOverview);

@@ -88,7 +88,7 @@ function Controls({
         </>
       )}
       {currentVisualization?.filters?.map((filter) => (
-        <>
+        <div key={filter.code}>
           <div className="m-2 md:m-4" />
           <Select
             label={filter.name}
@@ -108,7 +108,7 @@ function Controls({
             }
             placeholder="Selecciona un escenario"
           />
-        </>
+        </div>
       ))}
       {/* {
         visualization === 'opportunities' && (
@@ -146,6 +146,7 @@ function Controls({
       <div className="m-2 md:m-4" />
       <div className="flex justify-between">
         <LayerSwitch
+          key="economic"
           disabled={!currentCity}
           title="Mostar marginación"
           onChange={onEconomicLayerChange}
@@ -154,6 +155,7 @@ function Controls({
           <GppMaybeOutlinedIcon />
         </LayerSwitch>
         <LayerSwitch
+          key="Density"
           disabled={!currentCity}
           title="Mostar densidad"
           onChange={onDensityLayerChange}
@@ -162,6 +164,7 @@ function Controls({
           <AccessibilityNewIcon />
         </LayerSwitch>
         <LayerSwitch
+          key="Roads"
           disabled={!currentCity}
           title="Mostar red vial"
           onChange={onRoadsLayerChange}

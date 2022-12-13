@@ -40,7 +40,7 @@ export const getGrid = async (
 export type GetVisualizationParams = {
   cityCode?: string;
   visualizationCode?: string;
-  visualizationVariantCode?: string;
+  variantCode?: string;
 };
 
 export type GetVisualizationReturn = Record<UUID, any>;
@@ -53,7 +53,7 @@ export const getVisualization = async (
     return visualization;
 
     const response = await fetch(
-      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}.json`
+      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}.json`
     );
     const data = await response.json();
     return data;
@@ -65,7 +65,7 @@ export const getVisualization = async (
 export type GetVisualizationForFeatureParams = {
   cityCode?: string;
   visualizationCode?: string;
-  visualizationVariantCode?: string;
+  variantCode?: string;
   featureId?: string;
 };
 
@@ -74,7 +74,7 @@ export type GetVisualizationForFeatureReturn = Record<string, any>;
 export const getVisualizationForFeature = async ({
   cityCode,
   visualizationCode,
-  visualizationVariantCode,
+  variantCode,
   featureId,
 }: GetVisualizationForFeatureParams): Promise<GetVisualizationForFeatureReturn> => {
   try {
@@ -82,7 +82,7 @@ export const getVisualizationForFeature = async ({
     return visualization;
 
     const response = await fetch(
-      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${visualizationVariantCode}/${featureId}.json`
+      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}/${featureId}.json`
     );
     const data = await response.json();
     return data;

@@ -1,6 +1,6 @@
 import { Expression } from 'mapbox-gl';
 
-export const getColor = (
+const getColor = (
   property: string,
   intervals: number[],
   colors: string[]
@@ -17,3 +17,5 @@ export const getColor = (
     'transparent',
   ];
 };
+
+export default getColor;

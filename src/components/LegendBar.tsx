@@ -1,52 +1,42 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Legend from 'src/components/Legend';
 import Download from 'src/components/Download';
-import { Legend as LegendType } from 'src/types';
-import { FeatureCollection, Polygon } from 'geojson';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import useCurrentCity from 'src/hooks/data/useCurrentCity';
 
-interface LegendBarProps {
-  legendTitle: string;
-  road?: boolean;
-  roadLegend?: LegendType;
-  densityLegend?: LegendType;
-  density?: boolean;
-  ageb?: boolean;
-  agebLegend?: LegendType;
-  legendDictionary: LegendType['intervals'];
-  geojson?: FeatureCollection<Polygon>;
-  transportActive?: boolean;
-  city?: string;
-}
+// interface LegendBarProps {
+//   legendTitle: string;
+//   road?: boolean;
+//   roadLegend?: LegendType;
+//   densityLegend?: LegendType;
+//   density?: boolean;
+//   ageb?: boolean;
+//   agebLegend?: LegendType;
+//   legendDictionary: LegendType['intervals'];
+//   geojson?: FeatureCollection<Polygon>;
+//   transportActive?: boolean;
+//   currentCity?: string;
+// }
 
-function LegendBar({
-  roadLegend,
-  road,
-  densityLegend,
-  density,
-  legendTitle,
-  legendDictionary,
-  agebLegend,
-  ageb,
-  geojson,
-  transportActive,
-  city,
-}: LegendBarProps) {
+function LegendBar() {
+  const currentCity = useCurrentCity();
+  const { legend, geojson } = useMapboxLayerManager();
+
   return (
     <div className="hidden z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:h-auto md:top-auto md:inline-flex md:right-auto">
       <div className="inline-flex space-x-4">
-        {city && legendTitle && legendDictionary && (
+        {currentCity && legend?.title && legend?.intervals && (
           <div className="flex-col align-bottom justify-end space-y-4">
-            {city &&
-              transportActive &&
+            {currentCity &&
+              // transportActive &&
               geojson &&
               Object.keys(geojson).length > 0 && (
-                <Download data={geojson} filename={legendTitle} />
+                <Download data={geojson} filename={legend?.title} />
               )}
-            <Legend title={legendTitle} items={legendDictionary} />
+            <Legend title={legend?.title} items={legend?.intervals} />
           </div>
         )}
-        {ageb && agebLegend && (
+        {/* {ageb && agebLegend && (
           <div className="flex items-end">
             <Legend title={agebLegend.title} items={agebLegend.intervals} />
           </div>
@@ -63,7 +53,7 @@ function LegendBar({
           <div className="flex items-end">
             <Legend title={roadLegend.title} items={roadLegend.intervals} />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
