@@ -1,14 +1,19 @@
 import React, { useCallback, useContext, useState } from 'react';
+import { MEXICO_COORDINATES } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
+import { generateVariantId } from 'src/utils';
 import { useMap } from './map';
+import { useMapboxLayerManager } from './mapboxLayerManager';
 
-interface MapParamsContext {
+interface MapParamsState {
   gridCode?: string;
   cityCode?: string;
   visualizationCode?: string;
   variantCode?: string;
   hexagonId?: string;
   filters?: Record<string, string>;
+}
+interface MapParamsContext extends MapParamsState {
   onVariantChange?: (
     cityCode: string,
     visualizationCode: string,
@@ -18,6 +23,7 @@ interface MapParamsContext {
   onCityChange?: (cityCode?: string) => void;
   onHexagonChange?: (hexagonId: string) => void;
   onFiltersChange?: (filters: Record<string, string>) => void;
+  onReset?: () => void;
 }
 
 const MapParamsContext = React.createContext<MapParamsContext>({});
@@ -29,14 +35,10 @@ interface MapParamsProviderProps {
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
   const { data: config } = useConfig();
-  const [current, setCurrent] = useState<MapParamsContext>({});
-
+  const [current, setCurrent] = useState<MapParamsState>({});
+  const { show, hideAll } = useMapboxLayerManager();
   const handleVariantChange = useCallback(
-    (
-      cityCode: string,
-      visualizationCode: string,
-      variantCode: string
-    ) => {
+    (cityCode: string, visualizationCode: string, variantCode: string) => {
       const visualization = config?.[cityCode].visualizations.find(
         (viz) => viz.code === visualizationCode
       );
@@ -47,7 +49,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           cityCode,
           gridCode,
           visualizationCode,
-          variantCode: variantCode,
+          variantCode,
         });
       } else {
         // TODO:
@@ -112,13 +114,50 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     }));
   }, []);
 
-  const handleFiltersChange = useCallback((filters: Record<string, string>) => {
-    console.log(filters);
-    return setCurrent((state) => ({
-      ...state,
-      filters,
-    }));
-  }, []);
+  const handleFiltersChange = useCallback(
+    (filters: Record<string, string>) => {
+      return setCurrent((state) => {
+        const nextFilters = {
+          ...state.filters,
+          ...filters,
+        };
+
+        const id = generateVariantId({
+          cityCode: state.cityCode,
+          visualizationCode: state.visualizationCode,
+          variantCode: state.variantCode,
+          filters: nextFilters,
+        });
+
+        hideAll();
+        show(id);
+
+        return {
+          ...state,
+          filters: nextFilters,
+        };
+      });
+    },
+    [show, hideAll]
+  );
+
+  const handleReset = () => {
+    map.flyTo({
+      // TODO: Set coordinates in Mapbox
+      center: MEXICO_COORDINATES,
+      zoom: 4.5,
+      duration: 2000,
+    });
+    hideAll();
+    return setCurrent({
+      cityCode: undefined,
+      gridCode: undefined,
+      visualizationCode: undefined,
+      variantCode: undefined,
+      hexagonId: undefined,
+      filters: undefined,
+    });
+  };
 
   return (
     <MapParamsContext.Provider
@@ -129,6 +168,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         onCityChange: handleCityChange,
         onHexagonChange: handleHexagonChange,
         onFiltersChange: handleFiltersChange,
+        onReset: handleReset,
       }}
     >
       {children}

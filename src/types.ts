@@ -1,6 +1,8 @@
 import { LngLatLike } from 'mapbox-gl';
 import { Feature, Polygon } from 'geojson';
 
+type Color = string;
+
 export type Scenario = {
   bucketName: string;
   name: string;
@@ -120,6 +122,10 @@ export type Visualization = {
   grid: Grid;
   // Controles activados por default
   filters: Filter[];
+  // Min color
+  minColor: Color;
+  // Max color
+  maxColor: Color;
 };
 
 export type Country = {

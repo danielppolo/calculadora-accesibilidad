@@ -2,6 +2,7 @@ import React from 'react';
 import LegendBar from 'src/components/LegendBar';
 import Controls from 'src/components/Controls';
 import Notes from 'src/components/Notes';
+import GlobalControls from './GlobalControls';
 
 function Sidebar() {
   return (
@@ -10,6 +11,7 @@ function Sidebar() {
       {/* <Charts /> */}
       <LegendBar />
       <Notes />
+      <GlobalControls />
       <div className="hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
     </div>
   );

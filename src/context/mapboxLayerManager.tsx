@@ -51,11 +51,12 @@ const initialState = {
 const MapboxLayerManagerContext =
   React.createContext<MapboxLayerManagerParams>(initialState);
 
+const state: Record<string, boolean> = {};
+const legends: Record<string, Legend> = {};
+const geojson: Record<string, FeatureCollection<Polygon>> = {};
+
 function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   const map = useMap();
-  const [state] = useState<Record<string, boolean>>({});
-  const [legends] = useState<Record<string, Legend>>({});
-  const [geojson] = useState<Record<string, FeatureCollection<Polygon>>>({});
   const [current, setCurrent] = useState<string | undefined>(undefined);
 
   const add = useCallback(
@@ -134,7 +135,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         }
       }
     },
-    [geojson, legends, map, state]
+    [map]
   );
 
   const show = useCallback(
@@ -142,18 +143,22 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       if (id && id in state && map) {
         map.setLayoutProperty(id, 'visibility', 'visible');
         setCurrent(id);
+      } else {
+        // TODO: Sentry
       }
     },
-    [map, state]
+    [map]
   );
 
   const hide = useCallback(
     (id?: string) => {
       if (id && map && id in state) {
         map.setLayoutProperty(id, 'visibility', 'none');
+      } else {
+        // TODO: Sentry
       }
     },
-    [map, state]
+    [map]
   );
 
   const hideAll = useCallback(() => {
@@ -161,8 +166,10 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       Object.keys(state).forEach((layerId) => {
         map.setLayoutProperty(layerId, 'visibility', 'none');
       });
+    } else {
+      // TODO: Sentry
     }
-  }, [map, state]);
+  }, [map]);
 
   return (
     <MapboxLayerManagerContext.Provider

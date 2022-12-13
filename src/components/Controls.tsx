@@ -4,7 +4,6 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import { VISUALIZATIONS } from 'src/constants';
 import Select from 'src/components/Select';
-import LayerSwitch from 'src/components/LayerSwitch';
 import OpportunityControls from 'src/components/controls/opportunities';
 import ReachabilityControls from 'src/components/controls/reachability';
 import IsochronesControls from 'src/components/controls/isochrones';
@@ -19,55 +18,9 @@ import VisualizationPicker from './VisualizationPicker';
 import VariantPicker from './VariantPicker';
 import ButtonGroup from './ButtonGroup';
 
-interface ControlsProps {
-  filterData?: any;
-  onCityChange?: (cityCode: string) => void;
-  onVariantChange?: (variantCode: string) => void;
-  onVisualizationChange?: (visualizationCode: string) => void;
-
-  visualization?: string;
-  transport?: string[];
-  timeframe?: number;
-  opportunity?: string;
-  hexagonDisabled?: boolean;
-  cities?: City[];
-  economicLayer?: boolean;
-  densityLayer?: boolean;
-  roadsLayer?: boolean;
-  onDensityLayerChange?: () => void;
-  onMediumChange?: (medium: string) => void;
-  onTimeStepChange?: (timeStep: number) => void;
-  onOpportunityChange?: (opportunity: string) => void;
-  onEconomicLayerChange?: () => void;
-  onRoadsLayerChange?: () => void;
-  resetMap?: () => void;
-}
-
-function Controls({
-  filterData,
-
-  visualization,
-  timeframe,
-  transport,
-  opportunity,
-  hexagonDisabled = false,
-  cities,
-  economicLayer,
-  densityLayer,
-  roadsLayer,
-  onCityChange,
-  onEconomicLayerChange,
-  onDensityLayerChange,
-  onVisualizationChange,
-  onMediumChange,
-  onTimeStepChange,
-  onVariantChange,
-  onOpportunityChange,
-  onRoadsLayerChange,
-  resetMap,
-}: ControlsProps) {
-  const router = useRouter();
+function Controls() {
   const currentCity = useCurrentCity();
+  const { onFiltersChange } = useMapParams();
   const currentVisualization = useCurrentVisualization();
   const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = currentVisualization?.variants?.length;
@@ -98,14 +51,7 @@ function Controls({
               label: option.name,
               value: option.code,
             }))}
-            onChange={(value) =>
-              router.push(router, {
-                query: {
-                  ...router.query,
-                  [filter.code]: value,
-                },
-              })
-            }
+            onChange={(value) => onFiltersChange?.({ [filter.code]: value })}
             placeholder="Selecciona un escenario"
           />
         </div>
@@ -144,43 +90,6 @@ function Controls({
         )
       } */}
       <div className="m-2 md:m-4" />
-      <div className="flex justify-between">
-        <LayerSwitch
-          key="economic"
-          disabled={!currentCity}
-          title="Mostar marginación"
-          onChange={onEconomicLayerChange}
-          active={economicLayer}
-        >
-          <GppMaybeOutlinedIcon />
-        </LayerSwitch>
-        <LayerSwitch
-          key="Density"
-          disabled={!currentCity}
-          title="Mostar densidad"
-          onChange={onDensityLayerChange}
-          active={densityLayer}
-        >
-          <AccessibilityNewIcon />
-        </LayerSwitch>
-        <LayerSwitch
-          key="Roads"
-          disabled={!currentCity}
-          title="Mostar red vial"
-          onChange={onRoadsLayerChange}
-          active={roadsLayer}
-        >
-          <DirectionsIcon />
-        </LayerSwitch>
-        <LayerSwitch
-          disabled={!currentCity}
-          title="Regresar"
-          onChange={resetMap}
-        >
-          <RestartAltIcon />
-        </LayerSwitch>
-      </div>
-      <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
     </>
   );
 }

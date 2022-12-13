@@ -23,7 +23,7 @@ function LegendBar() {
   const { legend, geojson } = useMapboxLayerManager();
 
   return (
-    <div className="hidden z-30 fixed top-4 left-4 right-4 h-2/3 md:bottom-8 md:h-auto md:top-auto md:inline-flex md:right-auto">
+    <div>
       <div className="inline-flex space-x-4">
         {currentCity && legend?.title && legend?.intervals && (
           <div className="flex-col align-bottom justify-end space-y-4">
