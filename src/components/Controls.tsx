@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo } from 'react';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import DirectionsIcon from '@mui/icons-material/Directions';
@@ -25,7 +25,9 @@ function Controls() {
   const currentCity = getCurrentCity(current);
   const currentVisualization = getCurrentVisualization(current);
   const showVisualizationPicker = currentCity?.visualizations?.length;
-  const showVariantPicker = currentVisualization?.variants?.length;
+  const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
+
+  console.log('render CONTROLS');
 
   return (
     <>
@@ -102,4 +104,4 @@ function Controls() {
   );
 }
 
-export default Controls;
+export default memo(Controls);

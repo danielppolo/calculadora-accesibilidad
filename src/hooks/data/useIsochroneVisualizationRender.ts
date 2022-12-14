@@ -21,7 +21,7 @@ function useIsochroneVisualizationRender() {
   const currentVariant = getCurrentVariant(current);
   const isIsochroneVariant = currentVariant?.type === 'isochrone' ?? false;
 
-  return useQuery({
+  useQuery({
     ...queries.visualizationVariants.hexagon({
       cityCode,
       visualizationCode,
@@ -105,15 +105,15 @@ function useIsochroneVisualizationRender() {
           unit: currentVariant?.unit,
           beforeId: getGridId(cityCode, currentVisualization?.grid.code),
         });
-
-        // Render default variant with default filters
-        const defaultVariantFilters: Record<string, string> = {};
-        currentVisualization?.filters.forEach((filter) => {
-          defaultVariantFilters[filter.code] = filter.defaultProperty.code;
-        });
-
-        onFiltersChange?.(defaultVariantFilters, 'reset');
       });
+
+      // Render default variant with default filters
+      const defaultVariantFilters: Record<string, string> = {};
+      currentVisualization?.filters.forEach((filter) => {
+        defaultVariantFilters[filter.code] = filter.defaultProperty.code;
+      });
+
+      onFiltersChange?.(defaultVariantFilters, 'reset');
     },
   });
 }

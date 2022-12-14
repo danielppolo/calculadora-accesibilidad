@@ -1,4 +1,4 @@
-import { MapParamsState } from 'src/context/mapParams';
+import { MapParamsState } from 'src/types';
 import useConfig from './useConfig';
 
 function useCurrentCity() {
