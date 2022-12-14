@@ -3,6 +3,7 @@ import Legend from 'src/components/Legend';
 import Download from 'src/components/Download';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
+import { useMapParams } from 'src/context/mapParams';
 
 // interface LegendBarProps {
 //   legendTitle: string;
@@ -19,7 +20,9 @@ import useCurrentCity from 'src/hooks/data/useCurrentCity';
 // }
 
 function LegendBar() {
-  const currentCity = useCurrentCity();
+  const { current } = useMapParams();
+  const getCurrentCity = useCurrentCity();
+  const currentCity = getCurrentCity(current);
   const { legend, geojson } = useMapboxLayerManager();
 
   return (

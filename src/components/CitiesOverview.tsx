@@ -6,12 +6,10 @@ import useConfig from 'src/hooks/data/useConfig';
 
 function CitiesOverview() {
   const { data: config } = useConfig();
-  const {
-    state: { cityCode },
-  } = useMapParams();
+  const { current } = useMapParams();
   const cities = Object.values(config ?? {});
 
-  if (cityCode) return null;
+  if (current.cityCode) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 hidden md:block md:bottom-auto md:top-0 md:right-0 md:left-auto md:w-96 md:max-w-xl md:max-h-screen">

@@ -1,18 +1,14 @@
-import grid from 'src/mocks/grid.json';
-import visualization from 'src/mocks/viz.json';
-
 import { FeatureDictionary, UUID } from 'src/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BUCKET_BASE_URL;
 
 export const getCities = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/core/cities_geometry.json`);
+  const response = await fetch(`${BASE_URL}/core/cities_geometry.json`);
+  if (response.ok) {
     const data = await response.json();
     return data;
-  } catch (error) {
-    return {};
   }
+  throw new Error('Something went wrong');
 };
 
 export type GetGridParams = {
@@ -26,15 +22,14 @@ export const getGrid = async ({
   cityCode,
   gridCode,
 }: GetGridParams): Promise<GetGridReturn> => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`
-    );
+  const response = await fetch(
+    `${BASE_URL}/cities/${cityCode}/grids/${gridCode}.json`
+  );
+  if (response.ok) {
     const data = await response.json();
     return data;
-  } catch (error) {
-    return {};
   }
+  throw new Error('Something went wrong');
 };
 
 export type GetVisualizationParams = {
@@ -50,15 +45,14 @@ export const getVisualization = async ({
   visualizationCode,
   variantCode,
 }: GetVisualizationParams): Promise<GetVisualizationReturn> => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}.json`
-    );
+  const response = await fetch(
+    `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}.json`
+  );
+  if (response.ok) {
     const data = await response.json();
     return data;
-  } catch (error) {
-    return {};
   }
+  throw new Error('Something went wrong');
 };
 
 export type GetVisualizationForFeatureParams = {
@@ -76,13 +70,12 @@ export const getVisualizationForFeature = async ({
   variantCode,
   featureId,
 }: GetVisualizationForFeatureParams): Promise<GetVisualizationForFeatureReturn> => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}/${featureId}.json`
-    );
+  const response = await fetch(
+    `${BASE_URL}/cities/${cityCode}/visualizations/${visualizationCode}/${variantCode}/${featureId}.json`
+  );
+  if (response.ok) {
     const data = await response.json();
     return data;
-  } catch (error) {
-    return {};
   }
+  throw new Error('Something went wrong');
 };

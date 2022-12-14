@@ -2,11 +2,12 @@
 import React from 'react';
 import Head from 'next/head';
 import type { AppProps } from 'next/app';
-import { QueryClientProvider, QueryClient } from 'react-query';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'src/styles/globals.css';
 import 'src/styles/overrides.css';
 import 'tailwindcss/tailwind.css';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
         <Component {...pageProps} />
       </QueryClientProvider>
       <div

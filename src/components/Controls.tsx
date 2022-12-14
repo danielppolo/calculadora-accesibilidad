@@ -19,12 +19,11 @@ import VariantPicker from './VariantPicker';
 import ButtonGroup from './ButtonGroup';
 
 function Controls() {
-  const currentCity = useCurrentCity();
-  const {
-    onFiltersChange,
-    state: { filters },
-  } = useMapParams();
-  const currentVisualization = useCurrentVisualization();
+  const getCurrentCity = useCurrentCity();
+  const getCurrentVisualization = useCurrentVisualization();
+  const { onFiltersChange, current } = useMapParams();
+  const currentCity = getCurrentCity(current);
+  const currentVisualization = getCurrentVisualization(current);
   const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = currentVisualization?.variants?.length;
 
@@ -51,7 +50,7 @@ function Controls() {
             // disabled={disabled}
             value={
               filter.properties.find(
-                (prop) => prop.code === filters?.[filter.code]
+                (prop) => prop.code === current.filters?.[filter.code]
               )?.name
             }
             options={filter.properties.map((option) => ({

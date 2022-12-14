@@ -1,20 +1,13 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { MEXICO_COORDINATES } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
+import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 
-export interface MapParamsState {
-  gridCode?: string;
-  cityCode?: string;
-  visualizationCode?: string;
-  variantCode?: string;
-  hexagonId?: string;
-  filters?: Record<string, string>;
-}
 interface MapParamsContext {
-  state: MapParamsState;
+  current: MapParamsState;
   onVariantChange: (
     cityCode: string,
     visualizationCode: string,
@@ -22,7 +15,7 @@ interface MapParamsContext {
   ) => void;
   onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
   onCityChange: (cityCode: string) => void;
-  onHexagonChange: (hexagonId: string) => void;
+  onHexagonChange: (featureId: string) => void;
   onFiltersChange: (
     filters: Record<string, string>,
     method: 'merge' | 'reset'
@@ -31,7 +24,7 @@ interface MapParamsContext {
 }
 
 const initialContext = {
-  state: {},
+  current: {},
   onVariantChange: () => undefined,
   onVisualizationChange: () => undefined,
   onCityChange: () => undefined,
@@ -121,10 +114,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     [config, handleVisualizationChange, map]
   );
 
-  const handleHexagonChange = useCallback((hexagonId: string) => {
+  const handleHexagonChange = useCallback((featureId: string) => {
     return setCurrent((state) => ({
       ...state,
-      hexagonId,
+      featureId,
     }));
   }, []);
 
@@ -163,13 +156,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       duration: 2000,
     });
     hideAll();
-    return setCurrent(initialContext.state);
+    return setCurrent(initialContext.current);
   };
 
   return (
     <MapParamsContext.Provider
       value={{
-        state: current,
+        current,
         onVariantChange: handleVariantChange,
         onVisualizationChange: handleVisualizationChange,
         onCityChange: handleCityChange,

@@ -11,7 +11,7 @@ const useCityMarkers = () => {
   const map = useMap();
   const { data: config } = useConfig();
   const {
-    state: { cityCode },
+    current: { cityCode },
     onCityChange,
   } = useMapParams();
   const [cityMarkers, setCityMarkers] = useState<HTMLDivElement[]>([]);

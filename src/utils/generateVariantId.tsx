@@ -1,5 +1,5 @@
 import hash from 'object-hash';
-import { MapParamsState } from 'src/context/mapParams';
+import { MapParamsState } from 'src/types';
 
 const generateVariantId = ({ filters, ...otherOptions }: MapParamsState) =>
   hash({ ...otherOptions, ...filters });

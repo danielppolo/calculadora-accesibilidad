@@ -34,7 +34,7 @@ yarn-error.log*
 .vercel
 
 # data
-data
-data_aws
+/data
+/data_aws
 
-aws
+/aws

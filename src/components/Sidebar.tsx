@@ -3,6 +3,7 @@ import LegendBar from 'src/components/LegendBar';
 import Controls from 'src/components/Controls';
 import Notes from 'src/components/Notes';
 import GlobalControls from './GlobalControls';
+import DataSource from './DataSource';
 
 function Sidebar() {
   return (
@@ -12,6 +13,7 @@ function Sidebar() {
       <LegendBar />
       <Notes />
       <GlobalControls />
+      <DataSource />
       <div className="hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
     </div>
   );

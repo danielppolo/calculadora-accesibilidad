@@ -28,7 +28,7 @@ import useCityMarkers from 'src/hooks/useCityMarkers';
 import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { City, Code, Config, FeatureDictionary } from 'src/types';
-import { getGridId } from 'src/utils/getLayerIds';
+import getGridId from 'src/utils/getGridId';
 import { useMap } from 'src/context/map';
 import { getVisualizationForFeature } from 'src/utils/api';
 import { useMapParams } from 'src/context/mapParams';

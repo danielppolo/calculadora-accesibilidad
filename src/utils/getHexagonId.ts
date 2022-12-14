@@ -1,10 +1,10 @@
 const getHexagonId = (
-  hexagonId?: string,
+  featureId?: string,
   medium?: string,
   step?: number,
   options: { solid?: boolean } = {}
 ) =>
-  `${hexagonId ?? ''}-${medium ?? ''}-${step ?? ''}${
+  `${featureId ?? ''}-${medium ?? ''}-${step ?? ''}${
     options.solid ? '-solid' : ''
   }`;
 

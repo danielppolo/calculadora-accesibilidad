@@ -5,13 +5,12 @@ import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import Select from './Select';
 
 function VisualizationPicker() {
-  const {
-    onVisualizationChange,
-    state: { cityCode },
-  } = useMapParams();
-  const currentCity = useCurrentCity();
+  const { onVisualizationChange, current } = useMapParams();
+  const getCurrentCity = useCurrentCity();
+  const currentCity = getCurrentCity(current);
   const visualizations = currentCity?.visualizations;
-  const currentVisualization = useCurrentVisualization();
+  const getCurrentVisualization = useCurrentVisualization();
+  const currentVisualization = getCurrentVisualization(current);
   const isDisabled = !currentCity;
 
   return (
@@ -25,8 +24,8 @@ function VisualizationPicker() {
         })) || []
       }
       onChange={(nextViz) => {
-        if (cityCode) {
-          onVisualizationChange?.(cityCode, nextViz);
+        if (current.cityCode) {
+          onVisualizationChange?.(current.cityCode, nextViz);
         }
       }}
       disabled={isDisabled}

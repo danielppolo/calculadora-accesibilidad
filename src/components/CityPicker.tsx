@@ -6,8 +6,9 @@ import Select from './Select';
 
 function CityPicker() {
   const { data: config } = useConfig();
-  const currentCity = useCurrentCity();
-  const { onCityChange } = useMapParams();
+  const getCurrentCity = useCurrentCity();
+  const { onCityChange, current } = useMapParams();
+  const currentCity = getCurrentCity(current);
   const cities = config ? Object.values(config) : [];
   const sortedCities =
     cities?.sort((a, b) => a.name.localeCompare(b.name)) || [];

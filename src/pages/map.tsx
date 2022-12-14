@@ -5,7 +5,7 @@ import MapParamsProvider from 'src/context/mapParams';
 import LoadingOverlay from 'src/components/LoadingOverlay';
 import MapboxLayerManagerProvider from 'src/context/mapboxLayerManager';
 import Map from 'src/components/Map';
-import { useIsFetching } from 'react-query';
+import { useIsFetching } from '@tanstack/react-query';
 
 function MapPage() {
   const isFetching = useIsFetching();

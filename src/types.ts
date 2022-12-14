@@ -1,6 +1,15 @@
 import { LngLatLike } from 'mapbox-gl';
 import { Feature, Polygon } from 'geojson';
 
+export type MapParamsState = {
+  gridCode?: string;
+  cityCode?: string;
+  visualizationCode?: string;
+  variantCode?: string;
+  featureId?: string;
+  filters?: Record<string, string>;
+};
+
 type Color = string;
 
 export type Scenario = {
@@ -82,13 +91,16 @@ export type VisualizationVariant = {
   // Proveedor de datos para la visualización.
   dataProvider: DataProvider;
   // Unidad de los valores
-  unit: 'minutes' | 'hours' | 'seconds'; // TBD
-  // Buckets para filtrar los valores. (En caso de requerir filtro)
-  buckets: number[];
+  unit: string;
   // Tipo de visualización. Determina su display e interactividad.
-  type: 'relative' | 'fixed';
+  type: 'static' | 'isochrone';
+  // Number of steps to for the color breakdown.
+  colorSteps: number;
+
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
+  // Buckets para filtrar los valores. (En caso de requerir filtro)
+  buckets: number[];
 };
 
 export type Filter = {

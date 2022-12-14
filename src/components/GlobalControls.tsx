@@ -8,9 +8,9 @@ import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import { useMapParams } from 'src/context/mapParams';
 
 function GlobalControls() {
-  const { onReset } = useMapParams();
-  const currentCity = useCurrentCity();
-
+  const { onReset, current } = useMapParams();
+  const getCurrentCity = useCurrentCity();
+  const currentCity = getCurrentCity(current);
   return (
     <div className="fixed bottom-4 left-[21rem]">
       <div className="flex justify-between gap-4">
