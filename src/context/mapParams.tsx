@@ -1,8 +1,10 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useContext, useState } from 'react';
 import { MEXICO_COORDINATES } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
 import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
+import queries from 'src/utils/queries';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 
@@ -41,6 +43,7 @@ interface MapParamsProviderProps {
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
+  const queryClient = useQueryClient();
   const { data: config } = useConfig();
   const [current, setCurrent] = useState<MapParamsState>({});
   const { show, hideAll } = useMapboxLayerManager();
@@ -52,18 +55,40 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       );
       const gridCode = visualization?.grid?.code;
 
-      if (gridCode) {
-        setCurrent({
+      setCurrent((state) => {
+        const { queryKey } = queries.visualizationVariants.detail({
+          cityCode,
+          visualizationCode,
+          variantCode,
+        });
+        const isDataCached = queryClient.getQueryCache().find(queryKey);
+
+        if (isDataCached) {
+          // Show the cached data
+          const defaultVariantFilters: Record<string, string> = {};
+          visualization?.filters.forEach((filter) => {
+            defaultVariantFilters[filter.code] = filter.defaultProperty.code;
+          });
+
+          const id = generateVariantId({
+            cityCode,
+            gridCode,
+            visualizationCode,
+            variantCode,
+            filters: defaultVariantFilters,
+          });
+          show(id);
+        }
+
+        return {
           cityCode,
           gridCode,
           visualizationCode,
           variantCode,
-        });
-      } else {
-        // TODO:
-      }
+        };
+      });
     },
-    [config]
+    [config, queryClient, show]
   );
 
   const handleVisualizationChange = useCallback(
@@ -114,12 +139,34 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     [config, handleVisualizationChange, map]
   );
 
-  const handleHexagonChange = useCallback((featureId: string) => {
-    return setCurrent((state) => ({
-      ...state,
-      featureId,
-    }));
-  }, []);
+  const handleHexagonChange = useCallback(
+    (featureId: string) => {
+      return setCurrent((state) => {
+        const { queryKey } = queries.visualizationVariants.hexagon({
+          cityCode: state.cityCode,
+          visualizationCode: state.visualizationCode,
+          variantCode: state.variantCode,
+          featureId,
+        });
+        const isDataCached = queryClient.getQueryCache().find(queryKey);
+
+        if (isDataCached) {
+          // Show the cached data
+          const id = generateVariantId({
+            ...current,
+            featureId,
+          });
+          show(id);
+        }
+
+        return {
+          ...state,
+          featureId,
+        };
+      });
+    },
+    [current, queryClient, show]
+  );
 
   const handleFiltersChange = useCallback(
     (filters: Record<string, string>, method: 'merge' | 'reset') => {
