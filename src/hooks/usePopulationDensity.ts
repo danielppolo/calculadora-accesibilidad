@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Legend } from 'src/types';
 import { useMap } from 'src/context/map';
 
@@ -24,37 +24,43 @@ const colorIntervals = [
 
 const usePopulationDensity = () => {
   const map = useMap();
+  const [active, setActive] = useState(false);
+
   useEffect(() => {
-    if (!map.getSource(layer.id)) {
-      map.addSource(layer.id, {
-        type: 'vector',
-        url: layer.url,
-        minzoom: 6,
-        maxzoom: 14,
-      });
-      map.addLayer({
-        id: layer.id,
-        type: 'fill',
-        source: layer.id,
-        layout: {
-          visibility: 'none',
-        },
-        'source-layer': layer.sourceLayer,
-        paint: {
-          'fill-color': ['step', ['get', 'Densidad'], ...colorIntervals.flat()],
-          'fill-opacity': 0.5,
-        },
-      });
+    if (map.getSource(layer.id)) {
+      return;
     }
-  }, [map]);
 
-  const show = useCallback(() => {
-    map.setLayoutProperty(layer.id, 'visibility', 'visible');
-  }, [map]);
+    map.addSource(layer.id, {
+      type: 'vector',
+      url: layer.url,
+      minzoom: 6,
+      maxzoom: 14,
+    });
+    map.addLayer({
+      id: layer.id,
+      type: 'fill',
+      source: layer.id,
+      layout: {
+        visibility: active ? 'visible' : 'none',
+      },
+      'source-layer': layer.sourceLayer,
+      paint: {
+        'fill-color': ['step', ['get', 'Densidad'], ...colorIntervals.flat()],
+        'fill-opacity': 0.5,
+      },
+    });
+  }, [active, map]);
 
-  const hide = useCallback(() => {
-    map.setLayoutProperty(layer.id, 'visibility', 'none');
-  }, [map]);
+  const toggle = useCallback(() => {
+    if (active) {
+      map.setLayoutProperty(layer.id, 'visibility', 'none');
+      setActive(false);
+    } else {
+      map.setLayoutProperty(layer.id, 'visibility', 'visible');
+      setActive(true);
+    }
+  }, [active, map]);
 
   const legend: Legend = {
     title: 'Densidad de población',
@@ -65,8 +71,8 @@ const usePopulationDensity = () => {
   };
 
   return {
-    show,
-    hide,
+    isActive: active,
+    toggle,
     legend,
   };
 };

@@ -37,6 +37,14 @@ function useVariantVisualizationRender() {
     onSuccess: (data) => {
       const filters = currentVisualization?.filters ?? [];
       const filtersDepth = filters.length;
+      const unitDict: Record<string, string> = {};
+      filters.forEach((filter) => {
+        filter.properties.forEach((property) => {
+          if (property.code && property.unit) {
+            unitDict[property.code] = property.unit;
+          }
+        });
+      });
 
       if (
         !filtersDepth ||
@@ -56,6 +64,10 @@ function useVariantVisualizationRender() {
 
       variants.forEach((variantFilters) => {
         const totalProperty = 'count';
+        // TODO: Document this.
+        const unit =
+          currentVariant?.unit ??
+          unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         let maxValue = 0;
 
@@ -74,7 +86,7 @@ function useVariantVisualizationRender() {
               properties: {
                 ...grid[hexId].properties,
                 [totalProperty]: total,
-                description: `${total}`,
+                description: `${total} ${unit}`,
               },
             });
           }
@@ -99,7 +111,7 @@ function useVariantVisualizationRender() {
             currentVisualization.minColor,
             currentVisualization.maxColor,
           ],
-          unit: currentVariant?.unit,
+          unit, // currentVariant?.unit
           beforeId: getGridId(cityCode, currentVisualization?.grid.code),
         });
       });

@@ -27,23 +27,24 @@ function Controls() {
   const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
 
-  console.log('render CONTROLS');
-
   return (
     <>
-      <CityPicker />
+      {currentCity ? <CityPicker /> : null}
+
       {showVisualizationPicker ? (
         <>
           <div className="m-2 md:m-4" />
           <VisualizationPicker />
         </>
       ) : null}
+
       {showVariantPicker && (
         <>
           <div className="m-2 md:m-4" />
           <VariantPicker />
         </>
       )}
+
       {currentVisualization?.filters?.map((filter) => (
         <div key={filter.code}>
           <div className="m-2 md:m-4" />

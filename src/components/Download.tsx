@@ -9,8 +9,6 @@ interface DownloadProps {
   filename?: string;
 }
 
-type DownloadFormat = 'kml' | 'geojson';
-
 function Download({ data: geojson, filename = 'Geometry' }: DownloadProps) {
   if (!geojson) {
     return null;

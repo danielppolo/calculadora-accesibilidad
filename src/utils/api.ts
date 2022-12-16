@@ -1,8 +1,9 @@
+import { FeatureCollection } from 'geojson';
 import { FeatureDictionary, UUID } from 'src/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BUCKET_BASE_URL;
 
-export const getCities = async () => {
+export const getCitiesGeometry = async (): Promise<FeatureCollection> => {
   const response = await fetch(`${BASE_URL}/core/cities_geometry.json`);
   if (response.ok) {
     const data = await response.json();

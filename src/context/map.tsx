@@ -26,6 +26,7 @@ const createMap = (center: LngLatLike) =>
     style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
     center,
     zoom: 4.5,
+    minZoom: 4,
   });
 
 function MapProvider({ children }: MapProviderProps) {

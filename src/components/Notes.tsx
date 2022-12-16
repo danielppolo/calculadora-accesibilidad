@@ -38,7 +38,7 @@ function Notes() {
         className="flex items-end cursor-pointer mb-4"
         onClick={() => setOpen(true)}
       >
-        <p className="text-sm font-medium">Ver notas</p>
+        <p className="text-xs underline">Ver notas</p>
         <LaunchIcon className="h-4 ml-1" />
       </div>
       <Modal

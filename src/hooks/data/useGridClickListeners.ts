@@ -2,11 +2,8 @@ import { useMapParams } from 'src/context/mapParams';
 import { useMap } from 'src/context/map';
 import getGridId from 'src/utils/getGridId';
 import { useEffect } from 'react';
+import { MapMouseEvent } from 'src/types';
 import useCurrentVariant from './useCurrentVariant';
-
-type MapMouseEvent = mapboxgl.MapMouseEvent & {
-  features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
-} & mapboxgl.EventData;
 
 function useGridClickListeners() {
   const getCurrentVariant = useCurrentVariant();

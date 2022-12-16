@@ -10,6 +10,16 @@ export type MapParamsState = {
   filters?: Record<string, string>;
 };
 
+export type MapboxLayerManager = {
+  toggle: () => void;
+  isActive: boolean;
+  legend: Legend;
+};
+
+export type MapMouseEvent = mapboxgl.MapMouseEvent & {
+  features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
+} & mapboxgl.EventData;
+
 type Color = string;
 
 export type Scenario = {
@@ -31,6 +41,8 @@ export type Property = {
   name: string;
   // Código único en formato snake_case. Se usa para referenciar la propiedad en las distintas partes del código.
   code: string;
+  // Unit to display when hovering over a feature.
+  unit?: string;
 };
 
 export type Grid = {

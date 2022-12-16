@@ -1,64 +1,44 @@
 import React from 'react';
 import Legend from 'src/components/Legend';
-import Download from 'src/components/Download';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
-import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import { useMapParams } from 'src/context/mapParams';
+import { MapboxLayerManager } from 'src/types';
 
-// interface LegendBarProps {
-//   legendTitle: string;
-//   road?: boolean;
-//   roadLegend?: LegendType;
-//   densityLegend?: LegendType;
-//   density?: boolean;
-//   ageb?: boolean;
-//   agebLegend?: LegendType;
-//   legendDictionary: LegendType['intervals'];
-//   geojson?: FeatureCollection<Polygon>;
-//   transportActive?: boolean;
-//   currentCity?: string;
-// }
+interface LegendBarProps {
+  economicLayer: MapboxLayerManager;
+  densityLayer: MapboxLayerManager;
+  roadLayer: MapboxLayerManager;
+}
 
-function LegendBar() {
+function LegendBar({ economicLayer, densityLayer, roadLayer }: LegendBarProps) {
   const { current } = useMapParams();
-  const getCurrentCity = useCurrentCity();
-  const currentCity = getCurrentCity(current);
-  const { legend, geojson } = useMapboxLayerManager();
+  const { legend } = useMapboxLayerManager();
+
+  if (!current.cityCode || !legend?.title || !legend?.intervals) {
+    return null;
+  }
 
   return (
     <div>
-      <div>
-        {currentCity && legend?.title && legend?.intervals && (
-          <div className="w-full">
-            <Legend title={legend?.title} items={legend?.intervals} />
-
-            {currentCity &&
-              // transportActive &&
-              geojson &&
-              Object.keys(geojson).length > 0 && (
-                <Download data={geojson} filename={legend?.title} />
-              )}
-          </div>
-        )}
-        {/* {ageb && agebLegend && (
-          <div className="flex items-end">
-            <Legend title={agebLegend.title} items={agebLegend.intervals} />
-          </div>
-        )}
-        {density && densityLegend && (
-          <div className="flex items-end">
-            <Legend
-              title={densityLegend.title}
-              items={densityLegend.intervals}
-            />
-          </div>
-        )}
-        {road && roadLegend && (
-          <div className="flex items-end">
-            <Legend title={roadLegend.title} items={roadLegend.intervals} />
-          </div>
-        )} */}
-      </div>
+      <Legend title={legend?.title} items={legend?.intervals} />
+      {economicLayer.isActive && (
+        <Legend
+          title={economicLayer.legend.title}
+          items={economicLayer.legend.intervals}
+        />
+      )}
+      {densityLayer.isActive && (
+        <Legend
+          title={densityLayer.legend.title}
+          items={densityLayer.legend.intervals}
+        />
+      )}
+      {roadLayer.isActive && (
+        <Legend
+          title={roadLayer.legend.title}
+          items={roadLayer.legend.intervals}
+        />
+      )}
     </div>
   );
 }

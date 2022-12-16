@@ -3,7 +3,7 @@ import Gradient from 'javascript-color-gradient';
 import { NUMBER_OF_BUCKETS } from 'src/constants';
 import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
 import { Feature, FeatureCollection, Polygon } from 'geojson';
-import { Legend } from 'src/types';
+import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';
 
@@ -22,11 +22,6 @@ interface AddOptions {
   opacity?: number;
   solid?: boolean;
 }
-
-type MapMouseEvent = mapboxgl.MapMouseEvent & {
-  features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
-} & mapboxgl.EventData;
-
 interface MapboxLayerManagerParams {
   state?: Record<string, boolean>;
   current?: string | undefined;
@@ -168,8 +163,8 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         state[id] = true;
         geojson[id] = geojsonFeatures;
         legends[id] = {
-          title: legendTitle,
-          intervals: getLegend(intervals, legendColorIntervals, unit),
+          title: unit ? `${legendTitle} (${unit})` : legendTitle,
+          intervals: getLegend(intervals, legendColorIntervals),
         };
 
         if (visible) {

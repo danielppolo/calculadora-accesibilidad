@@ -8,6 +8,9 @@ import queries from 'src/utils/queries';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 
+interface ResetOptions {
+  flyToOrigin?: boolean;
+}
 interface MapParamsContext {
   current: MapParamsState;
   onVariantChange: (
@@ -22,7 +25,7 @@ interface MapParamsContext {
     filters: Record<string, string>,
     method: 'merge' | 'reset'
   ) => void;
-  onReset: () => void;
+  onReset: (options?: ResetOptions) => void;
 }
 
 const initialContext = {
@@ -195,13 +198,16 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     [show]
   );
 
-  const handleReset = () => {
-    map.flyTo({
-      // TODO: Set coordinates in Mapbox
-      center: MEXICO_COORDINATES,
-      zoom: 4.5,
-      duration: 2000,
-    });
+  const handleReset = (options?: ResetOptions) => {
+    if (options?.flyToOrigin) {
+      map.flyTo({
+        // TODO: Set coordinates in Mapbox
+        center: MEXICO_COORDINATES,
+        zoom: 4.5,
+        duration: 2000,
+      });
+    }
+
     hideAll();
     return setCurrent(initialContext.current);
   };

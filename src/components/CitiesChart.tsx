@@ -2,11 +2,11 @@ import React, { memo, useEffect, useState } from 'react';
 import Chart, { ChartData } from 'chart.js/auto';
 
 interface CitiesChartProps {
-  data: ChartData<'pie'>;
+  data: ChartData<'bar'>;
 }
 
 function CitiesChart({ data }: CitiesChartProps) {
-  const [activeChart, setActiveChart] = useState<Chart | undefined>();
+  const [activeChart, setActiveChart] = useState<Chart<'bar'> | undefined>();
   useEffect(() => {
     if (data) {
       if (activeChart) {
@@ -14,11 +14,12 @@ function CitiesChart({ data }: CitiesChartProps) {
       }
 
       const config = {
-        type: 'pie',
+        responsive: true,
+        type: 'bar',
         data,
         options: {
           borderColor: '#F1F3EE',
-          indexAxis: 'y',
+          // indexAxis: 'y',
           plugins: {
             legend: {
               display: false,
@@ -47,7 +48,7 @@ function CitiesChart({ data }: CitiesChartProps) {
       ) as HTMLCanvasElement;
 
       if (chartContainer !== null) {
-        const chart = new Chart(chartContainer, config);
+        const chart = new Chart<'bar'>(chartContainer, config);
         setActiveChart(chart);
       }
     }
@@ -55,7 +56,7 @@ function CitiesChart({ data }: CitiesChartProps) {
 
   return (
     <div className="flex justify-center">
-      <div className="h-48 w-48 flex justify-center">
+      <div className="w-full relative">
         <canvas id="cities-chart" />
       </div>
     </div>

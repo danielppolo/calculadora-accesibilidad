@@ -134,6 +134,13 @@ Este archivo está almacenado en el directorio _root_ de la calculadora en AWS c
 /calculadora_oportunidades/v1/core/cities_geometry.json
 ```
 
+Every feature in the GeoJSON must have a `code` property with the corresponding city code. It's used to identify the city when clicking.
+```json
+"properties": {
+  "code": "acapulco"
+},
+```
+
 
 ## Display de HEX grid
 Al momento que se selecciona una ciudad, la aplicación revisará la configuración y ,dependiendo de las rejillas que estén disponibles, solicitará los archivos (JSON) correspondientes a AWS. 

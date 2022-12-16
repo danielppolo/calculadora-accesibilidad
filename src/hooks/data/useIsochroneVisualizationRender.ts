@@ -38,6 +38,14 @@ function useIsochroneVisualizationRender() {
     onSuccess: (data) => {
       const filters = currentVisualization?.filters ?? [];
       const filtersDepth = filters.length;
+      const unitDict: Record<string, string> = {};
+      filters.forEach((filter) => {
+        filter.properties.forEach((property) => {
+          if (property.code && property.unit) {
+            unitDict[property.code] = property.unit;
+          }
+        });
+      });
 
       if (
         !featureId ||
@@ -58,16 +66,22 @@ function useIsochroneVisualizationRender() {
 
       variants.forEach((variantFilters) => {
         const totalProperty = 'count';
+        const unit =
+          currentVariant?.unit ??
+          unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         let maxValue = 0;
 
         const features = Object.keys(data).reduce((filtered, hexId) => {
           const isClickedHexagon = hexId === featureId;
-          const total =
-            get(data[hexId], Object.values(variantFilters), {}) ?? 0;
+          let total = get(data[hexId], Object.values(variantFilters), {}) ?? 0;
 
           if (total > maxValue) {
             maxValue = total;
+          }
+
+          if (isClickedHexagon) {
+            total = total || 1;
           }
 
           // We filter hexagons with no data
@@ -76,8 +90,8 @@ function useIsochroneVisualizationRender() {
               ...grid[hexId],
               properties: {
                 ...grid[hexId].properties,
-                [totalProperty]: isClickedHexagon ? total || 1 : total,
-                description: `${isClickedHexagon ? total || 1 : total}`,
+                [totalProperty]: total,
+                description: `${total}  ${unit}`,
               },
             });
           }
@@ -102,7 +116,7 @@ function useIsochroneVisualizationRender() {
             currentVisualization.minColor,
             currentVisualization.maxColor,
           ],
-          unit: currentVariant?.unit,
+          unit,
           beforeId: getGridId(cityCode, currentVisualization?.grid.code),
         });
       });

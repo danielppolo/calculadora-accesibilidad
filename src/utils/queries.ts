@@ -10,7 +10,7 @@ const queries = createQueryKeyStore({
   cities: {
     all: {
       queryKey: ['cities'],
-      queryFn: () => api.getCities(),
+      queryFn: () => api.getCitiesGeometry(),
     },
   },
   grids: {

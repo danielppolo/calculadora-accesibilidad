@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FillPaint, Map, Popup, LinePaint } from 'mapbox-gl';
 import { Legend } from 'src/types';
+import { useMap } from 'src/context/map';
 
 interface MapboxLayer {
   id: string;
@@ -15,11 +16,19 @@ interface MapboxLayer {
 }
 
 const useLayer = (layerList: MapboxLayer[], title = '') => {
-  const load = useCallback(
-    (map: Map) => {
+  const map = useMap();
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if (map) {
       layerList.forEach((layer) => {
         const { id, sourceLayer, url, type, popup, popupDescriptionKey } =
           layer;
+
+        if (map.getLayer(id)) {
+          return;
+        }
+
         map.addSource(id, {
           type: 'vector',
           url,
@@ -38,7 +47,7 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
         });
 
         if (popup && popupDescriptionKey) {
-          const popup = new Popup({
+          const popupElement = new Popup({
             className: 'black-popup',
             closeButton: false,
             closeOnClick: false,
@@ -49,35 +58,30 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
               popupDescriptionKey &&
               e?.features?.[0]?.properties?.[popupDescriptionKey];
             if (description) {
-              popup.setLngLat(e.lngLat).setHTML(description).addTo(map);
+              popupElement.setLngLat(e.lngLat).setHTML(description).addTo(map);
             }
           });
           map.on('mouseleave', id, () => {
-            popup.remove();
+            popupElement.remove();
           });
         }
       });
-    },
-    [layerList]
-  );
+    }
+  }, [layerList, map]);
 
-  const show = useCallback(
-    (map: Map) => {
-      layerList.forEach((layer) => {
-        map.setLayoutProperty(layer.id, 'visibility', 'visible');
-      });
-    },
-    [layerList]
-  );
-
-  const hide = useCallback(
-    (map: Map) => {
+  const toggle = useCallback(() => {
+    if (active) {
       layerList.forEach((layer) => {
         map.setLayoutProperty(layer.id, 'visibility', 'none');
       });
-    },
-    [layerList]
-  );
+      setActive(false);
+    } else {
+      layerList.forEach((layer) => {
+        map.setLayoutProperty(layer.id, 'visibility', 'visible');
+      });
+      setActive(true);
+    }
+  }, [active, layerList, map]);
 
   const legend: Legend = {
     title,
@@ -88,9 +92,8 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
   };
 
   return {
-    load,
-    show,
-    hide,
+    isActive: active,
+    toggle,
     legend,
   };
 };

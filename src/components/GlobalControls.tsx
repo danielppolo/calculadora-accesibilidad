@@ -4,47 +4,56 @@ import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import { useMapParams } from 'src/context/mapParams';
+import { MapboxLayerManager } from 'src/types';
 
-function GlobalControls() {
+interface GlobalControlsProps {
+  economicLayer: MapboxLayerManager;
+  densityLayer: MapboxLayerManager;
+  roadLayer: MapboxLayerManager;
+}
+
+function GlobalControls({
+  economicLayer,
+  densityLayer,
+  roadLayer,
+}: GlobalControlsProps) {
   const { onReset, current } = useMapParams();
-  const getCurrentCity = useCurrentCity();
-  const currentCity = getCurrentCity(current);
+
   return (
-    <div className="fixed bottom-4 left-[21rem]">
+    <div className="fixed z-20 bottom-4 left-[26rem]">
       <div className="flex justify-between gap-4">
         <LayerSwitch
           key="economic"
-          disabled={!currentCity}
+          disabled={!current.cityCode}
           title="Mostar marginación"
-          // onChange={onEconomicLayerChange}
-          // active={economicLayer}
+          onChange={economicLayer.toggle}
+          active={economicLayer.isActive}
         >
           <GppMaybeOutlinedIcon />
         </LayerSwitch>
         <LayerSwitch
           key="Density"
-          disabled={!currentCity}
+          disabled={!current.cityCode}
           title="Mostar densidad"
-          // onChange={onDensityLayerChange}
-          // active={densityLayer}
+          onChange={densityLayer.toggle}
+          active={densityLayer.isActive}
         >
           <AccessibilityNewIcon />
         </LayerSwitch>
         <LayerSwitch
           key="Roads"
-          disabled={!currentCity}
+          disabled={!current.cityCode}
           title="Mostar red vial"
-          // onChange={onRoadsLayerChange}
-          // active={roadsLayer}
+          onChange={roadLayer.toggle}
+          active={roadLayer.isActive}
         >
           <DirectionsIcon />
         </LayerSwitch>
         <LayerSwitch
-          disabled={!currentCity}
+          disabled={!current.cityCode}
           title="Regresar"
-          onChange={onReset}
+          onChange={() => onReset({ flyToOrigin: true })}
         >
           <RestartAltIcon />
         </LayerSwitch>
