@@ -2,25 +2,28 @@
 
 require 'json'
 
-filepath = 'data_aws/input/chihuahua/main.json'
+cities = %w[acapulco aguascalientes cancun cuernavaca chihuahua guadalajara leon merida
+            monterrey morelia puebla-tlaxcala queretaro saltillo san-luis-potosi tampico tijuana toluca valle-de-mexico
+            veracruz villahermosa]
 
-transformed_data = {}
-raw_data = File.read(filepath)
+cities.each do |city|
+  filepath = "data_aws/input/#{city}/main.json"
 
-data = JSON.parse(raw_data)
+  transformed_data = {}
+  raw_data = File.read(filepath)
 
-data.each do |key, value|
-  transformed_data[key] = {
-    clinics: value['properties']['clinics'],
-    companies: value['properties']['empress'],
-    jobs: value['properties']['jobs_w'],
-    schools: value['properties']['escuels']
-  }
-end
+  data = JSON.parse(raw_data)
 
-directory_name = 'data_aws/output/chihuahua/total'
-Dir.mkdir(directory_name) unless File.exist?(directory_name)
+  data.each do |key, value|
+    transformed_data[key] = {
+      clinics: value['properties']['clinics'],
+      companies: value['properties']['empress'],
+      jobs: value['properties']['jobs_w'],
+      schools: value['properties']['escuels']
+    }
+  end
 
-File.open('data_aws/output/chihuahua/total/current.json', 'wb') do |file|
-  file.write(JSON.generate(transformed_data))
+  File.open("data_aws/cities/#{city}/visualizations/total-opportunities/current.json", 'wb') do |file|
+    file.write(JSON.generate(transformed_data))
+  end
 end

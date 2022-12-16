@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
 require 'json'
+cities = %w[acapulco aguascalientes cancun cuernavaca chihuahua guadalajara leon merida
+            monterrey morelia puebla-tlaxcala queretaro saltillo san-luis-potosi tampico tijuana toluca valle-de-mexico
+            veracruz villahermosa]
 
-filepath = 'data_aws/input/chihuahua/main.json'
+cities.each do |city|
+  filepath = "data_aws/input/#{city}/main.json"
 
-raw_data = File.read(filepath)
+  raw_data = File.read(filepath)
 
-data = JSON.parse(raw_data)
+  data = JSON.parse(raw_data)
 
-data.each do |_key, value|
-  value['properties'] = {}
-end
+  data.each do |_key, value|
+    value['properties'] = {}
+  end
 
-directory_name = 'data_aws/output/chihuahua/grids'
-Dir.mkdir(directory_name) unless File.exist?(directory_name)
-
-File.open('data_aws/output/chihuahua/grids/seven.json', 'wb') do |file|
-  file.write(JSON.generate(data))
+  File.open("data_aws/cities/#{city}/grids/nine.json", 'wb') do |file|
+    file.write(JSON.generate(data))
+  end
 end

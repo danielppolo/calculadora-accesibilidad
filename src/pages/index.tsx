@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
-import MenuIcon from '@mui/icons-material/Menu';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
@@ -87,10 +86,12 @@ export default function Home() {
             Convocatoria
           </a>
         </div>
-        <MenuIcon
-          className="text-white md:hidden"
+        <span
+          className="material-symbols-outlined text-white md:hidden"
           onClick={() => setExpanded(!expanded)}
-        />
+        >
+          menu
+        </span>
         <div
           id="mobile-menu"
           className={`absolute top-16 left-0 right-0 bg-blue opacity-90 duration-300 overflow-hidden ${

@@ -1,5 +1,5 @@
 import { LngLatLike } from 'mapbox-gl';
-import { Feature, Polygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 
 export type MapParamsState = {
   gridCode?: string;
@@ -43,6 +43,8 @@ export type Property = {
   code: string;
   // Unit to display when hovering over a feature.
   unit?: string;
+  // Material Icon name. https://fonts.google.com/icons
+  iconName?: string;
 };
 
 export type Grid = {
@@ -60,7 +62,9 @@ export type DataProvider = {
   // Dirección URL del proveedor de datos.
   url: string;
   // Dirección URL del asset a mostrar.
-  logotype: string;
+  logo?: string;
+  // Nombre del proveedor de datos visible para el cliente.
+  label?: string;
 };
 
 export type MapboxTileset = {
@@ -101,7 +105,7 @@ export type VisualizationVariant = {
   // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
   code: string;
   // Proveedor de datos para la visualización.
-  dataProvider: DataProvider;
+  dataProviders: DataProvider[];
   // Unidad de los valores
   unit: string;
   // Tipo de visualización. Determina su display e interactividad.
@@ -124,6 +128,8 @@ export type Filter = {
   properties: Property[];
   // Controles activados por default
   defaultProperty: Property;
+  // Controles activados por default. Defaults to select.
+  selectorType?: 'button' | 'select' | 'slider' | 'radio';
 };
 
 export type Visualization = {
@@ -143,6 +149,14 @@ export type Visualization = {
   minColor: Color;
   // Max color
   maxColor: Color;
+  // Max color
+  text?: string;
+  // Chart.js congifuration. https://www.chartjs.org/docs/latest/configuration/
+  chartConfig?: any;
+  // Controles activados por default. Defaults to select.
+  variantSelectorType?: 'select' | 'slider' | 'radio';
+  // Rangos.
+  ranges?: string[];
 };
 
 export type Country = {
@@ -175,6 +189,8 @@ export type City = {
   visualizations: Visualization[];
   // Visualizaciones de Mapbox disponibles para la ciudad.
   staticVisualizations: StaticVisualization[];
+  // Controles activados por default. Defaults to select.
+  visualizationSelectorType?: 'select' | 'radio';
 
   metadata: {
     // Total de oportunidades en la ciudad. Usado en charts.

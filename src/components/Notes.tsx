@@ -1,7 +1,5 @@
 import { Button, Modal } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import LaunchIcon from '@mui/icons-material/Launch';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { marked } from 'marked';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -39,7 +37,7 @@ function Notes() {
         onClick={() => setOpen(true)}
       >
         <p className="text-xs underline">Ver notas</p>
-        <LaunchIcon className="h-4 ml-1" />
+        {/* <LaunchIcon className="h-4 ml-1" /> */}
       </div>
       <Modal
         open={open}
@@ -51,7 +49,7 @@ function Notes() {
         <div className="max-w-3xl max-h-screen bg-white px-4 lg:px-8 py-6  overflow-y-auto">
           <div className="mb-4 lg:hidden">
             <Button
-              startIcon={<ArrowBackIcon />}
+              // startIcon={<ArrowBackIcon />}
               size="medium"
               onClick={() => setOpen(false)}
             >

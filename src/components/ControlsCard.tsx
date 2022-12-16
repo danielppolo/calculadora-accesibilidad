@@ -1,6 +1,4 @@
 import React, { memo, useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import FacilitiesChart from 'src/components/FacilitiesChart';
 import PeopleChart from 'src/components/PeopleChart';
 import Card from 'src/components/Card';
@@ -21,13 +19,13 @@ function ControlsCard({ title, cityData }: ControlsCardProps) {
       <h1>Here are the charts</h1>
       <div className="flex justify-between items-start">
         <Subtitle>{title}</Subtitle>
-        <button
+        {/* <button
           onClick={() => setExpanded(false)}
           type="button"
           className="text-black bg-white font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center md:hidden"
         >
           {expanded ? <CloseIcon /> : <OpenInNewIcon />}
-        </button>
+        </button> */}
       </div>
       {/* {Object.keys(cityData).map((key) => (
           <div

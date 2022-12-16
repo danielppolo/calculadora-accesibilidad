@@ -1,9 +1,5 @@
 import LayerSwitch from 'src/components/LayerSwitch';
 import React from 'react';
-import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useMapParams } from 'src/context/mapParams';
 import { MapboxLayerManager } from 'src/types';
 
@@ -30,7 +26,7 @@ function GlobalControls({
           onChange={economicLayer.toggle}
           active={economicLayer.isActive}
         >
-          <GppMaybeOutlinedIcon />
+          <span className="material-symbols-outlined">credit_card</span>
         </LayerSwitch>
         <LayerSwitch
           key="Density"
@@ -39,7 +35,7 @@ function GlobalControls({
           onChange={densityLayer.toggle}
           active={densityLayer.isActive}
         >
-          <AccessibilityNewIcon />
+          <span className="material-symbols-outlined">credit_card</span>
         </LayerSwitch>
         <LayerSwitch
           key="Roads"
@@ -48,14 +44,14 @@ function GlobalControls({
           onChange={roadLayer.toggle}
           active={roadLayer.isActive}
         >
-          <DirectionsIcon />
+          <span className="material-symbols-outlined">credit_card</span>
         </LayerSwitch>
         <LayerSwitch
           disabled={!current.cityCode}
           title="Regresar"
           onChange={() => onReset({ flyToOrigin: true })}
         >
-          <RestartAltIcon />
+          <span className="material-symbols-outlined">credit_card</span>
         </LayerSwitch>
       </div>
     </div>

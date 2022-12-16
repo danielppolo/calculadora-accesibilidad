@@ -1,13 +1,8 @@
 import React, { memo } from 'react';
-import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import { VISUALIZATIONS } from 'src/constants';
 import Select from 'src/components/Select';
 import OpportunityControls from 'src/components/controls/opportunities';
 import ReachabilityControls from 'src/components/controls/reachability';
 import IsochronesControls from 'src/components/controls/isochrones';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { City, Property } from 'src/types';
 import { useRouter } from 'next/router';
 import { useMapParams } from 'src/context/mapParams';
@@ -17,6 +12,7 @@ import CityPicker from './CityPicker';
 import VisualizationPicker from './VisualizationPicker';
 import VariantPicker from './VariantPicker';
 import ButtonGroup from './ButtonGroup';
+import FilterPicker from './FilterPicker';
 
 function Controls() {
   const getCurrentCity = useCurrentCity();
@@ -46,26 +42,7 @@ function Controls() {
       )}
 
       {currentVisualization?.filters?.map((filter) => (
-        <div key={filter.code}>
-          <div className="m-2 md:m-4" />
-          <Select
-            label={filter.name}
-            // disabled={disabled}
-            value={
-              filter.properties.find(
-                (prop) => prop.code === current.filters?.[filter.code]
-              )?.name
-            }
-            options={filter.properties.map((option) => ({
-              label: option.name,
-              value: option.code,
-            }))}
-            onChange={(value) =>
-              onFiltersChange?.({ [filter.code]: value }, 'merge')
-            }
-            placeholder="Selecciona un escenario"
-          />
-        </div>
+        <FilterPicker filter={filter} />
       ))}
       {/* {
         visualization === 'opportunities' && (

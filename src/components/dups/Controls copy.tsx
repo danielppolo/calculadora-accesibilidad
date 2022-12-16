@@ -1,14 +1,9 @@
 import React, { useMemo } from 'react';
-import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
-import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import { VISUALIZATIONS } from 'src/constants';
 import Select from 'src/components/Select';
 import LayerSwitch from 'src/components/LayerSwitch';
 import OpportunityControls from 'src/components/controls/opportunities';
 import ReachabilityControls from 'src/components/controls/reachability';
 import IsochronesControls from 'src/components/controls/isochrones';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { City, Property } from 'src/types';
 import { useRouter } from 'next/router';
 import { useMapParams } from 'src/context/mapParams';
@@ -159,7 +154,7 @@ function Controls({
         )
       } */}
       <div className="m-2 md:m-4" />
-      <div className="flex justify-between">
+      {/* <div className="flex justify-between">
         <LayerSwitch
           disabled={!city}
           title="Mostar marginación"
@@ -187,7 +182,7 @@ function Controls({
         <LayerSwitch disabled={!city} title="Regresar" onChange={resetMap}>
           <RestartAltIcon />
         </LayerSwitch>
-      </div>
+      </div> */}
       <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
     </>
   );

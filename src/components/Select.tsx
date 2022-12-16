@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
@@ -8,6 +7,7 @@ type Option = {
   value: string;
   label: string;
   category?: string;
+  iconName?: string;
 };
 
 interface SelectProps {
@@ -58,14 +58,14 @@ function Select({
               <span className="flex items-center">
                 <span className="block truncate">{value || placeholder}</span>
               </span>
-              <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              {/* <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 {icon || (
-                  <SelectorIcon
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
+                  // <SelectorIcon
+                  //   className="h-5 w-5 text-gray-400"
+                  //   aria-hidden="true"
+                  // />
                 )}
-              </span>
+              </span> */}
             </Listbox.Button>
 
             <Transition
@@ -96,6 +96,9 @@ function Select({
                               'block'
                             )}
                           >
+                            <span className="material-symbols-outlined">
+                              {option.iconName}
+                            </span>
                             {option.label}
                           </span>
                           {option?.category && (
@@ -112,7 +115,7 @@ function Select({
                               'absolute inset-y-0 right-0 flex items-center pr-4'
                             )}
                           >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            {/* <CheckIcon className="h-5 w-5" aria-hidden="true" /> */}
                           </span>
                         ) : null}
                       </>
