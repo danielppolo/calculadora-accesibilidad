@@ -26,7 +26,7 @@ const LegendItem = ({ color, label }: LegendItemProps) => (
 
 function Legend({ title, items }: LegendProps) {
   return (
-    <div className="w-full pb-4">
+    <div className="w-full">
       <h3 className="text-sm font-medium pb-2">{title}</h3>
       {items.map(({ color, label }) => (
         <LegendItem key={label} color={color} label={label} />

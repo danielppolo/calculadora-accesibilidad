@@ -15,8 +15,7 @@ import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { message } from 'antd';
 import GlobalControls from './GlobalControls';
-
-import DownloadGeometry from './DownloadGeometry';
+import CityPicker from './CityPicker';
 
 function Map() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -46,13 +45,15 @@ function Map() {
 
   return (
     <>
+      <div className="fixed z-20 top-4 left-4 w-[21.5rem]">
+        <CityPicker />
+      </div>
       <Sidebar
         economicLayer={economicLayer}
         densityLayer={densityLayer}
         roadLayer={roadLayer}
       />
       <GlobalControls />
-      {/* <DownloadGeometry /> */}
       <Credits />
       {contextHolder}
     </>

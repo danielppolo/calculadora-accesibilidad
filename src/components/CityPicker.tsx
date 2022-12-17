@@ -40,6 +40,7 @@ function CityPicker() {
       value={currentCity?.name}
       options={Object.values(countriesDict)}
       placeholder="Selecciona una ciudad"
+      allowClear
     />
   );
 }

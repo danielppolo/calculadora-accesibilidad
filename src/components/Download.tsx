@@ -1,77 +1,78 @@
-import type { FeatureCollection, Polygon } from 'geojson';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import React from 'react';
 // @ts-ignore
 import tokml from 'tokml';
-import Select from 'src/components/Select';
+import { Button, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import { useMapParams } from 'src/context/mapParams';
 
-interface DownloadProps {
-  data: FeatureCollection<Polygon>;
-  filename?: string;
-}
+function Download() {
+  const { current } = useMapParams();
+  const { legend, geojson } = useMapboxLayerManager();
+  const filename = legend?.title ?? 'Geometría';
+  const isDisabled =
+    !current.cityCode || !geojson || !Object.keys(geojson).length;
 
-function Download({ data: geojson, filename = 'Geometry' }: DownloadProps) {
-  if (!geojson) {
-    return null;
-  }
-
-  const handleSelectChange = (type: string) => {
-    if (type === 'kml' && geojson) {
-      const kml = tokml(geojson, {
-        name: filename,
-      });
-      const blob = new Blob([kml]);
-      const a = document.getElementById('download-kml') as HTMLAnchorElement;
-      a.download = filename;
-      a.href = URL.createObjectURL(blob);
-      a.click();
-    } else if (type === 'geojson' && geojson) {
-      const json = JSON.stringify(geojson);
-      const blob = new Blob([json]);
-      const a = document.getElementById(
-        'download-geojson'
-      ) as HTMLAnchorElement;
-      a.download = filename;
-      a.href = URL.createObjectURL(blob);
-      a.click();
-    }
+  const handleGeoJSONClick = () => {
+    const json = JSON.stringify(geojson);
+    const blob = new Blob([json]);
+    const a = document.getElementById('download-geojson') as HTMLAnchorElement;
+    a.download = filename;
+    a.href = URL.createObjectURL(blob);
+    a.click();
   };
 
+  const handleKMLClick = () => {
+    const kml = tokml(geojson, {
+      name: filename,
+    });
+    const blob = new Blob([kml]);
+    const a = document.getElementById('download-kml') as HTMLAnchorElement;
+    a.download = filename;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+  };
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <button type="button" onClick={handleGeoJSONClick}>
+          Descargar GeoJSON
+        </button>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <button type="button" onClick={handleKMLClick}>
+          Descargar KML
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      <Select
-        variant="dark"
-        icon={
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-        }
-        value="Descargar selección"
-        onChange={handleSelectChange}
-        options={[
-          {
-            value: 'kml',
-            label: 'KML',
-          },
-          {
-            value: 'geojson',
-            label: 'GeoJSON',
-          },
-        ]}
-      />
+    <>
+      <Dropdown menu={{ items }} placement="topRight" disabled={isDisabled}>
+        <Button
+          className="bg-white"
+          shape="circle"
+          size="large"
+          type="default"
+          disabled={isDisabled}
+          icon={
+            <span className="material-symbols-outlined leading-normal text-[16px]">
+              download
+            </span>
+          }
+        />
+      </Dropdown>
       <a className="hidden" id="download-kml" />
       <a className="hidden" id="download-geojson" />
-    </div>
+    </>
   );
 }
 

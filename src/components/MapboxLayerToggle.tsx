@@ -18,31 +18,31 @@ function MapboxLayerToggle({
 
   return (
     <div>
-      <div>
+      <div className="mb-2">
         <Checkbox
           disabled={!current.cityCode}
           onChange={economicLayer.toggle}
           checked={economicLayer.isActive}
         >
-          Mostar marginación
+          Marginación
         </Checkbox>
       </div>
-      <div>
+      <div className="mb-2">
         <Checkbox
           disabled={!current.cityCode}
           onChange={densityLayer.toggle}
           checked={densityLayer.isActive}
         >
-          Mostar densidad
+          Densidad
         </Checkbox>
       </div>
-      <div>
+      <div className="mb-2">
         <Checkbox
           disabled={!current.cityCode}
           onChange={roadLayer.toggle}
           checked={roadLayer.isActive}
         >
-          Mostar red vial
+          Red vial
         </Checkbox>
       </div>
     </div>

@@ -27,13 +27,14 @@ function App({ Component, pageProps }: AppProps) {
       theme={{
         token: {
           fontFamily: 'sofia-pro',
-          colorPrimary: '#307DC6',
+          colorPrimary: '#1A1A1A',
         },
       }}
     >
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>
+
       <div
         id="popup"
         className="bg-gray-800 text-white fixed rounded-sm p-2 text-xs"

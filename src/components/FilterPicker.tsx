@@ -24,7 +24,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
           value: prop.code,
           label: prop.iconName ? undefined : prop.name,
           icon: prop.iconName && (
-            <span className="material-symbols-outlined text-sm">
+            <span className="material-symbols-outlined leading-normal text-[16px]">
               {prop.iconName}
             </span>
           ),
@@ -53,6 +53,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
     return (
       <Slider
+        className="w-[90%] mx-auto"
         marks={marks}
         defaultValue={valueIndex}
         min={0}
@@ -89,7 +90,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
   return (
     <Select
-      size="middle"
+      size="large"
       defaultValue={value?.name}
       value={value?.name}
       onChange={(val) => {

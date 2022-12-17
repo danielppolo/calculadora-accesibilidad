@@ -30,6 +30,7 @@ function VariantPicker() {
 
     return (
       <Slider
+        className="w-[90%] mx-auto"
         marks={marks}
         defaultValue={valueIndex}
         min={0}
@@ -79,7 +80,7 @@ function VariantPicker() {
 
   return (
     <Select
-      size="middle"
+      size="large"
       defaultValue={currentVariant?.name}
       value={currentVariant?.name}
       onChange={(nextVariant) => {

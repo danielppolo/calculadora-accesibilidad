@@ -35,7 +35,7 @@ function VisualizationPicker() {
 
   return (
     <Select
-      size="middle"
+      size="large"
       defaultValue={currentVisualization?.name}
       value={currentVisualization?.name}
       onChange={(nextViz) => {

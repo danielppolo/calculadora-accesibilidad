@@ -1,4 +1,3 @@
-import { Button, Modal } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { marked } from 'marked';
 
@@ -31,40 +30,12 @@ function Notes() {
   }, []);
 
   return (
-    <div>
-      <div
-        className="flex items-end cursor-pointer mb-4"
-        onClick={() => setOpen(true)}
-      >
-        <p className="text-xs underline">Ver notas</p>
-        {/* <LaunchIcon className="h-4 ml-1" /> */}
-      </div>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        className="flex justify-center w-full h-screen place-items-center z-[1600]"
-      >
-        <div className="max-w-3xl max-h-screen bg-white px-4 lg:px-8 py-6  overflow-y-auto">
-          <div className="mb-4 lg:hidden">
-            <Button
-              // startIcon={<ArrowBackIcon />}
-              size="medium"
-              onClick={() => setOpen(false)}
-            >
-              Regresar
-            </Button>
-          </div>
-          <div
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{
-              __html: marked.parse(data?.body || ''),
-            }}
-          />
-        </div>
-      </Modal>
-    </div>
+    <div
+      className="prose prose-sm max-w-none"
+      dangerouslySetInnerHTML={{
+        __html: marked.parse(data?.body || ''),
+      }}
+    />
   );
 }
 

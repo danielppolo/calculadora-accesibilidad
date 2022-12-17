@@ -109,6 +109,8 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
             duration: 0,
             key: 'isochrone',
           });
+        } else {
+          messageApi.destroy('isochrone');
         }
 
         return nextState;
@@ -143,6 +145,24 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     [config, handleVariantChange]
   );
 
+  const handleReset = useCallback(
+    (options?: ResetOptions) => {
+      messageApi.destroy();
+
+      if (options?.flyToOrigin) {
+        map.flyTo({
+          center: MEXICO_COORDINATES,
+          zoom: 4.5,
+          duration: 2000,
+        });
+      }
+
+      hideAll();
+      return setCurrent(initialContext.current);
+    },
+    [hideAll, map, messageApi]
+  );
+
   const handleCityChange = useCallback(
     (cityCode?: string) => {
       if (cityCode === current.cityCode) {
@@ -161,11 +181,12 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         if (defaultVisualization) {
           return handleVisualizationChange(cityCode, defaultVisualization.code);
         }
-      }
 
-      return setCurrent((state) => ({ ...state, cityCode }));
+        return setCurrent((state) => ({ ...state, cityCode }));
+      }
+      return handleReset({ flyToOrigin: true });
     },
-    [config, handleVisualizationChange, map, current.cityCode]
+    [current.cityCode, handleReset, map, config, handleVisualizationChange]
   );
 
   const handleHexagonChange = useCallback(
@@ -196,7 +217,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         };
       });
     },
-    [current, queryClient, show]
+    [current, messageApi, queryClient, show]
   );
 
   const handleFiltersChange = useCallback(
@@ -225,19 +246,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     },
     [show]
   );
-
-  const handleReset = (options?: ResetOptions) => {
-    if (options?.flyToOrigin) {
-      map.flyTo({
-        center: MEXICO_COORDINATES,
-        zoom: 4.5,
-        duration: 2000,
-      });
-    }
-
-    hideAll();
-    return setCurrent(initialContext.current);
-  };
 
   return (
     <MapParamsContext.Provider

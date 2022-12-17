@@ -33,8 +33,9 @@ function VisualizationInfo() {
   }, [activeChart, currentVisualization?.chartConfig]);
 
   return (
-    <div className="prose max-w-none">
+    <div>
       <div
+        className="prose prose-sm max-w-none"
         dangerouslySetInnerHTML={{
           __html: marked.parse(currentVisualization?.text || ''),
         }}

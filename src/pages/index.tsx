@@ -86,12 +86,13 @@ export default function Home() {
             Convocatoria
           </a>
         </div>
-        <span
-          className="material-symbols-outlined text-white md:hidden"
+        <button
+          type="button"
+          className="material-symbols-outlined text-white md:hidden  leading-normal"
           onClick={() => setExpanded(!expanded)}
         >
           menu
-        </span>
+        </button>
         <div
           id="mobile-menu"
           className={`absolute top-16 left-0 right-0 bg-blue opacity-90 duration-300 overflow-hidden ${
