@@ -3,6 +3,7 @@
 require 'csv'
 require 'json'
 
+SLOW_FACTOR = 1.6927
 polygons = {}
 csv_options = { col_sep: ',', quote_char: '"', headers: :first_row }
 headers = %w[destination origin id autom�vil tp caminando bicicleta origin_xcoord origin_ycoord destination_xcoord
@@ -21,7 +22,7 @@ cities.each do |city|
       walk: row['caminando'].to_i,
       bike: row['bicicleta'].to_i,
       public: row['tp'].to_i,
-      car: row['autom�vil'].to_i
+      car: row['automovil'].to_i * SLOW_FACTOR
     }
   end
 

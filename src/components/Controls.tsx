@@ -42,7 +42,7 @@ function Controls() {
       )}
 
       {currentVisualization?.filters?.map((filter) => (
-        <FilterPicker filter={filter} />
+        <FilterPicker filter={filter} key={filter.code} />
       ))}
       {/* {
         visualization === 'opportunities' && (

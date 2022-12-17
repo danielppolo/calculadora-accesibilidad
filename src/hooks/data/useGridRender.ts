@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 import { useMapParams } from 'src/context/mapParams';
-import { Feature, Polygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 import { useMap } from 'src/context/map';
 import getGridId from 'src/utils/getGridId';
 import convertToGeoJSON from 'src/utils/convertToGeoJSON';

@@ -109,14 +109,14 @@ export type VisualizationVariant = {
   // Unidad de los valores
   unit: string;
   // Tipo de visualización. Determina su display e interactividad.
-  type: 'static' | 'isochrone';
+  relative: 'city' | 'hexagon';
   // Number of steps to for the color breakdown.
-  colorSteps: number;
-
+  ranges: string[];
+  // Buckets para filtrar los valores. (En caso de requerir filtro)
+  groups: string[];
+  colorSteps?: number;
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
-  // Buckets para filtrar los valores. (En caso de requerir filtro)
-  buckets: number[];
 };
 
 export type Filter = {

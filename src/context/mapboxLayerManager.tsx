@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import Gradient from 'javascript-color-gradient';
 import { NUMBER_OF_BUCKETS } from 'src/constants';
 import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';

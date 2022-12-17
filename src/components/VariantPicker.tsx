@@ -68,7 +68,9 @@ function VariantPicker() {
       >
         <Space direction="vertical">
           {variants?.map((variant) => (
-            <Radio value={variant?.code}>{variant?.name}</Radio>
+            <Radio key={variant?.code} value={variant?.code}>
+              {variant?.name}
+            </Radio>
           ))}
         </Space>
       </Radio.Group>
@@ -77,6 +79,7 @@ function VariantPicker() {
 
   return (
     <Select
+      size="large"
       defaultValue={currentVariant?.name}
       value={currentVariant?.name}
       onChange={(nextVariant) => {

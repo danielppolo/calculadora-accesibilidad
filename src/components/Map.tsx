@@ -39,11 +39,7 @@ function Map() {
         densityLayer={densityLayer}
         roadLayer={roadLayer}
       />
-      <GlobalControls
-        economicLayer={economicLayer}
-        densityLayer={densityLayer}
-        roadLayer={roadLayer}
-      />
+      <GlobalControls />
       <DownloadGeometry />
       <Credits />
     </>

@@ -11,7 +11,7 @@ function useGridClickListeners() {
   const { current, onHexagonChange } = useMapParams();
   const { cityCode, gridCode } = current;
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.type === 'isochrone' ?? false;
+  const isIsochroneVariant = currentVariant?.relative === 'hexagon' ?? false;
 
   useEffect(() => {
     const handleHexagonClick = (event: MapMouseEvent) => {

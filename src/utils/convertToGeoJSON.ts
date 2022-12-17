@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import type { Feature, FeatureCollection, Polygon } from 'geojson';
 
 const convertToGeoJSON = (
   features: Feature<Polygon>[]

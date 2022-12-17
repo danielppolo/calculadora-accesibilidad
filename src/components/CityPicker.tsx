@@ -32,6 +32,7 @@ function CityPicker() {
 
   return (
     <Select
+      size="large"
       showSearch
       defaultValue={currentCity?.name}
       style={{ width: '100%' }}

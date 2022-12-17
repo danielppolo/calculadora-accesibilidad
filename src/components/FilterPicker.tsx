@@ -5,6 +5,7 @@ import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
 import { Filter } from 'src/types';
 
+// TODO: Enable multiple.
 function FilterPicker({ filter }: { filter: Filter }) {
   const { current, onFiltersChange } = useMapParams();
 
@@ -77,7 +78,9 @@ function FilterPicker({ filter }: { filter: Filter }) {
       >
         <Space direction="vertical">
           {filter.properties?.map((prop) => (
-            <Radio value={prop?.code}>{prop?.name}</Radio>
+            <Radio key={prop?.code} value={prop?.code}>
+              {prop?.name}
+            </Radio>
           ))}
         </Space>
       </Radio.Group>
@@ -86,6 +89,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
   return (
     <Select
+      size="large"
       defaultValue={value?.name}
       value={value?.name}
       onChange={(val) => {

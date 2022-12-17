@@ -2,9 +2,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useContext, useState } from 'react';
 import { MEXICO_COORDINATES } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
+import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
 import queries from 'src/utils/queries';
+import { message } from 'antd';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 
@@ -46,10 +48,12 @@ interface MapParamsProviderProps {
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
+  const [messageApi, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
   const [current, setCurrent] = useState<MapParamsState>({});
   const { show, hideAll } = useMapboxLayerManager();
+  const getCurrentVariant = useCurrentVariant();
 
   const handleVariantChange = useCallback(
     (cityCode: string, visualizationCode: string, variantCode: string) => {
@@ -59,6 +63,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       const gridCode = visualization?.grid?.code;
 
       setCurrent((state) => {
+        const nextState = {
+          cityCode,
+          gridCode,
+          visualizationCode,
+          variantCode,
+        };
+
         const { queryKey } = queries.visualizationVariants.detail({
           cityCode,
           visualizationCode,
@@ -83,15 +94,20 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           show(id);
         }
 
-        return {
-          cityCode,
-          gridCode,
-          visualizationCode,
-          variantCode,
-        };
+        const nextVariant = getCurrentVariant(nextState);
+
+        if (nextVariant?.relative === 'hexagon') {
+          hideAll();
+          messageApi.info({
+            content: 'Da click en un hexágono para comenzar',
+            duration: 5,
+          });
+        }
+
+        return nextState;
       });
     },
-    [config, queryClient, show]
+    [config, getCurrentVariant, hideAll, messageApi, queryClient, show]
   );
 
   const handleVisualizationChange = useCallback(
@@ -224,6 +240,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         onReset: handleReset,
       }}
     >
+      {contextHolder}
       {children}
     </MapParamsContext.Provider>
   );

@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { generateVariantId, getFlattenFilters } from 'src/utils';
 import getGridId from 'src/utils/getGridId';
-import { Feature, GeoJsonProperties, Polygon } from 'geojson';
+import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import useCurrentVisualization from './useCurrentVisualization';
 import useCurrentVariant from './useCurrentVariant';
 import useGrid from './useGrid';
@@ -19,7 +19,7 @@ function useVariantVisualizationRender() {
   const { cityCode, visualizationCode, variantCode, featureId } = current;
   const currentVisualization = getCurrentVisualization(current);
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.type === 'isochrone' ?? false;
+  const isIsochroneVariant = currentVariant?.relative === 'hexagon' ?? false;
 
   useQuery({
     ...queries.visualizationVariants.detail({

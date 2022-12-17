@@ -5,6 +5,8 @@ import Notes from 'src/components/Notes';
 import Overview from 'src/components/CitiesOverview';
 import { MapboxLayerManager } from 'src/types';
 import DataSource from './DataSource';
+import MapboxLayerToggle from './MapboxLayerToggle';
+import Charts from './Charts';
 
 interface SidebarProps {
   economicLayer: MapboxLayerManager;
@@ -19,7 +21,12 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
         <div className="grow p-4">
           <Overview />
           <Controls />
-          {/* <Charts /> */}
+          <Charts />
+          <MapboxLayerToggle
+            economicLayer={economicLayer}
+            densityLayer={densityLayer}
+            roadLayer={roadLayer}
+          />
         </div>
         <div className="px-4">
           <DataSource />

@@ -1,4 +1,4 @@
-import { FeatureCollection, Polygon } from 'geojson';
+import type { FeatureCollection, Polygon } from 'geojson';
 import React from 'react';
 // @ts-ignore
 import tokml from 'tokml';

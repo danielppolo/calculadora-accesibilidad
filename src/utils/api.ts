@@ -1,4 +1,4 @@
-import { FeatureCollection } from 'geojson';
+import type { FeatureCollection } from 'geojson';
 import { FeatureDictionary, UUID } from 'src/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BUCKET_BASE_URL;

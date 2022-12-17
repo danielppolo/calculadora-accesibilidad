@@ -1,4 +1,4 @@
-import { Feature, Polygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 import { useMemo } from 'react';
 import count from 'src/utils/countFeatures';
 
