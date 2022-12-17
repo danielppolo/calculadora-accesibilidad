@@ -12,7 +12,7 @@ function Charts() {
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
-  const [activeChart, setActiveChart] = useState<Chart<'bar'> | undefined>();
+  const [activeChart, setActiveChart] = useState<Chart | undefined>();
 
   useEffect(() => {
     if (activeChart) {
@@ -24,7 +24,7 @@ function Charts() {
     ) as HTMLCanvasElement;
 
     if (currentVisualization?.chartConfig && chartContainer !== null) {
-      const chart = new Chart<'bar'>(
+      const chart = new Chart(
         chartContainer,
         currentVisualization?.chartConfig
       );
