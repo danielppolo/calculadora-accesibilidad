@@ -3,6 +3,9 @@ cities = %w[acapulco aguascalientes cancun cuernavaca chihuahua guadalajara leon
             veracruz villahermosa]
 
 cities.each do |city|
+  directory_name = 'data_aws/cities'
+  Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
   directory_name = "data_aws/cities/#{city}"
   Dir.mkdir(directory_name) unless File.exist?(directory_name)
 

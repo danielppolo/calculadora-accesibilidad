@@ -10,7 +10,7 @@ import useCurrentVisualization from './useCurrentVisualization';
 import useCurrentVariant from './useCurrentVariant';
 import useGrid from './useGrid';
 
-function useVariantVisualizationRender() {
+function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
   const { add } = useMapboxLayerManager();
@@ -34,6 +34,9 @@ function useVariantVisualizationRender() {
       !isGridLoading &&
       !featureId &&
       !isIsochroneVariant,
+    onError: (error) => {
+      onError?.();
+    },
     onSuccess: (data) => {
       const filters = currentVisualization?.filters ?? [];
       const filtersDepth = filters.length;
@@ -106,7 +109,7 @@ function useVariantVisualizationRender() {
           property: totalProperty,
           maxValue,
           visible: false,
-          stepSize: currentVariant?.colorSteps,
+          stepSize: currentVisualization?.ranges?.length,
           colors: [
             currentVisualization.minColor,
             currentVisualization.maxColor,

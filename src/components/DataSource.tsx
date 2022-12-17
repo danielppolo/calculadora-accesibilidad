@@ -14,7 +14,7 @@ function DataSource() {
     <div>
       {dataSources?.map((dataSource) => (
         <p className="text-xs">
-          Source:{' '}
+          {dataSource.label}{' '}
           <a
             className="underline"
             href={dataSource.url}

@@ -8,18 +8,20 @@ raw_data = File.read(filepath)
 
 data = JSON.parse(raw_data)
 
-File.open('data_aws/output/zonas_metropolitanas.json', 'wb') do |file|
+File.open('data_aws/cities/zonas_metropolitanas.json', 'wb') do |file|
+  features = data['features'].map do |feature|
+    name = feature['properties']['NOMBRE']
+    feature['properties'] = {}
+    feature['properties']['code'] = name.downcase
+    feature
+  end
+
   file.write(
     JSON.generate(
       {
         type: 'FeatureCollection',
         name: 'Zonas Metropolitanas',
-        features: data['features'].map do |feature|
-                    name = feature['properties']['NOMBRE']
-                    feature['properties'] = {}
-                    feature['properties']['code'] = name.downcase
-                    feature
-                  end
+        features: features
       }
     )
   )

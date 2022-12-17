@@ -13,18 +13,29 @@ import useZoomToReset from 'src/hooks/useZoomToReset';
 import useEconomicZones from 'src/hooks/useEconomicZones';
 import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
+import { message } from 'antd';
 import GlobalControls from './GlobalControls';
 import DownloadGeometry from './DownloadGeometry';
 
 function Map() {
+  const [messageApi, contextHolder] = message.useMessage();
+
   useMapFit();
   useZoomToReset();
 
   useCityMarkers();
 
   useGridRender();
-  useIsochroneVisualizationRender();
-  useVariantVisualizationRender();
+  useIsochroneVisualizationRender({
+    onError: () => {
+      messageApi.error('Algo salió mal, intenta de nuevo');
+    },
+  });
+  useVariantVisualizationRender({
+    onError: () => {
+      messageApi.error('Algo salió mal, intenta de nuevo');
+    },
+  });
 
   useGridClickListeners();
 
@@ -42,6 +53,7 @@ function Map() {
       <GlobalControls />
       <DownloadGeometry />
       <Credits />
+      {contextHolder}
     </>
   );
 }

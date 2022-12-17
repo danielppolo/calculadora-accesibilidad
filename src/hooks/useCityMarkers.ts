@@ -8,7 +8,8 @@ import popup from 'src/utils/popup';
 import useConfig from './data/useConfig';
 
 const useCityMarkers = () => {
-  const layerId = 'city-zones';
+  const lineLayerId = 'city-zones-line';
+  const fillLayerId = 'city-zones-fill';
   const map = useMap();
   const { data: config } = useConfig();
   const {
@@ -36,44 +37,50 @@ const useCityMarkers = () => {
       };
     },
     onSuccess: (geojson) => {
-      map.addSource(layerId, {
+      map.addSource(fillLayerId, {
         type: 'geojson',
         data: geojson,
       });
 
       map.addLayer({
-        id: layerId,
+        id: fillLayerId,
         type: 'fill',
-        source: layerId,
+        source: fillLayerId,
         layout: {
           visibility: 'visible',
         },
-        // filter: ['>', ['get', property], 0],
         paint: {
           'fill-opacity': 0.5,
           'fill-color': ['get', 'color'],
-          'fill-outline-color': [
-            'case',
-            ['has', 'selected'],
-            ['rgba', 0, 0, 0, 1],
-            ['rgba', 255, 0, 0, 0],
-          ],
         },
       });
 
-      map.on('click', layerId, (event: MapMouseEvent) => {
-        const code = event.features?.[0]?.properties?.code;
-        onCityChange?.(code);
+      map.addSource(lineLayerId, {
+        type: 'geojson',
+        data: geojson,
       });
 
-      map.on('mousemove', layerId, (event: MapMouseEvent) => {
+      map.addLayer({
+        id: lineLayerId,
+        type: 'line',
+        source: lineLayerId,
+        layout: {
+          visibility: 'visible',
+        },
+        paint: {
+          'line-width': 1,
+          'line-color': ['rgba', 0, 0, 0, 0.5],
+        },
+      });
+
+      map.on('mousemove', fillLayerId, (event: MapMouseEvent) => {
         popup
           .setLngLat(event.lngLat)
           .setHTML(`${event?.features?.[0]?.properties?.name}`)
           .addTo(map);
       });
 
-      map.on('mouseleave', layerId, () => {
+      map.on('mouseleave', fillLayerId, () => {
         popup.remove();
       });
     },
@@ -81,57 +88,24 @@ const useCityMarkers = () => {
 
   useEffect(() => {
     if (cityCode) {
-      map.setLayoutProperty(layerId, 'visibility', 'none');
-    } else if (map.getSource(layerId)) {
-      map.setLayoutProperty(layerId, 'visibility', 'visible');
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0);
+    } else {
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.5);
     }
   }, [cityCode, map]);
 
-  // useEffect(() => {
-  //   if (!config) {
-  //     return;
-  //   }
+  useEffect(() => {
+    const handleLayerClick = (event: MapMouseEvent) => {
+      const code = event.features?.[0]?.properties?.code;
+      onCityChange?.(code);
+    };
 
-  //   const display = () => {
-  //     const markers: HTMLDivElement[] = [];
-  //     Object.keys(config).forEach((cty) => {
-  //       const popup = new Popup({
-  //         className: 'black-popup',
-  //         closeButton: false,
-  //         closeOnClick: false,
-  //       });
-  //       const marker = buildCityMarker(config[cty].color);
-  //       marker.addEventListener('click', () => {
-  //         onCityChange?.(cty);
-  //       });
-  //       marker.addEventListener('mousemove', () => {
-  //         popup
-  //           .setLngLat(config[cty].coordinates)
-  //           .setHTML(config[cty].name)
-  //           .addTo(map);
-  //       });
-  //       marker.addEventListener('mouseleave', () => {
-  //         popup.remove();
-  //       });
-  //       new Marker(marker).setLngLat(config[cty].coordinates).addTo(map);
-  //       markers.push(marker);
-  //       popups.push(popup);
-  //     });
-  //     setCityMarkers(markers);
-  //   };
+    map.on('click', fillLayerId, handleLayerClick);
 
-  //   const remove = () => {
-  //     cityMarkers.forEach((marker) => marker.remove());
-  //     popups.forEach((popup) => popup.remove());
-  //     setCityMarkers([]);
-  //   };
-
-  //   if (cityCode && cityMarkers.length > 0) {
-  //     remove();
-  //   } else if (config && !cityCode && !cityMarkers.length) {
-  //     display();
-  //   }
-  // }, [config, cityMarkers, cityMarkers.length, map, onCityChange, cityCode]);
+    return () => {
+      map.off('click', fillLayerId, handleLayerClick);
+    };
+  }, [cityCode, map, onCityChange]);
 };
 
 export default useCityMarkers;

@@ -111,8 +111,6 @@ export type VisualizationVariant = {
   unit: string;
   // Tipo de visualización. Determina su display e interactividad.
   relative: 'city' | 'hexagon';
-  //
-  colorSteps?: number;
   // Default static visualization. Enabled when users select viz.
   defaultStaticVisualizations: StaticVisualization[];
 };
@@ -154,9 +152,9 @@ export type Visualization = {
   // Controles activados por default. Defaults to select.
   variantSelectorType?: 'select' | 'slider' | 'radio';
   // Number of steps to for the color breakdown.
-  ranges: string[];
+  ranges?: string[];
   // Buckets para filtrar los valores. (En caso de requerir filtro)
-  groups: string[];
+  groups?: string[];
 };
 
 export type Country = {

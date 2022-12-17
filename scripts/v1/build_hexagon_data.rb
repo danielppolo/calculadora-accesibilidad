@@ -22,7 +22,7 @@ cities.each do |city|
       walk: row['caminando'].to_i,
       bike: row['bicicleta'].to_i,
       public: row['tp'].to_i,
-      car: row['automovil'].to_i * SLOW_FACTOR
+      car: (row['automovil'].to_i * SLOW_FACTOR).round
     }
   end
 

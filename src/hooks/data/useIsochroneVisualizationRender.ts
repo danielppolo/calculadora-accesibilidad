@@ -6,11 +6,16 @@ import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { generateVariantId, getFlattenFilters } from 'src/utils';
 import getGridId from 'src/utils/getGridId';
 import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
+
 import useGrid from './useGrid';
 import useCurrentVisualization from './useCurrentVisualization';
 import useCurrentVariant from './useCurrentVariant';
 
-function useIsochroneVisualizationRender() {
+function useIsochroneVisualizationRender({
+  onError,
+}: {
+  onError?: () => void;
+}) {
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
   const { current, onFiltersChange } = useMapParams();
@@ -35,6 +40,9 @@ function useIsochroneVisualizationRender() {
       !!variantCode &&
       !isGridLoading &&
       isIsochroneVariant,
+    onError: (error) => {
+      onError?.();
+    },
     onSuccess: (data) => {
       const filters = currentVisualization?.filters ?? [];
       const filtersDepth = filters.length;
@@ -111,7 +119,7 @@ function useIsochroneVisualizationRender() {
           property: totalProperty,
           maxValue,
           visible: false,
-          stepSize: currentVariant?.colorSteps,
+          stepSize: currentVisualization?.ranges?.length,
           colors: [
             currentVisualization.minColor,
             currentVisualization.maxColor,

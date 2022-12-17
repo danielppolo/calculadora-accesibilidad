@@ -138,6 +138,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
   const handleCityChange = useCallback(
     (cityCode?: string) => {
+      if (cityCode === current.cityCode) {
+        return undefined;
+      }
+
       if (cityCode) {
         map.flyTo({
           center: config?.[cityCode]?.coordinates,
@@ -155,7 +159,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
       return setCurrent((state) => ({ ...state, cityCode }));
     },
-    [config, handleVisualizationChange, map]
+    [config, handleVisualizationChange, map, current.cityCode]
   );
 
   const handleHexagonChange = useCallback(
