@@ -2,6 +2,8 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import { ConfigProvider } from 'antd';
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'src/styles/globals.css';
 import 'src/styles/overrides.css';
@@ -21,7 +23,14 @@ const queryClient = new QueryClient({
 
 function App({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: 'sofia-pro',
+          colorPrimary: '#307DC6',
+        },
+      }}
+    >
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>
@@ -29,7 +38,7 @@ function App({ Component, pageProps }: AppProps) {
         id="popup"
         className="bg-gray-800 text-white fixed rounded-sm p-2 text-xs"
       />
-    </div>
+    </ConfigProvider>
   );
 }
 

@@ -8,7 +8,7 @@ marked.setOptions({
   gfm: true,
 });
 
-function Charts() {
+function VisualizationInfo() {
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
@@ -20,7 +20,7 @@ function Charts() {
     }
 
     const chartContainer = document.getElementById(
-      'cities-chart'
+      'XXXXXX'
     ) as HTMLCanvasElement;
 
     if (currentVisualization?.chartConfig && chartContainer !== null) {
@@ -40,10 +40,10 @@ function Charts() {
         }}
       />
       <div className="w-full relative">
-        <canvas id="cities-chart" />
+        <canvas id="XXXXXX" />
       </div>
     </div>
   );
 }
 
-export default memo(Charts);
+export default memo(VisualizationInfo);

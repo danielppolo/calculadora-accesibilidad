@@ -1,13 +1,20 @@
 import React, { memo } from 'react';
 import LegendBar from 'src/components/LegendBar';
-import Controls from 'src/components/Controls';
 import Notes from 'src/components/Notes';
-import Overview from 'src/components/CitiesOverview';
 import { MapboxLayerManager } from 'src/types';
+import { Drawer, Collapse } from 'antd';
+import { useMapParams } from 'src/context/mapParams';
+import useCurrentCity from 'src/hooks/data/useCurrentCity';
+import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
-import Charts from './Charts';
+import VisualizationInfo from './VisualizationInfo';
+import CityPicker from './CityPicker';
+import VisualizationPicker from './VisualizationPicker';
+import VariantPicker from './VariantPicker';
+import FilterPicker from './FilterPicker';
 
+const { Panel } = Collapse;
 interface SidebarProps {
   economicLayer: MapboxLayerManager;
   densityLayer: MapboxLayerManager;
@@ -15,31 +22,122 @@ interface SidebarProps {
 }
 
 function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
+  const getCurrentCity = useCurrentCity();
+  const getCurrentVisualization = useCurrentVisualization();
+  const { current } = useMapParams();
+  const currentCity = getCurrentCity(current);
+  const currentVisualization = getCurrentVisualization(current);
+  const showVisualizationPicker = currentCity?.visualizations?.length;
+  const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
+
   return (
-    <div className="fixed top-2 left-2 right-2 z-30 bg-white md:top-0 md:left-0 bottom-0 md:w-[25rem] md:max-w-xl overflow-y-auto border border-gray-300 border-r border-b-0 border-l-0 border-t-0">
+    <Drawer
+      placement="left"
+      open={!!current?.cityCode}
+      mask={false}
+      closable={false}
+      bodyStyle={{
+        padding: 0,
+      }}
+      className="bg-white"
+    >
       <div className="flex h-full flex-col">
-        <div className="grow p-4">
-          <Overview />
-          <Controls />
-          <Charts />
-          <MapboxLayerToggle
-            economicLayer={economicLayer}
-            densityLayer={densityLayer}
-            roadLayer={roadLayer}
-          />
+        <div>
+          <h2 className="text-2xl font-semibold uppercase m-4">
+            {currentCity?.name}
+          </h2>
+          {/* {currentCity ? <CityPicker /> : null} */}
+
+          <Collapse
+            defaultActiveKey={['1', '2', '3', '4', '5', '6', '7']}
+            ghost
+            expandIconPosition="end"
+          >
+            {showVisualizationPicker ? (
+              <Panel
+                header={
+                  <h3 className="font-semibold uppercase text-sm">Mapas</h3>
+                }
+                key="1"
+              >
+                <VisualizationPicker />
+              </Panel>
+            ) : null}
+
+            {showVariantPicker && (
+              <Panel
+                header={
+                  <h3 className="font-semibold uppercase text-sm">
+                    Escenarios
+                  </h3>
+                }
+                key="2"
+              >
+                <VariantPicker />
+              </Panel>
+            )}
+
+            <Panel
+              header={
+                <h3 className="font-semibold uppercase text-sm">Filtros</h3>
+              }
+              key="3"
+            >
+              {currentVisualization?.filters?.map((filter) => (
+                <FilterPicker filter={filter} key={filter.code} />
+              ))}
+            </Panel>
+
+            {currentVisualization?.text && (
+              <Panel
+                header={
+                  <h3 className="font-semibold uppercase text-sm">
+                    Información
+                  </h3>
+                }
+                key="4"
+              >
+                <VisualizationInfo />
+              </Panel>
+            )}
+
+            <Panel
+              header={
+                <h3 className="font-semibold uppercase text-sm">Capas</h3>
+              }
+              key="5"
+            >
+              <MapboxLayerToggle
+                economicLayer={economicLayer}
+                densityLayer={densityLayer}
+                roadLayer={roadLayer}
+              />
+            </Panel>
+            <Panel
+              header={
+                <h3 className="font-semibold uppercase text-sm">Simbología</h3>
+              }
+              key="6"
+            >
+              <LegendBar
+                economicLayer={economicLayer}
+                densityLayer={densityLayer}
+                roadLayer={roadLayer}
+              />
+            </Panel>
+            <Panel
+              header={
+                <h3 className="font-semibold uppercase text-sm">Fuentes</h3>
+              }
+              key="7"
+            >
+              <DataSource />
+              <Notes />
+            </Panel>
+          </Collapse>
         </div>
-        <div className="px-4">
-          <DataSource />
-          <Notes />
-        </div>
-        <LegendBar
-          economicLayer={economicLayer}
-          densityLayer={densityLayer}
-          roadLayer={roadLayer}
-        />
       </div>
-      <div className="hidden flex items-center justify-center animate-pulse rounded-full h-4 w-4 opacity-5  absolute rounded-full h-2 w-2" />
-    </div>
+    </Drawer>
   );
 }
 

@@ -96,11 +96,18 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
         const nextVariant = getCurrentVariant(nextState);
 
+        messageApi.open({
+          content: visualization?.name,
+          duration: 0,
+          key: 'viz-name',
+        });
+
         if (nextVariant?.relative === 'hexagon') {
           hideAll();
           messageApi.info({
             content: 'Da click en un hexágono para comenzar',
-            duration: 5,
+            duration: 0,
+            key: 'isochrone',
           });
         }
 
@@ -147,7 +154,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           center: config?.[cityCode]?.coordinates,
           zoom: 11,
           duration: 2000,
-          offset: [100, 50],
         });
 
         const defaultVisualization = config?.[cityCode]?.defaultVisualization;
@@ -165,6 +171,8 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const handleHexagonChange = useCallback(
     (featureId: string) => {
       return setCurrent((state) => {
+        messageApi.destroy('isochrone');
+
         const { queryKey } = queries.visualizationVariants.hexagon({
           cityCode: state.cityCode,
           visualizationCode: state.visualizationCode,
@@ -221,7 +229,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const handleReset = (options?: ResetOptions) => {
     if (options?.flyToOrigin) {
       map.flyTo({
-        // TODO: Set coordinates in Mapbox
         center: MEXICO_COORDINATES,
         zoom: 4.5,
         duration: 2000,

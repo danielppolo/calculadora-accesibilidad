@@ -79,7 +79,7 @@ function VariantPicker() {
 
   return (
     <Select
-      size="large"
+      size="middle"
       defaultValue={currentVariant?.name}
       value={currentVariant?.name}
       onChange={(nextVariant) => {

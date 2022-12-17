@@ -89,7 +89,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
   return (
     <Select
-      size="large"
+      size="middle"
       defaultValue={value?.name}
       value={value?.name}
       onChange={(val) => {

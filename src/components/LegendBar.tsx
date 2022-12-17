@@ -3,6 +3,7 @@ import Legend from 'src/components/Legend';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { useMapParams } from 'src/context/mapParams';
 import { MapboxLayerManager } from 'src/types';
+import { Divider } from 'antd';
 
 interface LegendBarProps {
   economicLayer: MapboxLayerManager;
@@ -22,22 +23,31 @@ function LegendBar({ economicLayer, densityLayer, roadLayer }: LegendBarProps) {
     <div>
       <Legend title={legend?.title} items={legend?.intervals} />
       {economicLayer.isActive && (
-        <Legend
-          title={economicLayer.legend.title}
-          items={economicLayer.legend.intervals}
-        />
+        <>
+          <Divider className="m-0" />
+          <Legend
+            title={economicLayer.legend.title}
+            items={economicLayer.legend.intervals}
+          />
+        </>
       )}
       {densityLayer.isActive && (
-        <Legend
-          title={densityLayer.legend.title}
-          items={densityLayer.legend.intervals}
-        />
+        <>
+          <Divider className="m-0" />
+          <Legend
+            title={densityLayer.legend.title}
+            items={densityLayer.legend.intervals}
+          />
+        </>
       )}
       {roadLayer.isActive && (
-        <Legend
-          title={roadLayer.legend.title}
-          items={roadLayer.legend.intervals}
-        />
+        <>
+          <Divider className="m-0" />
+          <Legend
+            title={roadLayer.legend.title}
+            items={roadLayer.legend.intervals}
+          />
+        </>
       )}
     </div>
   );

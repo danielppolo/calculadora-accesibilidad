@@ -15,6 +15,7 @@ import usePopulationDensity from 'src/hooks/usePopulationDensity';
 import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { message } from 'antd';
 import GlobalControls from './GlobalControls';
+
 import DownloadGeometry from './DownloadGeometry';
 
 function Map() {
@@ -51,7 +52,7 @@ function Map() {
         roadLayer={roadLayer}
       />
       <GlobalControls />
-      <DownloadGeometry />
+      {/* <DownloadGeometry /> */}
       <Credits />
       {contextHolder}
     </>

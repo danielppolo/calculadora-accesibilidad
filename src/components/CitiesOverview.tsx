@@ -12,10 +12,6 @@ function CitiesOverview() {
 
   return (
     <div>
-      <h1 className="text-xl mb-2 font-medium">
-        Visualizador de accesibilidad urbana
-      </h1>
-
       <p className="text-sm text-gray-700">
         Este proyecto tiene como objetivo mostrar las oportunidades de las 20
         zonas metropolitanas más grandes de México.
