@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Sidebar from 'src/components/Sidebar';
 import Credits from 'src/components/CreditsCard';
@@ -16,6 +16,7 @@ import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { message } from 'antd';
 import GlobalControls from './GlobalControls';
 import CityPicker from './CityPicker';
+import VisualizationPicker from './VisualizationPicker';
 
 function Map() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -54,6 +55,7 @@ function Map() {
         roadLayer={roadLayer}
       />
       <GlobalControls />
+
       <Credits />
       {contextHolder}
     </>

@@ -99,7 +99,9 @@ function useIsochroneVisualizationRender({
               properties: {
                 ...grid[hexId].properties,
                 [totalProperty]: total,
-                description: `${total}  ${unit}`,
+                description: `${new Intl.NumberFormat().format(
+                  total
+                )}  ${unit}`,
               },
             });
           }

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import Chart from 'chart.js/auto';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
@@ -12,38 +12,48 @@ function VisualizationInfo() {
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
-  const [activeChart, setActiveChart] = useState<Chart | undefined>();
+  const [charts, setCharts] = useState<Array<Chart | null> | undefined>();
+  const chartIds = Object.keys(currentVisualization?.chartConfig || {});
+  const htmlText = useMemo(() => {
+    let content = currentVisualization?.text || '';
+
+    chartIds.forEach((id) => {
+      content = content.replace(
+        `{{${id}}}`,
+        `<div className="w-full relative"><canvas id="${id}" /></div> `
+      );
+    });
+
+    return marked.parse(content);
+  }, [chartIds, currentVisualization?.text]);
 
   useEffect(() => {
-    if (activeChart) {
+    if (charts) {
       return;
     }
 
-    const chartContainer = document.getElementById(
-      'XXXXXX'
-    ) as HTMLCanvasElement;
+    const chartInstances = chartIds.map((id) => {
+      const chartContainer = document.getElementById(id) as HTMLCanvasElement;
 
-    if (currentVisualization?.chartConfig && chartContainer !== null) {
-      const chart = new Chart(
-        chartContainer,
-        currentVisualization?.chartConfig
-      );
-      setActiveChart(chart);
-    }
-  }, [activeChart, currentVisualization?.chartConfig]);
+      if (
+        currentVisualization?.chartConfig &&
+        chartContainer !== null &&
+        currentVisualization?.chartConfig?.[id]
+      ) {
+        return new Chart(chartContainer, currentVisualization.chartConfig[id]);
+      }
+
+      return null;
+    });
+
+    setCharts(chartInstances);
+  }, [charts, chartIds, currentVisualization?.chartConfig]);
 
   return (
-    <div>
-      <div
-        className="prose prose-sm max-w-none"
-        dangerouslySetInnerHTML={{
-          __html: marked.parse(currentVisualization?.text || ''),
-        }}
-      />
-      <div className="w-full relative">
-        <canvas id="XXXXXX" />
-      </div>
-    </div>
+    <div
+      className="prose prose-sm max-w-none"
+      dangerouslySetInnerHTML={{ __html: htmlText }}
+    />
   );
 }
 

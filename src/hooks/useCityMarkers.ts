@@ -87,9 +87,10 @@ const useCityMarkers = () => {
   });
 
   useEffect(() => {
-    if (cityCode) {
+    const isLayer = map.getSource(fillLayerId);
+    if (isLayer && cityCode) {
       map.setPaintProperty(fillLayerId, 'fill-opacity', 0);
-    } else {
+    } else if (isLayer) {
       map.setPaintProperty(fillLayerId, 'fill-opacity', 0.5);
     }
   }, [cityCode, map]);

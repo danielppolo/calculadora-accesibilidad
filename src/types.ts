@@ -148,7 +148,7 @@ export type Visualization = {
   // Max color
   text?: string;
   // Chart.js congifuration. https://www.chartjs.org/docs/latest/configuration/
-  chartConfig?: ChartConfiguration;
+  chartConfig?: Record<string, ChartConfiguration>;
   // Controles activados por default. Defaults to select.
   variantSelectorType?: 'select' | 'slider' | 'radio';
   // Number of steps to for the color breakdown.
