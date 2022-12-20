@@ -46,8 +46,9 @@ function Map() {
 
   return (
     <>
-      <div className="fixed z-20 top-4 left-4 w-[21.5rem]">
+      <div className="fixed z-20 top-4 left-4 w-[21.5rem] space-y-4">
         <CityPicker />
+        <VisualizationPicker />
       </div>
       <Sidebar
         economicLayer={economicLayer}

@@ -95,13 +95,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         }
 
         const nextVariant = getCurrentVariant(nextState);
-
-        messageApi.open({
-          content: visualization?.name,
-          duration: 0,
-          key: 'viz-name',
-        });
-
         if (nextVariant?.relative === 'hexagon') {
           hideAll();
           messageApi.info({

@@ -14,6 +14,10 @@ function VisualizationPicker() {
   const currentVisualization = getCurrentVisualization(current);
   const isDisabled = !currentCity;
 
+  if (isDisabled) {
+    return null;
+  }
+
   if (currentCity?.visualizationSelectorType === 'radio') {
     return (
       <Radio.Group

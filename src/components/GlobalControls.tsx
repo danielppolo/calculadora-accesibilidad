@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Tooltip, Tour } from 'antd';
+import type { TourProps } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import Notes from './Notes';
 import Download from './Download';
@@ -15,11 +16,11 @@ const steps: TourProps['steps'] = [
 
 function GlobalControls() {
   const { onReset, current } = useMapParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [open, setOpen] = useState(true);
+  const [notesOpen, setNotesOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   return (
-    <div className="fixed z-20 bottom-12 right-4">
+    <div className="fixed z-20 bottom-12 left-4">
       <div className="space-y-4">
         <div>
           <Tooltip title="Descargar selección" placement="left">
@@ -53,8 +54,8 @@ function GlobalControls() {
               size="large"
               type="default"
               onClick={() => {
-                setIsModalOpen(false);
-                setOpen(true);
+                setNotesOpen(false);
+                setOnboardingOpen(true);
               }}
               icon={
                 <span className="material-symbols-outlined leading-normal text-[16px]">
@@ -73,8 +74,8 @@ function GlobalControls() {
               size="large"
               type="default"
               onClick={() => {
-                setOpen(false);
-                setIsModalOpen(true);
+                setOnboardingOpen(false);
+                setNotesOpen(true);
               }}
               icon={
                 <span className="material-symbols-outlined leading-normal text-[16px]">
@@ -85,12 +86,16 @@ function GlobalControls() {
           </Tooltip>
         </div>
 
-        <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
+        <Tour
+          open={onboardingOpen}
+          onClose={() => setOnboardingOpen(false)}
+          steps={steps}
+        />
 
         <Modal
           title="Notas"
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
+          open={notesOpen}
+          onCancel={() => setNotesOpen(false)}
           bodyStyle={{
             maxHeight: 300,
             overflowY: 'auto',

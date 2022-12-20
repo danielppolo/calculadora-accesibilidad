@@ -63,7 +63,11 @@ export type DataProvider = {
   // Dirección URL del proveedor de datos.
   url: string;
   // Dirección URL del asset a mostrar.
-  logo?: string;
+  logo?: {
+    file?: {
+      url: string;
+    };
+  };
   // Nombre del proveedor de datos visible para el cliente.
   label?: string;
 };

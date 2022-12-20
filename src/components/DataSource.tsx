@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
+import { Tooltip } from 'antd';
 
 function DataSource() {
   const { current } = useMapParams();
@@ -11,19 +12,22 @@ function DataSource() {
   if (!dataSources?.length) return null;
 
   return (
-    <div>
+    <div className="flex gap-4 mb-4">
       {dataSources?.map((dataSource) => (
-        <p className="text-xs">
-          {dataSource.label}{' '}
+        <Tooltip title={dataSource.label}>
           <a
             className="underline"
             href={dataSource.url}
             target="_blank"
             rel="noreferrer"
           >
-            {dataSource.name}
+            <img
+              className="max-h-8 inline-block"
+              src={`https:${dataSource.logo?.file?.url}`}
+              alt=""
+            />
           </a>
-        </p>
+        </Tooltip>
       ))}
     </div>
   );

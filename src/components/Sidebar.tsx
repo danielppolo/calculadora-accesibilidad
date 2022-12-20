@@ -3,15 +3,12 @@ import LegendBar from 'src/components/LegendBar';
 import { MapboxLayerManager } from 'src/types';
 import { Drawer, Collapse, Divider } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
-import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
-import VisualizationPicker from './VisualizationPicker';
 import VariantPicker from './VariantPicker';
 import FilterPicker from './FilterPicker';
-import CityPicker from './CityPicker';
 
 const { Panel } = Collapse;
 interface SidebarProps {
@@ -21,12 +18,9 @@ interface SidebarProps {
 }
 
 function Content({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
-  const getCurrentCity = useCurrentCity();
   const getCurrentVisualization = useCurrentVisualization();
   const { current } = useMapParams();
-  const currentCity = getCurrentCity(current);
   const currentVisualization = getCurrentVisualization(current);
-  const showVisualizationPicker = currentCity?.visualizations?.length;
   const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
   const showInfoPanel = !!currentVisualization?.text;
 
@@ -37,17 +31,8 @@ function Content({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
       expandIconPosition="end"
       // bordered
     >
-      <Panel
-        forceRender
-        header={<h3 className="font-semibold uppercase text-[16px]">Mapas</h3>}
-        key="1"
-      >
-        <VisualizationPicker />
-      </Panel>
-
       {showVariantPicker ? (
         <>
-          <Divider className="m-0 mt-2" key="variants-divider" />
           <Panel
             forceRender
             header={
@@ -59,10 +44,10 @@ function Content({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
           >
             <VariantPicker />
           </Panel>
+          <Divider className="m-0 mt-2" key="filters-divider" />
         </>
       ) : null}
 
-      <Divider className="m-0 mt-2" key="filters-divider" />
       <Panel
         forceRender
         header={
@@ -141,7 +126,7 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
 
   return (
     <Drawer
-      placement="left"
+      placement="right"
       open={!!current?.cityCode}
       mask={false}
       closable={false}
@@ -154,9 +139,6 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
         background: 'transparent',
       }}
     >
-      <div className="p-4">
-        <CityPicker />
-      </div>
       <Content
         economicLayer={economicLayer}
         densityLayer={densityLayer}
