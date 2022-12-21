@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Sidebar from 'src/components/Sidebar';
 import Credits from 'src/components/CreditsCard';

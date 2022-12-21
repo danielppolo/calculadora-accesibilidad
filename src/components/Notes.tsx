@@ -14,7 +14,6 @@ const client = contentful.createClient({
 });
 
 function Notes() {
-  const [open, setOpen] = useState(false);
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {

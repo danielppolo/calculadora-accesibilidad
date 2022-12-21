@@ -7,10 +7,11 @@ interface CitiesChartProps {
 
 function CitiesChart({ data }: CitiesChartProps) {
   const [activeChart, setActiveChart] = useState<Chart<'bar'> | undefined>();
+
   useEffect(() => {
     if (data) {
       if (activeChart) {
-        activeChart.destroy();
+        return;
       }
 
       const config = {
@@ -52,7 +53,7 @@ function CitiesChart({ data }: CitiesChartProps) {
         setActiveChart(chart);
       }
     }
-  }, [data]);
+  }, [activeChart, data]);
 
   return (
     <div className="flex justify-center">

@@ -38,3 +38,5 @@ yarn-error.log*
 /data_aws
 
 /aws
+
+tsconfig.tsbuildinfo
