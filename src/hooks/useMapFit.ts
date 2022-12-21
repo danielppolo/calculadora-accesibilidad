@@ -1,5 +1,6 @@
 import { LngLatBounds } from 'mapbox-gl';
 import { useEffect } from 'react';
+import { MAX_ZOOM } from 'src/constants';
 import { useMap } from 'src/context/map';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 
@@ -19,7 +20,7 @@ const useMapFit = () => {
 
       map.fitBounds(bounds, {
         padding: 200,
-        maxZoom: 15,
+        maxZoom: MAX_ZOOM,
         duration: 500,
         // offset: [offsetX, 0],
       });

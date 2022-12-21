@@ -1,5 +1,6 @@
 import { Map } from 'mapbox-gl';
 import React, { useCallback } from 'react';
+import { MAX_ZOOM, ZOOM_THRESHOLD } from 'src/constants';
 
 const ROAD_TILES = [
   {
@@ -18,8 +19,8 @@ const useRoadNetwork = () => {
         map.addSource(layer.sourceLayer, {
           type: 'vector',
           url: layer.url,
-          minzoom: 8,
-          maxzoom: 16,
+          minzoom: ZOOM_THRESHOLD,
+          maxzoom: MAX_ZOOM,
         });
         map.addLayer({
           id: layer.sourceLayer,

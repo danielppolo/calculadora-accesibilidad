@@ -2,6 +2,7 @@ import { useMap } from 'src/context/map';
 import { useEffect } from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import { MapMouseEvent } from 'src/types';
+import { ZOOM_THRESHOLD } from 'src/constants';
 
 const useZoomToReset = () => {
   const {
@@ -12,7 +13,7 @@ const useZoomToReset = () => {
 
   useEffect(() => {
     const handleZoomEnd = (event: MapMouseEvent) => {
-      if (event.target.getZoom() <= 5.5 && cityCode) {
+      if (event.target.getZoom() <= ZOOM_THRESHOLD && cityCode) {
         onReset();
       }
     };

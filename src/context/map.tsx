@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import mapboxgl, { LngLatLike, Map } from 'mapbox-gl';
 
-import { MEXICO_COORDINATES } from 'src/constants';
+import { COUNTRY_ZOOM, MEXICO_COORDINATES, MIN_ZOOM } from 'src/constants';
 // import useCityBoundaries from 'src/hooks/useCityBoundaries';
 
 interface Context {
@@ -25,8 +25,8 @@ const createMap = (center: LngLatLike) =>
     container: 'map',
     style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
     center,
-    zoom: 4.5,
-    minZoom: 4,
+    zoom: COUNTRY_ZOOM,
+    minZoom: MIN_ZOOM,
   });
 
 function MapProvider({ children }: MapProviderProps) {

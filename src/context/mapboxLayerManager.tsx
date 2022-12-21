@@ -1,11 +1,15 @@
-import React, { useCallback, useContext, useState } from 'react';
-import Gradient from 'javascript-color-gradient';
+import React, { memo, useCallback, useContext, useState } from 'react';
 import { NUMBER_OF_BUCKETS } from 'src/constants';
 import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';
+import Gradient from 'javascript-color-gradient';
+import chroma from 'chroma-js';
+// import summary from 'summary';
+// import { quantile } from 'simple-statistics';
+import { scaleThreshold, scaleQuantile } from 'd3-scale';
 
 interface AddOptions {
   legendTitle: string;
@@ -22,6 +26,7 @@ interface AddOptions {
   opacity?: number;
   solid?: boolean;
 }
+
 interface MapboxLayerManagerParams {
   state?: Record<string, boolean>;
   current?: string | undefined;
@@ -112,14 +117,28 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       opacity = 0.5,
       solid = false,
     }: AddOptions) => {
-      if (map && !(id in state)) {
-        const [color1, color2] = colors;
+      if (map && !(id in state) && !map.getSource(id)) {
+        const [startColor, endColor] = colors;
+
+        // FIXME: Experimental
+        // const colorGradient = chroma
+        //   .scale([startColor, endColor])
+        //   .mode('lab')
+        //   .gamma(0.5)
+        //   .colors(10);
+        // const sortedArray = arrayOfTotals.sort((a, b) => a - b);
+        // const treshold = scaleThreshold()
+        //   .domain(sortedArray)
+        //   .range(colorGradient);
+        // const quantile = scaleQuantile()
+        //   .domain(sortedArray)
+        //   .range(colorGradient);
 
         // Get color intervals
         const intervals = getIntervals(maxValue, stepSize);
         const reversedIntervals = [...intervals].reverse();
         const colorGradient = new Gradient()
-          .setColorGradient(color1, color2)
+          .setColorGradient(startColor, endColor)
           .setMidpoint(stepSize)
           .getColors();
         const colorIntervals = reverseColors
@@ -147,7 +166,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
             paint: {
               'fill-opacity': opacity,
               'fill-color': solid
-                ? color1
+                ? startColor
                 : getColor(property, reversedIntervals, colorIntervals),
               'fill-outline-color': [
                 'case',
@@ -174,6 +193,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     },
     [map]
   );
+
   const hideAll = useCallback(() => {
     if (map) {
       Object.keys(state).forEach((layerId) => {
@@ -186,7 +206,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
   const show = useCallback(
     (id?: string) => {
-      if (id && id in state && map) {
+      if (id && id in state && map && map.getSource(id)) {
         hideAll();
         unregisterMouseListeners();
         registerMouseListeners(id);
@@ -202,7 +222,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
   const hide = useCallback(
     (id?: string) => {
-      if (id && map && id in state) {
+      if (id && map && id in state && map.getSource(id)) {
         map.setLayoutProperty(id, 'visibility', 'none');
       } else {
         // TODO: Sentry
@@ -232,4 +252,4 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 export const useMapboxLayerManager = () =>
   useContext(MapboxLayerManagerContext);
 
-export default MapboxLayerManagerProvider;
+export default memo(MapboxLayerManagerProvider);

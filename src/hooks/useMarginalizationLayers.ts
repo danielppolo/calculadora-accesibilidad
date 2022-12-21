@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { Legend } from 'src/types';
 import { useMap } from 'src/context/map';
+import { MAX_ZOOM, ZOOM_THRESHOLD } from 'src/constants';
 
 const MARGINALIZATION_TILES = [
   {
@@ -56,8 +57,8 @@ const useMarginalizationLayers = () => {
         map.addSource(ageb.id, {
           type: 'vector',
           url: ageb.url,
-          minzoom: 6,
-          maxzoom: 14,
+          minzoom: ZOOM_THRESHOLD,
+          maxzoom: MAX_ZOOM,
         });
         map.addLayer({
           id: ageb.id,

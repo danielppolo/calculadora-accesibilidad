@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Legend } from 'src/types';
 import { useMap } from 'src/context/map';
+import { MAX_ZOOM, ZOOM_THRESHOLD } from 'src/constants';
 
 const layer = {
   id: 'densidad',
@@ -34,8 +35,8 @@ const usePopulationDensity = () => {
     map.addSource(layer.id, {
       type: 'vector',
       url: layer.url,
-      minzoom: 6,
-      maxzoom: 14,
+      minzoom: ZOOM_THRESHOLD,
+      maxzoom: MAX_ZOOM,
     });
     map.addLayer({
       id: layer.id,

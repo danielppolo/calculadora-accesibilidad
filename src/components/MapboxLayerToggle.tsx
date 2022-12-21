@@ -2,6 +2,8 @@ import React from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import { MapboxLayerManager } from 'src/types';
 import { Checkbox } from 'antd';
+import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
+import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
 
 interface MapboxLayerToggleProps {
   economicLayer: MapboxLayerManager;
@@ -14,7 +16,17 @@ function MapboxLayerToggle({
   densityLayer,
   roadLayer,
 }: MapboxLayerToggleProps) {
+  const { state, toggle } = useMapboxTilesetManager();
   const { current } = useMapParams();
+  const getCurrentVisualization = useCurrentVisualization();
+  const currentVisualization = getCurrentVisualization(current);
+  const mapboxTilesets =
+    currentVisualization?.filters
+      ?.map((filter) =>
+        filter.properties.map((property) => property.enabledMapboxTilesets)
+      )
+      .flat(2)
+      .filter(Boolean) ?? [];
 
   return (
     <div>
@@ -45,6 +57,26 @@ function MapboxLayerToggle({
           Red vial
         </Checkbox>
       </div>
+
+      {mapboxTilesets.map((tileset) => {
+        const handleChange = () => {
+          if (tileset) {
+            toggle(tileset);
+          }
+        };
+
+        const checked = tileset?.sourceLayer
+          ? state?.[tileset?.sourceLayer] ?? false
+          : false;
+
+        return (
+          <div className="mb-2" key={tileset?.sourceLayer}>
+            <Checkbox onChange={handleChange} checked={checked}>
+              {tileset?.name}
+            </Checkbox>
+          </div>
+        );
+      })}
     </div>
   );
 }

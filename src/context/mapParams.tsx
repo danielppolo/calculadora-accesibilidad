@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useCallback, useContext, useState } from 'react';
-import { MEXICO_COORDINATES } from 'src/constants';
+import React, { memo, useCallback, useContext, useState } from 'react';
+import { CITY_ZOOM, COUNTRY_ZOOM, MEXICO_COORDINATES } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { MapParamsState } from 'src/types';
@@ -9,6 +9,7 @@ import queries from 'src/utils/queries';
 import { message } from 'antd';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
+import { useMapboxTilesetManager } from './mapboxTilesetManager';
 
 interface ResetOptions {
   flyToOrigin?: boolean;
@@ -53,6 +54,11 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const { data: config } = useConfig();
   const [current, setCurrent] = useState<MapParamsState>({});
   const { show, hideAll } = useMapboxLayerManager();
+  const {
+    show: showTileset,
+    hide: hideTileset,
+    hideAll: hideAllTilesets,
+  } = useMapboxTilesetManager();
   const getCurrentVariant = useCurrentVariant();
 
   const handleVariantChange = useCallback(
@@ -62,52 +68,51 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       );
       const gridCode = visualization?.grid?.code;
 
-      setCurrent((state) => {
-        const nextState = {
+      const nextState = {
+        cityCode,
+        gridCode,
+        visualizationCode,
+        variantCode,
+      };
+
+      const { queryKey } = queries.visualizationVariants.detail({
+        cityCode,
+        visualizationCode,
+        variantCode,
+      });
+
+      // Show the cached data
+      const isDataCached = queryClient.getQueryCache().find(queryKey);
+      if (isDataCached) {
+        const defaultVariantFilters: Record<string, string> = {};
+        visualization?.filters.forEach((filter) => {
+          defaultVariantFilters[filter.code] = filter.defaultProperty.code;
+        });
+
+        const id = generateVariantId({
           cityCode,
           gridCode,
           visualizationCode,
           variantCode,
-        };
-
-        const { queryKey } = queries.visualizationVariants.detail({
-          cityCode,
-          visualizationCode,
-          variantCode,
+          filters: defaultVariantFilters,
         });
-        const isDataCached = queryClient.getQueryCache().find(queryKey);
+        show(id);
+      }
 
-        if (isDataCached) {
-          // Show the cached data
-          const defaultVariantFilters: Record<string, string> = {};
-          visualization?.filters.forEach((filter) => {
-            defaultVariantFilters[filter.code] = filter.defaultProperty.code;
-          });
+      // Display alert if requires hexagon selection
+      const nextVariant = getCurrentVariant(nextState);
+      if (nextVariant?.relative === 'hexagon') {
+        hideAll();
+        messageApi.info({
+          content: 'Da click en un hexágono para comenzar',
+          duration: 0,
+          key: 'isochrone',
+        });
+      } else {
+        messageApi.destroy('isochrone');
+      }
 
-          const id = generateVariantId({
-            cityCode,
-            gridCode,
-            visualizationCode,
-            variantCode,
-            filters: defaultVariantFilters,
-          });
-          show(id);
-        }
-
-        const nextVariant = getCurrentVariant(nextState);
-        if (nextVariant?.relative === 'hexagon') {
-          hideAll();
-          messageApi.info({
-            content: 'Da click en un hexágono para comenzar',
-            duration: 0,
-            key: 'isochrone',
-          });
-        } else {
-          messageApi.destroy('isochrone');
-        }
-
-        return nextState;
-      });
+      setCurrent(nextState);
     },
     [config, getCurrentVariant, hideAll, messageApi, queryClient, show]
   );
@@ -145,15 +150,16 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       if (options?.flyToOrigin) {
         map.flyTo({
           center: MEXICO_COORDINATES,
-          zoom: 4.5,
+          zoom: COUNTRY_ZOOM,
           duration: 2000,
         });
       }
 
       hideAll();
+      hideAllTilesets();
       return setCurrent(initialContext.current);
     },
-    [hideAll, map, messageApi]
+    [hideAll, hideAllTilesets, map, messageApi]
   );
 
   const handleCityChange = useCallback(
@@ -165,7 +171,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       if (cityCode) {
         map.flyTo({
           center: config?.[cityCode]?.coordinates,
-          zoom: 11,
+          zoom: CITY_ZOOM,
           duration: 2000,
         });
 
@@ -216,6 +222,29 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const handleFiltersChange = useCallback(
     (filters: Record<string, string>, method: 'merge' | 'reset') => {
       return setCurrent((state) => {
+        // Display Tilesets based on filterss
+        const visualization = state.cityCode
+          ? config?.[state.cityCode].visualizations.find(
+              (viz) => viz.code === state.visualizationCode
+            )
+          : undefined;
+        Object.entries(filters).forEach(([filterCode, propertyCode]) => {
+          const currentFilter = visualization?.filters?.find(
+            (filter) => filter.code === filterCode
+          );
+          currentFilter?.properties.forEach((property) => {
+            if (property.code === propertyCode) {
+              property.enabledMapboxTilesets?.forEach((tileset) => {
+                showTileset(tileset);
+              });
+            } else {
+              property.enabledMapboxTilesets?.forEach((tileset) => {
+                hideTileset(tileset);
+              });
+            }
+          });
+        });
+
         const nextFilters =
           method === 'reset'
             ? filters
@@ -237,7 +266,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         };
       });
     },
-    [show]
+    [config, hideTileset, show, showTileset]
   );
 
   return (
@@ -263,4 +292,4 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
  */
 export const useMapParams = () => useContext(MapParamsContext);
 
-export default MapParamsProvider;
+export default memo(MapParamsProvider);

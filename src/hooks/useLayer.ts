@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FillPaint, Map, Popup, LinePaint } from 'mapbox-gl';
 import { Legend } from 'src/types';
 import { useMap } from 'src/context/map';
+import { MAX_ZOOM, ZOOM_THRESHOLD } from 'src/constants';
 
 interface MapboxLayer {
   id: string;
@@ -32,8 +33,8 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
         map.addSource(id, {
           type: 'vector',
           url,
-          minzoom: 6,
-          maxzoom: 16,
+          minzoom: ZOOM_THRESHOLD,
+          maxzoom: MAX_ZOOM,
         });
         map.addLayer({
           id,
