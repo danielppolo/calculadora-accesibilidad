@@ -21,24 +21,19 @@ const queryClient = new QueryClient({
   },
 });
 
+const antdTheme = {
+  token: {
+    fontFamily: 'sofia-pro',
+    colorPrimary: '#1A1A1A',
+  },
+};
+
 function App({ Component, pageProps }: AppProps) {
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          fontFamily: 'sofia-pro',
-          colorPrimary: '#1A1A1A',
-        },
-      }}
-    >
+    <ConfigProvider theme={antdTheme}>
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>
-
-      <div
-        id="popup"
-        className="bg-gray-800 text-white fixed rounded-sm p-2 text-xs"
-      />
     </ConfigProvider>
   );
 }

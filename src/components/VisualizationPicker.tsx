@@ -47,12 +47,16 @@ function VisualizationPicker() {
           onVisualizationChange?.(current.cityCode, nextViz);
         }
       }}
-      options={
-        visualizations?.map((viz) => ({
-          label: viz.name,
-          value: viz.code,
-        })) || []
-      }
+      options={[
+        {
+          label: 'Mapas',
+          options:
+            visualizations?.map((viz) => ({
+              label: viz.name,
+              value: viz.code,
+            })) ?? [],
+        },
+      ]}
       placeholder="Selecciona una visualización"
       disabled={isDisabled}
       style={{ width: '100%' }}

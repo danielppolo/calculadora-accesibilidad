@@ -2,6 +2,12 @@ import { LngLatLike } from 'mapbox-gl';
 import type { Feature, Polygon } from 'geojson';
 import { ChartConfiguration } from 'chart.js';
 
+export type ContentfulImage = {
+  file?: {
+    url: string;
+  };
+};
+
 export type MapParamsState = {
   gridCode?: string;
   cityCode?: string;
@@ -46,6 +52,8 @@ export type Property = {
   unit?: string;
   // Material Icon name. https://fonts.google.com/icons
   iconName?: string;
+  // Layers to be enabled on selection.
+  enabledMapboxTilesets?: MapboxTileset[];
 };
 
 export type Grid = {
@@ -63,36 +71,32 @@ export type DataProvider = {
   // Dirección URL del proveedor de datos.
   url: string;
   // Dirección URL del asset a mostrar.
-  logo?: {
-    file?: {
-      url: string;
-    };
-  };
+  logo?: ContentfulImage;
   // Nombre del proveedor de datos visible para el cliente.
   label?: string;
 };
 
 export type MapboxTileset = {
   // Aplication layer code. Unique.
-  code: 'uso-agricultura';
+  code: string;
   // Mapbox's layer code.
-  sourceLayer: 'AGRICULTURA-1nglu1';
+  sourceLayer: string;
   // Mapbox's tileset ID.
-  tilesetId: 'mapbox://daniel-itdp.d2k35cu0';
+  tilesetId: string;
   // Geomtry visualization type.
   type: 'fill' | 'line';
   // Layer name. Visible to the user.
-  name: 'Agricultura';
+  name: string;
   // Geometry fill color in HEX code.
-  fillColor: string;
+  fillColor?: string;
   // Geometry fill opacity. 0-1.
-  fillOpacity: 0.3;
+  fillOpacity?: number;
   // Geometry line color in HEX code.
-  lineColor: string;
+  lineColor?: string;
   // Geometry line opacity. 0-1.
-  lineOpacity: 0.3;
+  lineOpacity?: number;
   // Geometry line width in pixels.
-  lineWidth: 0.3;
+  lineWidth?: number;
 };
 
 export type StaticVisualization = {
@@ -223,9 +227,13 @@ export type LandingPage = {
 };
 
 export type Code = string;
+
 export type UUID = string;
+
 export type FeatureDictionary = Record<UUID, Feature<Polygon>>;
+
 export type Config = Record<City['code'], City>;
+
 export type MapData = Record<
   City['code'],
   {

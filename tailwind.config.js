@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 module.exports = {
   mode: 'jit',
   purge: [
@@ -14,7 +15,7 @@ module.exports = {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
-        white: '#F1F3EE',
+        // white: '#F1F3EE',
         black: '#1A1A1A',
         blue: '#307DC6',
         yellow: '#F1BB43',

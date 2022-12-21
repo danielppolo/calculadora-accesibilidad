@@ -123,6 +123,10 @@ function Content({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
 
 function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
   const { current } = useMapParams();
+  const getCurrentVisualization = useCurrentVisualization();
+  const currentVisualization = getCurrentVisualization(current);
+  const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
+  const showInfoPanel = !!currentVisualization?.text;
 
   return (
     <Drawer
@@ -138,12 +142,66 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
         boxShadow: 'none',
         background: 'transparent',
       }}
+      className="backdrop-blur-sm bg-white/80"
     >
-      <Content
-        economicLayer={economicLayer}
-        densityLayer={densityLayer}
-        roadLayer={roadLayer}
-      />
+      {showVariantPicker ? (
+        <>
+          <div className="p-4">
+            <h3 className="font-semibold uppercase mb-2 text-[16px]">
+              Escenarios
+            </h3>
+            <VariantPicker />
+          </div>
+          <Divider className="m-0" key="filters-divider" />
+        </>
+      ) : null}
+
+      <div className="p-4">
+        <h3 className="font-semibold uppercase mb-2 text-[16px]">Filtros</h3>
+        {currentVisualization?.filters?.map((filter) => (
+          <div key={`${currentVisualization?.name}-${filter.code}`}>
+            <p className="mb-2 text-gray-700">{filter.name}</p>
+            <FilterPicker filter={filter} key={filter.code} />
+            <div className="mb-4" />
+          </div>
+        ))}
+      </div>
+
+      {showInfoPanel ? (
+        <>
+          <Divider className="m-0" key="info-divider" />
+          <div className="p-4">
+            <h3 className="font-semibold uppercase mb-2 text-[16px]">
+              Información
+            </h3>
+            <VisualizationInfo />
+          </div>
+        </>
+      ) : null}
+
+      <Divider className="m-0" key="layers-divider" />
+      <div className="p-4">
+        <h3 className="font-semibold uppercase mb-2 text-[16px]">Capas</h3>
+        <MapboxLayerToggle
+          economicLayer={economicLayer}
+          densityLayer={densityLayer}
+          roadLayer={roadLayer}
+        />
+      </div>
+      <Divider className="m-0" key="legends-divider" />
+      <div className="p-4">
+        <h3 className="font-semibold uppercase mb-2 text-[16px]">Simbología</h3>
+        <LegendBar
+          economicLayer={economicLayer}
+          densityLayer={densityLayer}
+          roadLayer={roadLayer}
+        />
+      </div>
+      <Divider className="m-0" key="sources-divider" />
+      <div className="p-4">
+        <h3 className="font-semibold uppercase mb-2 text-[16px]">Fuentes</h3>
+        <DataSource />
+      </div>
     </Drawer>
   );
 }
