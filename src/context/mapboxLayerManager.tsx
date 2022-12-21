@@ -183,7 +183,11 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         geojson[id] = geojsonFeatures;
         legends[id] = {
           title: unit ? `${legendTitle} (${unit})` : legendTitle,
-          intervals: getLegend(intervals, legendColorIntervals),
+          intervals: getLegend({
+            intervals,
+            colors: legendColorIntervals,
+            opacity,
+          }),
         };
 
         if (visible) {

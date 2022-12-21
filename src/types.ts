@@ -38,6 +38,7 @@ export type Legend = {
   title: string;
   intervals: {
     color: string;
+    opacity?: number;
     label: string;
   }[];
 };

@@ -100,6 +100,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
           intervals: [
             {
               color: (type === 'fill' ? fillColor : lineColor) ?? '',
+              opacity: (type === 'fill' ? fillOpacity : lineOpacity) ?? 1,
               label: name,
             },
           ],
