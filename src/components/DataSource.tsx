@@ -22,7 +22,7 @@ function DataSource() {
             rel="noreferrer"
           >
             <img
-              className="max-h-8 inline-block"
+              className="max-h-6 inline-block"
               src={`https:${dataSource.logo?.file?.url}`}
               alt=""
             />

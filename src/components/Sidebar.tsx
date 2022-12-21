@@ -199,7 +199,7 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
       </div>
       <Divider className="m-0" key="sources-divider" />
       <div className="p-4">
-        <h3 className="font-semibold uppercase mb-2 text-[16px]">Fuentes</h3>
+        <h3 className="font-semibold uppercase mb-4 text-[16px]">Fuentes</h3>
         <DataSource />
       </div>
     </Drawer>
