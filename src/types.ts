@@ -97,6 +97,10 @@ export type MapboxTileset = {
   lineOpacity?: number;
   // Geometry line width in pixels.
   lineWidth?: number;
+  // Custom legend
+  customLegend?: Legend;
+  // Color property
+  colorProperty?: string;
 };
 
 export type StaticVisualization = {
