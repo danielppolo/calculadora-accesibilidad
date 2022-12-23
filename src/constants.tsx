@@ -8,3 +8,7 @@ export const MAX_ZOOM = 16;
 export const MIN_ZOOM = 4;
 export const COUNTRY_ZOOM = 4.5;
 export const CITY_ZOOM = 11;
+
+export const CITIES_ZONES_LINE_LAYER_ID = 'city-zones-line';
+export const CITIES_ZONES_FILL_LAYER_ID = 'city-zones-fill';
+export const CITIES_ZONES_SOURCE_ID = 'city-zones-fill';

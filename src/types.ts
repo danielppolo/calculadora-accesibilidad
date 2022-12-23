@@ -104,15 +104,6 @@ export type MapboxTileset = {
   colorProperty?: string;
 };
 
-export type StaticVisualization = {
-  // Nombre de la visualización. Visible para el usuario en la leyenda.
-  name: string;
-  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
-  code: string;
-  // Layers que component el mapa.
-  mapboxTilesets: MapboxTileset[];
-};
-
 export type VisualizationVariant = {
   // Nombre de la visualización. Visible para el usuario.
   name: string;
@@ -124,8 +115,6 @@ export type VisualizationVariant = {
   unit: string;
   // Tipo de visualización. Determina su display e interactividad.
   relative: 'city' | 'hexagon';
-  // Default static visualization. Enabled when users select viz.
-  defaultStaticVisualizations: StaticVisualization[];
 };
 
 export type Filter = {
@@ -177,8 +166,6 @@ export type Country = {
   code: string;
   // Esconde/muestra la ciudad en la calculadora.
   active: boolean;
-  // Visualizaciones de Mapbox disponibles para el país.
-  staticVisualizations: StaticVisualization[];
 };
 
 export type City = {
@@ -199,7 +186,7 @@ export type City = {
   // Visualizaciones disponibles para la ciudad.
   visualizations: Visualization[];
   // Visualizaciones de Mapbox disponibles para la ciudad.
-  staticVisualizations: StaticVisualization[];
+  mapboxTilesets: MapboxTileset[];
   // Controles activados por default. Defaults to select.
   visualizationSelectorType?: 'select' | 'radio';
 

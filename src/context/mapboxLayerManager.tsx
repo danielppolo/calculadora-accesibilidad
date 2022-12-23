@@ -86,17 +86,19 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
   const unregisterMouseListeners = useCallback(() => {
     Object.keys(state).forEach((id) => {
-      map.off('mouseenter', id, handleMouseEnter);
-      map.off('mousemove', id, handleMouseMove);
-      map.off('mouseleave', id, handleMouseLeave);
+      map
+        .off('mouseenter', id, handleMouseEnter)
+        .off('mousemove', id, handleMouseMove)
+        .off('mouseleave', id, handleMouseLeave);
     });
   }, [handleMouseEnter, handleMouseLeave, handleMouseMove, map]);
 
   const registerMouseListeners = useCallback(
     (id: string) => {
-      map.on('mouseenter', id, handleMouseEnter);
-      map.on('mousemove', id, handleMouseMove);
-      map.on('mouseleave', id, handleMouseLeave);
+      map
+        .on('mouseenter', id, handleMouseEnter)
+        .on('mousemove', id, handleMouseMove)
+        .on('mouseleave', id, handleMouseLeave);
     },
     [handleMouseEnter, handleMouseLeave, handleMouseMove, map]
   );
@@ -182,11 +184,12 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         state[id] = true;
         geojson[id] = geojsonFeatures;
         legends[id] = {
-          title: unit ? `${legendTitle} (${unit})` : legendTitle,
+          title: legendTitle,
           intervals: getLegend({
             intervals,
             colors: legendColorIntervals,
             opacity,
+            unit,
           }),
         };
 

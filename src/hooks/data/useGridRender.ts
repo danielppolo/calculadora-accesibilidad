@@ -16,8 +16,9 @@ function useGridGeojson() {
     enabled: !!cityCode && !!gridCode,
     select: (data) =>
       data &&
-      Object.keys(data).map((featureId) => ({
+      Object.keys(data).map((featureId, index) => ({
         ...data[featureId],
+        id: index,
         properties: {
           id: featureId,
         },
@@ -38,8 +39,13 @@ function useGridGeojson() {
             source: id,
             paint: {
               'fill-opacity': 0.7,
-              'fill-color': 'transparent',
-              'fill-outline-color': ['rgba', 0, 0, 0, 0.1],
+              'fill-outline-color': ['rgba', 0, 0, 0, 0.2],
+              'fill-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                ['rgba', 0, 0, 0, 0.2],
+                'transparent',
+              ],
             },
           });
         }

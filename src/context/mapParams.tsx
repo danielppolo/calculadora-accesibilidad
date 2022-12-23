@@ -1,6 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query';
 import React, { memo, useCallback, useContext, useState } from 'react';
-import { CITY_ZOOM, COUNTRY_ZOOM, MEXICO_COORDINATES } from 'src/constants';
+import {
+  CITIES_ZONES_FILL_LAYER_ID,
+  CITY_ZOOM,
+  COUNTRY_ZOOM,
+  MEXICO_COORDINATES,
+} from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { MapParamsState } from 'src/types';
@@ -46,6 +51,9 @@ const MapParamsContext = React.createContext<MapParamsContext>(initialContext);
 interface MapParamsProviderProps {
   children: React.ReactNode;
 }
+
+// Use this handle the state read within useCallback.
+let nonReactiveCurrent: MapParamsState = {};
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
@@ -112,6 +120,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         messageApi.destroy('isochrone');
       }
 
+      nonReactiveCurrent = { ...nextState };
       setCurrent(nextState);
     },
     [config, getCurrentVariant, hideAll, messageApi, queryClient, show]
@@ -133,12 +142,16 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         );
       }
 
-      return setCurrent((state) => ({
-        ...state,
-        cityCode,
-        visualizationCode,
-        gridCode,
-      }));
+      return setCurrent((state) => {
+        const nextState = {
+          ...state,
+          cityCode,
+          visualizationCode,
+          gridCode,
+        };
+        nonReactiveCurrent = { ...nextState };
+        return nextState;
+      });
     },
     [config, handleVariantChange]
   );
@@ -157,18 +170,25 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
       hideAll();
       hideAllTilesets();
-      return setCurrent(initialContext.current);
+
+      const nextState = { ...initialContext.current };
+      nonReactiveCurrent = nextState;
+      return setCurrent(nextState);
     },
     [hideAll, hideAllTilesets, map, messageApi]
   );
 
   const handleCityChange = useCallback(
     (cityCode?: string) => {
-      if (cityCode === current.cityCode) {
+      if (cityCode === nonReactiveCurrent.cityCode) {
         return undefined;
       }
 
       if (cityCode) {
+        if (map.getLayer(CITIES_ZONES_FILL_LAYER_ID)) {
+          map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0);
+        }
+
         map.flyTo({
           center: config?.[cityCode]?.coordinates,
           zoom: CITY_ZOOM,
@@ -181,11 +201,19 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           return handleVisualizationChange(cityCode, defaultVisualization.code);
         }
 
-        return setCurrent((state) => ({ ...state, cityCode }));
+        return setCurrent((state) => {
+          const nextState = { ...state, cityCode };
+          nonReactiveCurrent = { ...nextState };
+          return nextState;
+        });
+      }
+
+      if (map.getLayer(CITIES_ZONES_FILL_LAYER_ID)) {
+        map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
       }
       return handleReset({ flyToOrigin: true });
     },
-    [current.cityCode, handleReset, map, config, handleVisualizationChange]
+    [handleReset, map, config, handleVisualizationChange]
   );
 
   const handleHexagonChange = useCallback(
@@ -210,10 +238,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           show(id);
         }
 
-        return {
+        const nextState = {
           ...state,
           featureId,
         };
+
+        nonReactiveCurrent = { ...nextState };
+        return nextState;
       });
     },
     [current, messageApi, queryClient, show]
@@ -260,10 +291,14 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
         show(id);
 
-        return {
+        const nextState = {
           ...state,
           filters: nextFilters,
         };
+
+        nonReactiveCurrent = { ...nextState };
+
+        return nextState;
       });
     },
     [config, hideTileset, show, showTileset]

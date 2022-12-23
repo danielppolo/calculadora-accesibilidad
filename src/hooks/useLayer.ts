@@ -54,17 +54,22 @@ const useLayer = (layerList: MapboxLayer[], title = '') => {
             closeOnClick: false,
             anchor: 'top',
           });
-          map.on('mouseenter', id, (e) => {
-            const description =
-              popupDescriptionKey &&
-              e?.features?.[0]?.properties?.[popupDescriptionKey];
-            if (description) {
-              popupElement.setLngLat(e.lngLat).setHTML(description).addTo(map);
-            }
-          });
-          map.on('mouseleave', id, () => {
-            popupElement.remove();
-          });
+
+          map
+            .on('mouseenter', id, (e) => {
+              const description =
+                popupDescriptionKey &&
+                e?.features?.[0]?.properties?.[popupDescriptionKey];
+              if (description) {
+                popupElement
+                  .setLngLat(e.lngLat)
+                  .setHTML(description)
+                  .addTo(map);
+              }
+            })
+            .on('mouseleave', id, () => {
+              popupElement.remove();
+            });
         }
       });
     }

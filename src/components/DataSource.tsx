@@ -9,12 +9,10 @@ function DataSource() {
   const currentVariant = getCurrentVariant(current);
   const dataSources = currentVariant?.dataProviders;
 
-  if (!dataSources?.length) return null;
-
   return (
     <div className="flex gap-4 mb-4">
       {dataSources?.map((dataSource) => (
-        <Tooltip title={dataSource.label}>
+        <Tooltip title={dataSource.label} key={dataSource.code}>
           <a
             className="underline"
             href={dataSource.url}

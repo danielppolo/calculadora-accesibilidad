@@ -74,7 +74,7 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
 
         let maxValue = 0;
 
-        const features = Object.keys(data).reduce((filtered, hexId) => {
+        const features = Object.keys(data).reduce((filtered, hexId, index) => {
           const total =
             get(data[hexId], Object.values(variantFilters), {}) ?? 0;
 
@@ -86,6 +86,7 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
           if (total > 0) {
             filtered.push({
               ...grid[hexId],
+              id: index,
               properties: {
                 ...grid[hexId].properties,
                 [totalProperty]: total,

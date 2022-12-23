@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+import useGridListeners from 'src/hooks/data/useGridListeners';
+
+import React from 'react';
 
 import Sidebar from 'src/components/Sidebar';
 import Credits from 'src/components/CreditsCard';
@@ -7,7 +9,6 @@ import useMapFit from 'src/hooks/useMapFit';
 import useGridRender from 'src/hooks/data/useGridRender';
 import useIsochroneVisualizationRender from 'src/hooks/data/useIsochroneVisualizationRender';
 import useVariantVisualizationRender from 'src/hooks/data/useVariantVisualizationRender';
-import useGridClickListeners from 'src/hooks/data/useGridClickListeners';
 import useZoomToReset from 'src/hooks/useZoomToReset';
 
 import useEconomicZones from 'src/hooks/useEconomicZones';
@@ -27,6 +28,8 @@ function Map() {
   useCityMarkers();
 
   useGridRender();
+  useGridListeners();
+
   useIsochroneVisualizationRender({
     onError: () => {
       messageApi.error('Algo salió mal, intenta de nuevo');
@@ -37,8 +40,6 @@ function Map() {
       messageApi.error('Algo salió mal, intenta de nuevo');
     },
   });
-
-  useGridClickListeners();
 
   const economicLayer = useEconomicZones();
   const densityLayer = usePopulationDensity();
