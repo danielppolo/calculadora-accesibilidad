@@ -96,9 +96,12 @@ function useIsochroneVisualizationRender({
           if (total > 0 || isClickedHexagon) {
             filtered.push({
               ...grid[hexId],
+              // Integer arbitrary identifier
               id: index,
               properties: {
                 ...grid[hexId].properties,
+                // Hexagon identifier
+                id: hexId,
                 [totalProperty]: total,
                 description: `${new Intl.NumberFormat().format(
                   total

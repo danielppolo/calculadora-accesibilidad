@@ -57,8 +57,8 @@ function useGridListeners() {
       hoveredStateId = undefined;
     };
 
-    // When the user clicks a hexagon, we'll fetch the map relative to the feature.
     map
+      // When the user clicks a hexagon, we'll fetch the map relative to the feature.
       .on('click', sourceId, handleHexagonClick)
       // When the user moves their mouse over the state-fill layer, we'll update the
       // feature state for the feature under the mouse.

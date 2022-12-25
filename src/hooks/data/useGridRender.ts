@@ -18,8 +18,10 @@ function useGridGeojson() {
       data &&
       Object.keys(data).map((featureId, index) => ({
         ...data[featureId],
+        // Integer arbitrary identifier
         id: index,
         properties: {
+          // Hexagon identifier
           id: featureId,
         },
       })),
