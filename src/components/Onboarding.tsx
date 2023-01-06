@@ -3,7 +3,7 @@ import CitiesChart from 'src/components/CitiesChart';
 import { useMapParams } from 'src/context/mapParams';
 import useConfig from 'src/hooks/data/useConfig';
 
-function CitiesOverview() {
+function Onboarding() {
   const { data: config } = useConfig();
   const { current } = useMapParams();
   const cities = Object.values(config ?? {});
@@ -39,4 +39,4 @@ function CitiesOverview() {
   );
 }
 
-export default memo(CitiesOverview);
+export default memo(Onboarding);

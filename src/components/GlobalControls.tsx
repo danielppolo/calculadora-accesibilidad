@@ -4,12 +4,12 @@ import type { TourProps } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import Notes from './Notes';
 import Download from './Download';
-import CitiesOverview from './CitiesOverview';
+import Onboarding from './Onboarding';
 
 const steps: TourProps['steps'] = [
   {
     title: 'Visualizador de accesibilidad urbana',
-    description: <CitiesOverview />,
+    description: <Onboarding />,
     target: null,
   },
 ];
