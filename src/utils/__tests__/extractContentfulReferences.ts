@@ -6,7 +6,7 @@ describe('extractContentfulReferences', () => {
   const mockedCity = JSON.parse(JSON.stringify(mock[0].fields));
   beforeAll(() => {
     const items = extractReferences(mock);
-    city = items[0];
+    [city] = items;
   });
 
   it('should extract the city reference', () => {

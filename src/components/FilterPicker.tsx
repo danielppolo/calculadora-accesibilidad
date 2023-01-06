@@ -30,6 +30,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
           ),
         }))}
         onChange={(val) => {
+          // @ts-ignore
           onFiltersChange?.({ [filter.code]: val }, 'merge');
         }}
       />

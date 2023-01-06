@@ -19,6 +19,7 @@
     "@typescript-eslint/no-unused-vars": ["warn"],
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
   }
 }

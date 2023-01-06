@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-danger */
 import React, { useState, useEffect } from 'react';
 import { Container, Grid } from '@mui/material';
@@ -318,20 +319,20 @@ export default function Home() {
             </Grid>
           </Grid>
         </div>
-
+        {/* @ts-ignore */}
         <form name="contact" netlify>
           <p>
-            <label>
+            <label htmlFor="name">
               Nombre <input type="text" name="name" />
             </label>
           </p>
           <p>
-            <label>
+            <label htmlFor="email">
               Email <input type="email" name="email" />
             </label>
           </p>
           <p>
-            <label>
+            <label htmlFor="suggestions">
               Sugerencias <textarea name="suggestions" />
             </label>
           </p>

@@ -12,6 +12,8 @@ function useGrid() {
     select: (data) => {
       Object.keys(data).forEach((featureId) => {
         if (data?.[featureId]?.properties) {
+          // @ts-ignore
+          // eslint-disable-next-line no-param-reassign
           data[featureId].properties.id = featureId;
         }
       });
