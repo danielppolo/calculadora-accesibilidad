@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-danger */
 import React, { useState, useEffect } from 'react';
@@ -319,21 +320,20 @@ export default function Home() {
             </Grid>
           </Grid>
         </div>
-        {/* @ts-ignore */}
-        <form name="contact" netlify>
+        <form name="contact" method="POST" data-netlify="true">
           <p>
-            <label htmlFor="name">
-              Nombre <input type="text" name="name" />
+            <label>
+              Your Name: <input type="text" name="name" />
             </label>
           </p>
           <p>
-            <label htmlFor="email">
-              Email <input type="email" name="email" />
+            <label>
+              Your Email: <input type="email" name="email" />
             </label>
           </p>
           <p>
-            <label htmlFor="suggestions">
-              Sugerencias <textarea name="suggestions" />
+            <label>
+              Message: <textarea name="message" />
             </label>
           </p>
           <p>
