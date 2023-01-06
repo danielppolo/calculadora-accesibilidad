@@ -93,13 +93,13 @@ function GlobalControls() {
         />
 
         <Modal
-          title="Notas"
           open={notesOpen}
           onCancel={() => setNotesOpen(false)}
           bodyStyle={{
-            maxHeight: 300,
+            maxHeight: '90vh',
             overflowY: 'auto',
           }}
+          width={800}
         >
           <Notes />
         </Modal>

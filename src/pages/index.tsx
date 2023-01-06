@@ -318,6 +318,27 @@ export default function Home() {
             </Grid>
           </Grid>
         </div>
+
+        <form name="contact" netlify>
+          <p>
+            <label>
+              Nombre <input type="text" name="name" />
+            </label>
+          </p>
+          <p>
+            <label>
+              Email <input type="email" name="email" />
+            </label>
+          </p>
+          <p>
+            <label>
+              Sugerencias <textarea name="suggestions" />
+            </label>
+          </p>
+          <p>
+            <button type="submit">Send</button>
+          </p>
+        </form>
       </Container>
       <div className="my-32" />
       <div className="bg-black h-16 text-white flex items-center justify-between px-16">

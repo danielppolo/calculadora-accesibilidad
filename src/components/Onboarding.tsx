@@ -1,41 +1,21 @@
 import React, { memo } from 'react';
-import CitiesChart from 'src/components/CitiesChart';
-import { useMapParams } from 'src/context/mapParams';
 import useConfig from 'src/hooks/data/useConfig';
+import useEmbeddedCharts from 'src/hooks/useEmbeddedCharts';
 
 function Onboarding() {
   const { data: config } = useConfig();
-  const { current } = useMapParams();
-  const cities = config?.cities ?? [];
-
-  if (current.cityCode) return null;
+  const dangerousHTML = useEmbeddedCharts({
+    text: config?.onboardingText,
+    chartData: config?.onboardingChartData,
+  });
 
   return (
-    <div>
-      <p className="text-sm text-gray-700">
-        Este proyecto tiene como objetivo mostrar las oportunidades de las 20
-        zonas metropolitanas más grandes de México.
-      </p>
-      <div className="mb-8" />
-
-      <CitiesChart
-        data={{
-          labels: cities.map((city) => city.name),
-          datasets: [
-            {
-              data: cities
-                .map((city) => city.metadata?.totalOpportunities ?? 0)
-                .sort((a, b) => b - a),
-              backgroundColor: cities.map((city) => city.color), // FIXME: Set correct colors
-              barThickness: 'flex',
-            },
-          ],
-        }}
-      />
-      <p className="text-xs text-center mt-2">
-        Número de oportunidades promedio alcanzables por persona
-      </p>
-    </div>
+    <div
+      className="prose prose-sm max-w-none"
+      dangerouslySetInnerHTML={{
+        __html: dangerousHTML,
+      }}
+    />
   );
 }
 
