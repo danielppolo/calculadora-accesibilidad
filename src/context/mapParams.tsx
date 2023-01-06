@@ -71,9 +71,9 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
   const handleVariantChange = useCallback(
     (cityCode: string, visualizationCode: string, variantCode: string) => {
-      const visualization = config?.[cityCode].visualizations.find(
-        (viz) => viz.code === visualizationCode
-      );
+      const visualization = config?.citiesDictionary?.[
+        cityCode
+      ].visualizations.find((viz) => viz.code === visualizationCode);
       const gridCode = visualization?.grid?.code;
 
       const nextState = {
@@ -128,9 +128,9 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
   const handleVisualizationChange = useCallback(
     (cityCode: string, visualizationCode: string) => {
-      const visualization = config?.[cityCode].visualizations.find(
-        (viz) => viz.code === visualizationCode
-      );
+      const visualization = config?.citiesDictionary?.[
+        cityCode
+      ].visualizations.find((viz) => viz.code === visualizationCode);
       const defaultVariantCode = visualization?.defaultVariant?.code;
       const gridCode = visualization?.grid?.code;
 
@@ -190,12 +190,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         }
 
         map.flyTo({
-          center: config?.[cityCode]?.coordinates,
+          center: config?.citiesDictionary?.[cityCode]?.coordinates,
           zoom: CITY_ZOOM,
           duration: 2000,
         });
 
-        const defaultVisualization = config?.[cityCode]?.defaultVisualization;
+        const defaultVisualization =
+          config?.citiesDictionary?.[cityCode]?.defaultVisualization;
 
         if (defaultVisualization) {
           return handleVisualizationChange(cityCode, defaultVisualization.code);
@@ -255,7 +256,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       return setCurrent((state) => {
         // Display Tilesets based on filterss
         const visualization = state.cityCode
-          ? config?.[state.cityCode].visualizations.find(
+          ? config?.citiesDictionary?.[state.cityCode].visualizations.find(
               (viz) => viz.code === state.visualizationCode
             )
           : undefined;

@@ -14,7 +14,7 @@ marked.setOptions({
 });
 
 const client = contentful.createClient({
-  space: 'f9qr8a787ywo',
+  space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE,
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
@@ -34,15 +34,18 @@ export default function Home() {
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    const fetchCities = async () => {
+    const fetchLandingPage = async () => {
       try {
-        const response = await client.getEntry('3q2QHn4ewv8QKVKo10Lkpa');
+        const response = await client.getEntry(
+          process.env.NEXT_PUBLIC_LANDING_PAGE_ID
+        );
         setData(response.fields);
       } catch (e) {
         console.log(e);
       }
     };
-    fetchCities();
+
+    fetchLandingPage();
   }, []);
 
   if (!data) {

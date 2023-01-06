@@ -6,7 +6,7 @@ function useCurrentVisualization() {
 
   return ({ cityCode, visualizationCode }: MapParamsState) =>
     cityCode && visualizationCode
-      ? config?.[cityCode]?.visualizations.find(
+      ? config?.citiesDictionary?.[cityCode]?.visualizations.find(
           (visualization) => visualization.code === visualizationCode
         )
       : undefined;

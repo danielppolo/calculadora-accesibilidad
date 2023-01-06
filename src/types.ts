@@ -224,7 +224,21 @@ export type UUID = string;
 
 export type FeatureDictionary = Record<UUID, Feature<Polygon>>;
 
-export type Config = Record<City['code'], City>;
+export type Note = {
+  title?: string;
+  body?: string;
+};
+
+export type Config = {
+  title?: string;
+  onboardingText?: string;
+  onboardingChartData?: Record<string, ChartConfiguration>;
+  cities: City[];
+  citiesDictionary: Record<City['code'], City>;
+  defaultMapboxTilesets: MapboxTileset[];
+  notes?: Note;
+  // landingPage?: LandingPage;
+};
 
 export type MapData = Record<
   City['code'],

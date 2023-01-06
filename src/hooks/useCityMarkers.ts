@@ -20,7 +20,7 @@ const useCityMarkers = () => {
     ...queries.cities.all,
     enabled: !!config,
     select: (data) => {
-      const activeCities = Object.keys(config || {});
+      const activeCities = Object.keys(config?.citiesDictionary || {});
       return {
         ...data,
         features: data.features
@@ -29,8 +29,9 @@ const useCityMarkers = () => {
             ...feature,
             properties: {
               ...feature.properties,
-              color: config?.[feature?.properties?.code]?.color,
-              name: config?.[feature?.properties?.code]?.name,
+              color:
+                config?.citiesDictionary?.[feature?.properties?.code]?.color,
+              name: config?.citiesDictionary?.[feature?.properties?.code]?.name,
             },
           })),
       };

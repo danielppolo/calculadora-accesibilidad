@@ -23,7 +23,7 @@ if (accessToken) {
 const createMap = (center: LngLatLike) =>
   new Map({
     container: 'map',
-    style: 'mapbox://styles/daniel-itdp/ckwqye8xi0pel14qvvgh6vpn9',
+    style: process.env.NEXT_PUBLIC_MAPBOX_STYLE_URL,
     center,
     zoom: COUNTRY_ZOOM,
     minZoom: MIN_ZOOM,

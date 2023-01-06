@@ -1,14 +1,17 @@
 import { City, Config } from 'src/types';
-import getCities from 'src/adapters/contentful/getCities';
+import getConfig from 'src/adapters/contentful/getConfig';
 import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 
 const fetchConfig = async () => {
-  const nextConfig: Config = {};
-  const remoteConfig = await getCities();
+  const remoteConfig = await getConfig();
+  const nextConfig: Config = {
+    ...remoteConfig,
+    citiesDictionary: {},
+  };
 
-  remoteConfig.forEach((city: City) => {
-    nextConfig[city.code] = city;
+  remoteConfig.cities.forEach((city: City) => {
+    nextConfig.citiesDictionary[city.code] = city;
   });
   return nextConfig;
 };

@@ -9,8 +9,9 @@ function CityPicker() {
   const getCurrentCity = useCurrentCity();
   const { onCityChange, current } = useMapParams();
   const currentCity = getCurrentCity(current);
-  const cities = config ? Object.values(config) : [];
+  const cities = config?.cities ?? [];
   const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
+
   const countriesDict: Record<string, any> = sortedCities.reduce(
     (acc, city) => {
       if (city?.country?.code && !acc[city.country.code]) {

@@ -6,7 +6,7 @@ import useConfig from 'src/hooks/data/useConfig';
 function Onboarding() {
   const { data: config } = useConfig();
   const { current } = useMapParams();
-  const cities = Object.values(config ?? {});
+  const cities = config?.cities ?? [];
 
   if (current.cityCode) return null;
 

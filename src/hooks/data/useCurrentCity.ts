@@ -5,7 +5,7 @@ function useCurrentCity() {
   const { data: config } = useConfig();
 
   return ({ cityCode }: MapParamsState) =>
-    cityCode ? config?.[cityCode] : undefined;
+    cityCode ? config?.citiesDictionary?.[cityCode] : undefined;
 }
 
 export default useCurrentCity;

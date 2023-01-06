@@ -6,7 +6,7 @@ function useCurrentVariant() {
 
   return ({ cityCode, visualizationCode, variantCode }: MapParamsState) =>
     cityCode && visualizationCode && variantCode
-      ? config?.[cityCode]?.visualizations
+      ? config?.citiesDictionary?.[cityCode]?.visualizations
           .find((visualization) => visualization.code === visualizationCode)
           ?.variants?.find((variant) => variant.code === variantCode)
       : undefined;
