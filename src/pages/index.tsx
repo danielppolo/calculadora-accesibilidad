@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
+import { Input, Button } from 'antd';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contentful = require('contentful');
@@ -20,7 +21,7 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
-const Button = () => (
+const CustomButton = () => (
   <Link passHref href="/map">
     <button
       type="button"
@@ -190,7 +191,7 @@ export default function Home() {
               }}
             />
             <div className="flex justify-center my-8">
-              <Button />
+              <CustomButton />
             </div>
           </div>
 
@@ -284,7 +285,7 @@ export default function Home() {
                   __html: marked.parse(data?.sectionThree || ''),
                 }}
               />
-              <Button />
+              <CustomButton />
             </Grid>
             <Grid item xs={12} lg={6}>
               <img
@@ -320,27 +321,35 @@ export default function Home() {
             </Grid>
           </Grid>
         </div>
-        <form name="contact" method="POST" data-netlify="true">
-          <input type="hidden" name="form-name" value="contact" />
-          <p>
-            <label>
-              Your Name: <input type="text" name="name" />
-            </label>
-          </p>
-          <p>
-            <label>
-              Your Email: <input type="email" name="email" />
-            </label>
-          </p>
-          <p>
-            <label>
-              Message: <textarea name="message" />
-            </label>
-          </p>
-          <p>
-            <button type="submit">Send</button>
-          </p>
-        </form>
+        <div>
+          <h3 className="font-bold text-xl mt-24 mb-6 text-center">
+            Comentarios y sugerencias
+          </h3>
+
+          <form name="contact" method="POST" data-netlify="true">
+            <input type="hidden" name="form-name" value="contact" />
+            <p className="mb-4">
+              <label>
+                <Input type="text" name="name" placeholder="Nombre" />
+              </label>
+            </p>
+            <p className="mb-4">
+              <label>
+                <Input type="email" name="email" placeholder="Email" />
+              </label>
+            </p>
+            <p className="mb-4">
+              <label>
+                <Input.TextArea name="message" placeholder="Sugerencias" />
+              </label>
+            </p>
+            <p>
+              <Button htmlType="submit" type="dashed" block size="large">
+                Send
+              </Button>
+            </p>
+          </form>
+        </div>
       </Container>
       <div className="my-32" />
       <div className="bg-black h-16 text-white flex items-center justify-between px-16">
