@@ -9,7 +9,7 @@ import { Filter } from 'src/types';
 function FilterPicker({ filter }: { filter: Filter }) {
   const { current, onFiltersChange } = useMapParams();
 
-  const value = filter.properties.find(
+  const value = filter.options.find(
     (prop) => prop.code === current.filters?.[filter.code]
   );
 
@@ -20,7 +20,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
         defaultValue={value?.code}
         value={value?.code}
         // TODO: Define if we want both icon and label or just one of them
-        options={filter.properties.map((prop) => ({
+        options={filter.options.map((prop) => ({
           value: prop.code,
           label: prop.iconName ? undefined : prop.name,
           icon: prop.iconName && (
@@ -38,17 +38,14 @@ function FilterPicker({ filter }: { filter: Filter }) {
   }
 
   if (filter.selectorType === 'slider') {
-    const marks: SliderMarks = filter.properties.reduce(
-      (acc, variant, index) => {
-        if (acc) {
-          acc[index] = variant.name;
-        }
+    const marks: SliderMarks = filter.options.reduce((acc, variant, index) => {
+      if (acc) {
+        acc[index] = variant.name;
+      }
 
-        return acc;
-      },
-      {} as SliderMarks
-    );
-    const valueIndex = filter.properties.findIndex(
+      return acc;
+    }, {} as SliderMarks);
+    const valueIndex = filter.options.findIndex(
       (prop) => prop.code === current.filters?.[filter.code]
     );
 
@@ -58,11 +55,11 @@ function FilterPicker({ filter }: { filter: Filter }) {
         marks={marks}
         defaultValue={valueIndex}
         min={0}
-        max={(filter.properties?.length ?? 1) - 1}
+        max={(filter.options?.length ?? 1) - 1}
         tooltip={{ formatter: null }}
         onChange={(val) => {
           onFiltersChange?.(
-            { [filter.code]: filter.properties[val].code },
+            { [filter.code]: filter.options[val].code },
             'merge'
           );
         }}
@@ -79,7 +76,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
         value={value?.code}
       >
         <Space direction="vertical">
-          {filter.properties?.map((prop) => (
+          {filter.options?.map((prop) => (
             <Radio key={prop?.code} value={prop?.code}>
               {prop?.name}
             </Radio>
@@ -97,7 +94,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
       onChange={(val) => {
         onFiltersChange?.({ [filter.code]: val }, 'merge');
       }}
-      options={filter.properties.map((option) => ({
+      options={filter.options.map((option) => ({
         label: option.name,
         value: option.code,
       }))}

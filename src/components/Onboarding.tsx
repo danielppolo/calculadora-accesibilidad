@@ -6,7 +6,7 @@ function Onboarding() {
   const { data: config } = useConfig();
   const dangerousHTML = useEmbeddedCharts({
     text: config?.onboardingText,
-    chartData: config?.onboardingChartData,
+    chartData: config?.onboardingChartConfig,
   });
 
   return (

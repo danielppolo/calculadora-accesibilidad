@@ -13,7 +13,7 @@ function VisualizationInfo() {
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
   const dangerousHTML = useEmbeddedCharts({
-    text: currentVisualization?.text,
+    text: currentVisualization?.helperText,
     chartData: currentVisualization?.chartConfig,
   });
 

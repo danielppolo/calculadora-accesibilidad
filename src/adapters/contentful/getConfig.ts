@@ -1,5 +1,4 @@
-import { ChartConfiguration } from 'chart.js';
-import { City, MapboxTileset, Note } from 'src/types';
+import { Config } from 'src/types';
 import extractReferences from 'src/utils/extractContentfulReferences';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -10,16 +9,7 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
 });
 
-export type ContentfulConfig = {
-  title?: string;
-  onboardingText?: string;
-  onboardingChartData?: Record<string, ChartConfiguration>;
-  cities: City[];
-  defaultMapboxTilesets: MapboxTileset[];
-  notes?: Note;
-};
-
-async function getConfig(): Promise<ContentfulConfig> {
+async function getConfig(): Promise<Config> {
   const config = await client.getEntry(
     process.env.NEXT_PUBLIC_VISUALIZATION_TOOL_ID,
     { include: 6 }

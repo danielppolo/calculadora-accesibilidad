@@ -3,9 +3,13 @@ import getConfig from 'src/adapters/contentful/getConfig';
 import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 
+type CustomConfig = Config & {
+  citiesDictionary: Record<City['code'], City>;
+};
+
 const fetchConfig = async () => {
   const remoteConfig = await getConfig();
-  const nextConfig: Config = {
+  const nextConfig: CustomConfig = {
     ...remoteConfig,
     citiesDictionary: {},
   };

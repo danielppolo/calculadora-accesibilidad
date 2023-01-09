@@ -8,6 +8,8 @@ export type ContentfulImage = {
   };
 };
 
+export type ID = string;
+
 export type MapParamsState = {
   gridCode?: string;
   cityCode?: string;
@@ -29,11 +31,6 @@ export type MapMouseEvent = mapboxgl.MapMouseEvent & {
 
 type Color = string;
 
-export type Scenario = {
-  bucketName: string;
-  name: string;
-};
-
 export type Legend = {
   title: string;
   intervals: {
@@ -43,179 +40,162 @@ export type Legend = {
   }[];
 };
 
-// Platform
-export type Property = {
-  // Nombre de la propiedad. Visible para el usuario.
+// Represents a filter option. It is a property in the dataset JSON.
+export type Option = {
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la propiedad en las distintas partes del código.
+  // Machine friendly code. Must match propery in the JSON.
   code: string;
-  // Unit to display when hovering over a feature.
+  // Unit.
   unit?: string;
-  // Material Icon name. https://fonts.google.com/icons
+  // Material Icon code. Visit https://fonts.google.com/icons
   iconName?: string;
-  // Layers to be enabled on selection.
+  // Tilesets to enable when the option toggles.
   enabledMapboxTilesets?: MapboxTileset[];
 };
 
+// Represents a grid of features
 export type Grid = {
-  // Unique code in snake_case. Represents the variant.
+  // Machine friendly code. Must match the grid JSON name.
   code: string;
-  // Tamaño del hexágono base.
+  // Size.
   size: number;
 };
 
+// Represents a data provider.
 export type DataProvider = {
-  // Código único en formato snake_case. Se usa para referenciar el proveedor de datos en las distintas partes del código.
-  code: string;
-  // Nombre del proveedor de datos visible para el cliente.
+  // Human-friendly name.
   name: string;
-  // Dirección URL del proveedor de datos.
-  url: string;
-  // Dirección URL del asset a mostrar.
+  // Machine friendly code.
+  code: string;
+  // Provider's URL.
+  url?: string;
+  // Logotype.
   logo?: ContentfulImage;
-  // Nombre del proveedor de datos visible para el cliente.
-  label?: string;
+  // Helper text.
+  helperText?: string;
 };
 
+// Represents a Mapbox Tileset. Visit https://studio.mapbox.com/tilesets
 export type MapboxTileset = {
-  // Aplication layer code. Unique.
-  code: string;
-  // Mapbox's layer code.
+  // Tileset's source layer.
   sourceLayer: string;
-  // Mapbox's tileset ID.
+  // Tileset's ID.
   tilesetId: string;
-  // Geomtry visualization type.
+  // Style type.
   type: 'fill' | 'line';
-  // Layer name. Visible to the user.
+  // Human-friendly name.
   name: string;
-  // Geometry fill color in HEX code.
+  // Fill color, when type fill.
   fillColor?: string;
-  // Geometry fill opacity. 0-1.
+  // Fill opacity, when type fill.
   fillOpacity?: number;
-  // Geometry line color in HEX code.
+  // Line color, when type line.
   lineColor?: string;
-  // Geometry line opacity. 0-1.
+  // Line opacity, when type line.
   lineOpacity?: number;
-  // Geometry line width in pixels.
+  // Line width, when type line.
   lineWidth?: number;
-  // Custom legend
+  // Legend object to override the auto-generated.
   customLegend?: Legend;
-  // Color property
+  // Property name to use as color.
   colorProperty?: string;
 };
 
+// Represents a visualization variant. It's a dataset.
 export type VisualizationVariant = {
-  // Nombre de la visualización. Visible para el usuario.
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
+  // Machine friendly code. Must match the filename or namespace in AWS.
   code: string;
-  // Proveedor de datos para la visualización.
-  dataProviders: DataProvider[];
-  // Unidad de los valores
-  unit: string;
-  // Tipo de visualización. Determina su display e interactividad.
-  relative: 'city' | 'hexagon';
+  // Visibility. Defaults to false.
+  active?: boolean;
+  // Map relative to:
+  relativity: 'city' | 'feature';
+  // Unit
+  unit?: string;
+  // Data providers
+  dataProviders?: DataProvider[];
 };
 
+// Represents a filter for a visualization.
 export type Filter = {
-  // Nombre de la visualización. Visible para el usuario.
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
+  // Machine friendly code.
   code: string;
-  // Controles activados por default
-  properties: Property[];
-  // Controles activados por default
-  defaultProperty: Property;
-  // Controles activados por default. Defaults to select.
+  // Visibility. Defaults to false.
+  active?: boolean;
+  // Collection of options.
+  options: Option[];
+  // Preselected option.
+  defaultOption: Option;
+  // Selector interface.
   selectorType?: 'button' | 'select' | 'slider' | 'radio';
 };
 
+// Represents a visualization.
 export type Visualization = {
-  // Nombre de la visualización. Visible para el usuario.
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
+  // Machine friendly code. Must match the AWS namespace.
   code: string;
-  // Default variant to display.
-  defaultVariant: VisualizationVariant;
   // Variants for the visualization. E.g. Different time.
   variants: VisualizationVariant[];
-  // HEX Grid que usa la visualización.
+  // Default variant to display when toggled.
+  defaultVariant: VisualizationVariant;
+  // Grid used.
   grid: Grid;
-  // Controles activados por default
+  // Filters available for the datasets.
   filters: Filter[];
-  // Min color
+  // Color assigned to the minimum value.
   minColor: Color;
-  // Max color
+  // Color assigned to the maximum value.
   maxColor: Color;
-  // Max color
-  text?: string;
-  // Chart.js congifuration. https://www.chartjs.org/docs/latest/configuration/
-  chartConfig?: Record<string, ChartConfiguration>;
-  // Controles activados por default. Defaults to select.
+  // Value assigned to the minimum value.
+  minValue: number;
+  // Value assigned to the maximum value.
+  maxValue: number;
+  // Number of steps to for the color breakdown. Defaults to 6.
+  steps?: number;
+  // Text associated to the visualization.
+  helperText?: string;
+  // Chart.js configuration. Visit https://www.chartjs.org/docs/latest/configuration/
+  chartConfig?: Record<ID, ChartConfiguration>;
+  // Selector interface for the variants. Defaults to `select`.
   variantSelectorType?: 'select' | 'slider' | 'radio';
-  // Number of steps to for the color breakdown.
-  ranges?: string[];
-  // Buckets para filtrar los valores. (En caso de requerir filtro)
-  groups?: string[];
 };
 
+// Represents a country
 export type Country = {
-  // Nombre del país. Visible para el usuario.
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar el país en las distintas partes del código.
+  // Machine friendly code.
   code: string;
-  // Esconde/muestra la ciudad en la calculadora.
-  active: boolean;
 };
 
+// Represents a City
 export type City = {
-  // Nombre de la ciudad. Visible para el usuario.
+  // Human-friendly name.
   name: string;
-  // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
+  // Machine friendly code. Must match the AWS namespace.
   code: string;
-  // País al que pertenece.
+  // Country
   country: Country;
-  // Esconde/muestra la ciudad en la calculadora.
-  active: boolean;
-  // Representa las coordenadas centro de la ciudad.
+  // Visibility. Defaults to false.
+  active?: boolean;
+  // City centre coordinates.
   coordinates: LngLatLike;
-  // Color en formato HEX. Usado para charts, etc.
-  color: string;
-  // Visualización por default que se muestra cuando se selecciona la ciudad.
-  defaultVisualization: Visualization;
-  // Visualizaciones disponibles para la ciudad.
+  // Associated color.
+  color: Color;
+  // Visualizations associated.
   visualizations: Visualization[];
-  // Visualizaciones de Mapbox disponibles para la ciudad.
-  mapboxTilesets: MapboxTileset[];
-  // Controles activados por default. Defaults to select.
-  visualizationSelectorType?: 'select' | 'radio';
-
-  metadata: {
-    // Total de oportunidades en la ciudad. Usado en charts.
-    totalOpportunities?: number;
-  };
-};
-
-// Landing
-export type LandingPage = {
-  title: string;
-  subtitle: string;
-  description: string;
-  feature1: string;
-  feature2: string;
-  feature3: string;
-  feature4: string;
-  feature1Img: string;
-  feature2Img: string;
-  feature3Img: string;
-  feature4Img: string;
-  sectionTwo: string;
-  sectionThree: string;
-  section1Img: string;
-  section2Img: string;
-  gif: string;
-  faq: string;
-  map: string;
+  // Visualization to enable when city is selected.
+  defaultVisualization: Visualization;
+  // Tilesets available when city is selected.
+  mapboxTilesets?: MapboxTileset[];
+  // Arbitraty key-value data.
+  metadata: Record<string, any>;
 };
 
 export type Code = string;
@@ -229,15 +209,20 @@ export type Note = {
   body?: string;
 };
 
+// Tool configuration.
 export type Config = {
+  // Human-friendly name.
   title?: string;
+  // Onboarding text.
   onboardingText?: string;
-  onboardingChartData?: Record<string, ChartConfiguration>;
+  // Onboarding charts.
+  onboardingChartConfig?: Record<ID, ChartConfiguration>;
+  // Available cities.
   cities: City[];
-  citiesDictionary: Record<City['code'], City>;
-  defaultMapboxTilesets: MapboxTileset[];
+  // Tilesets available globally.
+  mapboxTilesets: MapboxTileset[];
+  // Notes
   notes?: Note;
-  // landingPage?: LandingPage;
 };
 
 export type MapData = Record<

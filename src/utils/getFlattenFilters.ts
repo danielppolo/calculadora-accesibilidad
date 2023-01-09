@@ -6,8 +6,8 @@ const enterFilters = (
   words: any
 ): any => {
   const filter = currentFilters[depth];
-  const result = filter.properties.map((prop) => {
-    const joinedCodes = { ...words, ...{ [filter.code]: prop.code } };
+  const result = filter.options.map((option) => {
+    const joinedCodes = { ...words, ...{ [filter.code]: option.code } };
     if (currentFilters.length <= depth + 1) {
       return joinedCodes;
     }

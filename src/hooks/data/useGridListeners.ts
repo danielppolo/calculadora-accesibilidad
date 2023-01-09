@@ -13,7 +13,7 @@ function useGridListeners() {
   const { current, onHexagonChange } = useMapParams();
   const { cityCode, gridCode } = current;
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.relative === 'hexagon' ?? false;
+  const isIsochroneVariant = currentVariant?.relativity === 'feature' ?? false;
 
   useEffect(() => {
     const sourceId = getGridId(cityCode, gridCode);
@@ -58,7 +58,7 @@ function useGridListeners() {
     };
 
     map
-      // When the user clicks a hexagon, we'll fetch the map relative to the feature.
+      // When the user clicks a feature, we'll fetch the map relative to the feature.
       .on('click', sourceId, handleHexagonClick)
       // When the user moves their mouse over the state-fill layer, we'll update the
       // feature state for the feature under the mouse.

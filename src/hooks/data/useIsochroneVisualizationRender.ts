@@ -24,10 +24,10 @@ function useIsochroneVisualizationRender({
   const { cityCode, visualizationCode, variantCode, featureId } = current;
   const currentVisualization = getCurrentVisualization(current);
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.relative === 'hexagon' ?? false;
+  const isIsochroneVariant = currentVariant?.relativity === 'feature' ?? false;
 
   useQuery({
-    ...queries.visualizationVariants.hexagon({
+    ...queries.visualizationVariants.feature({
       cityCode,
       visualizationCode,
       variantCode,
@@ -48,9 +48,9 @@ function useIsochroneVisualizationRender({
       const filtersDepth = filters.length;
       const unitDict: Record<string, string> = {};
       filters.forEach((filter) => {
-        filter.properties.forEach((property) => {
-          if (property.code && property.unit) {
-            unitDict[property.code] = property.unit;
+        filter.options.forEach((option) => {
+          if (option.code && option.unit) {
+            unitDict[option.code] = option.unit;
           }
         });
       });
@@ -92,7 +92,7 @@ function useIsochroneVisualizationRender({
             total = total || 1;
           }
 
-          // We filter hexagons with no data
+          // We filter features with no data
           if (total > 0 || isClickedHexagon) {
             filtered.push({
               ...grid[hexId],
@@ -125,7 +125,7 @@ function useIsochroneVisualizationRender({
           property: totalProperty,
           maxValue,
           visible: false,
-          stepSize: currentVisualization?.ranges?.length,
+          stepSize: currentVisualization?.steps,
           colors: [
             currentVisualization.minColor,
             currentVisualization.maxColor,
@@ -138,7 +138,7 @@ function useIsochroneVisualizationRender({
       // Render default variant with default filters
       const defaultVariantFilters: Record<string, string> = {};
       currentVisualization?.filters.forEach((filter) => {
-        defaultVariantFilters[filter.code] = filter.defaultProperty.code;
+        defaultVariantFilters[filter.code] = filter.defaultOption.code;
       });
 
       onFiltersChange?.(defaultVariantFilters, 'reset');

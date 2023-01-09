@@ -2,8 +2,7 @@ import React from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
-import { Select, Radio, Space } from 'antd';
-import type { RadioChangeEvent } from 'antd';
+import { Select } from 'antd';
 
 function VisualizationPicker() {
   const { onVisualizationChange, current } = useMapParams();
@@ -16,25 +15,6 @@ function VisualizationPicker() {
 
   if (isDisabled) {
     return null;
-  }
-
-  if (currentCity?.visualizationSelectorType === 'radio') {
-    return (
-      <Radio.Group
-        onChange={(e: RadioChangeEvent) => {
-          if (current.cityCode) {
-            onVisualizationChange?.(current.cityCode, e.target.value);
-          }
-        }}
-        value={currentVisualization?.code}
-      >
-        <Space direction="vertical">
-          {visualizations?.map((viz) => (
-            <Radio value={viz?.code}>{viz?.name}</Radio>
-          ))}
-        </Space>
-      </Radio.Group>
-    );
   }
 
   return (

@@ -24,7 +24,7 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
   const currentVariant = getCurrentVariant(current);
   const currentVisualization = getCurrentVisualization(current);
   const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
-  const showInfoPanel = !!currentVisualization?.text;
+  const showInfoPanel = !!currentVisualization?.helperText;
   const showDataSources = !!currentVariant?.dataProviders?.length;
 
   return (

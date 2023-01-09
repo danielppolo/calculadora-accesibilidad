@@ -12,7 +12,7 @@ function DataSource() {
   return (
     <div className="flex gap-4 mb-4">
       {dataSources?.map((dataSource) => (
-        <Tooltip title={dataSource.label} key={dataSource.code}>
+        <Tooltip title={dataSource.helperText} key={dataSource.code}>
           <a
             className="underline"
             href={dataSource.url}

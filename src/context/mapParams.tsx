@@ -94,7 +94,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       if (isDataCached) {
         const defaultVariantFilters: Record<string, string> = {};
         visualization?.filters.forEach((filter) => {
-          defaultVariantFilters[filter.code] = filter.defaultProperty.code;
+          defaultVariantFilters[filter.code] = filter.defaultOption.code;
         });
 
         const id = generateVariantId({
@@ -107,9 +107,9 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         show(id);
       }
 
-      // Display alert if requires hexagon selection
+      // Display alert if requires feature selection
       const nextVariant = getCurrentVariant(nextState);
-      if (nextVariant?.relative === 'hexagon') {
+      if (nextVariant?.relativity === 'feature') {
         hideAll();
         messageApi.info({
           content: 'Da click en un hexágono para comenzar',
@@ -222,7 +222,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       return setCurrent((state) => {
         messageApi.destroy('isochrone');
 
-        const { queryKey } = queries.visualizationVariants.hexagon({
+        const { queryKey } = queries.visualizationVariants.feature({
           cityCode: state.cityCode,
           visualizationCode: state.visualizationCode,
           variantCode: state.variantCode,
@@ -264,13 +264,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           const currentFilter = visualization?.filters?.find(
             (filter) => filter.code === filterCode
           );
-          currentFilter?.properties.forEach((property) => {
-            if (property.code === propertyCode) {
-              property.enabledMapboxTilesets?.forEach((tileset) => {
+          currentFilter?.options.forEach((option) => {
+            if (option.code === propertyCode) {
+              option.enabledMapboxTilesets?.forEach((tileset) => {
                 showTileset(tileset);
               });
             } else {
-              property.enabledMapboxTilesets?.forEach((tileset) => {
+              option.enabledMapboxTilesets?.forEach((tileset) => {
                 hideTileset(tileset);
               });
             }

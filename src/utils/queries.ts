@@ -28,7 +28,7 @@ const queries = createQueryKeyStore({
       queryKey: [params],
       queryFn: () => api.getVisualization(params),
     }),
-    hexagon: (params: api.GetVisualizationForFeatureParams) => ({
+    feature: (params: api.GetVisualizationForFeatureParams) => ({
       queryKey: [params],
       queryFn: () => api.getVisualizationForFeature(params),
     }),
