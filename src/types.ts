@@ -124,8 +124,6 @@ export type Filter = {
   name: string;
   // Machine friendly code.
   code: string;
-  // Visibility. Defaults to false.
-  active?: boolean;
   // Collection of options.
   options: Option[];
   // Preselected option.
@@ -140,6 +138,8 @@ export type Visualization = {
   name: string;
   // Machine friendly code. Must match the AWS namespace.
   code: string;
+  // Visibility. Defaults to false.
+  active?: boolean;
   // Variants for the visualization. E.g. Different time.
   variants: VisualizationVariant[];
   // Default variant to display when toggled.

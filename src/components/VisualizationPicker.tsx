@@ -8,7 +8,9 @@ function VisualizationPicker() {
   const { onVisualizationChange, current } = useMapParams();
   const getCurrentCity = useCurrentCity();
   const currentCity = getCurrentCity(current);
-  const visualizations = currentCity?.visualizations;
+  const visualizations = currentCity?.visualizations.filter(
+    (visualization) => visualization.active
+  );
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
   const isDisabled = !currentCity;

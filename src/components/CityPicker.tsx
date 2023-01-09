@@ -9,7 +9,8 @@ function CityPicker() {
   const getCurrentCity = useCurrentCity();
   const { onCityChange, current } = useMapParams();
   const currentCity = getCurrentCity(current);
-  const cities = config?.cities ?? [];
+  const cities =
+    config?.cities?.filter((visualization) => visualization.active) ?? [];
   const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
 
   const countriesDict: Record<string, any> = sortedCities.reduce(

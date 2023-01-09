@@ -10,7 +10,9 @@ function VariantPicker() {
   const { onVariantChange, current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
-  const variants = currentVisualization?.variants;
+  const variants = currentVisualization?.variants.filter(
+    (variant) => variant.active
+  );
   const getCurrentVariant = useCurrentVariant();
   const currentVariant = getCurrentVariant(current);
   const isDisabled = !current.cityCode;
