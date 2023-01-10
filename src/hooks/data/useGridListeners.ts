@@ -3,17 +3,19 @@ import { useMap } from 'src/context/map';
 import getGridId from 'src/utils/getGridId';
 import { useEffect } from 'react';
 import { MapMouseEvent } from 'src/types';
-import useCurrentVariant from './useCurrentVariant';
+import useCurrentVriant from './useCurrentVariant';
+import useCurrentVisualization from './useCurrentVisualization';
 
 let hoveredStateId: string | number | undefined;
 
 function useGridListeners() {
-  const getCurrentVariant = useCurrentVariant();
+  const getCurrentVisualization = useCurrentVisualization();
   const map = useMap();
   const { current, onHexagonChange } = useMapParams();
   const { cityCode, gridCode } = current;
-  const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.relativity === 'feature' ?? false;
+  const currentVisualization = getCurrentVisualization(current);
+  const isIsochroneVariant =
+    currentVisualization?.relativeTo === 'feature' ?? false;
 
   useEffect(() => {
     const sourceId = getGridId(cityCode, gridCode);

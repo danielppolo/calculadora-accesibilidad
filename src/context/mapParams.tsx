@@ -7,7 +7,6 @@ import {
   MEXICO_COORDINATES,
 } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
-import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
 import queries from 'src/utils/queries';
@@ -67,7 +66,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     hide: hideTileset,
     hideAll: hideAllTilesets,
   } = useMapboxTilesetManager();
-  const getCurrentVariant = useCurrentVariant();
 
   const handleVariantChange = useCallback(
     (cityCode: string, visualizationCode: string, variantCode: string) => {
@@ -108,8 +106,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       }
 
       // Display alert if requires feature selection
-      const nextVariant = getCurrentVariant(nextState);
-      if (nextVariant?.relativity === 'feature') {
+      if (visualization?.relativeTo === 'feature') {
         hideAll();
         messageApi.info({
           content: 'Da click en un hexágono para comenzar',
@@ -123,14 +120,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       nonReactiveCurrent = { ...nextState };
       setCurrent(nextState);
     },
-    [
-      config?.citiesDictionary,
-      getCurrentVariant,
-      hideAll,
-      messageApi,
-      queryClient,
-      show,
-    ]
+    [config?.citiesDictionary, hideAll, messageApi, queryClient, show]
   );
 
   const handleVisualizationChange = useCallback(

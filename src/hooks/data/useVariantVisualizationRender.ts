@@ -16,10 +16,11 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
   const { add } = useMapboxLayerManager();
   const { data: grid, isLoading: isGridLoading } = useGrid();
   const { current, onFiltersChange } = useMapParams();
-  const { cityCode, visualizationCode, variantCode, featureId } = current;
+  const { cityCode, visualizationCode, variantCode } = current;
   const currentVisualization = getCurrentVisualization(current);
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.relativity === 'feature' ?? false;
+  const isIsochroneVisualization =
+    currentVisualization?.relativeTo === 'feature' ?? false;
 
   useQuery({
     ...queries.visualizationVariants.detail({
@@ -32,8 +33,7 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
       !!visualizationCode &&
       !!variantCode &&
       !isGridLoading &&
-      !featureId &&
-      !isIsochroneVariant,
+      !isIsochroneVisualization,
     onError: (error) => {
       onError?.();
     },

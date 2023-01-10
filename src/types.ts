@@ -104,8 +104,6 @@ export type VisualizationVariant = {
   code: string;
   // Visibility. Defaults to false.
   active?: boolean;
-  // Map relative to:
-  relativity: 'city' | 'feature';
   // Unit
   unit?: string;
   // Data providers
@@ -162,6 +160,8 @@ export type Visualization = {
   variantSelectorType?: 'select' | 'slider' | 'radio';
   // Tilesets available when city is selected.
   mapboxTilesets?: MapboxTileset[];
+  // Visualization relative to:
+  relativeTo: 'city' | 'feature';
 };
 
 // Represents a country

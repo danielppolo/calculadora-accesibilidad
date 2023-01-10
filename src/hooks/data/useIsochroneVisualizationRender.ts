@@ -24,7 +24,8 @@ function useIsochroneVisualizationRender({
   const { cityCode, visualizationCode, variantCode, featureId } = current;
   const currentVisualization = getCurrentVisualization(current);
   const currentVariant = getCurrentVariant(current);
-  const isIsochroneVariant = currentVariant?.relativity === 'feature' ?? false;
+  const isIsochroneVisualization =
+    currentVisualization?.relativeTo === 'feature' ?? false;
 
   useQuery({
     ...queries.visualizationVariants.feature({
@@ -39,7 +40,7 @@ function useIsochroneVisualizationRender({
       !!visualizationCode &&
       !!variantCode &&
       !isGridLoading &&
-      isIsochroneVariant,
+      isIsochroneVisualization,
     onError: (error) => {
       onError?.();
     },
