@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import useConfig from 'src/hooks/data/useConfig';
 import useEmbeddedCharts from 'src/hooks/useEmbeddedCharts';
 
@@ -8,6 +8,10 @@ function Onboarding() {
     text: config?.onboardingText,
     chartData: config?.onboardingChartConfig,
   });
+
+  useEffect(() => {
+    localStorage.setItem('onboarded', Date.now().toString());
+  }, []);
 
   return (
     <div

@@ -1,23 +1,16 @@
 import React, { useState } from 'react';
-import { Modal, Button, Tooltip, Tour } from 'antd';
-import type { TourProps } from 'antd';
+import { Modal, Button, Tooltip } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import Notes from './Notes';
 import Download from './Download';
 import Onboarding from './Onboarding';
 
-const steps: TourProps['steps'] = [
-  {
-    title: 'Visualizador de accesibilidad urbana',
-    description: <Onboarding />,
-    target: null,
-  },
-];
-
 function GlobalControls() {
-  const { onReset, current } = useMapParams();
+  const { onReset } = useMapParams();
   const [notesOpen, setNotesOpen] = useState(false);
-  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(
+    !localStorage.getItem('onboarded')
+  );
 
   return (
     <div className="fixed z-20 bottom-12 left-4">
@@ -31,7 +24,6 @@ function GlobalControls() {
         <div>
           <Tooltip title="Regresar" placement="left">
             <Button
-              // disabled={!current.cityCode}
               className="bg-white"
               shape="circle"
               size="large"
@@ -86,11 +78,9 @@ function GlobalControls() {
           </Tooltip>
         </div>
 
-        <Tour
-          open={onboardingOpen}
-          onClose={() => setOnboardingOpen(false)}
-          steps={steps}
-        />
+        <Modal open={onboardingOpen} onCancel={() => setOnboardingOpen(false)}>
+          <Onboarding />
+        </Modal>
 
         <Modal
           open={notesOpen}

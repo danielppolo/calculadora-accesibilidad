@@ -159,6 +159,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const handleReset = useCallback(
     (options?: ResetOptions) => {
       messageApi.destroy();
+      map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
 
       if (options?.flyToOrigin) {
         map.flyTo({
