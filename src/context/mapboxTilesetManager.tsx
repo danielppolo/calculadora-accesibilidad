@@ -47,12 +47,12 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
         name,
         sourceLayer,
         fillColor,
-        fillOpacity,
-        lineColor,
-        lineOpacity,
-        lineWidth,
+        fillOpacity = 1,
+        lineColor = '#000',
+        lineOpacity = 1,
+        lineWidth = 1,
       }: MapboxTileset,
-      visibility = 'none'
+      visibility: 'none' | 'visible' = 'none'
     ) => {
       if (map && !(sourceLayer in state) && !map.getSource(sourceLayer)) {
         map.addSource(sourceLayer, {
@@ -68,9 +68,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
             type: 'fill',
             source: sourceLayer,
             'source-layer': sourceLayer,
-            layout: {
-              visibility: visibility as 'visible' | 'none',
-            },
+            layout: { visibility },
             paint: {
               'fill-color': fillColor,
               'fill-opacity': fillOpacity,
@@ -84,9 +82,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
             type: 'line',
             source: sourceLayer,
             'source-layer': sourceLayer,
-            layout: {
-              visibility: 'none',
-            },
+            layout: { visibility },
             paint: {
               'line-color': lineColor,
               'line-opacity': lineOpacity,

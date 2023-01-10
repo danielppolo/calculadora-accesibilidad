@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import LegendBar from 'src/components/LegendBar';
-import { MapboxLayerManager } from 'src/types';
 import { Drawer, Divider } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
@@ -11,13 +10,7 @@ import VisualizationInfo from './VisualizationInfo';
 import VariantPicker from './VariantPicker';
 import FilterPicker from './FilterPicker';
 
-interface SidebarProps {
-  economicLayer: MapboxLayerManager;
-  densityLayer: MapboxLayerManager;
-  roadLayer: MapboxLayerManager;
-}
-
-function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
+function Sidebar() {
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
@@ -81,20 +74,12 @@ function Sidebar({ economicLayer, densityLayer, roadLayer }: SidebarProps) {
       <Divider className="m-0" key="layers-divider" />
       <div className="p-4">
         <h3 className="font-semibold uppercase mb-2 text-[16px]">Capas</h3>
-        <MapboxLayerToggle
-          economicLayer={economicLayer}
-          densityLayer={densityLayer}
-          roadLayer={roadLayer}
-        />
+        <MapboxLayerToggle />
       </div>
       <Divider className="m-0" key="legends-divider" />
       <div className="p-4">
         <h3 className="font-semibold uppercase mb-2 text-[16px]">Simbología</h3>
-        <LegendBar
-          economicLayer={economicLayer}
-          densityLayer={densityLayer}
-          roadLayer={roadLayer}
-        />
+        <LegendBar />
       </div>
       {showDataSources && (
         <>

@@ -19,12 +19,6 @@ export type MapParamsState = {
   filters?: Record<string, string>;
 };
 
-export type MapboxLayerManager = {
-  toggle: () => void;
-  isActive: boolean;
-  legend: Legend;
-};
-
 export type MapMouseEvent = mapboxgl.MapMouseEvent & {
   features?: mapboxgl.MapboxGeoJSONFeature[] | undefined;
 } & mapboxgl.EventData;
@@ -116,6 +110,10 @@ export type VisualizationVariant = {
   unit?: string;
   // Data providers
   dataProviders?: DataProvider[];
+  // Tilesets available when city is selected.
+  mapboxTilesets?: MapboxTileset[];
+  // Tilesets to enable when the variant toggles.
+  enabledMapboxTilesets?: MapboxTileset[];
 };
 
 // Represents a filter for a visualization.
@@ -164,6 +162,8 @@ export type Visualization = {
   chartConfig?: Record<ID, ChartConfiguration>;
   // Selector interface for the variants. Defaults to `select`.
   variantSelectorType?: 'select' | 'slider' | 'radio';
+  // Tilesets available when city is selected.
+  mapboxTilesets?: MapboxTileset[];
 };
 
 // Represents a country
@@ -194,6 +194,8 @@ export type City = {
   defaultVisualization: Visualization;
   // Tilesets available when city is selected.
   mapboxTilesets?: MapboxTileset[];
+  // Tilesets to enable when the city toggles.
+  enabledMapboxTilesets?: MapboxTileset[];
   // Arbitraty key-value data.
   metadata: Record<string, any>;
 };

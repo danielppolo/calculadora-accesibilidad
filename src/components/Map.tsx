@@ -11,9 +11,6 @@ import useIsochroneVisualizationRender from 'src/hooks/data/useIsochroneVisualiz
 import useVariantVisualizationRender from 'src/hooks/data/useVariantVisualizationRender';
 import useZoomToReset from 'src/hooks/useZoomToReset';
 
-import useEconomicZones from 'src/hooks/useEconomicZones';
-import usePopulationDensity from 'src/hooks/usePopulationDensity';
-import useNationalRoadNetwork from 'src/hooks/useNationalRoadNetwork';
 import { message } from 'antd';
 import GlobalControls from './GlobalControls';
 import CityPicker from './CityPicker';
@@ -41,21 +38,13 @@ function Map() {
     },
   });
 
-  const economicLayer = useEconomicZones();
-  const densityLayer = usePopulationDensity();
-  const roadLayer = useNationalRoadNetwork();
-
   return (
     <>
       <div className="fixed z-20 top-4 left-4 w-[21.5rem] space-y-4">
         <CityPicker />
         <VisualizationPicker />
       </div>
-      <Sidebar
-        economicLayer={economicLayer}
-        densityLayer={densityLayer}
-        roadLayer={roadLayer}
-      />
+      <Sidebar />
       <GlobalControls />
 
       <Credits />

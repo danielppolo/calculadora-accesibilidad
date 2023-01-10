@@ -1,97 +1,50 @@
 import React from 'react';
 import { useMapParams } from 'src/context/mapParams';
-import { MapboxLayerManager } from 'src/types';
+import { MapboxTileset } from 'src/types';
 import { Checkbox } from 'antd';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
 import useConfig from 'src/hooks/data/useConfig';
+import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
+import { uniqBy } from 'lodash';
 
-interface MapboxLayerToggleProps {
-  economicLayer: MapboxLayerManager;
-  densityLayer: MapboxLayerManager;
-  roadLayer: MapboxLayerManager;
-}
+const isChecked = (tileset?: MapboxTileset, state?: Record<string, boolean>) =>
+  tileset?.sourceLayer ? state?.[tileset?.sourceLayer] ?? false : false;
 
-function MapboxLayerToggle({
-  economicLayer,
-  densityLayer,
-  roadLayer,
-}: MapboxLayerToggleProps) {
+function MapboxLayerToggle() {
   const { data: config } = useConfig();
   const { state, toggle } = useMapboxTilesetManager();
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
+  const getCurrentVariant = useCurrentVariant();
   const currentVisualization = getCurrentVisualization(current);
-  const appTiles = config?.mapboxTilesets ?? [];
-  const visualizationTiles =
-    currentVisualization?.filters
-      ?.map((filter) =>
-        filter.options.map((option) => option.enabledMapboxTilesets)
-      )
-      .flat(2)
-      .filter(Boolean) ?? [];
+  const currentVariant = getCurrentVariant(current);
+  const appTilesets = config?.mapboxTilesets ?? [];
+  const visualizationTilesets = currentVisualization?.mapboxTilesets ?? [];
+  const variantTilesets = currentVariant?.mapboxTilesets ?? [];
+  const allTilesets = uniqBy(
+    [...appTilesets, ...visualizationTilesets, ...variantTilesets],
+    ({ tilesetId }: MapboxTileset) => tilesetId
+  );
+
+  const handleChange = (tileset?: MapboxTileset) => {
+    if (tileset) {
+      toggle(tileset);
+    }
+  };
 
   return (
     <div>
-      {/* <div className="mb-2">
-        <Checkbox
-          disabled={!current.cityCode}
-          onChange={economicLayer.toggle}
-          checked={economicLayer.isActive}
-        >
-          Marginación
-        </Checkbox>
-      </div>
-      <div className="mb-2">
-        <Checkbox
-          disabled={!current.cityCode}
-          onChange={densityLayer.toggle}
-          checked={densityLayer.isActive}
-        >
-          Densidad
-        </Checkbox>
-      </div>
-      <div className="mb-2">
-        <Checkbox
-          disabled={!current.cityCode}
-          onChange={roadLayer.toggle}
-          checked={roadLayer.isActive}
-        >
-          Red vial
-        </Checkbox>
-      </div> */}
-
-      {appTiles.map((tileset) => {
-        return (
-          <div className="mb-2" key={tileset?.sourceLayer}>
-            <Checkbox
-            // onChange={handleChange} checked={checked}
-            >
-              {tileset?.name}
-            </Checkbox>
-          </div>
-        );
-      })}
-
-      {visualizationTiles.map((tileset) => {
-        const handleChange = () => {
-          if (tileset) {
-            toggle(tileset);
-          }
-        };
-
-        const checked = tileset?.sourceLayer
-          ? state?.[tileset?.sourceLayer] ?? false
-          : false;
-
-        return (
-          <div className="mb-2" key={tileset?.sourceLayer}>
-            <Checkbox onChange={handleChange} checked={checked}>
-              {tileset?.name}
-            </Checkbox>
-          </div>
-        );
-      })}
+      {allTilesets.map((tileset) => (
+        <div className="mb-2" key={tileset?.tilesetId}>
+          <Checkbox
+            onChange={() => handleChange(tileset)}
+            checked={isChecked(tileset, state)}
+          >
+            {tileset?.name}
+          </Checkbox>
+        </div>
+      ))}
     </div>
   );
 }
