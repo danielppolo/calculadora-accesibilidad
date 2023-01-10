@@ -10,6 +10,8 @@ export type ContentfulImage = {
 
 export type ID = string;
 
+export type ColorExpression = any;
+
 export type MapParamsState = {
   gridCode?: string;
   cityCode?: string;
@@ -80,20 +82,18 @@ export type MapboxTileset = {
   type: 'fill' | 'line';
   // Human-friendly name.
   name: string;
-  // Fill color, when type fill.
-  fillColor?: string;
+  // Fill color, when type fill. Must be a valid MapboxExpression
+  fillColorExpression?: ColorExpression;
   // Fill opacity, when type fill.
   fillOpacity?: number;
-  // Line color, when type line.
-  lineColor?: string;
+  // Line color, when type line. Must be a valid MapboxExpression
+  lineColorExpression?: ColorExpression;
   // Line opacity, when type line.
   lineOpacity?: number;
   // Line width, when type line.
   lineWidth?: number;
   // Legend object to override the auto-generated.
-  customLegend?: Legend;
-  // Property name to use as color.
-  colorProperty?: string;
+  legendRanges?: Legend['intervals'];
 };
 
 // Represents a visualization variant. It's a dataset.

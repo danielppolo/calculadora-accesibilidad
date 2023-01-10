@@ -46,11 +46,12 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
         type,
         name,
         sourceLayer,
-        fillColor,
+        fillColorExpression,
         fillOpacity = 1,
-        lineColor = '#000',
+        lineColorExpression = '#000',
         lineOpacity = 1,
         lineWidth = 1,
+        legendRanges,
       }: MapboxTileset,
       visibility: 'none' | 'visible' = 'none'
     ) => {
@@ -70,7 +71,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
             'source-layer': sourceLayer,
             layout: { visibility },
             paint: {
-              'fill-color': fillColor,
+              'fill-color': fillColorExpression,
               'fill-opacity': fillOpacity,
             },
           });
@@ -84,7 +85,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
             'source-layer': sourceLayer,
             layout: { visibility },
             paint: {
-              'line-color': lineColor,
+              'line-color': lineColorExpression,
               'line-opacity': lineOpacity,
               'line-width': lineWidth,
             },
@@ -93,13 +94,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
         legends[sourceLayer] = {
           title: name,
-          intervals: [
-            {
-              color: (type === 'fill' ? fillColor : lineColor) ?? '',
-              opacity: (type === 'fill' ? fillOpacity : lineOpacity) ?? 1,
-              label: name,
-            },
-          ],
+          intervals: legendRanges ?? [],
         };
 
         setState((prevState) => ({

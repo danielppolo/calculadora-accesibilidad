@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import { MapboxTileset } from 'src/types';
 import { Checkbox } from 'antd';
@@ -19,22 +19,36 @@ function MapboxLayerToggle() {
   const getCurrentCity = useCurrentCity();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
-  const currentCity = getCurrentCity(current);
-  const currentVisualization = getCurrentVisualization(current);
-  const currentVariant = getCurrentVariant(current);
-  const appTilesets = config?.mapboxTilesets ?? [];
-  const cityTilesets = currentCity?.mapboxTilesets ?? [];
-  const visualizationTilesets = currentVisualization?.mapboxTilesets ?? [];
-  const variantTilesets = currentVariant?.mapboxTilesets ?? [];
-  const allTilesets = uniqBy(
-    [
-      ...appTilesets,
-      ...cityTilesets,
-      ...visualizationTilesets,
-      ...variantTilesets,
-    ],
-    ({ tilesetId }: MapboxTileset) => tilesetId
-  );
+
+  const tilesets = useMemo(() => {
+    const currentCity = getCurrentCity(current);
+    const currentVisualization = getCurrentVisualization(current);
+    const currentVariant = getCurrentVariant(current);
+    const appTilesets = config?.mapboxTilesets ?? [];
+    const cityTilesets = currentCity?.mapboxTilesets ?? [];
+    const visualizationTilesets = currentVisualization?.mapboxTilesets ?? [];
+    const variantTilesets = currentVariant?.mapboxTilesets ?? [];
+    const allTilesets = uniqBy(
+      [
+        ...appTilesets,
+        ...cityTilesets,
+        ...visualizationTilesets,
+        ...variantTilesets,
+      ],
+      ({ tilesetId }: MapboxTileset) => tilesetId
+    );
+    const sortedTilesets = allTilesets.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+
+    return sortedTilesets;
+  }, [
+    config?.mapboxTilesets,
+    current,
+    getCurrentCity,
+    getCurrentVariant,
+    getCurrentVisualization,
+  ]);
 
   const handleChange = (tileset?: MapboxTileset) => {
     if (tileset) {
@@ -44,7 +58,7 @@ function MapboxLayerToggle() {
 
   return (
     <div>
-      {allTilesets.map((tileset) => (
+      {tilesets.map((tileset) => (
         <div className="mb-2" key={tileset?.tilesetId}>
           <Checkbox
             onChange={() => handleChange(tileset)}
