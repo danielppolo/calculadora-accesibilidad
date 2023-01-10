@@ -112,8 +112,6 @@ export type VisualizationVariant = {
   dataProviders?: DataProvider[];
   // Tilesets available when city is selected.
   mapboxTilesets?: MapboxTileset[];
-  // Tilesets to enable when the variant toggles.
-  enabledMapboxTilesets?: MapboxTileset[];
 };
 
 // Represents a filter for a visualization.
@@ -194,8 +192,6 @@ export type City = {
   defaultVisualization: Visualization;
   // Tilesets available when city is selected.
   mapboxTilesets?: MapboxTileset[];
-  // Tilesets to enable when the city toggles.
-  enabledMapboxTilesets?: MapboxTileset[];
   // Arbitraty key-value data.
   metadata: Record<string, any>;
 };
@@ -223,6 +219,8 @@ export type Config = {
   cities: City[];
   // Tilesets available globally.
   mapboxTilesets: MapboxTileset[];
+  // Tilesets to enable when application loads.
+  enabledMapboxTilesets?: MapboxTileset[];
   // Notes
   notes?: Note;
 };

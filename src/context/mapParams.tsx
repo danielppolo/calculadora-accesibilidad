@@ -123,7 +123,14 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       nonReactiveCurrent = { ...nextState };
       setCurrent(nextState);
     },
-    [config, getCurrentVariant, hideAll, messageApi, queryClient, show]
+    [
+      config?.citiesDictionary,
+      getCurrentVariant,
+      hideAll,
+      messageApi,
+      queryClient,
+      show,
+    ]
   );
 
   const handleVisualizationChange = useCallback(
@@ -213,9 +220,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       if (map.getLayer(CITIES_ZONES_FILL_LAYER_ID)) {
         map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
       }
+
       return handleReset({ flyToOrigin: true });
     },
-    [handleReset, map, config, handleVisualizationChange]
+    [map, handleReset, config?.citiesDictionary, handleVisualizationChange]
   );
 
   const handleHexagonChange = useCallback(

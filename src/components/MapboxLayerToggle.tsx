@@ -7,6 +7,7 @@ import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
 import useConfig from 'src/hooks/data/useConfig';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { uniqBy } from 'lodash';
+import useCurrentCity from 'src/hooks/data/useCurrentCity';
 
 const isChecked = (tileset?: MapboxTileset, state?: Record<string, boolean>) =>
   tileset?.sourceLayer ? state?.[tileset?.sourceLayer] ?? false : false;
@@ -15,15 +16,23 @@ function MapboxLayerToggle() {
   const { data: config } = useConfig();
   const { state, toggle } = useMapboxTilesetManager();
   const { current } = useMapParams();
+  const getCurrentCity = useCurrentCity();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
+  const currentCity = getCurrentCity(current);
   const currentVisualization = getCurrentVisualization(current);
   const currentVariant = getCurrentVariant(current);
   const appTilesets = config?.mapboxTilesets ?? [];
+  const cityTilesets = currentCity?.mapboxTilesets ?? [];
   const visualizationTilesets = currentVisualization?.mapboxTilesets ?? [];
   const variantTilesets = currentVariant?.mapboxTilesets ?? [];
   const allTilesets = uniqBy(
-    [...appTilesets, ...visualizationTilesets, ...variantTilesets],
+    [
+      ...appTilesets,
+      ...cityTilesets,
+      ...visualizationTilesets,
+      ...variantTilesets,
+    ],
     ({ tilesetId }: MapboxTileset) => tilesetId
   );
 
