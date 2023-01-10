@@ -42,32 +42,32 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
   const add = useCallback(
     (
       {
-        tilesetId,
+        id,
         type,
         name,
         sourceLayer,
-        fillColorExpression,
+        fillColorExpression = ['rgb', 0, 0, 0],
         fillOpacity = 1,
-        lineColorExpression = '#000',
+        lineColorExpression = ['rgb', 0, 0, 0],
         lineOpacity = 1,
         lineWidth = 1,
         legendRanges,
       }: MapboxTileset,
       visibility: 'none' | 'visible' = 'none'
     ) => {
-      if (map && !(sourceLayer in state) && !map.getSource(sourceLayer)) {
-        map.addSource(sourceLayer, {
+      if (map && !(id in state) && !map.getSource(id)) {
+        map.addSource(id, {
           type: 'vector',
-          url: `mapbox://${tilesetId}`,
+          url: `mapbox://${id}`,
           minzoom: ZOOM_THRESHOLD,
           maxzoom: MAX_ZOOM,
         });
 
         if (type === 'fill') {
           map.addLayer({
-            id: sourceLayer,
+            id,
             type: 'fill',
-            source: sourceLayer,
+            source: id,
             'source-layer': sourceLayer,
             layout: { visibility },
             paint: {
@@ -79,9 +79,9 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
         if (type === 'line') {
           map.addLayer({
-            id: sourceLayer,
+            id,
             type: 'line',
-            source: sourceLayer,
+            source: id,
             'source-layer': sourceLayer,
             layout: { visibility },
             paint: {
@@ -92,14 +92,14 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
           });
         }
 
-        legends[sourceLayer] = {
+        legends[id] = {
           title: name,
           intervals: legendRanges ?? [],
         };
 
         setState((prevState) => ({
           ...prevState,
-          [sourceLayer]: visibility === 'visible',
+          [id]: visibility === 'visible',
         }));
       }
     },
@@ -108,11 +108,11 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
   const hideAll = useCallback(() => {
     if (map) {
-      Object.keys(state).forEach((sourceLayer) => {
-        map.setLayoutProperty(sourceLayer, 'visibility', 'none');
+      Object.keys(state).forEach((id) => {
+        map.setLayoutProperty(id, 'visibility', 'none');
         setState((prevState) => ({
           ...prevState,
-          [sourceLayer]: false,
+          [id]: false,
         }));
       });
     }
@@ -120,12 +120,12 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
   const show = useCallback(
     (tileset: MapboxTileset) => {
-      const { sourceLayer } = tileset;
-      if (map?.getSource(sourceLayer)) {
-        map.setLayoutProperty(sourceLayer, 'visibility', 'visible');
+      const { id } = tileset;
+      if (map?.getSource(id)) {
+        map.setLayoutProperty(id, 'visibility', 'visible');
         setState((prevState) => ({
           ...prevState,
-          [sourceLayer]: true,
+          [id]: true,
         }));
       } else {
         add(tileset, 'visible');
@@ -136,13 +136,13 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
   const hide = useCallback(
     (tileset: MapboxTileset) => {
-      const { sourceLayer } = tileset;
+      const { id } = tileset;
 
-      if (map?.getSource(sourceLayer)) {
-        map.setLayoutProperty(sourceLayer, 'visibility', 'none');
+      if (map?.getSource(id)) {
+        map.setLayoutProperty(id, 'visibility', 'none');
         setState((prevState) => ({
           ...prevState,
-          [sourceLayer]: false,
+          [id]: false,
         }));
       } else {
         add(tileset, 'none');
@@ -153,20 +153,20 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
   const toggle = useCallback(
     (tileset: MapboxTileset) => {
-      const { sourceLayer } = tileset;
+      const { id } = tileset;
 
-      if (sourceLayer in state && map?.getSource(sourceLayer)) {
-        if (map.getLayoutProperty(sourceLayer, 'visibility') === 'visible') {
-          map.setLayoutProperty(sourceLayer, 'visibility', 'none');
+      if (id in state && map?.getSource(id)) {
+        if (map.getLayoutProperty(id, 'visibility') === 'visible') {
+          map.setLayoutProperty(id, 'visibility', 'none');
           setState((prevState) => ({
             ...prevState,
-            [sourceLayer]: false,
+            [id]: false,
           }));
         } else {
-          map.setLayoutProperty(sourceLayer, 'visibility', 'visible');
+          map.setLayoutProperty(id, 'visibility', 'visible');
           setState((prevState) => ({
             ...prevState,
-            [sourceLayer]: true,
+            [id]: true,
           }));
         }
       } else {

@@ -57,6 +57,35 @@ function Sidebar() {
             <div className="mb-4" />
           </div>
         ))}
+
+        {}
+        {/* FIXME: */}
+        {currentVisualization?.buckets && (
+          <div key={`${currentVisualization?.name}-hardcoded`}>
+            <p className="mb-2 text-gray-700">Hardcoded filter</p>
+            <FilterPicker
+              filter={{
+                name: 'Tiempo',
+                code: 'time-hardcoded',
+                options: currentVisualization?.buckets.map((v) => ({
+                  name: `${v}m`,
+                  code: `${v}m`,
+                  unit: 'min',
+                  value: v,
+                })),
+                defaultOption: {
+                  name: '30m',
+                  code: '30m',
+                  unit: 'min',
+                  value: 30,
+                },
+                selectorType: 'button',
+              }}
+              key="hardcoded"
+            />
+            <div className="mb-4" />
+          </div>
+        )}
       </div>
 
       {showInfoPanel ? (

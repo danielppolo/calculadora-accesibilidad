@@ -1,4 +1,4 @@
-import { LngLatLike } from 'mapbox-gl';
+import mapboxgl, { LngLatLike } from 'mapbox-gl';
 import type { Feature, Polygon } from 'geojson';
 import { ChartConfiguration } from 'chart.js';
 
@@ -10,7 +10,7 @@ export type ContentfulImage = {
 
 export type ID = string;
 
-export type ColorExpression = any;
+export type ColorExpression = mapboxgl.Expression;
 
 export type MapParamsState = {
   gridCode?: string;
@@ -74,10 +74,10 @@ export type DataProvider = {
 
 // Represents a Mapbox Tileset. Visit https://studio.mapbox.com/tilesets
 export type MapboxTileset = {
+  // Tileset's ID.
+  id: string;
   // Tileset's source layer.
   sourceLayer: string;
-  // Tileset's ID.
-  tilesetId: string;
   // Style type.
   type: 'fill' | 'line';
   // Human-friendly name.
@@ -162,6 +162,8 @@ export type Visualization = {
   mapboxTilesets?: MapboxTileset[];
   // Visualization relative to:
   relativeTo: 'city' | 'feature';
+  // FIXME:
+  buckets?: number[];
 };
 
 // Represents a country

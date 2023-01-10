@@ -10,7 +10,7 @@ import { uniqBy } from 'lodash';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
 
 const isChecked = (tileset?: MapboxTileset, state?: Record<string, boolean>) =>
-  tileset?.sourceLayer ? state?.[tileset?.sourceLayer] ?? false : false;
+  tileset?.id ? state?.[tileset?.id] ?? false : false;
 
 function MapboxLayerToggle() {
   const { data: config } = useConfig();
@@ -35,7 +35,7 @@ function MapboxLayerToggle() {
         ...visualizationTilesets,
         ...variantTilesets,
       ],
-      ({ tilesetId }: MapboxTileset) => tilesetId
+      ({ id }: MapboxTileset) => id
     );
     const sortedTilesets = allTilesets.sort((a, b) =>
       a.name.localeCompare(b.name)
@@ -59,7 +59,7 @@ function MapboxLayerToggle() {
   return (
     <div>
       {tilesets.map((tileset) => (
-        <div className="mb-2" key={tileset?.tilesetId}>
+        <div className="mb-2" key={tileset?.id}>
           <Checkbox
             onChange={() => handleChange(tileset)}
             checked={isChecked(tileset, state)}
