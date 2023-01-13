@@ -113,8 +113,9 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
           property: totalProperty,
           maxValue,
           visible: false,
-          stepSize: currentVisualization?.steps,
-          colors: [
+          numberOfScales: currentVisualization?.scalesCount,
+          customScales: currentVisualization?.customScales,
+          scaleColors: [
             currentVisualization.minColor,
             currentVisualization.maxColor,
           ],

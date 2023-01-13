@@ -94,7 +94,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
         legends[id] = {
           title: name,
-          intervals: legendRanges ?? [],
+          scales: legendRanges ?? [],
         };
 
         setState((prevState) => ({

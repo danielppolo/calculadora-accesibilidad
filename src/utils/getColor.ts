@@ -2,11 +2,11 @@ import { Expression } from 'mapbox-gl';
 
 const getColor = (
   property: string,
-  intervals: number[],
+  scales: number[],
   colors: string[]
 ): Expression => {
   const rgbaCases: Array<Expression | string> = [];
-  intervals.forEach((interval, i) => {
+  scales.forEach((interval, i) => {
     rgbaCases.unshift(['<=', ['get', property], interval], colors[i]);
   });
   return [

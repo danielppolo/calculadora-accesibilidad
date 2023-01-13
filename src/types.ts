@@ -29,11 +29,12 @@ type Color = string;
 
 export type Legend = {
   title: string;
-  intervals: {
+  scales: Array<{
     color: string;
     opacity?: number;
     label: string;
-  }[];
+    topValue: number;
+  }>;
 };
 
 // Represents a filter option. It is a property in the dataset JSON.
@@ -93,7 +94,7 @@ export type MapboxTileset = {
   // Line width, when type line.
   lineWidth?: number;
   // Legend object to override the auto-generated.
-  legendRanges?: Legend['intervals'];
+  legendRanges?: Legend['scales'];
 };
 
 // Represents a visualization variant. It's a dataset.
@@ -134,6 +135,8 @@ export type Visualization = {
   code: string;
   // Visibility. Defaults to false.
   active?: boolean;
+  // Enables comparison mode.
+  comparable?: boolean;
   // Variants for the visualization. E.g. Different time.
   variants: VisualizationVariant[];
   // Default variant to display when toggled.
@@ -150,8 +153,10 @@ export type Visualization = {
   minValue: number;
   // Value assigned to the maximum value.
   maxValue: number;
-  // Number of steps to for the color breakdown. Defaults to 6.
-  steps?: number;
+  // Number of scales to for the color breakdown. Defaults to 6.
+  scalesCount?: number;
+  // Overrides the programmatically generated scales.
+  customScales?: number[];
   // Text associated to the visualization.
   helperText?: string;
   // Chart.js configuration. Visit https://www.chartjs.org/docs/latest/configuration/
@@ -162,8 +167,6 @@ export type Visualization = {
   mapboxTilesets?: MapboxTileset[];
   // Visualization relative to:
   relativeTo: 'city' | 'feature';
-  // FIXME:
-  buckets?: number[];
 };
 
 // Represents a country

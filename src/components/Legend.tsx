@@ -11,7 +11,7 @@ interface LegendItemProps extends SwatchProps {
 
 interface LegendProps {
   title: string;
-  items: LegendItemProps[];
+  scales: LegendItemProps[];
 }
 
 const Swatch = ({ color, opacity = 1 }: SwatchProps) => (
@@ -25,11 +25,11 @@ const LegendItem = ({ color, label, opacity }: LegendItemProps) => (
   </div>
 );
 
-function Legend({ title, items }: LegendProps) {
+function Legend({ title, scales }: LegendProps) {
   return (
     <div className="w-full">
       <p className="mb-2 text-gray-700">{title}</p>
-      {items.map(({ color, label, opacity }) => (
+      {scales.map(({ color, label, opacity }) => (
         <LegendItem key={label} color={color} opacity={opacity} label={label} />
       ))}
     </div>

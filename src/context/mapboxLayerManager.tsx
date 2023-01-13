@@ -1,6 +1,11 @@
 import React, { memo, useCallback, useContext, useState } from 'react';
-import { NUMBER_OF_BUCKETS } from 'src/constants';
-import { getIntervals, getColor, getLegend, convertToGeoJSON } from 'src/utils';
+import { NUMBER_OF_SCALES } from 'src/constants';
+import {
+  getScales,
+  getColor,
+  getScalesScales,
+  convertToGeoJSON,
+} from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
@@ -20,11 +25,12 @@ interface AddOptions {
   visible: boolean;
   unit?: string;
   beforeId?: string;
-  stepSize?: number;
+  numberOfScales?: number;
   reverseColors?: boolean;
-  colors?: [string, string];
+  scaleColors?: [string, string];
   opacity?: number;
   solid?: boolean;
+  customScales?: number[];
 }
 
 interface MapboxLayerManagerParams {
@@ -113,14 +119,15 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       visible,
       unit,
       beforeId,
-      stepSize = NUMBER_OF_BUCKETS,
+      numberOfScales = NUMBER_OF_SCALES,
       reverseColors = false,
-      colors = ['#f8dda1', '#f1bb43'],
+      scaleColors = ['#f8dda1', '#f1bb43'],
+      customScales,
       opacity = 0.5,
       solid = false,
     }: AddOptions) => {
       if (map && !(id in state) && !map.getSource(id)) {
-        const [startColor, endColor] = colors;
+        const [startColor, endColor] = scaleColors;
 
         // FIXME: Experimental
         // const colorGradient = chroma
@@ -136,17 +143,20 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         //   .domain(sortedArray)
         //   .range(colorGradient);
 
-        // Get color intervals
-        const intervals = getIntervals(maxValue, stepSize);
-        const reversedIntervals = [...intervals].reverse();
+        // Get color scales
+        const scales = customScales?.length
+          ? customScales
+          : getScales(maxValue, numberOfScales);
+        const numberOfColors = customScales?.length ?? numberOfScales;
+        const reversedIntervals = [...scales].reverse();
         const colorGradient = new Gradient()
           .setColorGradient(startColor, endColor)
-          .setMidpoint(stepSize)
+          .setMidpoint(numberOfColors)
           .getColors();
         const colorIntervals = reverseColors
           ? [...colorGradient].reverse()
           : colorGradient;
-        const legendColorIntervals = reverseColors
+        const colors = reverseColors
           ? colorGradient
           : [...colorGradient].reverse();
         const geojsonFeatures = convertToGeoJSON(features);
@@ -185,9 +195,9 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         geojson[id] = geojsonFeatures;
         legends[id] = {
           title: legendTitle,
-          intervals: getLegend({
-            intervals,
-            colors: legendColorIntervals,
+          scales: getScalesScales({
+            scales,
+            colors,
             opacity,
             unit,
           }),

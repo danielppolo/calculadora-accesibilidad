@@ -126,13 +126,88 @@ function useIsochroneVisualizationRender({
           property: totalProperty,
           maxValue,
           visible: false,
-          stepSize: currentVisualization?.steps,
-          colors: [
+          numberOfScales: currentVisualization?.scalesCount,
+          customScales: currentVisualization?.customScales,
+          scaleColors: [
             currentVisualization.minColor,
             currentVisualization.maxColor,
           ],
           unit,
           beforeId: getGridId(cityCode, currentVisualization?.grid.code),
+        });
+      });
+
+      // Add bucket layers
+      variants.forEach((variantFilters) => {
+        const totalProperty = 'count';
+        const unit =
+          currentVariant?.unit ??
+          unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
+
+        currentVisualization.customScales?.forEach((scale) => {
+          let maxValue = 0;
+
+          const features = Object.keys(data).reduce(
+            (filtered, hexId, index) => {
+              const isClickedHexagon = hexId === featureId;
+              let total =
+                get(data[hexId], Object.values(variantFilters), {}) ?? 0;
+
+              if (total > maxValue) {
+                maxValue = total;
+              }
+
+              if (isClickedHexagon) {
+                total = total || 1;
+              }
+
+              // We filter features with no data
+              if (total <= scale || isClickedHexagon) {
+                filtered.push({
+                  ...grid[hexId],
+                  // Integer arbitrary identifier
+                  id: index,
+                  properties: {
+                    ...grid[hexId].properties,
+                    // Hexagon identifier
+                    id: hexId,
+                    [totalProperty]: total,
+                    description: `${new Intl.NumberFormat().format(
+                      total
+                    )}  ${unit}`,
+                  },
+                });
+              }
+
+              return filtered;
+            },
+            [] as Feature<Polygon, GeoJsonProperties>[]
+          );
+
+          const id = generateVariantId({
+            ...current,
+            // bucket, // TODO: Validate
+            filters: variantFilters,
+          });
+
+          add({
+            legendTitle: currentVisualization.name,
+            id,
+            features,
+            property: totalProperty,
+            maxValue,
+            visible: true,
+            numberOfScales: currentVisualization?.scalesCount,
+            customScales: currentVisualization?.customScales,
+            scaleColors: [
+              currentVisualization.minColor,
+              currentVisualization.maxColor,
+            ],
+            unit,
+            opacity: 0.2,
+            beforeId: getGridId(cityCode, currentVisualization?.grid.code),
+            solid: true,
+          });
         });
       });
 

@@ -1,25 +1,26 @@
 interface GetLegendParams {
-  intervals: number[];
+  scales: number[];
   colors: string[];
   unit?: string;
   opacity?: number;
 }
 
-export const getLegend = ({
-  intervals,
+export const getScalesScales = ({
+  scales,
   colors,
   unit = '',
   opacity = 1,
 }: GetLegendParams) =>
-  intervals.map((interval, i) => {
-    const start = Intl.NumberFormat().format((intervals[i - 1] || 0) + 1);
+  scales.map((interval, i) => {
+    const start = Intl.NumberFormat().format((scales[i - 1] || 0) + 1);
     const end = Intl.NumberFormat().format(interval);
     const isSameNumber = start === end;
     return {
       color: colors[i],
       opacity,
       label: isSameNumber ? start : `${start} - ${end} ${unit}`,
+      topValue: interval,
     };
   });
 
-export default getLegend;
+export default getScalesScales;

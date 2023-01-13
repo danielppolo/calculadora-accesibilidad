@@ -4,6 +4,7 @@ import { Drawer, Divider } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -12,6 +13,7 @@ import FilterPicker from './FilterPicker';
 
 function Sidebar() {
   const { current } = useMapParams();
+  const { legend } = useMapboxLayerManager();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
   const currentVariant = getCurrentVariant(current);
@@ -58,26 +60,23 @@ function Sidebar() {
           </div>
         ))}
 
-        {}
         {/* FIXME: */}
-        {currentVisualization?.buckets && (
+        {currentVisualization?.comparable && legend?.scales.length && (
           <div key={`${currentVisualization?.name}-hardcoded`}>
-            <p className="mb-2 text-gray-700">Hardcoded filter</p>
+            <p className="mb-2 text-gray-700">Custom scales</p>
             <FilterPicker
               filter={{
                 name: 'Tiempo',
                 code: 'time-hardcoded',
-                options: currentVisualization?.buckets.map((v) => ({
-                  name: `${v}m`,
-                  code: `${v}m`,
+                options: legend.scales.map((scale) => ({
+                  name: scale.label,
+                  code: scale.topValue.toString(),
                   unit: 'min',
-                  value: v,
                 })),
                 defaultOption: {
-                  name: '30m',
-                  code: '30m',
+                  name: legend.scales[0].label,
+                  code: legend.scales[0].topValue.toString(),
                   unit: 'min',
-                  value: 30,
                 },
                 selectorType: 'button',
               }}
