@@ -13,7 +13,7 @@ import FilterPicker from './FilterPicker';
 
 function Sidebar() {
   const { current } = useMapParams();
-  const { legend } = useMapboxLayerManager();
+  const { legend, current: currentLayer } = useMapboxLayerManager();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
   const currentVariant = getCurrentVariant(current);
@@ -52,10 +52,18 @@ function Sidebar() {
 
       <div className="p-4">
         <h3 className="font-semibold uppercase mb-2 text-[16px]">Filtros</h3>
-        {currentVisualization?.filters?.map((filter) => (
+        {currentVisualization?.filters?.map((filter, index) => (
           <div key={`${currentVisualization?.name}-${filter.code}`}>
             <p className="mb-2 text-gray-700">{filter.name}</p>
-            <FilterPicker filter={filter} key={filter.code} />
+            <FilterPicker
+              disabled={!currentLayer}
+              filter={filter}
+              key={filter.code}
+              comparable={
+                currentVisualization?.comparable &&
+                index === currentVisualization.filters.length - 1
+              }
+            />
             <div className="mb-4" />
           </div>
         ))}
@@ -65,6 +73,7 @@ function Sidebar() {
           <div key={`${currentVisualization?.name}-hardcoded`}>
             <p className="mb-2 text-gray-700">Custom scales</p>
             <FilterPicker
+              disabled={!currentLayer}
               filter={{
                 name: 'Tiempo',
                 code: 'time-hardcoded',

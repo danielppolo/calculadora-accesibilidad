@@ -18,7 +18,7 @@ export type MapParamsState = {
   visualizationCode?: string;
   variantCode?: string;
   featureId?: string;
-  filters?: Record<string, string>;
+  filters?: Record<string, string | string[]>;
 };
 
 export type MapMouseEvent = mapboxgl.MapMouseEvent & {

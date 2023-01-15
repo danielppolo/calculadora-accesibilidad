@@ -216,6 +216,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       Object.keys(state).forEach((layerId) => {
         map.setLayoutProperty(layerId, 'visibility', 'none');
       });
+      setCurrent(undefined);
     } else {
       // TODO: Sentry
     }

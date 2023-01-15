@@ -5,20 +5,46 @@ import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
 import { Filter } from 'src/types';
 
-// TODO: Enable multiple.
-function FilterPicker({ filter }: { filter: Filter }) {
+interface FilterPickerProps {
+  filter: Filter;
+  comparable?: boolean;
+  disabled?: boolean;
+}
+
+function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   const { current, onFiltersChange } = useMapParams();
 
-  const value = filter.options.find(
-    (prop) => prop.code === current.filters?.[filter.code]
-  );
+  const value = current.filters?.[filter.code];
+
+  if (comparable) {
+    return (
+      <Select
+        disabled={disabled}
+        mode="multiple"
+        allowClear
+        size="large"
+        defaultValue={value}
+        value={value}
+        onChange={(val) => {
+          onFiltersChange?.({ [filter.code]: val }, 'merge');
+        }}
+        options={filter.options.map((opt) => ({
+          label: opt.name,
+          value: opt.code,
+        }))}
+        placeholder="Selecciona un filtro"
+        style={{ width: '100%' }}
+      />
+    );
+  }
 
   if (filter.selectorType === 'button') {
     return (
       <Segmented
+        disabled={disabled}
         block
-        defaultValue={value?.code}
-        value={value?.code}
+        defaultValue={value}
+        value={value}
         // TODO: Define if we want both icon and label or just one of them
         options={filter.options.map((prop) => ({
           value: prop.code,
@@ -51,6 +77,7 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
     return (
       <Slider
+        disabled={disabled}
         className="w-[90%] mx-auto"
         marks={marks}
         defaultValue={valueIndex}
@@ -70,10 +97,11 @@ function FilterPicker({ filter }: { filter: Filter }) {
   if (filter.selectorType === 'radio') {
     return (
       <Radio.Group
+        disabled={disabled}
         onChange={(e: RadioChangeEvent) => {
           onFiltersChange?.({ [filter.code]: e.target.value }, 'merge');
         }}
-        value={value?.code}
+        value={value}
       >
         <Space direction="vertical">
           {filter.options?.map((prop) => (
@@ -88,15 +116,16 @@ function FilterPicker({ filter }: { filter: Filter }) {
 
   return (
     <Select
+      disabled={disabled}
       size="large"
-      defaultValue={value?.name}
-      value={value?.name}
+      defaultValue={value}
+      value={value}
       onChange={(val) => {
         onFiltersChange?.({ [filter.code]: val }, 'merge');
       }}
-      options={filter.options.map((option) => ({
-        label: option.name,
-        value: option.code,
+      options={filter.options.map((opt) => ({
+        label: opt.name,
+        value: opt.code,
       }))}
       placeholder="Selecciona un filtro"
       style={{ width: '100%' }}
