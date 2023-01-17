@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useMapParams } from 'src/context/mapParams';
 import useConfig from 'src/hooks/data/useConfig';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
@@ -9,12 +9,13 @@ function CityPicker() {
   const getCurrentCity = useCurrentCity();
   const { onCityChange, current } = useMapParams();
   const currentCity = getCurrentCity(current);
-  const cities =
-    config?.cities?.filter((visualization) => visualization.active) ?? [];
-  const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
 
-  const countriesDict: Record<string, any> = sortedCities.reduce(
-    (acc, city) => {
+  const countriesDict: Record<string, any> = useMemo(() => {
+    const cities =
+      config?.cities?.filter((visualization) => visualization.active) ?? [];
+    const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
+
+    return sortedCities.reduce((acc, city) => {
       if (city?.country?.code && !acc[city.country.code]) {
         acc[city.country.code] = {
           label: city.country.name,
@@ -28,9 +29,8 @@ function CityPicker() {
       });
 
       return acc;
-    },
-    {} as Record<string, any>
-  );
+    }, {} as Record<string, any>);
+  }, [config?.cities]);
 
   return (
     <Select

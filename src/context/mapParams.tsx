@@ -12,6 +12,8 @@ import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
 import queries from 'src/utils/queries';
 import { message } from 'antd';
+import isComparable from 'src/utils/isComparable';
+import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 import { useMapboxTilesetManager } from './mapboxTilesetManager';
@@ -98,23 +100,14 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       // Show the cached data
       const isDataCached = queryClient.getQueryCache().find(queryKey);
       if (isDataCached) {
-        const defaultVariantFilters: Record<string, string> = {};
-
-        visualization?.filters.forEach((filter) => {
-          defaultVariantFilters[filter.code] = filter.defaultOption.code;
-        });
-
-        if (visualization?.comparable && visualization.customScales?.[0]) {
-          defaultVariantFilters[COMPARABLE_KEY] =
-            visualization.customScales?.[0].toString();
-        }
+        const defaultFilters = getDefaultVisualizationFilters(visualization);
 
         const id = generateVariantId({
           cityCode,
           gridCode,
           visualizationCode,
           variantCode,
-          filters: defaultVariantFilters,
+          filters: defaultFilters,
         });
         show(id);
       }

@@ -1,4 +1,5 @@
 import React, { memo, useEffect } from 'react';
+import { ONBOARDING_STORAGE_KEY } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
 import useEmbeddedCharts from 'src/hooks/useEmbeddedCharts';
 
@@ -10,7 +11,7 @@ function Onboarding() {
   });
 
   useEffect(() => {
-    localStorage.setItem('onboarded', Date.now().toString());
+    localStorage.setItem(ONBOARDING_STORAGE_KEY, Date.now().toString());
   }, []);
 
   return (

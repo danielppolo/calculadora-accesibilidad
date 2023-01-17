@@ -4,8 +4,8 @@ import { Drawer, Divider } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
-import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { COMPARABLE_KEY } from 'src/constants';
+import isComparable from 'src/utils/isComparable';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -14,7 +14,6 @@ import FilterPicker from './FilterPicker';
 
 function Sidebar() {
   const { current } = useMapParams();
-  const { legend, current: currentLayer } = useMapboxLayerManager();
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
   const currentVariant = getCurrentVariant(current);
@@ -63,7 +62,7 @@ function Sidebar() {
               filter={filter}
               key={filter.code}
               comparable={
-                currentVisualization?.comparable &&
+                isComparable(currentVisualization) &&
                 index === currentVisualization.filters.length - 1
               }
             />
@@ -71,38 +70,39 @@ function Sidebar() {
           </div>
         ))}
 
-        {currentVisualization?.comparable &&
-          currentVisualization?.customScales?.length && (
-            <div key={`${currentVisualization?.name}-${COMPARABLE_KEY}`}>
-              <p className="mb-2 text-gray-700">
-                {currentVisualization?.unit?.type}
-              </p>
-              <FilterPicker
-                disabled={isDisabled}
-                filter={{
-                  name: currentVisualization?.unit?.type ?? '',
-                  code: COMPARABLE_KEY,
-                  options: currentVisualization?.customScales?.map((scale) => ({
+        {isComparable(currentVisualization) && (
+          <div key={`${currentVisualization?.name}-${COMPARABLE_KEY}`}>
+            <p className="mb-2 text-gray-700">
+              {currentVisualization?.unit?.type}
+            </p>
+            <FilterPicker
+              disabled={isDisabled}
+              filter={{
+                name: currentVisualization?.unit?.type ?? '',
+                code: COMPARABLE_KEY,
+                options:
+                  currentVisualization?.customScales?.map((scale) => ({
                     name: `${scale.toString()} ${
                       currentVisualization?.unit?.shortName
                     }`,
                     code: scale.toString(),
                     unit: currentVisualization?.unit?.shortName,
-                  })),
-                  defaultOption: {
-                    name: `${currentVisualization?.customScales?.[0].toString()} ${
-                      currentVisualization?.unit?.shortName
-                    }`,
-                    code: currentVisualization?.customScales?.[0].toString(),
-                    unit: currentVisualization?.unit?.shortName,
-                  },
-                  selectorType: 'button',
-                }}
-                key={COMPARABLE_KEY}
-              />
-              <div className="mb-4" />
-            </div>
-          )}
+                  })) ?? [],
+                defaultOption: {
+                  name: `${currentVisualization?.customScales?.[0].toString()} ${
+                    currentVisualization?.unit?.shortName
+                  }`,
+                  code:
+                    currentVisualization?.customScales?.[0].toString() ?? '',
+                  unit: currentVisualization?.unit?.shortName,
+                },
+                selectorType: 'button',
+              }}
+              key={COMPARABLE_KEY}
+            />
+            <div className="mb-4" />
+          </div>
+        )}
       </div>
 
       {showInfoPanel ? (

@@ -6,6 +6,8 @@ import getGridId from 'src/utils/getGridId';
 import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import { FeatureDictionary, MapParamsState, Visualization } from 'src/types';
 import { COMPARABLE_KEY } from 'src/constants';
+import isComparable from 'src/utils/isComparable';
+import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
 
 interface RenderParams {
   data: Record<string, any>;
@@ -107,18 +109,11 @@ function useRenderVisualization() {
     const filters = currentVisualization?.filters ?? [];
     const variants = getFlattenFilters(filters);
     const unitDict = buildUnitDictionary(filters);
-    const defaultVariantFilters: Record<string, string> = {};
 
-    currentVisualization?.filters.forEach((filter) => {
-      defaultVariantFilters[filter.code] = filter.defaultOption.code;
-    });
-
-    if (
-      currentVisualization.comparable &&
-      currentVisualization.customScales?.length
-    ) {
+    if (isComparable(currentVisualization)) {
       // We reverse the filters to show layers in the correct order.
-      [...variants].reverse().forEach((variantFilters) => {
+      const reversedVariants = [...variants].reverse();
+      reversedVariants.forEach((variantFilters) => {
         const unit =
           currentVisualization.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
@@ -177,9 +172,6 @@ function useRenderVisualization() {
           });
         });
       });
-
-      defaultVariantFilters[COMPARABLE_KEY] =
-        currentVisualization.customScales?.[0].toString();
     } else {
       variants.forEach((variantFilters) => {
         const unit =
@@ -218,8 +210,8 @@ function useRenderVisualization() {
         });
       });
     }
-
-    onFiltersChange?.(defaultVariantFilters, 'reset');
+    const defaultFilters = getDefaultVisualizationFilters(currentVisualization);
+    onFiltersChange?.(defaultFilters, 'reset');
   };
 }
 

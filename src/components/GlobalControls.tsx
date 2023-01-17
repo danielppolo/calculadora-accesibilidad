@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Tooltip } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
+import { ONBOARDING_STORAGE_KEY } from 'src/constants';
 import Notes from './Notes';
 import Download from './Download';
 import Onboarding from './Onboarding';
@@ -9,7 +10,7 @@ function GlobalControls() {
   const { onReset } = useMapParams();
   const [notesOpen, setNotesOpen] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(
-    !localStorage.getItem('onboarded')
+    !localStorage.getItem(ONBOARDING_STORAGE_KEY)
   );
 
   return (
