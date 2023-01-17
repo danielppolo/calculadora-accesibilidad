@@ -19,13 +19,12 @@ function VariantPicker() {
 
   if (currentVisualization?.variantSelectorType === 'slider') {
     const marks: SliderMarks =
-      variants?.reduce((acc, variant, index) => {
+      variants?.reduce((acc: SliderMarks, variant, index) => {
         if (acc) {
           acc[index] = variant.name;
         }
-
         return acc;
-      }, {} as SliderMarks) || {};
+      }, {}) || {};
 
     const valueIndex =
       variants?.findIndex((prop) => prop.code === currentVariant?.code) ?? 0;

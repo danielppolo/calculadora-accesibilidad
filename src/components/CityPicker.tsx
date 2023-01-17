@@ -15,7 +15,7 @@ function CityPicker() {
       config?.cities?.filter((visualization) => visualization.active) ?? [];
     const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
 
-    return sortedCities.reduce((acc, city) => {
+    return sortedCities.reduce((acc: Record<string, any>, city) => {
       if (city?.country?.code && !acc[city.country.code]) {
         acc[city.country.code] = {
           label: city.country.name,
@@ -29,7 +29,7 @@ function CityPicker() {
       });
 
       return acc;
-    }, {} as Record<string, any>);
+    }, {});
   }, [config?.cities]);
 
   return (

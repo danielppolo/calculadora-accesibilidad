@@ -56,10 +56,13 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   const value = current.filters?.[filter.code];
 
   if (comparable) {
-    const optionDictionary = filter.options.reduce((acc, opt) => {
-      acc[opt.code] = opt;
-      return acc;
-    }, {} as Record<string, typeof filter.options[0]>);
+    const optionDictionary = filter.options.reduce(
+      (acc: Record<string, typeof filter.options[0]>, opt) => {
+        acc[opt.code] = opt;
+        return acc;
+      },
+      {}
+    );
 
     return (
       <Select
@@ -115,13 +118,15 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   }
 
   if (filter.selectorType === 'slider') {
-    const marks: SliderMarks = filter.options.reduce((acc, variant, index) => {
-      if (acc) {
-        acc[index] = variant.name;
-      }
-
-      return acc;
-    }, {} as SliderMarks);
+    const marks: SliderMarks = filter.options.reduce(
+      (acc: SliderMarks, variant, index) => {
+        if (acc) {
+          acc[index] = variant.name;
+        }
+        return acc;
+      },
+      {}
+    );
     const valueIndex = filter.options.findIndex(
       (prop) => prop.code === current.filters?.[filter.code]
     );

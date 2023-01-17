@@ -44,38 +44,41 @@ const getFeatures = ({
 }: GetFeatureParams): GetFeatureReturn => {
   let maxValue = 0;
 
-  const features = Object.keys(data).reduce((filtered, hexId, index) => {
-    const isClickedHexagon = hexId === featureId;
-    let total: number =
-      get(data[hexId], Object.values(variantFilters), {}) ?? 0;
+  const features = Object.keys(data).reduce(
+    (filtered: Feature<Polygon, GeoJsonProperties>[], hexId, index) => {
+      const isClickedHexagon = hexId === featureId;
+      let total: number =
+        get(data[hexId], Object.values(variantFilters), {}) ?? 0;
 
-    if (total > maxValue) {
-      maxValue = total;
-    }
+      if (total > maxValue) {
+        maxValue = total;
+      }
 
-    if (isClickedHexagon) {
-      total = total || 1;
-    }
+      if (isClickedHexagon) {
+        total = total || 1;
+      }
 
-    // We filter features with no data
-    const isInRange = limit ? total <= limit : true;
-    if ((total > 0 && isInRange) || isClickedHexagon) {
-      filtered.push({
-        ...grid[hexId],
-        // Integer arbitrary identifier
-        id: index,
-        properties: {
-          ...grid[hexId].properties,
-          // Hexagon identifier
-          id: hexId,
-          [totalProperty]: total,
-          description: `${new Intl.NumberFormat().format(total)}  ${unit}`,
-        },
-      });
-    }
+      // We filter features with no data
+      const isInRange = limit ? total <= limit : true;
+      if ((total > 0 && isInRange) || isClickedHexagon) {
+        filtered.push({
+          ...grid[hexId],
+          // Integer arbitrary identifier
+          id: index,
+          properties: {
+            ...grid[hexId].properties,
+            // Hexagon identifier
+            id: hexId,
+            [totalProperty]: total,
+            description: `${new Intl.NumberFormat().format(total)}  ${unit}`,
+          },
+        });
+      }
 
-    return filtered;
-  }, [] as Feature<Polygon, GeoJsonProperties>[]);
+      return filtered;
+    },
+    []
+  );
 
   return { features, maxValue };
 };
