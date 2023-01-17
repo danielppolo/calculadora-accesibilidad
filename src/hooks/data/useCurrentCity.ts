@@ -4,7 +4,7 @@ import useConfig from './useConfig';
 function useCurrentCity() {
   const { data: config } = useConfig();
 
-  return ({ cityCode }: MapParamsState) =>
+  return ({ cityCode }: Partial<MapParamsState>) =>
     cityCode ? config?.citiesDictionary?.[cityCode] : undefined;
 }
 

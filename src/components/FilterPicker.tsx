@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useMapParams } from 'src/context/mapParams';
-import { Select, Radio, Space, Slider, Segmented } from 'antd';
+import { Select, Radio, Space, Slider, Segmented, Tag } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
 import { Filter } from 'src/types';
@@ -11,27 +11,78 @@ interface FilterPickerProps {
   disabled?: boolean;
 }
 
+interface TagRenderProps {
+  label: React.ReactNode;
+  color?: string;
+  iconName?: string;
+  closable: boolean;
+  onClose: () => void;
+}
+
+const tagRender = ({
+  label,
+  color,
+  closable,
+  iconName,
+  onClose,
+}: TagRenderProps) => {
+  const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  return (
+    <Tag
+      color={color}
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+      style={{ margin: 4 }}
+      icon={
+        iconName && (
+          <span className="material-symbols-outlined leading-0 text-[10px] mr-1">
+            {iconName}
+          </span>
+        )
+      }
+    >
+      {label}
+    </Tag>
+  );
+};
+
 function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   const { current, onFiltersChange } = useMapParams();
 
   const value = current.filters?.[filter.code];
 
   if (comparable) {
+    const optionDictionary = filter.options.reduce((acc, opt) => {
+      acc[opt.code] = opt;
+      return acc;
+    }, {} as Record<string, typeof filter.options[0]>);
+
     return (
       <Select
         disabled={disabled}
-        mode="multiple"
+        mode="tags"
         allowClear
-        size="large"
+        showArrow
         defaultValue={value}
-        value={value}
-        onChange={(val) => {
+        value={typeof value === 'string' ? [value] : value}
+        onChange={(val: string | string[]) => {
           onFiltersChange?.({ [filter.code]: val }, 'merge');
         }}
         options={filter.options.map((opt) => ({
           label: opt.name,
           value: opt.code,
         }))}
+        tagRender={(props) =>
+          tagRender({
+            ...props,
+            color: optionDictionary[props.value]?.color,
+            iconName: optionDictionary[props.value]?.iconName,
+          })
+        }
         placeholder="Selecciona un filtro"
         style={{ width: '100%' }}
       />

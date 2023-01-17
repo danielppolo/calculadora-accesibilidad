@@ -21,6 +21,8 @@ function Sidebar() {
   const showVariantPicker = (currentVisualization?.variants?.length ?? 0) > 1;
   const showInfoPanel = !!currentVisualization?.helperText;
   const showDataSources = !!currentVariant?.dataProviders?.length;
+  const isDisabled =
+    currentVisualization?.relativeTo === 'feature' && !current.featureId;
 
   return (
     <Drawer
@@ -56,7 +58,7 @@ function Sidebar() {
           <div key={`${currentVisualization?.name}-${filter.code}`}>
             <p className="mb-2 text-gray-700">{filter.name}</p>
             <FilterPicker
-              disabled={!currentLayer}
+              disabled={isDisabled}
               filter={filter}
               key={filter.code}
               comparable={
@@ -68,32 +70,38 @@ function Sidebar() {
           </div>
         ))}
 
-        {/* FIXME: */}
-        {currentVisualization?.comparable && legend?.scales.length && (
-          <div key={`${currentVisualization?.name}-hardcoded`}>
-            <p className="mb-2 text-gray-700">Custom scales</p>
-            <FilterPicker
-              disabled={!currentLayer}
-              filter={{
-                name: 'Tiempo',
-                code: 'time-hardcoded',
-                options: legend.scales.map((scale) => ({
-                  name: scale.label,
-                  code: scale.topValue.toString(),
-                  unit: 'min',
-                })),
-                defaultOption: {
-                  name: legend.scales[0].label,
-                  code: legend.scales[0].topValue.toString(),
-                  unit: 'min',
-                },
-                selectorType: 'button',
-              }}
-              key="hardcoded"
-            />
-            <div className="mb-4" />
-          </div>
-        )}
+        {currentVisualization?.comparable &&
+          currentVisualization?.customScales?.length && (
+            <div key={`${currentVisualization?.name}-scale`}>
+              <p className="mb-2 text-gray-700">
+                {currentVisualization?.unit?.type}
+              </p>
+              <FilterPicker
+                disabled={isDisabled}
+                filter={{
+                  name: currentVisualization?.unit?.type ?? '',
+                  code: 'scale',
+                  options: currentVisualization?.customScales?.map((scale) => ({
+                    name: `${scale.toString()} ${
+                      currentVisualization?.unit?.shortName
+                    }`,
+                    code: scale.toString(),
+                    unit: currentVisualization?.unit?.shortName,
+                  })),
+                  defaultOption: {
+                    name: `${currentVisualization?.customScales?.[0].toString()} ${
+                      currentVisualization?.unit?.shortName
+                    }`,
+                    code: currentVisualization?.customScales?.[0].toString(),
+                    unit: currentVisualization?.unit?.shortName,
+                  },
+                  selectorType: 'button',
+                }}
+                key="scale"
+              />
+              <div className="mb-4" />
+            </div>
+          )}
       </div>
 
       {showInfoPanel ? (

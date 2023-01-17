@@ -13,12 +13,12 @@ export type ID = string;
 export type ColorExpression = mapboxgl.Expression;
 
 export type MapParamsState = {
-  gridCode?: string;
-  cityCode?: string;
-  visualizationCode?: string;
-  variantCode?: string;
-  featureId?: string;
-  filters?: Record<string, string | string[]>;
+  gridCode: string;
+  cityCode: string;
+  visualizationCode: string;
+  variantCode: string;
+  featureId: string;
+  filters: Record<string, string | string[]>;
 };
 
 export type MapMouseEvent = mapboxgl.MapMouseEvent & {
@@ -26,6 +26,12 @@ export type MapMouseEvent = mapboxgl.MapMouseEvent & {
 } & mapboxgl.EventData;
 
 type Color = string;
+
+export type Unit = {
+  name?: string;
+  shortName?: string;
+  type?: string;
+};
 
 export type Legend = {
   title: string;
@@ -43,6 +49,8 @@ export type Option = {
   name: string;
   // Machine friendly code. Must match propery in the JSON.
   code: string;
+  // Associated color.
+  color?: Color;
   // Unit.
   unit?: string;
   // Material Icon code. Visit https://fonts.google.com/icons
@@ -105,8 +113,6 @@ export type VisualizationVariant = {
   code: string;
   // Visibility. Defaults to false.
   active?: boolean;
-  // Unit
-  unit?: string;
   // Data providers
   dataProviders?: DataProvider[];
   // Tilesets available when city is selected.
@@ -167,6 +173,8 @@ export type Visualization = {
   mapboxTilesets?: MapboxTileset[];
   // Visualization relative to:
   relativeTo: 'city' | 'feature';
+  // Unit
+  unit?: Unit;
 };
 
 // Represents a country

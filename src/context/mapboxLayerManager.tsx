@@ -3,7 +3,7 @@ import { NUMBER_OF_SCALES } from 'src/constants';
 import {
   getScales,
   getColor,
-  getScalesScales,
+  getLegendScales,
   convertToGeoJSON,
 } from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
@@ -31,6 +31,11 @@ interface AddOptions {
   opacity?: number;
   solid?: boolean;
   customScales?: number[];
+  customLegend?: Legend;
+}
+
+interface ShowOptions {
+  reset?: boolean;
 }
 
 interface MapboxLayerManagerParams {
@@ -41,7 +46,7 @@ interface MapboxLayerManagerParams {
   add: (options: AddOptions) => void;
   hide: (id?: string) => void;
   hideAll: () => void;
-  show: (id?: string) => void;
+  show: (id?: string, options?: ShowOptions) => void;
 }
 
 interface MapboxLayerManagerProps {
@@ -125,6 +130,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       customScales,
       opacity = 0.5,
       solid = false,
+      customLegend,
     }: AddOptions) => {
       if (map && !(id in state) && !map.getSource(id)) {
         const [startColor, endColor] = scaleColors;
@@ -193,9 +199,9 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
         state[id] = true;
         geojson[id] = geojsonFeatures;
-        legends[id] = {
+        legends[id] = customLegend ?? {
           title: legendTitle,
-          scales: getScalesScales({
+          scales: getLegendScales({
             scales,
             colors,
             opacity,
@@ -213,6 +219,8 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
   const hideAll = useCallback(() => {
     if (map) {
+      unregisterMouseListeners();
+
       Object.keys(state).forEach((layerId) => {
         map.setLayoutProperty(layerId, 'visibility', 'none');
       });
@@ -220,22 +228,24 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     } else {
       // TODO: Sentry
     }
-  }, [map]);
+  }, [map, unregisterMouseListeners]);
 
   const show = useCallback(
-    (id?: string) => {
+    (id?: string, options?: ShowOptions) => {
+      const { reset } = options || {};
       if (id && id in state && map && map.getSource(id)) {
-        hideAll();
-        unregisterMouseListeners();
-        registerMouseListeners(id);
+        if (reset) {
+          hideAll();
+        }
 
+        registerMouseListeners(id);
         map.setLayoutProperty(id, 'visibility', 'visible');
         setCurrent(id);
       } else {
         // TODO: Sentry
       }
     },
-    [hideAll, map, registerMouseListeners, unregisterMouseListeners]
+    [hideAll, map, registerMouseListeners]
   );
 
   const hide = useCallback(

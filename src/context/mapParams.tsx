@@ -19,17 +19,20 @@ interface ResetOptions {
   flyToOrigin?: boolean;
 }
 interface MapParamsContext {
-  current: MapParamsState;
+  current: Partial<MapParamsState>;
   onVariantChange: (
-    cityCode: string,
-    visualizationCode: string,
-    variantCode: string
+    cityCode: MapParamsState['cityCode'],
+    visualizationCode: MapParamsState['visualizationCode'],
+    variantCode: MapParamsState['variantCode']
   ) => void;
-  onVisualizationChange: (cityCode: string, visualizationCode: string) => void;
-  onCityChange: (cityCode: string) => void;
-  onHexagonChange: (featureId: string) => void;
+  onVisualizationChange: (
+    cityCode: MapParamsState['cityCode'],
+    visualizationCode: MapParamsState['visualizationCode']
+  ) => void;
+  onCityChange: (cityCode: MapParamsState['cityCode']) => void;
+  onHexagonChange: (featureId: MapParamsState['featureId']) => void;
   onFiltersChange: (
-    filters: Record<string, string>,
+    filters: MapParamsState['filters'],
     method: 'merge' | 'reset'
   ) => void;
   onReset: (options?: ResetOptions) => void;
@@ -52,14 +55,14 @@ interface MapParamsProviderProps {
 }
 
 // Use this handle the state read within useCallback.
-let nonReactiveCurrent: MapParamsState = {};
+let nonReactiveCurrent: Partial<MapParamsState> = {};
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
   const [messageApi, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
-  const [current, setCurrent] = useState<MapParamsState>({});
+  const [current, setCurrent] = useState<Partial<MapParamsState>>({});
   const { show, hideAll } = useMapboxLayerManager();
   const {
     show: showTileset,
@@ -68,7 +71,11 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   } = useMapboxTilesetManager();
 
   const handleVariantChange = useCallback(
-    (cityCode: string, visualizationCode: string, variantCode: string) => {
+    (
+      cityCode: MapParamsState['cityCode'],
+      visualizationCode: MapParamsState['visualizationCode'],
+      variantCode: MapParamsState['variantCode']
+    ) => {
       const visualization = config?.citiesDictionary?.[
         cityCode
       ].visualizations.find((viz) => viz.code === visualizationCode);
@@ -91,9 +98,15 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       const isDataCached = queryClient.getQueryCache().find(queryKey);
       if (isDataCached) {
         const defaultVariantFilters: Record<string, string> = {};
+
         visualization?.filters.forEach((filter) => {
           defaultVariantFilters[filter.code] = filter.defaultOption.code;
         });
+
+        if (visualization?.comparable && visualization.customScales?.[0]) {
+          defaultVariantFilters.scale =
+            visualization.customScales?.[0].toString();
+        }
 
         const id = generateVariantId({
           cityCode,
@@ -124,7 +137,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   );
 
   const handleVisualizationChange = useCallback(
-    (cityCode: string, visualizationCode: string) => {
+    (
+      cityCode: MapParamsState['cityCode'],
+      visualizationCode: MapParamsState['visualizationCode']
+    ) => {
       const visualization = config?.citiesDictionary?.[
         cityCode
       ].visualizations.find((viz) => viz.code === visualizationCode);
@@ -177,7 +193,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   );
 
   const handleCityChange = useCallback(
-    (cityCode?: string) => {
+    (cityCode?: MapParamsState['cityCode']) => {
       if (cityCode === nonReactiveCurrent.cityCode) {
         return undefined;
       }
@@ -217,7 +233,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   );
 
   const handleHexagonChange = useCallback(
-    (featureId: string) => {
+    (featureId: MapParamsState['featureId']) => {
       return setCurrent((state) => {
         messageApi.destroy('isochrone');
 
@@ -251,7 +267,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   );
 
   const handleFiltersChange = useCallback(
-    (filters: Record<string, string>, method: 'merge' | 'reset') => {
+    (filters: MapParamsState['filters'], method: 'merge' | 'reset') => {
       return setCurrent((state) => {
         // Display Tilesets based on filterss
         const visualization = state.cityCode
@@ -284,12 +300,40 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
                 ...filters,
               };
 
-        const id = generateVariantId({
-          ...state,
-          filters: nextFilters,
-        });
+        // Render active layers
+        if (visualization?.comparable) {
+          const comparableFilter =
+            visualization.filters[visualization.filters.length - 1];
+          const comparableValues = nextFilters[comparableFilter.code];
+          if (Array.isArray(comparableValues)) {
+            hideAll();
 
-        show(id);
+            if (comparableValues.length > 0) {
+              comparableValues.forEach((comparableValue) => {
+                const id = generateVariantId({
+                  ...state,
+                  filters: {
+                    ...nextFilters,
+                    [comparableFilter.code]: comparableValue,
+                  },
+                });
+                show(id, { reset: false });
+              });
+            }
+          } else {
+            const id = generateVariantId({
+              ...state,
+              filters: nextFilters,
+            });
+            show(id);
+          }
+        } else {
+          const id = generateVariantId({
+            ...state,
+            filters: nextFilters,
+          });
+          show(id);
+        }
 
         const nextState = {
           ...state,
@@ -301,7 +345,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         return nextState;
       });
     },
-    [config, hideTileset, show, showTileset]
+    [config?.citiesDictionary, hideAll, hideTileset, show, showTileset]
   );
 
   return (

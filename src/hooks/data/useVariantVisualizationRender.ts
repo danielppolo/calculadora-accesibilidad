@@ -7,18 +7,15 @@ import { generateVariantId, getFlattenFilters } from 'src/utils';
 import getGridId from 'src/utils/getGridId';
 import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import useCurrentVisualization from './useCurrentVisualization';
-import useCurrentVariant from './useCurrentVariant';
 import useGrid from './useGrid';
 
 function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
   const getCurrentVisualization = useCurrentVisualization();
-  const getCurrentVariant = useCurrentVariant();
   const { add } = useMapboxLayerManager();
   const { data: grid, isLoading: isGridLoading } = useGrid();
   const { current, onFiltersChange } = useMapParams();
   const { cityCode, visualizationCode, variantCode } = current;
   const currentVisualization = getCurrentVisualization(current);
-  const currentVariant = getCurrentVariant(current);
   const isIsochroneVisualization =
     currentVisualization?.relativeTo === 'feature' ?? false;
 
@@ -65,17 +62,18 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
 
       const variants = getFlattenFilters(filters);
 
+      // TODO: Implement comparable
       variants.forEach((variantFilters) => {
         const totalProperty = 'count';
         // TODO: Document this.
         const unit =
-          currentVariant?.unit ??
+          currentVisualization?.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         let maxValue = 0;
 
         const features = Object.keys(data).reduce((filtered, hexId, index) => {
-          const total =
+          const total: number =
             get(data[hexId], Object.values(variantFilters), {}) ?? 0;
 
           if (total > maxValue) {
@@ -119,7 +117,7 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
             currentVisualization.minColor,
             currentVisualization.maxColor,
           ],
-          unit, // currentVariant?.unit
+          unit,
           beforeId: getGridId(cityCode, currentVisualization?.grid.code),
         });
       });
@@ -129,6 +127,14 @@ function useVariantVisualizationRender({ onError }: { onError?: () => void }) {
       currentVisualization?.filters.forEach((filter) => {
         defaultVariantFilters[filter.code] = filter.defaultOption.code;
       });
+
+      if (
+        currentVisualization?.comparable &&
+        currentVisualization.customScales?.[0]
+      ) {
+        defaultVariantFilters.scale =
+          currentVisualization.customScales?.[0].toString();
+      }
 
       onFiltersChange?.(defaultVariantFilters, 'reset');
     },

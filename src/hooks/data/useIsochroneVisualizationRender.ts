@@ -9,7 +9,6 @@ import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 
 import useGrid from './useGrid';
 import useCurrentVisualization from './useCurrentVisualization';
-import useCurrentVariant from './useCurrentVariant';
 
 function useIsochroneVisualizationRender({
   onError,
@@ -17,13 +16,11 @@ function useIsochroneVisualizationRender({
   onError?: () => void;
 }) {
   const getCurrentVisualization = useCurrentVisualization();
-  const getCurrentVariant = useCurrentVariant();
   const { current, onFiltersChange } = useMapParams();
   const { add } = useMapboxLayerManager();
   const { data: grid, isLoading: isGridLoading } = useGrid();
   const { cityCode, visualizationCode, variantCode, featureId } = current;
   const currentVisualization = getCurrentVisualization(current);
-  const currentVariant = getCurrentVariant(current);
   const isIsochroneVisualization =
     currentVisualization?.relativeTo === 'feature' ?? false;
 
@@ -73,84 +70,111 @@ function useIsochroneVisualizationRender({
 
       const variants = getFlattenFilters(filters);
 
-      variants.forEach((variantFilters) => {
-        const totalProperty = 'count';
-        const unit =
-          currentVariant?.unit ??
-          unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
+      if (currentVisualization.comparable) {
+        // Add `comparable` layers
+        [...variants].reverse().forEach((variantFilters) => {
+          const totalProperty = 'count';
+          const unit =
+            currentVisualization.unit?.shortName ??
+            unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
-        let maxValue = 0;
+          const comparableFilter =
+            currentVisualization.filters[
+              currentVisualization.filters.length - 1
+            ];
+          const optionColor = comparableFilter.options.find((option) => {
+            return variantFilters[comparableFilter.code] === option.code;
+          })?.color;
 
-        const features = Object.keys(data).reduce((filtered, hexId, index) => {
-          const isClickedHexagon = hexId === featureId;
-          let total = get(data[hexId], Object.values(variantFilters), {}) ?? 0;
+          currentVisualization.customScales?.forEach((scale) => {
+            let maxValue = 0;
 
-          if (total > maxValue) {
-            maxValue = total;
-          }
+            const features = Object.keys(data).reduce(
+              (filtered, hexId, index) => {
+                const isClickedHexagon = hexId === featureId;
+                let total: number =
+                  get(data[hexId], Object.values(variantFilters), {}) ?? 0;
+                if (total > maxValue) {
+                  maxValue = total;
+                }
 
-          if (isClickedHexagon) {
-            total = total || 1;
-          }
+                if (isClickedHexagon) {
+                  total ||= 1;
+                }
 
-          // We filter features with no data
-          if (total > 0 || isClickedHexagon) {
-            filtered.push({
-              ...grid[hexId],
-              // Integer arbitrary identifier
-              id: index,
-              properties: {
-                ...grid[hexId].properties,
-                // Hexagon identifier
-                id: hexId,
-                [totalProperty]: total,
-                description: `${new Intl.NumberFormat().format(
-                  total
-                )}  ${unit}`,
+                // We filter features with no data
+                if ((total > 0 && total <= scale) || isClickedHexagon) {
+                  filtered.push({
+                    ...grid[hexId],
+                    // Integer arbitrary identifier
+                    id: index,
+                    properties: {
+                      ...grid[hexId].properties,
+                      // Hexagon identifier
+                      id: hexId,
+                      [totalProperty]: total,
+                      description: `${new Intl.NumberFormat().format(
+                        total
+                      )}  ${unit}`,
+                    },
+                  });
+                }
+
+                return filtered;
+              },
+              [] as Feature<Polygon, GeoJsonProperties>[]
+            );
+
+            const id = generateVariantId({
+              ...current,
+              filters: {
+                ...variantFilters,
+                scale: scale.toString(),
               },
             });
-          }
 
-          return filtered;
-        }, [] as Feature<Polygon, GeoJsonProperties>[]);
-
-        const id = generateVariantId({
-          ...current,
-          filters: variantFilters,
+            add({
+              legendTitle: currentVisualization.name,
+              id,
+              features,
+              property: totalProperty,
+              maxValue,
+              visible: false,
+              numberOfScales: currentVisualization?.scalesCount,
+              customScales: currentVisualization?.customScales,
+              customLegend: {
+                title: currentVisualization?.name,
+                scales: comparableFilter.options.map((option) => ({
+                  color: option.color ?? '',
+                  opacity: 1,
+                  label: option.name,
+                  topValue: 0,
+                })),
+              },
+              scaleColors: [
+                optionColor ?? currentVisualization.minColor,
+                optionColor ?? currentVisualization.maxColor,
+              ],
+              unit,
+              opacity: 1,
+              beforeId: getGridId(cityCode, currentVisualization?.grid.code),
+              solid: true,
+            });
+          });
         });
+      } else {
+        variants.forEach((variantFilters) => {
+          const totalProperty = 'count';
+          const unit =
+            currentVisualization?.unit?.shortName ??
+            unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
-        add({
-          legendTitle: currentVisualization.name,
-          id,
-          features,
-          property: totalProperty,
-          maxValue,
-          visible: false,
-          numberOfScales: currentVisualization?.scalesCount,
-          customScales: currentVisualization?.customScales,
-          scaleColors: [
-            currentVisualization.minColor,
-            currentVisualization.maxColor,
-          ],
-          unit,
-          beforeId: getGridId(cityCode, currentVisualization?.grid.code),
-        });
-      });
-
-      // Add bucket layers
-      variants.forEach((variantFilters) => {
-        const totalProperty = 'count';
-        const unit =
-          currentVariant?.unit ??
-          unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
-
-        currentVisualization.customScales?.forEach((scale) => {
           let maxValue = 0;
 
           const features = Object.keys(data).reduce(
             (filtered, hexId, index) => {
               const isClickedHexagon = hexId === featureId;
-              let total =
+              let total: number =
                 get(data[hexId], Object.values(variantFilters), {}) ?? 0;
 
               if (total > maxValue) {
@@ -162,7 +186,7 @@ function useIsochroneVisualizationRender({
               }
 
               // We filter features with no data
-              if (total <= scale || isClickedHexagon) {
+              if (total > 0 || isClickedHexagon) {
                 filtered.push({
                   ...grid[hexId],
                   // Integer arbitrary identifier
@@ -186,7 +210,6 @@ function useIsochroneVisualizationRender({
 
           const id = generateVariantId({
             ...current,
-            // bucket, // TODO: Validate
             filters: variantFilters,
           });
 
@@ -196,7 +219,7 @@ function useIsochroneVisualizationRender({
             features,
             property: totalProperty,
             maxValue,
-            visible: true,
+            visible: false,
             numberOfScales: currentVisualization?.scalesCount,
             customScales: currentVisualization?.customScales,
             scaleColors: [
@@ -204,18 +227,24 @@ function useIsochroneVisualizationRender({
               currentVisualization.maxColor,
             ],
             unit,
-            opacity: 0.2,
             beforeId: getGridId(cityCode, currentVisualization?.grid.code),
-            solid: true,
           });
         });
-      });
+      }
 
       // Render default variant with default filters
       const defaultVariantFilters: Record<string, string> = {};
       currentVisualization?.filters.forEach((filter) => {
         defaultVariantFilters[filter.code] = filter.defaultOption.code;
       });
+
+      if (
+        currentVisualization?.comparable &&
+        currentVisualization.customScales?.[0]
+      ) {
+        defaultVariantFilters.scale =
+          currentVisualization.customScales?.[0].toString();
+      }
 
       onFiltersChange?.(defaultVariantFilters, 'reset');
     },

@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
 const antdTheme = {
   token: {
     fontFamily: 'sofia-pro',
-    colorPrimary: '#1A1A1A',
+    // colorPrimary: '#1A1A1A',
   },
 };
 
