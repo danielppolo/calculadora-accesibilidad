@@ -6,6 +6,7 @@ const getScales = (
 ) => {
   const scaleSize = maxValue > numberOfScales ? numberOfScales : maxValue;
   const scale = maxValue / scaleSize;
+
   return Array.from({ length: scaleSize }, (_, i) =>
     Math.ceil(scale * (i + 1))
   );

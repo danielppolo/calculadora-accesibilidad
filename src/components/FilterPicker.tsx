@@ -117,15 +117,12 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   }
 
   if (filter.selectorType === 'slider') {
-    const marks: SliderMarks = filter.options.reduce(
-      (acc: SliderMarks, variant, index) => {
-        if (acc) {
-          acc[index] = variant.name;
-        }
-        return acc;
-      },
-      {}
-    );
+    const marks = filter.options.reduce((acc: SliderMarks, variant, index) => {
+      if (acc) {
+        acc[index] = variant.name;
+      }
+      return acc;
+    }, {});
     const valueIndex = filter.options.findIndex(
       (prop) => prop.code === current.filters?.[filter.code]
     );

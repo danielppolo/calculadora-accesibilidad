@@ -3,7 +3,7 @@ import { NUMBER_OF_SCALES } from 'src/constants';
 import {
   getScales,
   getColor,
-  getLegendScales,
+  generateLegendScales,
   convertToGeoJSON,
 } from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
@@ -44,7 +44,6 @@ interface MapboxLayerManagerParams {
   geojson?: FeatureCollection<Polygon>;
   legend?: Legend;
   add: (options: AddOptions) => void;
-  hide: (id?: string) => void;
   hideAll: () => void;
   show: (id?: string, options?: ShowOptions) => void;
 }
@@ -59,7 +58,6 @@ const initialState = {
   geojson: undefined,
   legend: undefined,
   add: () => undefined,
-  hide: () => undefined,
   hideAll: () => undefined,
   show: () => undefined,
 };
@@ -95,7 +93,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     popup.remove();
   }, []);
 
-  const unregisterMouseListeners = useCallback(() => {
+  const unregisterAllMouseListeners = useCallback(() => {
     Object.keys(state).forEach((id) => {
       map
         .off('mouseenter', id, handleMouseEnter)
@@ -153,18 +151,24 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         const scales = customScales?.length
           ? customScales
           : getScales(maxValue, numberOfScales);
+
         const numberOfColors = customScales?.length ?? numberOfScales;
+
         const reversedIntervals = [...scales].reverse();
+
         const colorGradient = new Gradient()
           .setColorGradient(startColor, endColor)
           .setMidpoint(numberOfColors)
           .getColors();
+
         const colorIntervals = reverseColors
           ? [...colorGradient].reverse()
           : colorGradient;
+
         const colors = reverseColors
           ? colorGradient
           : [...colorGradient].reverse();
+
         const geojsonFeatures = convertToGeoJSON(features);
 
         map.addSource(id, {
@@ -201,7 +205,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         geojson[id] = geojsonFeatures;
         legends[id] = customLegend ?? {
           title: legendTitle,
-          scales: getLegendScales({
+          scales: generateLegendScales({
             scales,
             colors,
             opacity,
@@ -218,23 +222,18 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   );
 
   const hideAll = useCallback(() => {
-    if (map) {
-      unregisterMouseListeners();
+    unregisterAllMouseListeners();
 
-      Object.keys(state).forEach((layerId) => {
-        map.setLayoutProperty(layerId, 'visibility', 'none');
-      });
-      setCurrent(undefined);
-    } else {
-      // TODO: Sentry
-    }
-  }, [map, unregisterMouseListeners]);
+    Object.keys(state).forEach((layerId) => {
+      map.setLayoutProperty(layerId, 'visibility', 'none');
+    });
+    setCurrent(undefined);
+  }, [map, unregisterAllMouseListeners]);
 
   const show = useCallback(
-    (id?: string, options?: ShowOptions) => {
-      const { reset } = options || { reset: true };
+    (id?: string, options: ShowOptions = { reset: true }) => {
       if (id && id in state && map && map.getSource(id)) {
-        if (reset) {
+        if (options.reset) {
           hideAll();
         }
 
@@ -242,21 +241,12 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         map.setLayoutProperty(id, 'visibility', 'visible');
         setCurrent(id);
       } else {
-        // TODO: Sentry
+        console.warn(
+          "Couldn't show layer because missing ID or source not found"
+        );
       }
     },
     [hideAll, map, registerMouseListeners]
-  );
-
-  const hide = useCallback(
-    (id?: string) => {
-      if (id && map && id in state && map.getSource(id)) {
-        map.setLayoutProperty(id, 'visibility', 'none');
-      } else {
-        // TODO: Sentry
-      }
-    },
-    [map]
   );
 
   return (
@@ -267,7 +257,6 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         geojson: current ? geojson[current] : undefined,
         legend: current ? legends[current] : undefined,
         add,
-        hide,
         hideAll,
         show,
       }}

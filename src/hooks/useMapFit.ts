@@ -3,15 +3,15 @@ import { useEffect } from 'react';
 import { MAX_ZOOM } from 'src/constants';
 import { useMap } from 'src/context/map';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import isMobile from 'src/utils/isMobile';
 
 const useMapFit = () => {
   const map = useMap();
   const { geojson } = useMapboxLayerManager();
   const features = geojson?.features;
-  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
-    if (features?.length && !isMobile) {
+    if (features?.length && !isMobile()) {
       const bounds = new LngLatBounds();
       features.forEach((feature) => {
         bounds.extend(feature.geometry.coordinates[0][0] as [number, number]);
@@ -23,7 +23,7 @@ const useMapFit = () => {
         duration: 500,
       });
     }
-  }, [features, isMobile, map]);
+  }, [features, map]);
 };
 
 export default useMapFit;

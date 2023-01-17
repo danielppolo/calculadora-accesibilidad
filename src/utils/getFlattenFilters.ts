@@ -18,7 +18,6 @@ const enterFilters = (
 };
 
 const getFlattenFilters = (filters: Filter[]) => {
-  // TODO: Validate that depth is dynamic and correct
   const filtersDepth = filters.length;
 
   const variants: Array<Record<string, string>> = enterFilters(

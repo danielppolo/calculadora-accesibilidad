@@ -6,9 +6,11 @@ const getColor = (
   colors: string[]
 ): Expression => {
   const rgbaCases: Array<Expression | string> = [];
+
   scales.forEach((interval, i) => {
     rgbaCases.unshift(['<=', ['get', property], interval], colors[i]);
   });
+
   return [
     'case',
     ['==', ['get', property], 0],

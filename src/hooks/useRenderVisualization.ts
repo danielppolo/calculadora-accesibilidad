@@ -1,13 +1,13 @@
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { useMapParams } from 'src/context/mapParams';
 import { generateVariantId, getFlattenFilters } from 'src/utils';
-import get from 'lodash/get';
 import getGridId from 'src/utils/getGridId';
-import type { Feature, GeoJsonProperties, Polygon } from 'geojson';
 import { FeatureDictionary, MapParamsState, Visualization } from 'src/types';
 import { COMPARABLE_KEY } from 'src/constants';
 import isComparable from 'src/utils/isComparable';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
+import filterFeatures from 'src/utils/filterFeatures';
+import buildUnitDictionary from 'src/utils/buildUnitDictionary';
 
 interface RenderParams {
   data: Record<string, any>;
@@ -17,84 +17,6 @@ interface RenderParams {
   current: Partial<MapParamsState>;
   cityCode: string;
 }
-
-interface GetFeatureParams {
-  data: Record<string, any>;
-  grid: FeatureDictionary;
-  featureId?: string;
-  variantFilters: Record<string, string>;
-  unit: string;
-  totalProperty: string;
-  limit?: number;
-}
-
-interface GetFeatureReturn {
-  features: Feature<Polygon, GeoJsonProperties>[];
-  maxValue: number;
-}
-
-const getFeatures = ({
-  data,
-  featureId,
-  variantFilters,
-  grid,
-  totalProperty,
-  unit,
-  limit,
-}: GetFeatureParams): GetFeatureReturn => {
-  let maxValue = 0;
-
-  const features = Object.keys(data).reduce(
-    (filtered: Feature<Polygon, GeoJsonProperties>[], hexId, index) => {
-      const isClickedHexagon = hexId === featureId;
-      let total: number =
-        get(data[hexId], Object.values(variantFilters), {}) ?? 0;
-
-      if (total > maxValue) {
-        maxValue = total;
-      }
-
-      if (isClickedHexagon) {
-        total = total || 1;
-      }
-
-      // We filter features with no data
-      const isInRange = limit ? total <= limit : true;
-      if ((total > 0 && isInRange) || isClickedHexagon) {
-        filtered.push({
-          ...grid[hexId],
-          // Integer arbitrary identifier
-          id: index,
-          properties: {
-            ...grid[hexId].properties,
-            // Hexagon identifier
-            id: hexId,
-            [totalProperty]: total,
-            description: `${new Intl.NumberFormat().format(total)}  ${unit}`,
-          },
-        });
-      }
-
-      return filtered;
-    },
-    []
-  );
-
-  return { features, maxValue };
-};
-
-const buildUnitDictionary = (filters: Visualization['filters']) => {
-  const unitDict: Record<string, string> = {};
-  filters.forEach((filter) => {
-    filter.options.forEach((option) => {
-      if (option.code && option.unit) {
-        unitDict[option.code] = option.unit;
-      }
-    });
-  });
-
-  return unitDict;
-};
 
 function useRenderVisualization() {
   const { onFiltersChange } = useMapParams();
@@ -123,12 +45,12 @@ function useRenderVisualization() {
 
         const comparableFilter =
           currentVisualization.filters[currentVisualization.filters.length - 1];
-        const optionColor = comparableFilter.options.find((option) => {
-          return variantFilters[comparableFilter.code] === option.code;
-        })?.color;
+        const optionColor = comparableFilter.options.find(
+          (option) => variantFilters[comparableFilter.code] === option.code
+        )?.color;
 
         currentVisualization.customScales?.forEach((scale) => {
-          const { features, maxValue } = getFeatures({
+          const { features, maxValue } = filterFeatures({
             data,
             grid,
             totalProperty,
@@ -181,7 +103,7 @@ function useRenderVisualization() {
           currentVisualization?.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
-        const { features, maxValue } = getFeatures({
+        const { features, maxValue } = filterFeatures({
           data,
           grid,
           totalProperty,

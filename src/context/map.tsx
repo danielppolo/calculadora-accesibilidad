@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import mapboxgl, { LngLatLike, Map } from 'mapbox-gl';
 
 import { COUNTRY_ZOOM, MEXICO_COORDINATES, MIN_ZOOM } from 'src/constants';
-// import useCityBoundaries from 'src/hooks/useCityBoundaries';
 
 interface Context {
   map: mapboxgl.Map | undefined;
@@ -32,7 +31,6 @@ const createMap = (center: LngLatLike) =>
 function MapProvider({ children }: MapProviderProps) {
   const [map, setMap] = useState<Map | undefined>(undefined);
   const [loaded, setLoaded] = useState(false);
-  // const loadBoundaries = useCityBoundaries();
 
   useEffect(() => {
     const mapInstance = createMap(MEXICO_COORDINATES);
@@ -41,7 +39,6 @@ function MapProvider({ children }: MapProviderProps) {
     mapInstance.on('load', () => {
       mapInstance.resize();
       setLoaded(true);
-      // loadBoundaries(mapInstance)
     });
     setMap(mapInstance);
   }, []);

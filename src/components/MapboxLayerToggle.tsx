@@ -20,24 +20,24 @@ function MapboxLayerToggle() {
   const getCurrentVisualization = useCurrentVisualization();
   const getCurrentVariant = useCurrentVariant();
 
-  const tilesets = useMemo(() => {
+  const tileSets = useMemo(() => {
     const currentCity = getCurrentCity(current);
     const currentVisualization = getCurrentVisualization(current);
     const currentVariant = getCurrentVariant(current);
-    const appTilesets = config?.mapboxTilesets ?? [];
-    const cityTilesets = currentCity?.mapboxTilesets ?? [];
-    const visualizationTilesets = currentVisualization?.mapboxTilesets ?? [];
-    const variantTilesets = currentVariant?.mapboxTilesets ?? [];
-    const allTilesets = uniqBy(
+    const appTileSets = config?.mapboxTilesets ?? [];
+    const cityTileSets = currentCity?.mapboxTilesets ?? [];
+    const visualizationTileSets = currentVisualization?.mapboxTilesets ?? [];
+    const variantTileSets = currentVariant?.mapboxTilesets ?? [];
+    const allTileSets = uniqBy(
       [
-        ...appTilesets,
-        ...cityTilesets,
-        ...visualizationTilesets,
-        ...variantTilesets,
+        ...appTileSets,
+        ...cityTileSets,
+        ...visualizationTileSets,
+        ...variantTileSets,
       ],
       ({ id }: MapboxTileset) => id
     );
-    const sortedTilesets = allTilesets.sort((a, b) =>
+    const sortedTilesets = allTileSets.sort((a, b) =>
       a.name.localeCompare(b.name)
     );
 
@@ -58,7 +58,7 @@ function MapboxLayerToggle() {
 
   return (
     <div>
-      {tilesets.map((tileset) => (
+      {tileSets.map((tileset) => (
         <div className="mb-2" key={tileset?.id}>
           <Checkbox
             onChange={() => handleChange(tileset)}

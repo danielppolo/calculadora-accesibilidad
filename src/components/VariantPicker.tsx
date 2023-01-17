@@ -18,13 +18,13 @@ function VariantPicker() {
   const isDisabled = !current.cityCode;
 
   if (currentVisualization?.variantSelectorType === 'slider') {
-    const marks: SliderMarks =
+    const marks =
       variants?.reduce((acc: SliderMarks, variant, index) => {
         if (acc) {
           acc[index] = variant.name;
         }
         return acc;
-      }, {}) || {};
+      }, {}) ?? {};
 
     const valueIndex =
       variants?.findIndex((prop) => prop.code === currentVariant?.code) ?? 0;
@@ -43,11 +43,11 @@ function VariantPicker() {
             current.visualizationCode &&
             variants?.length
           ) {
-            onVariantChange?.(
-              current.cityCode,
-              current.visualizationCode,
-              variants[val].code
-            );
+            onVariantChange?.({
+              cityCode: current.cityCode,
+              visualizationCode: current.visualizationCode,
+              variantCode: variants[val].code,
+            });
           }
         }}
       />
@@ -59,11 +59,11 @@ function VariantPicker() {
       <Radio.Group
         onChange={(e: RadioChangeEvent) => {
           if (current.cityCode && current.visualizationCode) {
-            onVariantChange?.(
-              current.cityCode,
-              current.visualizationCode,
-              e.target.value
-            );
+            onVariantChange?.({
+              cityCode: current.cityCode,
+              visualizationCode: current.visualizationCode,
+              variantCode: e.target.value,
+            });
           }
         }}
         value={currentVariant?.code}
@@ -81,16 +81,15 @@ function VariantPicker() {
 
   return (
     <Select
-      size="large"
       defaultValue={currentVariant?.name}
       value={currentVariant?.name}
       onChange={(nextVariant) => {
         if (current.cityCode && current.visualizationCode) {
-          onVariantChange?.(
-            current.cityCode,
-            current.visualizationCode,
-            nextVariant
-          );
+          onVariantChange?.({
+            cityCode: current.cityCode,
+            visualizationCode: current.visualizationCode,
+            variantCode: nextVariant,
+          });
         }
       }}
       options={

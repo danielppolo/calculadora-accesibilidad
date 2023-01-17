@@ -12,20 +12,16 @@ function MapPage() {
   const isFetching = useIsFetching();
 
   return (
-    <>
-      <MapProvider>
-        <MapboxTilesetManagerProvider>
-          <MapboxLayerManagerProvider>
-            <MapParamsProvider>
-              <Map />
-            </MapParamsProvider>
-          </MapboxLayerManagerProvider>
-        </MapboxTilesetManagerProvider>
-      </MapProvider>
+    <MapProvider>
+      <MapboxTilesetManagerProvider>
+        <MapboxLayerManagerProvider>
+          <MapParamsProvider>
+            <Map />
+          </MapParamsProvider>
+        </MapboxLayerManagerProvider>
+      </MapboxTilesetManagerProvider>
       <LoadingOverlay open={isFetching > 0} />
-      {/* Include all TW colors */}
-      <div className="text-black text-blue text-red text-aqua text-green text-yellow text-purple text-pink text-orange hidden" />
-    </>
+    </MapProvider>
   );
 }
 

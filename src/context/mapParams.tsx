@@ -12,6 +12,7 @@ import { generateVariantId } from 'src/utils';
 import queries from 'src/utils/queries';
 import { message } from 'antd';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
+import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 import { useMapboxTilesetManager } from './mapboxTilesetManager';
@@ -19,17 +20,22 @@ import { useMapboxTilesetManager } from './mapboxTilesetManager';
 interface ResetOptions {
   flyToOrigin?: boolean;
 }
+
+interface OnVisualizationChangeParams {
+  cityCode: MapParamsState['cityCode'];
+  visualizationCode: MapParamsState['visualizationCode'];
+}
+
+interface OnVariantChangeParams {
+  cityCode: MapParamsState['cityCode'];
+  visualizationCode: MapParamsState['visualizationCode'];
+  variantCode: MapParamsState['variantCode'];
+}
+
 interface MapParamsContext {
   current: Partial<MapParamsState>;
-  onVariantChange: (
-    cityCode: MapParamsState['cityCode'],
-    visualizationCode: MapParamsState['visualizationCode'],
-    variantCode: MapParamsState['variantCode']
-  ) => void;
-  onVisualizationChange: (
-    cityCode: MapParamsState['cityCode'],
-    visualizationCode: MapParamsState['visualizationCode']
-  ) => void;
+  onVariantChange: (params: OnVariantChangeParams) => void;
+  onVisualizationChange: (params: OnVisualizationChangeParams) => void;
   onCityChange: (cityCode: MapParamsState['cityCode']) => void;
   onHexagonChange: (featureId: MapParamsState['featureId']) => void;
   onFiltersChange: (
@@ -60,9 +66,10 @@ let nonReactiveCurrent: Partial<MapParamsState> = {};
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
-  const [messageApi, contextHolder] = message.useMessage();
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
+  const [messageApi, contextHolder] = message.useMessage();
+  const getCurrentVisualization = useCurrentVisualization();
   const [current, setCurrent] = useState<Partial<MapParamsState>>({});
   const { show, hideAll } = useMapboxLayerManager();
   const {
@@ -72,14 +79,11 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   } = useMapboxTilesetManager();
 
   const handleVariantChange = useCallback(
-    (
-      cityCode: MapParamsState['cityCode'],
-      visualizationCode: MapParamsState['visualizationCode'],
-      variantCode: MapParamsState['variantCode']
-    ) => {
-      const visualization = config?.citiesDictionary?.[
-        cityCode
-      ].visualizations.find((viz) => viz.code === visualizationCode);
+    ({ cityCode, visualizationCode, variantCode }: OnVariantChangeParams) => {
+      const visualization = getCurrentVisualization({
+        cityCode,
+        visualizationCode,
+      });
       const gridCode = visualization?.grid?.code;
 
       const nextState = {
@@ -89,14 +93,14 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         variantCode,
       };
 
+      // Show the cached data
       const { queryKey } = queries.visualizationVariants.detail({
         cityCode,
         visualizationCode,
         variantCode,
       });
+      const isDataCached = !!queryClient.getQueryCache().find(queryKey);
 
-      // Show the cached data
-      const isDataCached = queryClient.getQueryCache().find(queryKey);
       if (isDataCached) {
         const defaultFilters = getDefaultVisualizationFilters(visualization);
 
@@ -125,26 +129,24 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       nonReactiveCurrent = { ...nextState };
       setCurrent(nextState);
     },
-    [config?.citiesDictionary, hideAll, messageApi, queryClient, show]
+    [getCurrentVisualization, hideAll, messageApi, queryClient, show]
   );
 
   const handleVisualizationChange = useCallback(
-    (
-      cityCode: MapParamsState['cityCode'],
-      visualizationCode: MapParamsState['visualizationCode']
-    ) => {
-      const visualization = config?.citiesDictionary?.[
-        cityCode
-      ].visualizations.find((viz) => viz.code === visualizationCode);
+    ({ cityCode, visualizationCode }: OnVisualizationChangeParams) => {
+      const visualization = getCurrentVisualization({
+        cityCode,
+        visualizationCode,
+      });
       const defaultVariantCode = visualization?.defaultVariant?.code;
       const gridCode = visualization?.grid?.code;
 
       if (defaultVariantCode) {
-        return handleVariantChange(
+        return handleVariantChange({
           cityCode,
           visualizationCode,
-          defaultVariantCode
-        );
+          variantCode: defaultVariantCode,
+        });
       }
 
       return setCurrent((state) => {
@@ -158,13 +160,17 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         return nextState;
       });
     },
-    [config, handleVariantChange]
+    [getCurrentVisualization, handleVariantChange]
   );
 
   const handleReset = useCallback(
     (options?: ResetOptions) => {
       messageApi.destroy();
-      map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
+
+      // Repaint city zones
+      if (map.getLayer(CITIES_ZONES_FILL_LAYER_ID)) {
+        map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
+      }
 
       if (options?.flyToOrigin) {
         map.flyTo({
@@ -174,6 +180,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         });
       }
 
+      // Remove all active layers.
       hideAll();
       hideAllTilesets();
 
@@ -205,7 +212,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           config?.citiesDictionary?.[cityCode]?.defaultVisualization;
 
         if (defaultVisualization) {
-          return handleVisualizationChange(cityCode, defaultVisualization.code);
+          return handleVisualizationChange({
+            cityCode,
+            visualizationCode: defaultVisualization.code,
+          });
         }
 
         return setCurrent((state) => {
@@ -213,10 +223,6 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           nonReactiveCurrent = { ...nextState };
           return nextState;
         });
-      }
-
-      if (map.getLayer(CITIES_ZONES_FILL_LAYER_ID)) {
-        map.setPaintProperty(CITIES_ZONES_FILL_LAYER_ID, 'fill-opacity', 0.5);
       }
 
       return handleReset({ flyToOrigin: true });
@@ -229,16 +235,16 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       return setCurrent((state) => {
         messageApi.destroy('isochrone');
 
+        // Show the cached data
         const { queryKey } = queries.visualizationVariants.feature({
           cityCode: state.cityCode,
           visualizationCode: state.visualizationCode,
           variantCode: state.variantCode,
           featureId,
         });
-        const isDataCached = queryClient.getQueryCache().find(queryKey);
+        const isDataCached = !!queryClient.getQueryCache().find(queryKey);
 
         if (isDataCached) {
-          // Show the cached data
           const id = generateVariantId({
             ...current,
             featureId,
@@ -262,11 +268,11 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     (filters: MapParamsState['filters'], method: 'merge' | 'reset') => {
       return setCurrent((state) => {
         // Display Tilesets based on filterss
-        const visualization = state.cityCode
-          ? config?.citiesDictionary?.[state.cityCode].visualizations.find(
-              (viz) => viz.code === state.visualizationCode
-            )
-          : undefined;
+        const visualization = getCurrentVisualization({
+          cityCode: state.cityCode,
+          visualizationCode: state.visualizationCode,
+        });
+
         Object.entries(filters).forEach(([filterCode, propertyCode]) => {
           const currentFilter = visualization?.filters?.find(
             (filter) => filter.code === filterCode
@@ -293,31 +299,29 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
               };
 
         // Render active layers
-        if (visualization?.comparable) {
-          const comparableFilter =
-            visualization.filters[visualization.filters.length - 1];
-          const comparableValues = nextFilters[comparableFilter.code];
-          if (Array.isArray(comparableValues)) {
-            hideAll();
+        const comparableFilter =
+          visualization?.filters[visualization.filters.length - 1];
+        const comparableValues =
+          comparableFilter?.code && nextFilters[comparableFilter.code];
 
-            if (comparableValues.length > 0) {
-              comparableValues.forEach((comparableValue) => {
-                const id = generateVariantId({
-                  ...state,
-                  filters: {
-                    ...nextFilters,
-                    [comparableFilter.code]: comparableValue,
-                  },
-                });
-                show(id, { reset: false });
+        if (
+          visualization?.comparable &&
+          comparableFilter &&
+          Array.isArray(comparableValues)
+        ) {
+          hideAll();
+
+          if (comparableValues.length > 0) {
+            comparableValues.forEach((comparableValue) => {
+              const id = generateVariantId({
+                ...state,
+                filters: {
+                  ...nextFilters,
+                  [comparableFilter.code]: comparableValue,
+                },
               });
-            }
-          } else {
-            const id = generateVariantId({
-              ...state,
-              filters: nextFilters,
+              show(id, { reset: false });
             });
-            show(id);
           }
         } else {
           const id = generateVariantId({
@@ -337,7 +341,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         return nextState;
       });
     },
-    [config?.citiesDictionary, hideAll, hideTileset, show, showTileset]
+    [getCurrentVisualization, hideAll, hideTileset, show, showTileset]
   );
 
   return (

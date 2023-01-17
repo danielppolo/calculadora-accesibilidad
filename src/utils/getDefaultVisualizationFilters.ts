@@ -9,9 +9,13 @@ const getDefaultVisualizationFilters = (visualization?: Visualization) => {
     defaultVariantFilters[filter.code] = filter.defaultOption.code;
   });
 
-  if (visualization && isComparable(visualization)) {
+  if (
+    visualization &&
+    isComparable(visualization) &&
+    visualization?.customScales?.[0]
+  ) {
     defaultVariantFilters[COMPARABLE_KEY] =
-      visualization.customScales![0].toString();
+      visualization?.customScales?.[0].toString();
   }
 
   return defaultVariantFilters;

@@ -4,18 +4,28 @@ import useConfig from 'src/hooks/data/useConfig';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import { Select } from 'antd';
 
+type CityDictionary = Record<
+  string,
+  {
+    label: string;
+    options: { label: string; value: string }[];
+  }
+>;
+
 function CityPicker() {
   const { data: config } = useConfig();
   const getCurrentCity = useCurrentCity();
   const { onCityChange, current } = useMapParams();
   const currentCity = getCurrentCity(current);
 
-  const countriesDict: Record<string, any> = useMemo(() => {
-    const cities =
+  const countriesDict = useMemo(() => {
+    const activeCities =
       config?.cities?.filter((visualization) => visualization.active) ?? [];
-    const sortedCities = cities.sort((a, b) => a.name.localeCompare(b.name));
+    const sortedCities = activeCities.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
 
-    return sortedCities.reduce((acc: Record<string, any>, city) => {
+    return sortedCities.reduce((acc: CityDictionary, city) => {
       if (city?.country?.code && !acc[city.country.code]) {
         acc[city.country.code] = {
           label: city.country.name,

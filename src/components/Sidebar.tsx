@@ -6,6 +6,7 @@ import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { COMPARABLE_KEY } from 'src/constants';
 import isComparable from 'src/utils/isComparable';
+import isMobile from 'src/utils/isMobile';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -24,15 +25,14 @@ function Sidebar() {
   const showDataSources = !!currentVariant?.dataProviders?.length;
   const isDisabled =
     currentVisualization?.relativeTo === 'feature' && !current.featureId;
-  const isMobile = window.innerWidth < 768;
 
   return (
     <>
       <Drawer
         placement="right"
-        open={isMobile ? open && !!current?.cityCode : !!current?.cityCode}
+        open={isMobile() ? open && !!current?.cityCode : !!current?.cityCode}
         mask={false}
-        closable={isMobile}
+        closable={isMobile()}
         bodyStyle={{
           padding: 0,
           background: 'transparent',
@@ -40,10 +40,10 @@ function Sidebar() {
         onClose={() => setOpen(false)}
         contentWrapperStyle={{
           boxShadow: 'none',
-          width: isMobile ? '100vw' : window.innerWidth / 4,
+          width: isMobile() ? '100vw' : window.innerWidth / 4,
           background: 'transparent',
         }}
-        className={isMobile ? 'bg-white' : 'backdrop-blur-sm bg-white/80'}
+        className={isMobile() ? 'bg-white' : 'backdrop-blur-sm bg-white/80'}
       >
         {showVariantPicker ? (
           <>
@@ -147,7 +147,7 @@ function Sidebar() {
         )}
       </Drawer>
 
-      {isMobile && !open && !!current?.cityCode && (
+      {isMobile() && !open && !!current?.cityCode && (
         <div className="fixed z-20 bottom-12 right-4">
           <FloatButton
             onClick={() => setOpen(true)}

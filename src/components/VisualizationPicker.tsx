@@ -26,7 +26,10 @@ function VisualizationPicker() {
       value={currentVisualization?.name}
       onChange={(nextViz) => {
         if (current.cityCode) {
-          onVisualizationChange?.(current.cityCode, nextViz);
+          onVisualizationChange?.({
+            cityCode: current.cityCode,
+            visualizationCode: nextViz,
+          });
         }
       }}
       options={[

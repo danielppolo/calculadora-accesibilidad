@@ -5,7 +5,7 @@ interface GetLegendParams {
   opacity?: number;
 }
 
-export const getLegendScales = ({
+export const generateLegendScales = ({
   scales,
   colors,
   unit = '',
@@ -23,4 +23,4 @@ export const getLegendScales = ({
     };
   });
 
-export default getLegendScales;
+export default generateLegendScales;
