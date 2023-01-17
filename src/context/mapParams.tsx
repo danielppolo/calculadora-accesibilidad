@@ -3,7 +3,6 @@ import React, { memo, useCallback, useContext, useState } from 'react';
 import {
   CITIES_ZONES_FILL_LAYER_ID,
   CITY_ZOOM,
-  COMPARABLE_KEY,
   COUNTRY_ZOOM,
   MEXICO_COORDINATES,
 } from 'src/constants';
@@ -12,7 +11,6 @@ import { MapParamsState } from 'src/types';
 import { generateVariantId } from 'src/utils';
 import queries from 'src/utils/queries';
 import { message } from 'antd';
-import isComparable from 'src/utils/isComparable';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';

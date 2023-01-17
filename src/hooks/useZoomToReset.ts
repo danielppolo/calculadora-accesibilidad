@@ -10,10 +10,11 @@ const useZoomToReset = () => {
     current: { cityCode },
   } = useMapParams();
   const map = useMap();
+  const isMobile = window.innerWidth < 768;
 
   useEffect(() => {
     const handleZoomEnd = (event: MapMouseEvent) => {
-      if (event.target.getZoom() <= ZOOM_THRESHOLD && cityCode) {
+      if (event.target.getZoom() <= ZOOM_THRESHOLD && cityCode && !isMobile) {
         onReset();
       }
     };
@@ -23,7 +24,7 @@ const useZoomToReset = () => {
     return () => {
       map.off('zoomend', handleZoomEnd);
     };
-  }, [cityCode, map, onReset]);
+  }, [cityCode, isMobile, map, onReset]);
 };
 
 export default useZoomToReset;
