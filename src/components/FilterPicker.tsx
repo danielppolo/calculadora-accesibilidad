@@ -82,8 +82,8 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         tagRender={(props) =>
           tagRender({
             ...props,
-            color: optionDictionary[props.value]?.color,
-            iconName: optionDictionary[props.value]?.iconName,
+            color: optionDictionary[props!.value]?.color,
+            iconName: optionDictionary[props!.value]?.iconName,
           })
         }
         placeholder="Selecciona un filtro"
@@ -97,9 +97,8 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
       <Segmented
         disabled={disabled}
         block
-        defaultValue={value}
-        value={value}
-        // TODO: Define if we want both icon and label or just one of them
+        defaultValue={value as string}
+        value={value as string}
         options={filter.options.map((prop) => ({
           value: prop.code,
           label: prop.iconName ? undefined : prop.name,
