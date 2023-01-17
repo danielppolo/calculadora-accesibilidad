@@ -232,7 +232,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
 
   const show = useCallback(
     (id?: string, options?: ShowOptions) => {
-      const { reset } = options || {};
+      const { reset } = options || { reset: true };
       if (id && id in state && map && map.getSource(id)) {
         if (reset) {
           hideAll();

@@ -143,7 +143,7 @@ function useIsochroneVisualizationRender({
               numberOfScales: currentVisualization?.scalesCount,
               customScales: currentVisualization?.customScales,
               customLegend: {
-                title: currentVisualization?.name,
+                title: comparableFilter?.name,
                 scales: comparableFilter.options.map((option) => ({
                   color: option.color ?? '',
                   opacity: 1,
