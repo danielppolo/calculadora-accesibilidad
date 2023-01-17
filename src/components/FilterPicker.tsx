@@ -172,7 +172,6 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   return (
     <Select
       disabled={disabled}
-      size="large"
       defaultValue={value}
       value={value}
       onChange={(val) => {

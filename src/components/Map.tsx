@@ -40,7 +40,7 @@ function Map() {
 
   return (
     <>
-      <div className="fixed z-20 top-4 left-4 right-4 md:right-auto space-y-4">
+      <div className="fixed z-20 top-4 left-4 right-4 md:right-auto md:w-1/4 space-y-4">
         <CityPicker />
         <VisualizationPicker />
       </div>
