@@ -12,3 +12,5 @@ export const CITY_ZOOM = 11;
 export const CITIES_ZONES_LINE_LAYER_ID = 'city-zones-line';
 export const CITIES_ZONES_FILL_LAYER_ID = 'city-zones-fill';
 export const CITIES_ZONES_SOURCE_ID = 'city-zones-fill';
+
+export const COMPARABLE_KEY = 'scale';

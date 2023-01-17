@@ -5,6 +5,7 @@ import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import { COMPARABLE_KEY } from 'src/constants';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -72,7 +73,7 @@ function Sidebar() {
 
         {currentVisualization?.comparable &&
           currentVisualization?.customScales?.length && (
-            <div key={`${currentVisualization?.name}-scale`}>
+            <div key={`${currentVisualization?.name}-${COMPARABLE_KEY}`}>
               <p className="mb-2 text-gray-700">
                 {currentVisualization?.unit?.type}
               </p>
@@ -80,7 +81,7 @@ function Sidebar() {
                 disabled={isDisabled}
                 filter={{
                   name: currentVisualization?.unit?.type ?? '',
-                  code: 'scale',
+                  code: COMPARABLE_KEY,
                   options: currentVisualization?.customScales?.map((scale) => ({
                     name: `${scale.toString()} ${
                       currentVisualization?.unit?.shortName
@@ -97,7 +98,7 @@ function Sidebar() {
                   },
                   selectorType: 'button',
                 }}
-                key="scale"
+                key={COMPARABLE_KEY}
               />
               <div className="mb-4" />
             </div>

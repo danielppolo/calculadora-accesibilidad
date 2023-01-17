@@ -9,13 +9,16 @@ function LegendBar() {
   const { legend } = useMapboxLayerManager();
   const { legends = {}, state = {} } = useMapboxTilesetManager();
 
-  if (!current.cityCode || !legend?.title || !legend?.scales) {
+  if (!current.cityCode) {
     return null;
   }
 
   return (
     <div>
-      <Legend title={legend?.title} scales={legend?.scales} />
+      {legend?.title && legend.scales && (
+        <Legend title={legend?.title} scales={legend?.scales} />
+      )}
+
       {Object.keys(state)
         .filter((key) => state[key])
         .map((key) => (

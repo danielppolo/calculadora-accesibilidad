@@ -3,6 +3,7 @@ import React, { memo, useCallback, useContext, useState } from 'react';
 import {
   CITIES_ZONES_FILL_LAYER_ID,
   CITY_ZOOM,
+  COMPARABLE_KEY,
   COUNTRY_ZOOM,
   MEXICO_COORDINATES,
 } from 'src/constants';
@@ -104,7 +105,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         });
 
         if (visualization?.comparable && visualization.customScales?.[0]) {
-          defaultVariantFilters.scale =
+          defaultVariantFilters[COMPARABLE_KEY] =
             visualization.customScales?.[0].toString();
         }
 
