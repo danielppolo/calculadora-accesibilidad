@@ -108,12 +108,17 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
 
   const hideAll = useCallback(() => {
     if (map) {
-      Object.keys(state).forEach((id) => {
-        map.setLayoutProperty(id, 'visibility', 'none');
-        setState((prevState) => ({
+      setState((prevState) => {
+        const nextState = {
           ...prevState,
-          [id]: false,
-        }));
+        };
+
+        Object.keys(state).forEach((id) => {
+          map.setLayoutProperty(id, 'visibility', 'none');
+          nextState[id] = false;
+        });
+
+        return nextState;
       });
     }
   }, [map, state]);
@@ -121,7 +126,9 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
   const show = useCallback(
     (tileset: MapboxTileset) => {
       const { id } = tileset;
-      if (map?.getSource(id)) {
+      const isLayerPresent = map?.getSource(id);
+
+      if (isLayerPresent) {
         map.setLayoutProperty(id, 'visibility', 'visible');
         setState((prevState) => ({
           ...prevState,
@@ -137,8 +144,9 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
   const hide = useCallback(
     (tileset: MapboxTileset) => {
       const { id } = tileset;
+      const isLayerPresent = map?.getSource(id);
 
-      if (map?.getSource(id)) {
+      if (isLayerPresent) {
         map.setLayoutProperty(id, 'visibility', 'none');
         setState((prevState) => ({
           ...prevState,
@@ -154,9 +162,12 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
   const toggle = useCallback(
     (tileset: MapboxTileset) => {
       const { id } = tileset;
+      const isLayerPresent = map?.getSource(id);
 
-      if (id in state && map?.getSource(id)) {
-        if (map.getLayoutProperty(id, 'visibility') === 'visible') {
+      if (isLayerPresent) {
+        const isVisible = map.getLayoutProperty(id, 'visibility') === 'visible';
+
+        if (isVisible) {
           map.setLayoutProperty(id, 'visibility', 'none');
           setState((prevState) => ({
             ...prevState,
@@ -173,7 +184,7 @@ function MapboxTilesetManagerProvider({ children }: MapboxTilesetManagerProps) {
         add(tileset, 'visible');
       }
     },
-    [add, map, state]
+    [add, map]
   );
 
   return (

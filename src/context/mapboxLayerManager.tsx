@@ -39,7 +39,6 @@ interface ShowOptions {
 }
 
 interface MapboxLayerManagerParams {
-  state?: Record<string, boolean>;
   current?: string | undefined;
   geojson?: FeatureCollection<Polygon>;
   legend?: Legend;
@@ -54,7 +53,6 @@ interface MapboxLayerManagerProps {
 
 const initialState = {
   current: undefined,
-  state: undefined,
   geojson: undefined,
   legend: undefined,
   add: () => undefined,
@@ -227,6 +225,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     Object.keys(state).forEach((layerId) => {
       map.setLayoutProperty(layerId, 'visibility', 'none');
     });
+
     setCurrent(undefined);
   }, [map, unregisterAllMouseListeners]);
 
@@ -253,7 +252,6 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
     <MapboxLayerManagerContext.Provider
       value={{
         current,
-        state,
         geojson: current ? geojson[current] : undefined,
         legend: current ? legends[current] : undefined,
         add,
