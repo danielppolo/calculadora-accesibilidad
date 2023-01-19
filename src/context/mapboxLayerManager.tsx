@@ -10,28 +10,25 @@ import type { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';
-import Gradient from 'javascript-color-gradient';
 import chroma from 'chroma-js';
-// import summary from 'summary';
-// import { quantile } from 'simple-statistics';
-import { scaleThreshold, scaleQuantile } from 'd3-scale';
+import { scaleQuantile } from 'd3-scale';
 
 interface AddOptions {
   legendTitle: string;
   id: string;
   features: Feature<Polygon>[];
   property: string;
-  maxValue: number;
+  values: number[];
   visible: boolean;
   unit?: string;
   beforeId?: string;
   numberOfScales?: number;
-  reverseColors?: boolean;
+  maxValue: number;
   scaleColors?: [string, string];
   opacity?: number;
-  solid?: boolean;
   customScales?: number[];
   customLegend?: Legend;
+  scaleFormula?: 'quantile' | 'linear' | 'none';
 }
 
 interface ShowOptions {
@@ -116,56 +113,42 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       id,
       features,
       property,
-      maxValue,
+      values,
       visible,
       unit,
       beforeId,
       numberOfScales = NUMBER_OF_SCALES,
-      reverseColors = false,
       scaleColors = ['#f8dda1', '#f1bb43'],
       customScales,
+      maxValue,
       opacity = 0.5,
-      solid = false,
       customLegend,
+      scaleFormula,
     }: AddOptions) => {
       if (map && !(id in state) && !map.getSource(id)) {
         const [startColor, endColor] = scaleColors;
-
-        // FIXME: Experimental
-        // const colorGradient = chroma
-        //   .scale([startColor, endColor])
-        //   .mode('lab')
-        //   .gamma(0.5)
-        //   .colors(10);
-        // const sortedArray = arrayOfTotals.sort((a, b) => a - b);
-        // const treshold = scaleThreshold()
-        //   .domain(sortedArray)
-        //   .range(colorGradient);
-        // const quantile = scaleQuantile()
-        //   .domain(sortedArray)
-        //   .range(colorGradient);
-
-        // Get color scales
-        const scales = customScales?.length
-          ? customScales
-          : getScales(maxValue, numberOfScales);
-
         const numberOfColors = customScales?.length ?? numberOfScales;
+        const colors = chroma
+          .scale([startColor, endColor])
+          .mode('lab')
+          .gamma(0.5)
+          .colors(numberOfColors);
+        const colorsValues = Array.from(Array(colors.length).keys());
 
-        const reversedIntervals = [...scales].reverse();
+        const sortedArray = values.sort((a, b) => a - b);
+        const quantileScales = scaleQuantile(sortedArray, colorsValues);
 
-        const colorGradient = new Gradient()
-          .setColorGradient(startColor, endColor)
-          .setMidpoint(numberOfColors)
-          .getColors();
+        let scales = getScales(maxValue, numberOfScales);
 
-        const colorIntervals = reverseColors
-          ? [...colorGradient].reverse()
-          : colorGradient;
+        if (scaleFormula === 'quantile') {
+          scales = colorsValues.map((color) =>
+            Math.round(quantileScales.invertExtent(color)[1])
+          );
+        }
 
-        const colors = reverseColors
-          ? colorGradient
-          : [...colorGradient].reverse();
+        if (customScales?.length) {
+          scales = customScales;
+        }
 
         const geojsonFeatures = convertToGeoJSON(features);
 
@@ -185,9 +168,10 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
             // filter: ['>', ['get', property], 0],
             paint: {
               'fill-opacity': opacity,
-              'fill-color': solid
-                ? startColor
-                : getColor(property, reversedIntervals, colorIntervals),
+              'fill-color':
+                scaleFormula === 'none'
+                  ? startColor
+                  : getColor(property, scales, colors),
               'fill-outline-color': [
                 'case',
                 ['has', 'selected'],

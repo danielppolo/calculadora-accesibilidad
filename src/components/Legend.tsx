@@ -30,7 +30,12 @@ function Legend({ title, scales }: LegendProps) {
     <div className="w-full">
       <p className="mb-2 text-gray-700">{title}</p>
       {scales.map(({ color, label, opacity }) => (
-        <LegendItem key={label} color={color} opacity={opacity} label={label} />
+        <LegendItem
+          key={label + color}
+          color={color}
+          opacity={opacity}
+          label={label}
+        />
       ))}
     </div>
   );

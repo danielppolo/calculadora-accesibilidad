@@ -7,7 +7,7 @@ const getColor = (
 ): Expression => {
   const rgbaCases: Array<Expression | string> = [];
 
-  scales.forEach((interval, i) => {
+  [...scales].reverse().forEach((interval, i) => {
     rgbaCases.unshift(['<=', ['get', property], interval], colors[i]);
   });
 

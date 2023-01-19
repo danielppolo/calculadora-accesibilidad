@@ -2,7 +2,12 @@ import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { useMapParams } from 'src/context/mapParams';
 import { generateVariantId, getFlattenFilters } from 'src/utils';
 import getGridId from 'src/utils/getGridId';
-import { FeatureDictionary, MapParamsState, Visualization } from 'src/types';
+import {
+  FeatureDictionary,
+  MapParamsState,
+  Visualization,
+  VisualizationVariant,
+} from 'src/types';
 import { COMPARABLE_KEY } from 'src/constants';
 import isComparable from 'src/utils/isComparable';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
@@ -12,6 +17,7 @@ import buildUnitDictionary from 'src/utils/buildUnitDictionary';
 interface RenderParams {
   data: Record<string, any>;
   currentVisualization: Visualization;
+  currentVariant: VisualizationVariant;
   grid: FeatureDictionary;
   featureId?: string;
   current: Partial<MapParamsState>;
@@ -25,6 +31,7 @@ function useRenderVisualization() {
   return ({
     data,
     currentVisualization,
+    currentVariant,
     grid,
     featureId,
     current,
@@ -50,7 +57,7 @@ function useRenderVisualization() {
         )?.color;
 
         currentVisualization.customScales?.forEach((scale) => {
-          const { features, maxValue } = filterFeatures({
+          const { features, values, maxValue } = filterFeatures({
             data,
             grid,
             totalProperty,
@@ -69,10 +76,11 @@ function useRenderVisualization() {
           });
 
           add({
-            legendTitle: currentVisualization.name,
             id,
+            legendTitle: currentVisualization.name,
             features,
             property: totalProperty,
+            values,
             maxValue,
             visible: false,
             numberOfScales: currentVisualization?.scalesCount,
@@ -93,7 +101,7 @@ function useRenderVisualization() {
             unit,
             opacity: 1,
             beforeId: getGridId(cityCode, currentVisualization?.grid.code),
-            solid: true,
+            scaleFormula: 'none',
           });
         });
       });
@@ -103,7 +111,7 @@ function useRenderVisualization() {
           currentVisualization?.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
-        const { features, maxValue } = filterFeatures({
+        const { features, values, maxValue } = filterFeatures({
           data,
           grid,
           totalProperty,
@@ -122,8 +130,10 @@ function useRenderVisualization() {
           id,
           features,
           property: totalProperty,
+          values,
           maxValue,
           visible: false,
+          scaleFormula: currentVisualization.scaleFormula,
           numberOfScales: currentVisualization?.scalesCount,
           customScales: currentVisualization?.customScales,
           scaleColors: [

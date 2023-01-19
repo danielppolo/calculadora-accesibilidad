@@ -14,6 +14,7 @@ interface FilterFeaturesParams {
 
 interface FilterFeaturesReturn {
   features: Feature<Polygon, GeoJsonProperties>[];
+  values: number[];
   maxValue: number;
 }
 
@@ -26,8 +27,8 @@ const filterFeatures = ({
   unit,
   limit,
 }: FilterFeaturesParams): FilterFeaturesReturn => {
+  const values: number[] = [];
   let maxValue = 0;
-
   const features = Object.keys(data).reduce(
     (filtered: Feature<Polygon, GeoJsonProperties>[], hexId, index) => {
       const isClickedHexagon = hexId === featureId;
@@ -45,6 +46,7 @@ const filterFeatures = ({
       // We filter features with no data
       const isInRange = limit ? total <= limit : true;
       if ((total > 0 && isInRange) || isClickedHexagon) {
+        values.push(total);
         filtered.push({
           ...grid[hexId],
           // Integer arbitrary identifier
@@ -64,7 +66,7 @@ const filterFeatures = ({
     []
   );
 
-  return { features, maxValue };
+  return { features, values, maxValue };
 };
 
 export default filterFeatures;

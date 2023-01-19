@@ -175,6 +175,8 @@ export type Visualization = {
   relativeTo: 'city' | 'feature';
   // Unit
   unit?: Unit;
+  // Scale formula
+  scaleFormula?: 'linear' | 'quantile';
 };
 
 // Represents a country

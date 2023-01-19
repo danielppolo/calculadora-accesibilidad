@@ -5,17 +5,20 @@ import { useMapParams } from 'src/context/mapParams';
 import useGrid from './useGrid';
 import useCurrentVisualization from './useCurrentVisualization';
 import useRenderVisualization from '../useRenderVisualization';
+import useCurrentVariant from './useCurrentVariant';
 
 function useIsochroneVisualizationRender({
   onError,
 }: {
   onError?: () => void;
 }) {
+  const getCurrentVariant = useCurrentVariant();
   const getCurrentVisualization = useCurrentVisualization();
   const { current } = useMapParams();
   const { data: grid, isLoading: isGridLoading } = useGrid();
   const { cityCode, visualizationCode, variantCode, featureId } = current;
   const currentVisualization = getCurrentVisualization(current);
+  const currentVariant = getCurrentVariant(current);
   const isIsochroneVisualization =
     currentVisualization?.relativeTo === 'feature' ?? false;
   const renderVisualization = useRenderVisualization();
@@ -47,7 +50,8 @@ function useIsochroneVisualizationRender({
         !cityCode ||
         !visualizationCode ||
         !variantCode ||
-        !currentVisualization?.grid.code
+        !currentVisualization?.grid.code ||
+        !currentVariant
       ) {
         console.warn(
           "Couldn't render visualization because of missing depenedencies"
@@ -59,6 +63,7 @@ function useIsochroneVisualizationRender({
         data,
         grid,
         currentVisualization,
+        currentVariant,
         featureId,
         current,
         cityCode,
