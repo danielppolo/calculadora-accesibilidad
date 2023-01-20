@@ -7,7 +7,7 @@ import {
   convertToGeoJSON,
 } from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
-import { Legend, MapMouseEvent } from 'src/types';
+import { ID, Legend, MapMouseEvent, Option } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';
 import chroma from 'chroma-js';
@@ -36,8 +36,8 @@ interface ShowOptions {
 }
 
 interface MapboxLayerManagerParams {
-  current?: string | undefined;
   geojson?: FeatureCollection<Polygon>;
+  comparingGeojson: Record<string, FeatureCollection<Polygon>>;
   legend?: Legend;
   add: (options: AddOptions) => void;
   hideAll: () => void;
@@ -49,9 +49,9 @@ interface MapboxLayerManagerProps {
 }
 
 const initialState = {
-  current: undefined,
   geojson: undefined,
   legend: undefined,
+  comparingGeojson: {},
   add: () => undefined,
   hideAll: () => undefined,
   show: () => undefined,
@@ -66,7 +66,7 @@ const geojson: Record<string, FeatureCollection<Polygon>> = {};
 
 function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   const map = useMap();
-  const [current, setCurrent] = useState<string | undefined>(undefined);
+  const [current, setCurrent] = useState<string[]>([]);
 
   const handleMouseEnter = useCallback(
     (event: MapMouseEvent) => {
@@ -196,7 +196,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         };
 
         if (visible) {
-          setCurrent(id);
+          setCurrent([id]);
         }
       }
     },
@@ -210,24 +210,29 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       map.setLayoutProperty(layerId, 'visibility', 'none');
     });
 
-    setCurrent(undefined);
+    setCurrent([]);
   }, [map, unregisterAllMouseListeners]);
 
   const show = useCallback(
     (id?: string, options: ShowOptions = { reset: true }) => {
       if (id && id in state && map && map.getSource(id)) {
         if (options.reset) {
+          // Dont keep previous layers.
           hideAll();
+          registerMouseListeners(id);
+          map.setLayoutProperty(id, 'visibility', 'visible');
+          return setCurrent([id]);
         }
 
+        // Display multiple
         registerMouseListeners(id);
         map.setLayoutProperty(id, 'visibility', 'visible');
-        setCurrent(id);
-      } else {
-        console.warn(
-          "Couldn't show layer because missing ID or source not found"
-        );
+        return setCurrent((currentIds) => [...currentIds, id]);
       }
+
+      console.warn(
+        "Couldn't show layer because missing ID or source not found"
+      );
     },
     [hideAll, map, registerMouseListeners]
   );
@@ -235,9 +240,17 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
   return (
     <MapboxLayerManagerContext.Provider
       value={{
-        current,
-        geojson: current ? geojson[current] : undefined,
-        legend: current ? legends[current] : undefined,
+        geojson: current?.length ? geojson[current[0]] : undefined,
+        legend: current?.length ? legends[current[0]] : undefined,
+        comparingGeojson: Array.isArray(current)
+          ? current.reduce(
+              (acc: MapboxLayerManagerParams['comparingGeojson'], id) => {
+                acc[id] = geojson[id];
+                return acc;
+              },
+              {}
+            )
+          : {},
         add,
         hideAll,
         show,

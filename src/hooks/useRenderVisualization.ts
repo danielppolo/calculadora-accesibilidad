@@ -74,7 +74,6 @@ function useRenderVisualization() {
               [COMPARABLE_KEY]: scale.toString(),
             },
           });
-          console.log(id);
 
           add({
             id,
