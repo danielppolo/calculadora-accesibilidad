@@ -13,6 +13,7 @@ import isComparable from 'src/utils/isComparable';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
 import filterFeatures from 'src/utils/filterFeatures';
 import buildUnitDictionary from 'src/utils/buildUnitDictionary';
+import getComparableFilter from 'src/utils/getComparableFilter';
 
 interface RenderParams {
   data: Record<string, any>;
@@ -50,9 +51,8 @@ function useRenderVisualization() {
           currentVisualization.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
-        const comparableFilter =
-          currentVisualization.filters[currentVisualization.filters.length - 1];
-        const optionColor = comparableFilter.options.find(
+        const comparableFilter = getComparableFilter(currentVisualization);
+        const optionColor = comparableFilter?.options.find(
           (option) => variantFilters[comparableFilter.code] === option.code
         )?.color;
 
@@ -74,6 +74,7 @@ function useRenderVisualization() {
               [COMPARABLE_KEY]: scale.toString(),
             },
           });
+          console.log(id);
 
           add({
             id,
@@ -86,13 +87,14 @@ function useRenderVisualization() {
             numberOfScales: currentVisualization?.scalesCount,
             customScales: currentVisualization?.customScales,
             customLegend: {
-              title: comparableFilter?.name,
-              scales: comparableFilter.options.map((option) => ({
-                color: option.color ?? '',
-                opacity: 1,
-                label: option.name,
-                topValue: 0,
-              })),
+              title: comparableFilter?.name ?? '',
+              scales:
+                comparableFilter?.options.map((option) => ({
+                  color: option.color ?? '',
+                  opacity: 1,
+                  label: option.name,
+                  topValue: 0,
+                })) ?? [],
             },
             scaleColors: [
               optionColor ?? currentVisualization.minColor,

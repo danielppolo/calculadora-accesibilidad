@@ -1,3 +1,10 @@
+interface LegendItem {
+  color: string;
+  opacity?: number;
+  label: string;
+  topValue: number;
+}
+
 interface GetLegendParams {
   scales: number[];
   colors: string[];
@@ -12,23 +19,29 @@ export const generateLegendScales = ({
   opacity = 1,
 }: GetLegendParams) => {
   const reversedColors = [...colors].reverse();
-  const generatedScales = scales.reduce((acc: any, interval, i) => {
-    const start = Intl.NumberFormat().format((scales[i - 1] || 0) + 1);
-    const end = Intl.NumberFormat().format(interval);
-    const isSameNumber = start === end;
+  const generatedScales = scales.reduce(
+    (acc: Record<number, LegendItem>, interval, i) => {
+      const start = Intl.NumberFormat().format((scales[i - 1] || 0) + 1);
+      const end = Intl.NumberFormat().format(interval);
+      const isSameNumber = start === end;
 
-    // Exclude duplicates.
-    if (!acc[interval]) {
-      acc[interval] = {
-        color: reversedColors[i],
-        opacity,
-        label: isSameNumber ? start : `${start} - ${end} ${unit}`,
-        topValue: interval,
-      };
-    }
+      // Exclude duplicates.
+      if (!acc[interval]) {
+        acc[interval] = {
+          color: reversedColors[i],
+          opacity,
+          label: isSameNumber
+            ? `${start} ${unit}`
+            : `${start} - ${end} ${unit}`,
+          topValue: interval,
+        };
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {}
+  );
+
   return Object.values(generatedScales);
 };
 

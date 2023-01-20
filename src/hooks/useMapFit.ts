@@ -8,7 +8,7 @@ import isMobile from 'src/utils/isMobile';
 const useMapFit = () => {
   const map = useMap();
   const { geojson } = useMapboxLayerManager();
-  const features = geojson?.features;
+  const features = geojson?.map((gjson) => gjson.features).flat();
 
   useEffect(() => {
     if (features?.length && !isMobile()) {

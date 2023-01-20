@@ -326,6 +326,22 @@ export default function Home() {
             Comentarios y sugerencias
           </h3>
 
+          <iframe
+            height="437"
+            title="Embedded Wufoo Form"
+            allowtransparency="true"
+            frameborder="0"
+            scrolling="no"
+            style={{ width: '100%', border: 'none' }}
+            sandbox="allow-popups-to-escape-sandbox allow-top-navigation allow-scripts allow-popups allow-forms allow-same-origin"
+            src="https://danielppolo.wufoo.com/embed/zdgpcky1nrnmky/"
+          >
+            {' '}
+            <a href="https://danielppolo.wufoo.com/forms/zdgpcky1nrnmky/">
+              Fill out my Wufoo form!
+            </a>{' '}
+          </iframe>
+
           <form name="contact" method="POST" data-netlify="true">
             <input type="hidden" name="form-name" value="contact" />
             <p className="mb-4">

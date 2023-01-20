@@ -110,17 +110,17 @@ function Sidebar() {
           )}
         </div>
 
-        {showInfoPanel ? (
-          <>
-            <Divider className="m-0" key="info-divider" />
-            <div className="p-4">
-              <h3 className="font-semibold uppercase mb-2 text-[16px]">
-                Información
-              </h3>
-              <VisualizationInfo />
-            </div>
-          </>
-        ) : null}
+        {/* {showInfoPanel ? ( */}
+        <>
+          <Divider className="m-0" key="info-divider" />
+          <div className="p-4">
+            <h3 className="font-semibold uppercase mb-2 text-[16px]">
+              Información
+            </h3>
+            <VisualizationInfo />
+          </div>
+        </>
+        {/* ) : null} */}
 
         <Divider className="m-0" key="layers-divider" />
         <div className="p-4">

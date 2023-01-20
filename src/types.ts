@@ -142,7 +142,7 @@ export type Visualization = {
   // Visibility. Defaults to false.
   active?: boolean;
   // Enables comparison mode.
-  comparable?: boolean;
+  comparableOptions?: Option[];
   // Variants for the visualization. E.g. Different time.
   variants: VisualizationVariant[];
   // Default variant to display when toggled.

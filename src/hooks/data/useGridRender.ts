@@ -22,6 +22,7 @@ function useGridGeojson() {
         id: index,
         properties: {
           // Hexagon identifier
+          ...data[featureId].properties,
           id: featureId,
         },
       })),

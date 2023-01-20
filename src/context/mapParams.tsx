@@ -13,6 +13,8 @@ import queries from 'src/utils/queries';
 import { message } from 'antd';
 import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFilters';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
+import getComparableFilter from 'src/utils/getComparableFilter';
+import isComparable from 'src/utils/isComparable';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 import { useMapboxTilesetManager } from './mapboxTilesetManager';
@@ -299,13 +301,12 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
               };
 
         // Render active layers
-        const comparableFilter =
-          visualization?.filters[visualization.filters.length - 1];
+        const comparableFilter = getComparableFilter(visualization);
         const comparableValues =
           comparableFilter?.code && nextFilters[comparableFilter.code];
 
         if (
-          visualization?.comparable &&
+          isComparable(visualization) &&
           comparableFilter &&
           Array.isArray(comparableValues)
         ) {
