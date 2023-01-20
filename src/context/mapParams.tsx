@@ -39,7 +39,7 @@ interface MapParamsContext {
   onVariantChange: (params: OnVariantChangeParams) => void;
   onVisualizationChange: (params: OnVisualizationChangeParams) => void;
   onCityChange: (cityCode: MapParamsState['cityCode']) => void;
-  onHexagonChange: (featureId: MapParamsState['featureId']) => void;
+  onFeatureChange: (featureId: MapParamsState['featureId']) => void;
   onFiltersChange: (
     filters: MapParamsState['filters'],
     method: 'merge' | 'reset'
@@ -52,7 +52,7 @@ const initialContext = {
   onVariantChange: () => undefined,
   onVisualizationChange: () => undefined,
   onCityChange: () => undefined,
-  onHexagonChange: () => undefined,
+  onFeatureChange: () => undefined,
   onFiltersChange: () => undefined,
   onReset: () => undefined,
 };
@@ -232,7 +232,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
     [map, handleReset, config?.citiesDictionary, handleVisualizationChange]
   );
 
-  const handleHexagonChange = useCallback(
+  const handleFeatureChange = useCallback(
     (featureId: MapParamsState['featureId']) => {
       return setCurrent((state) => {
         messageApi.destroy('isochrone');
@@ -248,7 +248,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
         if (isDataCached) {
           const id = generateVariantId({
-            ...current,
+            ...state,
             featureId,
           });
           show(id);
@@ -263,13 +263,13 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         return nextState;
       });
     },
-    [current, messageApi, queryClient, show]
+    [messageApi, queryClient, show]
   );
 
   const handleFiltersChange = useCallback(
     (filters: MapParamsState['filters'], method: 'merge' | 'reset') => {
       return setCurrent((state) => {
-        // Display Tilesets based on filterss
+        // Display Tilesets based on filters
         const visualization = getCurrentVisualization({
           cityCode: state.cityCode,
           visualizationCode: state.visualizationCode,
@@ -352,7 +352,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         onVariantChange: handleVariantChange,
         onVisualizationChange: handleVisualizationChange,
         onCityChange: handleCityChange,
-        onHexagonChange: handleHexagonChange,
+        onFeatureChange: handleFeatureChange,
         onFiltersChange: handleFiltersChange,
         onReset: handleReset,
       }}

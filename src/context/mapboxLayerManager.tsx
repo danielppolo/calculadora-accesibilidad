@@ -7,7 +7,7 @@ import {
   convertToGeoJSON,
 } from 'src/utils';
 import type { Feature, FeatureCollection, Polygon } from 'geojson';
-import { ID, Legend, MapMouseEvent, Option } from 'src/types';
+import { Legend, MapMouseEvent } from 'src/types';
 import { useMap } from 'src/context/map';
 import popup from 'src/utils/popup';
 import chroma from 'chroma-js';
@@ -230,7 +230,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         return setCurrent((currentIds) => [...currentIds, id]);
       }
 
-      console.warn(
+      return console.warn(
         "Couldn't show layer because missing ID or source not found"
       );
     },

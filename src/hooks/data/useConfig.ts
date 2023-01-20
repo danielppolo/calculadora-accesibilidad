@@ -3,6 +3,8 @@ import getConfig from 'src/adapters/contentful/getConfig';
 import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import { BASE_LAYER_ID } from 'src/constants';
 
 type CustomConfig = Config & {
   citiesDictionary: Record<City['code'], City>;
@@ -23,10 +25,20 @@ const fetchConfig = async () => {
 
 function useConfig() {
   const { show } = useMapboxTilesetManager();
+  const { add } = useMapboxLayerManager();
   return useQuery({
     queryKey: queries.config.main.queryKey,
     queryFn: fetchConfig,
     onSuccess: (config) => {
+      add({
+        id: BASE_LAYER_ID,
+        features: [],
+        property: 'city',
+        values: [],
+        visible: false,
+        maxValue: 0,
+        legendTitle: '',
+      });
       config?.enabledMapboxTilesets?.forEach((tileset) => {
         show(tileset);
       });

@@ -3,7 +3,6 @@ import { useMap } from 'src/context/map';
 import getGridId from 'src/utils/getGridId';
 import { useEffect } from 'react';
 import { MapMouseEvent } from 'src/types';
-import useCurrentVriant from './useCurrentVariant';
 import useCurrentVisualization from './useCurrentVisualization';
 
 let hoveredStateId: string | number | undefined;
@@ -11,7 +10,7 @@ let hoveredStateId: string | number | undefined;
 function useGridListeners() {
   const getCurrentVisualization = useCurrentVisualization();
   const map = useMap();
-  const { current, onHexagonChange } = useMapParams();
+  const { current, onFeatureChange } = useMapParams();
   const { cityCode, gridCode } = current;
   const currentVisualization = getCurrentVisualization(current);
   const isIsochroneVariant =
@@ -26,7 +25,7 @@ function useGridListeners() {
 
       const featureId = event.features?.[0]?.properties?.id;
 
-      onHexagonChange?.(featureId);
+      onFeatureChange?.(featureId);
     };
 
     const handleHexagonMouseEnter = (event: MapMouseEvent) => {
@@ -75,7 +74,7 @@ function useGridListeners() {
         .off('mousemove', sourceId, handleHexagonMouseEnter)
         .off('mouseleave', sourceId, handleHexagonMouseLeave);
     };
-  }, [cityCode, gridCode, isIsochroneVariant, map, onHexagonChange]);
+  }, [cityCode, gridCode, isIsochroneVariant, map, onFeatureChange]);
 }
 
 export default useGridListeners;

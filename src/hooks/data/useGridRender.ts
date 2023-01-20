@@ -5,6 +5,7 @@ import type { Feature, Polygon } from 'geojson';
 import { useMap } from 'src/context/map';
 import getGridId from 'src/utils/getGridId';
 import convertToGeoJSON from 'src/utils/convertToGeoJSON';
+import { BASE_LAYER_ID } from 'src/constants';
 
 function useGridGeojson() {
   const map = useMap();
@@ -36,21 +37,24 @@ function useGridGeojson() {
             data: convertToGeoJSON(features),
           });
 
-          map.addLayer({
-            id,
-            type: 'fill',
-            source: id,
-            paint: {
-              'fill-opacity': 0.7,
-              'fill-outline-color': ['rgba', 0, 0, 0, 0.2],
-              'fill-color': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                ['rgba', 0, 0, 0, 0.2],
-                'transparent',
-              ],
+          map.addLayer(
+            {
+              id,
+              type: 'fill',
+              source: id,
+              paint: {
+                'fill-opacity': 0.7,
+                'fill-outline-color': ['rgba', 0, 0, 0, 0.2],
+                'fill-color': [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false],
+                  ['rgba', 0, 0, 0, 0.2],
+                  'transparent',
+                ],
+              },
             },
-          });
+            BASE_LAYER_ID
+          );
         }
       }
     },

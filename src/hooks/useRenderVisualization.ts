@@ -14,6 +14,7 @@ import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFil
 import filterFeatures from 'src/utils/filterFeatures';
 import buildUnitDictionary from 'src/utils/buildUnitDictionary';
 import getComparableFilter from 'src/utils/getComparableFilter';
+import { isEmpty } from 'lodash';
 
 interface RenderParams {
   data: Record<string, any>;
@@ -26,7 +27,7 @@ interface RenderParams {
 }
 
 function useRenderVisualization() {
-  const { onFiltersChange } = useMapParams();
+  const { onFiltersChange, current: currentParams } = useMapParams();
   const { add } = useMapboxLayerManager();
 
   return ({
@@ -146,8 +147,14 @@ function useRenderVisualization() {
         });
       });
     }
-    const defaultFilters = getDefaultVisualizationFilters(currentVisualization);
-    onFiltersChange?.(defaultFilters, 'reset');
+
+    if (isEmpty(currentParams.filters)) {
+      const defaultFilters =
+        getDefaultVisualizationFilters(currentVisualization);
+      onFiltersChange?.(defaultFilters, 'reset');
+    } else {
+      onFiltersChange?.(currentParams.filters, 'reset');
+    }
   };
 }
 

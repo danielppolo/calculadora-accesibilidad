@@ -27,11 +27,24 @@ function ComparableChart() {
         ? [current.filters[comparableFilter.code]].flat()
         : [];
 
+    const sampleId =
+      comparingCodes.length &&
+      comparableFilter &&
+      generateVariantId({
+        ...current,
+        filters: {
+          ...current.filters,
+          [comparableFilter.code]: comparingCodes[0],
+        },
+      });
+
     if (
       isEmpty(comparingGeojson) ||
       !isComparable(currentVisualization) ||
       !comparingCodes?.length ||
-      !comparableFilter
+      !comparableFilter ||
+      !sampleId ||
+      !comparingGeojson[sampleId]
     ) {
       return () => undefined;
     }
@@ -89,6 +102,7 @@ function ComparableChart() {
       type: 'bar',
       data,
       options: {
+        // indexAxis: 'y',
         plugins: {
           legend: {
             display: false,
@@ -97,8 +111,10 @@ function ComparableChart() {
         scales: {
           y: {
             beginAtZero: true,
+            display: false,
           },
         },
+        responsive: true,
       },
     });
 
@@ -108,7 +124,7 @@ function ComparableChart() {
   }, [comparingGeojson, current, current.filters, currentVisualization]);
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative h-[300px]">
       <canvas id="comparable" />
     </div>
   );

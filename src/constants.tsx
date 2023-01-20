@@ -15,3 +15,5 @@ export const CITIES_ZONES_SOURCE_ID = 'city-zones-fill';
 
 export const COMPARABLE_KEY = 'scale';
 export const ONBOARDING_STORAGE_KEY = 'onboarded';
+
+export const BASE_LAYER_ID = 'base-layer';
