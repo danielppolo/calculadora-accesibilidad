@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Modal, Button, Tooltip } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import { ONBOARDING_STORAGE_KEY } from 'src/constants';
+import { useRouter } from 'next/router';
 import Notes from './Notes';
 import Download from './Download';
 import Onboarding from './Onboarding';
 
 function GlobalControls() {
   const { onReset } = useMapParams();
+  const router = useRouter();
   const [notesOpen, setNotesOpen] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(
     !localStorage.getItem(ONBOARDING_STORAGE_KEY)
@@ -17,13 +19,30 @@ function GlobalControls() {
     <div className="fixed z-20 bottom-12 left-4">
       <div className="space-y-4">
         <div>
+          <Tooltip title="Regresar" placement="left">
+            <Button
+              className="bg-white"
+              shape="circle"
+              size="large"
+              type="default"
+              onClick={router.back}
+              icon={
+                <span className="material-symbols-outlined leading-normal text-[16px]">
+                  arrow_back
+                </span>
+              }
+            />
+          </Tooltip>
+        </div>
+
+        <div>
           <Tooltip title="Descargar selección" placement="left">
             <Download />
           </Tooltip>
         </div>
 
         <div>
-          <Tooltip title="Regresar" placement="left">
+          <Tooltip title="Ver mapa" placement="left">
             <Button
               className="bg-white"
               shape="circle"

@@ -238,6 +238,8 @@ export type Config = {
   enabledMapboxTilesets?: MapboxTileset[];
   // Notes
   notes?: Note;
+  // Logotype
+  logotype?: ContentfulImage;
 };
 
 export type MapData = Record<

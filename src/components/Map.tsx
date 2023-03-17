@@ -15,6 +15,7 @@ import { message } from 'antd';
 import GlobalControls from './GlobalControls';
 import CityPicker from './CityPicker';
 import VisualizationPicker from './VisualizationPicker';
+import WhiteLabelLogotype from './WhitelabelLogotype';
 
 function Map() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -41,6 +42,7 @@ function Map() {
   return (
     <>
       <div className="fixed z-20 top-4 left-4 right-4 md:right-auto md:w-1/4 space-y-4">
+        <WhiteLabelLogotype />
         <CityPicker />
         <VisualizationPicker />
       </div>
