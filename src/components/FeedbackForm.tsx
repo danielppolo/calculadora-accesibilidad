@@ -45,10 +45,11 @@ const FeedbackForm = () => {
     setComment('');
   };
 
-  const encode = (data: object) => {
+  const encode = (data: Record<string, string>) => {
     return Object.keys(data)
       .map(
-        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
+        (key: string) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
       )
       .join('&');
   };
@@ -70,8 +71,8 @@ const FeedbackForm = () => {
     }
   };
 
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
+  const handleCommentChange = (event: any) => {
+    setComment(event?.target?.value);
   };
 
   return (
