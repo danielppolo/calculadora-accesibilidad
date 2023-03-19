@@ -45,27 +45,18 @@ const FeedbackForm = () => {
     setComment('');
   };
 
-  const encode = (data: Record<string, string>) => {
-    return Object.keys(data)
-      .map(
-        (key: string) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
-      )
-      .join('&');
-  };
-
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    const formData = new FormData();
+    formData.append('feedback', feedback ?? '');
+    formData.append('comment', comment ?? '');
+    formData.append('form-name', 'feedback');
 
     if (feedback && comment) {
       await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode({
-          'form-name': 'feedback',
-          feedback,
-          comment,
-        }),
+        body: new URLSearchParams(formData as any).toString(),
       });
       handleOk();
     }

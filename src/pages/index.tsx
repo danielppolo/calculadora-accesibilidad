@@ -72,7 +72,7 @@ export default function Home() {
     await fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData,
+      body: new URLSearchParams(formData as any).toString(),
     });
     messageApi.success({
       content: intl.formatMessage({
