@@ -12,12 +12,15 @@ import useVariantVisualizationRender from 'src/hooks/data/useVariantVisualizatio
 import useZoomToReset from 'src/hooks/useZoomToReset';
 
 import { message } from 'antd';
+import { useIntl } from 'react-intl';
 import GlobalControls from './GlobalControls';
 import CityPicker from './CityPicker';
 import VisualizationPicker from './VisualizationPicker';
 import WhiteLabelLogotype from './WhitelabelLogotype';
+import FeedbackForm from './FeedbackForm';
 
 function Map() {
+  const intl = useIntl();
   const [messageApi, contextHolder] = message.useMessage();
 
   useMapFit();
@@ -30,12 +33,22 @@ function Map() {
 
   useIsochroneVisualizationRender({
     onError: () => {
-      messageApi.error('Algo salió mal, intenta de nuevo');
+      messageApi.error(
+        intl.formatMessage({
+          defaultMessage: 'Algo salió mal, intenta de nuevo',
+          id: 'xbJd+t',
+        })
+      );
     },
   });
   useVariantVisualizationRender({
     onError: () => {
-      messageApi.error('Algo salió mal, intenta de nuevo');
+      messageApi.error(
+        intl.formatMessage({
+          defaultMessage: 'Algo salió mal, intenta de nuevo',
+          id: 'xbJd+t',
+        })
+      );
     },
   });
 
@@ -48,6 +61,7 @@ function Map() {
       </div>
       <Sidebar />
       <GlobalControls />
+      <FeedbackForm />
 
       <Credits />
       {contextHolder}

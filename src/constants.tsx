@@ -17,3 +17,5 @@ export const COMPARABLE_KEY = 'scale';
 export const ONBOARDING_STORAGE_KEY = 'onboarded';
 
 export const BASE_LAYER_ID = 'base-layer';
+
+export const DEFAULT_LOCALE = 'es' as const;

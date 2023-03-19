@@ -9,10 +9,10 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
 });
 
-async function getConfig(): Promise<Config> {
+async function getConfig(locale: string): Promise<Config> {
   const config = await client.getEntry(
     process.env.NEXT_PUBLIC_VISUALIZATION_TOOL_ID,
-    { include: 6 }
+    { include: 6, locale }
   );
 
   return extractReferences(config.fields);

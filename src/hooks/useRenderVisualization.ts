@@ -78,7 +78,7 @@ function useRenderVisualization() {
 
           add({
             id,
-            legendTitle: currentVisualization.name,
+            legendTitle: currentVisualization?.metadata?.name ?? '',
             features,
             property: totalProperty,
             values,
@@ -128,7 +128,7 @@ function useRenderVisualization() {
         });
 
         add({
-          legendTitle: currentVisualization.name,
+          legendTitle: currentVisualization?.metadata?.name ?? '',
           id,
           features,
           property: totalProperty,

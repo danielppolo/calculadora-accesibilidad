@@ -15,6 +15,7 @@ import getDefaultVisualizationFilters from 'src/utils/getDefaultVisualizationFil
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import getComparableFilter from 'src/utils/getComparableFilter';
 import isComparable from 'src/utils/isComparable';
+import { useIntl } from 'react-intl';
 import { useMap } from './map';
 import { useMapboxLayerManager } from './mapboxLayerManager';
 import { useMapboxTilesetManager } from './mapboxTilesetManager';
@@ -67,6 +68,7 @@ interface MapParamsProviderProps {
 let nonReactiveCurrent: Partial<MapParamsState> = {};
 
 function MapParamsProvider({ children }: MapParamsProviderProps) {
+  const intl = useIntl();
   const map = useMap();
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
@@ -120,7 +122,10 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       if (visualization?.relativeTo === 'feature') {
         hideAll();
         messageApi.info({
-          content: 'Da click en un hexágono para comenzar',
+          content: intl.formatMessage({
+            defaultMessage: 'Da click en un hexágono para comenzar',
+            id: 'PqzchG',
+          }),
           duration: 0,
           key: 'isochrone',
         });
@@ -131,7 +136,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       nonReactiveCurrent = { ...nextState };
       setCurrent(nextState);
     },
-    [getCurrentVisualization, hideAll, messageApi, queryClient, show]
+    [getCurrentVisualization, hideAll, intl, messageApi, queryClient, show]
   );
 
   const handleVisualizationChange = useCallback(

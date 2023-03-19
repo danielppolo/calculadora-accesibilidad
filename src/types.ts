@@ -135,8 +135,7 @@ export type Filter = {
 
 // Represents a visualization.
 export type Visualization = {
-  // Human-friendly name.
-  name: string;
+  metadata?: VisualizationMetadata;
   // Machine friendly code. Must match the AWS namespace.
   code: string;
   // Visibility. Defaults to false.
@@ -177,6 +176,8 @@ export type Visualization = {
   unit?: Unit;
   // Scale formula
   scaleFormula?: 'linear' | 'quantile';
+  // Group
+  visualizationGroup?: VisualizationGroup;
 };
 
 // Represents a country
@@ -249,3 +250,19 @@ export type MapData = Record<
     visualizations: Record<Code, Record<string, Record<Code, any>>>;
   }
 >;
+
+export type VisualizationGroup = {
+  // Human-friendly name.
+  name: string;
+  // Machine friendly code. Must match the AWS namespace.
+  code: string;
+};
+
+export type VisualizationMetadata = {
+  // Human-friendly name.
+  name: string;
+  // Human-friendly description.
+  shortDescription?: string;
+  // Human-friendly full description.
+  fullDescription?: string;
+};

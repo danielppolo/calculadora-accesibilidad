@@ -7,11 +7,18 @@
     "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["jest"],
+  "plugins": ["jest", "formatjs"],
   "env": {
     "jest/globals": true
   },
   "rules": {
+    "formatjs/enforce-id": [
+      "error",
+      {
+        "idInterpolationPattern": "[sha512:contenthash:base64:6]"
+      }
+    ],
+    "formatjs/enforce-default-message": 2,
     "import/extensions": 0,
     "react/require-default-props": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],

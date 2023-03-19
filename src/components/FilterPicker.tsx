@@ -4,6 +4,7 @@ import { Select, Radio, Space, Slider, Segmented, Tag } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
 import { Filter } from 'src/types';
+import { useIntl } from 'react-intl';
 
 interface FilterPickerProps {
   filter: Filter;
@@ -51,6 +52,7 @@ const tagRender = ({
 };
 
 function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
+  const intl = useIntl();
   const { current, onFiltersChange } = useMapParams();
 
   const value = current.filters?.[filter.code];
@@ -86,7 +88,10 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
             iconName: optionDictionary[props!.value]?.iconName,
           })
         }
-        placeholder="Selecciona un filtro"
+        placeholder={intl.formatMessage({
+          defaultMessage: 'Selecciona un filtro',
+          id: '2/eL6I',
+        })}
         style={{ width: '100%' }}
       />
     );
@@ -178,7 +183,10 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         label: opt.name,
         value: opt.code,
       }))}
-      placeholder="Selecciona un filtro"
+      placeholder={intl.formatMessage({
+        defaultMessage: 'Selecciona un filtro',
+        id: '2/eL6I',
+      })}
       style={{ width: '100%' }}
     />
   );

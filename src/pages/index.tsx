@@ -1,15 +1,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-danger */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
 import NavBar from 'src/components/Navbar';
 import Footer from 'src/components/Footer';
+import { useRouter } from 'next/router';
+import { useIntl } from 'react-intl';
+import { DEFAULT_LOCALE } from 'src/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contentful = require('contentful');
@@ -23,25 +26,35 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
-const CustomButton = () => (
-  <Link passHref href="/map">
-    <button
-      type="button"
-      className="bg-blue rounded-full px-4 py-2 text-white font-medium"
-    >
-      Accede a la plataforma
-    </button>
-  </Link>
-);
+const CustomButton = () => {
+  const intl = useIntl();
+  return (
+    <Link passHref href="/map">
+      <button
+        type="button"
+        className="bg-blue rounded-full px-4 py-2 text-white font-medium"
+      >
+        {intl.formatMessage({
+          defaultMessage: 'Accede a la plataforma',
+          id: 'zwZ5Xo',
+        })}
+      </button>
+    </Link>
+  );
+};
 
 export default function Home() {
+  const intl = useIntl();
   const [data, setData] = useState<any>(null);
+  const { locale } = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     const fetchLandingPage = async () => {
       try {
         const response = await client.getEntry(
-          process.env.NEXT_PUBLIC_LANDING_PAGE_ID
+          process.env.NEXT_PUBLIC_LANDING_PAGE_ID,
+          { locale: locale || DEFAULT_LOCALE }
         );
         setData(response.fields);
       } catch (e) {
@@ -50,7 +63,24 @@ export default function Home() {
     };
 
     fetchLandingPage();
-  }, []);
+  }, [locale]);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    const formData = new FormData(event.target as HTMLFormElement);
+
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData,
+    });
+    messageApi.success({
+      content: intl.formatMessage({
+        defaultMessage: '¡Gracias por tus comentarios!',
+        id: 'zpoSLn',
+      }),
+    });
+  };
 
   if (!data) {
     <Backdrop
@@ -207,7 +237,10 @@ export default function Home() {
           <Grid container spacing={3} className="my-12 text-sm">
             <Grid item xs={12}>
               <h3 className="font-bold text-xl mb-6 text-center">
-                Preguntas frequentes
+                {intl.formatMessage({
+                  defaultMessage: 'Preguntas frequentes',
+                  id: 'LfrL11',
+                })}
               </h3>
               <div
                 className="space-y-4"
@@ -220,42 +253,66 @@ export default function Home() {
         </div>
         <div>
           <h3 className="font-bold text-xl mt-24 mb-6 text-center">
-            Comentarios y sugerencias
+            {intl.formatMessage({
+              defaultMessage: 'Comentarios y sugerencias',
+              id: 'UZExQX',
+            })}
           </h3>
 
-          {/* <iframe
-            height="437"
-            title="Embedded Wufoo Form"
-            style={{ width: '100%', border: 'none' }}
-            sandbox="allow-popups-to-escape-sandbox allow-top-navigation allow-scripts allow-popups allow-forms allow-same-origin"
-            src="https://danielppolo.wufoo.com/embed/zdgpcky1nrnmky/"
+          <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            onSubmit={handleSubmit}
           >
-            {' '}
-            <a href="https://danielppolo.wufoo.com/forms/zdgpcky1nrnmky/">
-              Fill out my Wufoo form!
-            </a>{' '}
-          </iframe> */}
-
-          <form name="contact" method="POST" data-netlify="true">
             <input type="hidden" name="form-name" value="contact" />
             <p className="mb-4">
               <label>
-                <Input type="text" name="name" placeholder="Nombre" />
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Nombre',
+                    id: 'hCOqfl',
+                  })}
+                />
               </label>
             </p>
             <p className="mb-4">
               <label>
-                <Input type="email" name="email" placeholder="Email" />
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Email',
+                    id: 'sy+pv5',
+                  })}
+                />
               </label>
             </p>
             <p className="mb-4">
               <label>
-                <Input.TextArea name="message" placeholder="Sugerencias" />
+                <Input.TextArea
+                  name="message"
+                  placeholder={intl.formatMessage({
+                    defaultMessage: 'Sugerencias',
+                    id: '7kHB42',
+                  })}
+                />
               </label>
             </p>
             <p>
-              <Button htmlType="submit" type="dashed" block size="large">
-                Send
+              <Button
+                htmlType="submit"
+                type="primary"
+                block
+                size="large"
+                className="bg-black"
+              >
+                {intl.formatMessage({
+                  defaultMessage: 'Send',
+                  id: '9WRlF4',
+                })}
               </Button>
             </p>
           </form>
@@ -263,6 +320,7 @@ export default function Home() {
       </Container>
       <div className="my-32" />
       <Footer />
+      {contextHolder}
     </div>
   );
 }

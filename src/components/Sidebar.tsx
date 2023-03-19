@@ -1,12 +1,13 @@
 import React, { memo, useState } from 'react';
 import LegendBar from 'src/components/LegendBar';
-import { Drawer, Divider, FloatButton } from 'antd';
+import { Drawer, Divider, FloatButton, Collapse } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import useCurrentVisualization from 'src/hooks/data/useCurrentVisualization';
 import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { COMPARABLE_KEY } from 'src/constants';
 import isComparable from 'src/utils/isComparable';
 import isMobile from 'src/utils/isMobile';
+import { useIntl } from 'react-intl';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -14,7 +15,10 @@ import VariantPicker from './VariantPicker';
 import FilterPicker from './FilterPicker';
 import ComparableChart from './ComparableChart';
 
+const { Panel } = Collapse;
+
 function Sidebar() {
+  const intl = useIntl();
   const [open, setOpen] = useState(true);
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
@@ -26,6 +30,11 @@ function Sidebar() {
   const showDataSources = !!currentVariant?.dataProviders?.length;
   const isDisabled =
     currentVisualization?.relativeTo === 'feature' && !current.featureId;
+  const hasFullDescription = !!currentVisualization?.metadata?.fullDescription;
+
+  const onChange = (key: string | string[]) => {
+    console.log(key);
+  };
 
   return (
     <>
@@ -46,11 +55,31 @@ function Sidebar() {
         }}
         className={isMobile() ? 'bg-white' : 'backdrop-blur-sm bg-white/80'}
       >
+        {hasFullDescription ? (
+          <>
+            <div className="p-4">
+              <h3 className="font-semibold uppercase mb-2 text-[16px]">
+                {intl.formatMessage({
+                  defaultMessage: '¿Qué estas viendo?',
+                  id: 'beJl9c',
+                })}
+              </h3>
+              <p className="mb-2 text-gray-700">
+                {currentVisualization?.metadata?.fullDescription}
+              </p>
+            </div>
+            <Divider className="m-0" key="filters-divider" />
+          </>
+        ) : null}
+
         {showVariantPicker ? (
           <>
             <div className="p-4">
               <h3 className="font-semibold uppercase mb-2 text-[16px]">
-                Escenarios
+                {intl.formatMessage({
+                  defaultMessage: 'Escenarios',
+                  id: 'FLPt8k',
+                })}
               </h3>
               <VariantPicker />
             </div>
@@ -59,9 +88,11 @@ function Sidebar() {
         ) : null}
 
         <div className="p-4">
-          <h3 className="font-semibold uppercase mb-2 text-[16px]">Filtros</h3>
+          <h3 className="font-semibold uppercase mb-2 text-[16px]">
+            {intl.formatMessage({ defaultMessage: 'Filtros', id: 'cocT5g' })}
+          </h3>
           {currentVisualization?.filters?.map((filter, index) => (
-            <div key={`${currentVisualization?.name}-${filter.code}`}>
+            <div key={`${currentVisualization?.metadata?.name}-${filter.code}`}>
               <p className="mb-2 text-gray-700">{filter.name}</p>
               <FilterPicker
                 disabled={isDisabled}
@@ -77,7 +108,9 @@ function Sidebar() {
           ))}
 
           {isComparable(currentVisualization) && (
-            <div key={`${currentVisualization?.name}-${COMPARABLE_KEY}`}>
+            <div
+              key={`${currentVisualization?.metadata?.name}-${COMPARABLE_KEY}`}
+            >
               <p className="mb-2 text-gray-700">
                 {currentVisualization?.unit?.type}
               </p>
@@ -112,15 +145,20 @@ function Sidebar() {
         </div>
 
         {showInfoPanel ? (
-          <>
-            <Divider className="m-0" key="info-divider" />
-            <div className="p-4">
-              <h3 className="font-semibold uppercase mb-2 text-[16px]">
-                Información
-              </h3>
-              <VisualizationInfo />
-            </div>
-          </>
+          <Collapse defaultActiveKey={['1']} onChange={onChange}>
+            <Panel header="This is panel header 1" key="1">
+              <Divider className="m-0" key="info-divider" />
+              <div className="p-4">
+                <h3 className="font-semibold uppercase mb-2 text-[16px]">
+                  {intl.formatMessage({
+                    defaultMessage: 'Información',
+                    id: 'R760dc',
+                  })}
+                </h3>
+                <VisualizationInfo />
+              </div>
+            </Panel>
+          </Collapse>
         ) : null}
 
         {isComparable(currentVisualization) ? (
@@ -128,7 +166,10 @@ function Sidebar() {
             <Divider className="m-0" key="info-divider" />
             <div className="p-4">
               <h3 className="font-semibold uppercase mb-2 text-[16px]">
-                Comparar
+                {intl.formatMessage({
+                  defaultMessage: 'Comparar',
+                  id: 'brpn1N',
+                })}
               </h3>
               <ComparableChart />
             </div>
@@ -137,13 +178,21 @@ function Sidebar() {
 
         <Divider className="m-0" key="layers-divider" />
         <div className="p-4">
-          <h3 className="font-semibold uppercase mb-2 text-[16px]">Capas</h3>
+          <h3 className="font-semibold uppercase mb-2 text-[16px]">
+            {intl.formatMessage({
+              defaultMessage: 'Capas',
+              id: 'l6n41c',
+            })}
+          </h3>
           <MapboxLayerToggle />
         </div>
         <Divider className="m-0" key="legends-divider" />
         <div className="p-4">
           <h3 className="font-semibold uppercase mb-2 text-[16px]">
-            Simbología
+            {intl.formatMessage({
+              defaultMessage: 'Simbología',
+              id: 'y2jbOx',
+            })}
           </h3>
           <LegendBar />
         </div>
@@ -152,7 +201,10 @@ function Sidebar() {
             <Divider className="m-0" key="sources-divider" />
             <div className="p-4">
               <h3 className="font-semibold uppercase mb-4 text-[16px]">
-                Fuentes
+                {intl.formatMessage({
+                  defaultMessage: 'Fuentes',
+                  id: 'SxP79b',
+                })}
               </h3>
               <DataSource />
             </div>

@@ -10,6 +10,8 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import NavBar from 'src/components/Navbar';
 import Footer from 'src/components/Footer';
+import { useRouter } from 'next/router';
+import { DEFAULT_LOCALE } from 'src/constants';
 
 const tm = require('markdown-it-texmath');
 const md = require('markdown-it')({ html: true }).use(tm, {
@@ -27,6 +29,7 @@ const client = contentful.createClient({
 
 export default function Home() {
   const [data, setData] = useState<any>(null);
+  const { locale } = useRouter();
 
   const str =
     "Euler's identity $e^{i\\pi}+1=0$ is a beautiful formula in $\\RR^2$.";
@@ -35,7 +38,8 @@ export default function Home() {
     const fetchLandingPage = async () => {
       try {
         const response = await client.getEntry(
-          process.env.NEXT_PUBLIC_METHODOLOGY_PAGE_ID
+          process.env.NEXT_PUBLIC_METHODOLOGY_PAGE_ID,
+          { locale: locale ?? DEFAULT_LOCALE }
         );
         setData(response.fields);
       } catch (e) {
@@ -44,7 +48,7 @@ export default function Home() {
     };
 
     fetchLandingPage();
-  }, []);
+  }, [locale]);
 
   if (!data) {
     <Backdrop
@@ -54,8 +58,6 @@ export default function Home() {
       <CircularProgress color="inherit" />
     </Backdrop>;
   }
-
-  console.log(data);
 
   return (
     <div>

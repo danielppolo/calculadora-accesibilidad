@@ -5,8 +5,10 @@ import useCurrentVariant from 'src/hooks/data/useCurrentVariant';
 import { Select, Radio, Space, Slider } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
+import { useIntl } from 'react-intl';
 
 function VariantPicker() {
+  const intl = useIntl();
   const { onVariantChange, current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
   const currentVisualization = getCurrentVisualization(current);
@@ -98,7 +100,10 @@ function VariantPicker() {
           value: variant.code,
         })) ?? []
       }
-      placeholder="Selecciona un escenario"
+      placeholder={intl.formatMessage({
+        defaultMessage: 'Selecciona un escenario',
+        id: 'fh45pJ',
+      })}
       disabled={isDisabled}
       style={{ width: '100%' }}
     />

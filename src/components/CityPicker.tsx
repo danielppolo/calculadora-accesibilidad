@@ -3,6 +3,7 @@ import { useMapParams } from 'src/context/mapParams';
 import useConfig from 'src/hooks/data/useConfig';
 import useCurrentCity from 'src/hooks/data/useCurrentCity';
 import { Select } from 'antd';
+import { useIntl } from 'react-intl';
 
 type CityDictionary = Record<
   string,
@@ -13,6 +14,7 @@ type CityDictionary = Record<
 >;
 
 function CityPicker() {
+  const intl = useIntl();
   const { data: config } = useConfig();
   const getCurrentCity = useCurrentCity();
   const { onCityChange, current } = useMapParams();
@@ -51,7 +53,10 @@ function CityPicker() {
       onChange={onCityChange}
       value={currentCity?.name}
       options={Object.values(countriesDict)}
-      placeholder="Selecciona una ciudad"
+      placeholder={intl.formatMessage({
+        defaultMessage: 'Selecciona una ciudad',
+        id: 'bGUdPV',
+      })}
       allowClear
     />
   );

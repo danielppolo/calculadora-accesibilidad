@@ -3,11 +3,13 @@ import { Modal, Button, Tooltip } from 'antd';
 import { useMapParams } from 'src/context/mapParams';
 import { ONBOARDING_STORAGE_KEY } from 'src/constants';
 import { useRouter } from 'next/router';
+import { useIntl } from 'react-intl';
 import Notes from './Notes';
 import Download from './Download';
 import Onboarding from './Onboarding';
 
 function GlobalControls() {
+  const intl = useIntl();
   const { onReset } = useMapParams();
   const router = useRouter();
   const [notesOpen, setNotesOpen] = useState(false);
@@ -19,7 +21,13 @@ function GlobalControls() {
     <div className="fixed z-20 bottom-12 left-4">
       <div className="space-y-4">
         <div>
-          <Tooltip title="Regresar" placement="left">
+          <Tooltip
+            title={intl.formatMessage({
+              defaultMessage: 'Regresar',
+              id: 'q400kG',
+            })}
+            placement="left"
+          >
             <Button
               className="bg-white"
               shape="circle"
@@ -36,13 +44,25 @@ function GlobalControls() {
         </div>
 
         <div>
-          <Tooltip title="Descargar selección" placement="left">
+          <Tooltip
+            title={intl.formatMessage({
+              defaultMessage: 'Descargar selección',
+              id: 'wD9OZu',
+            })}
+            placement="left"
+          >
             <Download />
           </Tooltip>
         </div>
 
         <div>
-          <Tooltip title="Ver mapa" placement="left">
+          <Tooltip
+            title={intl.formatMessage({
+              defaultMessage: 'Ver mapa',
+              id: 'wuF55Z',
+            })}
+            placement="left"
+          >
             <Button
               className="bg-white"
               shape="circle"
@@ -59,7 +79,13 @@ function GlobalControls() {
         </div>
 
         <div>
-          <Tooltip title="Tour" placement="left">
+          <Tooltip
+            title={intl.formatMessage({
+              defaultMessage: 'Tour',
+              id: '47V97K',
+            })}
+            placement="left"
+          >
             <Button
               className="bg-white"
               shape="circle"
@@ -79,7 +105,13 @@ function GlobalControls() {
         </div>
 
         <div>
-          <Tooltip title="Notas" placement="left">
+          <Tooltip
+            title={intl.formatMessage({
+              defaultMessage: 'Notas',
+              id: 'BErqbB',
+            })}
+            placement="left"
+          >
             <Button
               className="bg-white"
               shape="circle"
@@ -98,7 +130,18 @@ function GlobalControls() {
           </Tooltip>
         </div>
 
-        <Modal open={onboardingOpen} onCancel={() => setOnboardingOpen(false)}>
+        <Modal
+          open={onboardingOpen}
+          onCancel={() => setOnboardingOpen(false)}
+          cancelText={intl.formatMessage({
+            defaultMessage: 'Cancelar',
+            id: 'nZLeaQ',
+          })}
+          okText={intl.formatMessage({
+            defaultMessage: 'OK',
+            id: 'kAEQyV',
+          })}
+        >
           <Onboarding />
         </Modal>
 
@@ -110,6 +153,14 @@ function GlobalControls() {
             overflowY: 'auto',
           }}
           width={800}
+          cancelText={intl.formatMessage({
+            defaultMessage: 'Cancelar',
+            id: 'nZLeaQ',
+          })}
+          okText={intl.formatMessage({
+            defaultMessage: 'OK',
+            id: 'kAEQyV',
+          })}
         >
           <Notes />
         </Modal>

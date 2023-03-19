@@ -4,14 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
-import { BASE_LAYER_ID } from 'src/constants';
+import { BASE_LAYER_ID, DEFAULT_LOCALE } from 'src/constants';
+import { useRouter } from 'next/router';
 
 type CustomConfig = Config & {
   citiesDictionary: Record<City['code'], City>;
 };
 
-const fetchConfig = async () => {
-  const remoteConfig = await getConfig();
+const fetchConfig = async (locale: string) => {
+  const remoteConfig = await getConfig(locale);
   const nextConfig: CustomConfig = {
     ...remoteConfig,
     citiesDictionary: {},
@@ -24,11 +25,12 @@ const fetchConfig = async () => {
 };
 
 function useConfig() {
+  const { locale, defaultLocale } = useRouter();
   const { show } = useMapboxTilesetManager();
   const { add } = useMapboxLayerManager();
   return useQuery({
     queryKey: queries.config.main.queryKey,
-    queryFn: fetchConfig,
+    queryFn: () => fetchConfig(locale ?? defaultLocale ?? DEFAULT_LOCALE),
     onSuccess: (config) => {
       add({
         id: BASE_LAYER_ID,

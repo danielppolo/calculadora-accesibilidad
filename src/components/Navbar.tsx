@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useIntl } from 'react-intl';
 
 function NavBar() {
+  const intl = useIntl();
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -14,25 +16,37 @@ function NavBar() {
             className="hover:opacity-70 duration-100"
             href="https://ideamos.mx/el-programa"
           >
-            El programa
+            {intl.formatMessage({
+              defaultMessage: 'El programa',
+              id: 'k67D0G',
+            })}
           </a>
           <a
             className="hover:opacity-70 duration-100"
             href="https://ideamos.mx/indice-de-pilotos"
           >
-            Los pilotos
+            {intl.formatMessage({
+              defaultMessage: 'Los pilotos',
+              id: '3zzqyh',
+            })}
           </a>
           <a
             className="hover:opacity-70 duration-100"
             href="https://ideamos.mx/noticias"
           >
-            Noticias
+            {intl.formatMessage({
+              defaultMessage: 'Noticias',
+              id: 'jbtZrA',
+            })}
           </a>
           <a
             className="hover:opacity-70 duration-100"
             href="https://ideamos.mx/convocatoria"
           >
-            Convocatoria
+            {intl.formatMessage({
+              defaultMessage: 'Convocatoria',
+              id: 'kLbvhe',
+            })}
           </a>
         </div>
         <button
@@ -52,32 +66,49 @@ function NavBar() {
             className="duration-100 flex items-center text-2xl p-2 font-bold h-16 border-b border-white"
             href="https://ideamos.mx/el-programa"
           >
-            El programa
+            {intl.formatMessage({
+              defaultMessage: 'El programa',
+              id: 'k67D0G',
+            })}
           </a>
           <a
             className="duration-100 flex items-center text-2xl p-2 font-bold h-16 border-b border-white"
             href="https://ideamos.mx/indice-de-pilotos"
           >
-            Los pilotos
+            {intl.formatMessage({
+              defaultMessage: 'Los pilotos',
+              id: '3zzqyh',
+            })}
           </a>
           <a
             className="duration-100 flex items-center text-2xl p-2 font-bold h-16 border-b border-white"
             href="https://ideamos.mx/noticias"
           >
-            Noticias
+            {intl.formatMessage({
+              defaultMessage: 'Noticias',
+              id: 'jbtZrA',
+            })}
           </a>
           <a
             className="duration-100 flex items-center text-2xl p-2 font-bold h-16"
             href="https://ideamos.mx/convocatoria"
           >
-            Convocatoria
+            {intl.formatMessage({
+              defaultMessage: 'Convocatoria',
+              id: 'kLbvhe',
+            })}
           </a>
         </div>
       </div>
       <div className="bg-blue h-32 px-4 text-white flex items-center justify-between md:px-16 md:h-16">
         <div className="md:items-center md:space-x-16 md:flex">
           <div className="space-x-8 flex items-center h-12">
-            <p className="font-bold text-xl">Una iniciativa de:</p>
+            <p className="font-bold text-xl">
+              {intl.formatMessage({
+                defaultMessage: 'Una iniciativa de:',
+                id: 'irh4s+',
+              })}
+            </p>
             <a
               target="_blank"
               href="https://mexico.itdp.org"
@@ -87,7 +118,12 @@ function NavBar() {
             </a>
           </div>
           <div className="space-x-8 flex items-center h-12">
-            <p className="font-bold text-xl">Con apoyo de:</p>
+            <p className="font-bold text-xl">
+              {intl.formatMessage({
+                defaultMessage: 'Con apoyo de:',
+                id: 'MPCJ9U',
+              })}
+            </p>
             <a
               target="_blank"
               href="https://www.iadb.org/es"

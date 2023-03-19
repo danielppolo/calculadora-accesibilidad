@@ -7,8 +7,10 @@ import { Button, Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import { useMapParams } from 'src/context/mapParams';
+import { useIntl } from 'react-intl';
 
 function Download() {
+  const intl = useIntl();
   const { current } = useMapParams();
   const { legend, geojson } = useMapboxLayerManager();
   const filename = legend?.title ?? 'Geometría';
@@ -40,7 +42,10 @@ function Download() {
       key: '1',
       label: (
         <button type="button" onClick={handleGeoJSONClick}>
-          Descargar GeoJSON
+          {intl.formatMessage({
+            defaultMessage: 'Descargar GeoJSON',
+            id: '/QrB8L',
+          })}
         </button>
       ),
     },
@@ -48,7 +53,10 @@ function Download() {
       key: '2',
       label: (
         <button type="button" onClick={handleKMLClick}>
-          Descargar KML
+          {intl.formatMessage({
+            defaultMessage: 'Descargar KML',
+            id: 'uJYoa5',
+          })}
         </button>
       ),
     },
