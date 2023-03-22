@@ -44,7 +44,7 @@ function ContactForm() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const form = event.target;
-    fetch('/', {
+    fetch('/form-submission', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
