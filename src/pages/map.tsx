@@ -13,15 +13,17 @@ function MapPage() {
   const isFetching = useIsFetching();
 
   return (
-    <MapProvider>
-      <MapboxTilesetManagerProvider>
-        <MapboxLayerManagerProvider>
-          <MapParamsProvider>
-            <Map />
-          </MapParamsProvider>
-        </MapboxLayerManagerProvider>
-      </MapboxTilesetManagerProvider>
-      <LoadingOverlay open={isFetching > 0} />
+    <>
+      <MapProvider>
+        <MapboxTilesetManagerProvider>
+          <MapboxLayerManagerProvider>
+            <MapParamsProvider>
+              <Map />
+            </MapParamsProvider>
+          </MapboxLayerManagerProvider>
+        </MapboxTilesetManagerProvider>
+        <LoadingOverlay open={isFetching > 0} />
+      </MapProvider>
       <form
         hidden
         className="hidden"
@@ -32,7 +34,7 @@ function MapPage() {
       >
         <input type="hidden" name="form-name" value="feedback" />
       </form>
-    </MapProvider>
+    </>
   );
 }
 
