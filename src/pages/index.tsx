@@ -300,6 +300,7 @@ export default function Home() {
             data-netlify="true"
             name="pizzaOrder"
             method="post"
+            netlify-honeypot="bot-field"
             onSubmit={handlePizzaSubmit}
           >
             <input type="hidden" name="form-name" value="pizzaOrder" />
