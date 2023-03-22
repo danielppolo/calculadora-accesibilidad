@@ -8,6 +8,7 @@ import MapboxLayerManagerProvider from 'src/context/mapboxLayerManager';
 import MapboxTilesetManagerProvider from 'src/context/mapboxTilesetManager';
 import Map from 'src/components/Map';
 import { useIsFetching } from '@tanstack/react-query';
+import { StaticFeedbackForm } from 'src/components/FeedbackForm';
 
 function MapPage() {
   const isFetching = useIsFetching();
@@ -24,18 +25,7 @@ function MapPage() {
         </MapboxTilesetManagerProvider>
         <LoadingOverlay open={isFetching > 0} />
       </MapProvider>
-      <form
-        hidden
-        className="hidden"
-        name="feedback"
-        method="post"
-        data-netlify="true"
-        data-netlify-honeypot="bot-field"
-      >
-        <input type="hidden" name="form-name" value="feedback" />
-        <input type="hidden" name="feedback" />
-        <input type="hidden" name="comment" />
-      </form>
+      <StaticFeedbackForm />
     </>
   );
 }

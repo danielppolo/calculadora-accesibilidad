@@ -13,7 +13,23 @@ const feedbackOptions = [
   { label: 'Love', emoji: '❤️' },
 ];
 
-const FeedbackForm = () => {
+// Needed for Netlify to register the form at build time.
+export const StaticFeedbackForm = () => (
+  <form
+    hidden
+    className="hidden"
+    name="feedback"
+    method="post"
+    data-netlify="true"
+    data-netlify-honeypot="bot-field"
+  >
+    <input type="hidden" name="form-name" value="feedback" />
+    <input type="hidden" name="feedback" />
+    <input type="hidden" name="comment" />
+  </form>
+);
+
+function FeedbackForm() {
   const intl = useIntl();
   const [comment, setComment] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -165,6 +181,6 @@ const FeedbackForm = () => {
       {contextHolder}
     </>
   );
-};
+}
 
 export default FeedbackForm;

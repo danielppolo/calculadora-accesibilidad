@@ -1,18 +1,16 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-danger */
-import React, { useState, useEffect, FormEvent, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { marked } from 'marked';
-import { Input, Button, message } from 'antd';
 import NavBar from 'src/components/Navbar';
 import Footer from 'src/components/Footer';
 import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
 import { DEFAULT_LOCALE } from 'src/constants';
+import ContactForm from 'src/components/ContactForm';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const contentful = require('contentful');
@@ -47,10 +45,6 @@ export default function Home() {
   const intl = useIntl();
   const [data, setData] = useState<any>(null);
   const { locale } = useRouter();
-  const [messageApi, contextHolder] = message.useMessage();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
     const fetchLandingPage = async () => {
@@ -67,30 +61,6 @@ export default function Home() {
 
     fetchLandingPage();
   }, [locale]);
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-    fetch('/en', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as any).toString(),
-    })
-      .then(() => {
-        form.reset();
-        messageApi.success({
-          content: intl.formatMessage({
-            defaultMessage: '¡Gracias por tus comentarios!',
-            id: 'zpoSLn',
-          }),
-        });
-        setFeedback('');
-        setName('');
-        setEmail('');
-      })
-      .catch((error) => alert(error));
-  };
 
   if (!data) {
     <Backdrop
@@ -269,75 +239,11 @@ export default function Home() {
             })}
           </h3>
 
-          <form
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-            onSubmit={handleSubmit}
-          >
-            <input type="hidden" name="form-name" value="contact" />
-            <p className="mb-4">
-              <label>
-                <Input
-                  onChange={(event) => setName(event.target.value)}
-                  value={name}
-                  type="text"
-                  name="name"
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Nombre',
-                    id: 'hCOqfl',
-                  })}
-                />
-              </label>
-            </p>
-            <p className="mb-4">
-              <label>
-                <Input
-                  onChange={(event) => setEmail(event.target.value)}
-                  value={email}
-                  type="email"
-                  name="email"
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Email',
-                    id: 'sy+pv5',
-                  })}
-                />
-              </label>
-            </p>
-            <p className="mb-4">
-              <label>
-                <Input.TextArea
-                  onChange={(event) => setFeedback(event.target.value)}
-                  value={feedback}
-                  name="message"
-                  placeholder={intl.formatMessage({
-                    defaultMessage: 'Sugerencias',
-                    id: '7kHB42',
-                  })}
-                />
-              </label>
-            </p>
-            <p>
-              <Button
-                htmlType="submit"
-                type="primary"
-                block
-                size="large"
-                className="bg-black"
-              >
-                {intl.formatMessage({
-                  defaultMessage: 'Send',
-                  id: '9WRlF4',
-                })}
-              </Button>
-            </p>
-          </form>
+          <ContactForm />
         </div>
       </Container>
       <div className="my-32" />
       <Footer />
-      {contextHolder}
     </div>
   );
 }
