@@ -68,54 +68,21 @@ export default function Home() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
-    const formName = formData.get('form-name');
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const formMessage = formData.get('message');
-
-    const encode = (dataToEncode: any) => {
-      return Object.keys(dataToEncode)
-        .map(
-          (key) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(
-              dataToEncode[key]
-            )}`
-        )
-        .join('&');
-    };
-
-    await fetch('/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: encode({
-        'form-name': formName,
-        name,
-        email,
-        message: formMessage,
-      }),
-    });
-    messageApi.success({
-      content: intl.formatMessage({
-        defaultMessage: '¡Gracias por tus comentarios!',
-        id: 'zpoSLn',
-      }),
-    });
-  };
-
-  const handlePizzaSubmit = (event: any) => {
-    event.preventDefault();
-
-    const myForm = event.target;
-    const formData = new FormData(myForm);
 
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData as any).toString(),
     })
-      .then(() => console.log('/thank-you/'))
+      .then(() => {
+        console.log('/thank-you/');
+        messageApi.success({
+          content: intl.formatMessage({
+            defaultMessage: '¡Gracias por tus comentarios!',
+            id: 'zpoSLn',
+          }),
+        });
+      })
       .catch((error) => alert(error));
   };
 
@@ -295,21 +262,6 @@ export default function Home() {
               id: 'UZExQX',
             })}
           </h3>
-
-          <form
-            name="pizzaOrder"
-            method="post"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
-            onSubmit={handlePizzaSubmit}
-          >
-            <input type="hidden" name="form-name" value="pizzaOrder" />
-            <label>
-              What order did the pizza give to the pineapple?
-              <input name="order" type="text" />
-            </label>
-            <input type="submit" />
-          </form>
 
           <form
             name="contact"
