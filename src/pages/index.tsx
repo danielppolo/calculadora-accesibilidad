@@ -297,10 +297,10 @@ export default function Home() {
           </h3>
 
           <form
-            data-netlify="true"
             name="pizzaOrder"
             method="post"
-            netlify-honeypot="bot-field"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
             onSubmit={handlePizzaSubmit}
           >
             <input type="hidden" name="form-name" value="pizzaOrder" />
@@ -315,6 +315,7 @@ export default function Home() {
             name="contact"
             method="POST"
             data-netlify="true"
+            data-netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
           >
             <input type="hidden" name="form-name" value="contact" />
