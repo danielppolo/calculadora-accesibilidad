@@ -26,6 +26,77 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
+function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const encode = (data: any) => {
+    return Object.keys(data)
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
+      )
+      .join('&');
+  };
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    const form = event.target;
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: encode({
+        'form-name': form.getAttribute('name'),
+        ...formData,
+      }),
+    })
+      .then(() => alert('Success!'))
+      .catch((error) => alert(error));
+  };
+
+  const handleChange = (event: any) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
+
+  return (
+    <form
+      name="contact-form"
+      method="post"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+      onSubmit={handleSubmit}
+    >
+      <input type="hidden" name="form-name" value="contact-form" />
+      <label htmlFor="name">Name</label>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        value={formData.name}
+        onChange={handleChange}
+      />
+      <label htmlFor="email">Email</label>
+      <input
+        type="email"
+        name="email"
+        id="email"
+        value={formData.email}
+        onChange={handleChange}
+      />
+      <label htmlFor="message">Message</label>
+      <textarea
+        name="message"
+        id="message"
+        value={formData.message}
+        onChange={handleChange}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
 const CustomButton = () => {
   const intl = useIntl();
   return (
@@ -322,6 +393,7 @@ export default function Home() {
             </p>
           </form>
         </div>
+        <ContactForm />
       </Container>
       <div className="my-32" />
       <Footer />
