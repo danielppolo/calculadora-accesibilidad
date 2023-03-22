@@ -104,6 +104,21 @@ export default function Home() {
     });
   };
 
+  const handlePizzaSubmit = (event: any) => {
+    event.preventDefault();
+
+    const myForm = event.target;
+    const formData = new FormData(myForm);
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData as any).toString(),
+    })
+      .then(() => console.log('/thank-you/'))
+      .catch((error) => alert(error));
+  };
+
   if (!data) {
     <Backdrop
       sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -280,6 +295,20 @@ export default function Home() {
               id: 'UZExQX',
             })}
           </h3>
+
+          <form
+            data-netlify="true"
+            name="pizzaOrder"
+            method="post"
+            onSubmit={handlePizzaSubmit}
+          >
+            <input type="hidden" name="form-name" value="pizzaOrder" />
+            <label>
+              What order did the pizza give to the pineapple?
+              <input name="order" type="text" />
+            </label>
+            <input type="submit" />
+          </form>
 
           <form
             name="contact"
