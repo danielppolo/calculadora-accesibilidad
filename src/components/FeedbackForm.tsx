@@ -53,12 +53,11 @@ const FeedbackForm = () => {
     formData.append('feedback', feedback ?? '');
     formData.append('comment', comment ?? '');
 
-    await fetch('/', {
+    fetch('/en', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData as any).toString(),
-    });
-    handleOk();
+    }).then(handleOk);
   };
 
   const handleCommentChange = (event: any) => {
