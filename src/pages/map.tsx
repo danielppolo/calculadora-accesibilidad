@@ -33,6 +33,8 @@ function MapPage() {
         data-netlify-honeypot="bot-field"
       >
         <input type="hidden" name="form-name" value="feedback" />
+        <input type="hidden" name="feedback" />
+        <input type="hidden" name="comment" />
       </form>
     </>
   );
