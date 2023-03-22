@@ -85,6 +85,18 @@ const FeedbackForm = () => {
         <div className="h-4 bg-black" />
       </div>
 
+      <form
+        hidden
+        className="hidden"
+        name="feedback"
+        method="post"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        onSubmit={handleSubmit}
+      >
+        <input type="hidden" name="form-name" value="feedback" />
+      </form>
+
       <Modal
         title={intl.formatMessage({
           defaultMessage: 'How would you rate your experience?',
