@@ -48,18 +48,16 @@ const FeedbackForm = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const formData = new FormData();
+    formData.append('form-name', 'feedback');
     formData.append('feedback', feedback ?? '');
     formData.append('comment', comment ?? '');
-    formData.append('form-name', 'feedback');
 
-    if (feedback && comment) {
-      await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
-      });
-      handleOk();
-    }
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData as any).toString(),
+    });
+    handleOk();
   };
 
   const handleCommentChange = (event: any) => {
@@ -68,17 +66,22 @@ const FeedbackForm = () => {
 
   return (
     <>
-      <div className="fixed top-1/2 right-0 transform -rotate-90 z-10 origin-bottom translate-x-1/2">
+      <div className="fixed right-1/2 -bottom-4 transform z-10 origin-bottom translate-x-1/2 hover:-translate-y-2 transition">
         <Button
           onClick={showModal}
           type="primary"
-          className="rounded-bl-none rounded-br-none bg-black"
+          className="rounded-bl-none rounded-br-none bg-black h-8"
         >
-          {intl.formatMessage({
-            defaultMessage: 'Feedback',
-            id: 'Ejhdi4',
-          })}
+          <div className="flex items-center gap-2">
+            <span className="text-sm">
+              {intl.formatMessage({
+                defaultMessage: 'Feedback',
+                id: 'Ejhdi4',
+              })}
+            </span>
+          </div>
         </Button>
+        <div className="h-4 bg-black" />
       </div>
 
       <Modal
@@ -97,15 +100,21 @@ const FeedbackForm = () => {
           defaultMessage: 'Cancel',
           id: '47FYwb',
         })}
+        cancelButtonProps={{
+          htmlType: 'button',
+        }}
         okButtonProps={{
           disabled: !feedback || !comment,
           className: 'bg-black disabled:bg-gray-300',
+          htmlType: 'submit',
         }}
       >
         <form
           name="feedback"
-          method="POST"
+          method="post"
           data-netlify="true"
+          netlify-honeypot="bot-field"
+          netlify
           onSubmit={handleSubmit}
         >
           <input type="hidden" name="form-name" value="feedback" />

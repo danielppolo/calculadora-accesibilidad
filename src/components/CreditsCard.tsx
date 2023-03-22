@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 function CreditsCard() {
   return (
-    <div className="fixed z-20 left-0 bottom-0 bg-black space-x-4 flex items-center p-2 rounded-tr-md">
+    <div className="fixed z-20 left-0 bottom-0 bg-black space-x-4 flex items-center p-2 rounded-tr-md h-8">
       <a
         href="https://mexico.itdp.org"
         target="_blank"

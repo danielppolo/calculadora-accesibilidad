@@ -141,6 +141,9 @@ function GlobalControls() {
             defaultMessage: 'OK',
             id: 'kAEQyV',
           })}
+          okButtonProps={{
+            className: 'bg-black',
+          }}
         >
           <Onboarding />
         </Modal>
@@ -161,6 +164,9 @@ function GlobalControls() {
             defaultMessage: 'OK',
             id: 'kAEQyV',
           })}
+          okButtonProps={{
+            className: 'bg-black',
+          }}
         >
           <Notes />
         </Modal>
