@@ -68,11 +68,33 @@ export default function Home() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
+    const formName = formData.get('form-name');
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const formMessage = formData.get('message');
+
+    const encode = (dataToEncode: any) => {
+      return Object.keys(dataToEncode)
+        .map(
+          (key) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              dataToEncode[key]
+            )}`
+        )
+        .join('&');
+    };
 
     await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as any).toString(),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: encode({
+        'form-name': formName,
+        name,
+        email,
+        message: formMessage,
+      }),
     });
     messageApi.success({
       content: intl.formatMessage({
@@ -263,7 +285,7 @@ export default function Home() {
             name="contact"
             method="POST"
             data-netlify="true"
-            // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
           >
             <input type="hidden" name="form-name" value="contact" />
             <p className="mb-4">
