@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/no-danger */
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useRef } from 'react';
 import { Container, Grid } from '@mui/material';
 import Link from 'next/link';
 import Backdrop from '@mui/material/Backdrop';
@@ -48,6 +48,9 @@ export default function Home() {
   const [data, setData] = useState<any>(null);
   const { locale } = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
     const fetchLandingPage = async () => {
@@ -67,20 +70,24 @@ export default function Home() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    const formData = new FormData(event.target as HTMLFormElement);
-
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
     fetch('/en', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(formData as any).toString(),
     })
       .then(() => {
+        form.reset();
         messageApi.success({
           content: intl.formatMessage({
             defaultMessage: '¡Gracias por tus comentarios!',
             id: 'zpoSLn',
           }),
         });
+        setFeedback('');
+        setName('');
+        setEmail('');
       })
       .catch((error) => alert(error));
   };
@@ -273,6 +280,8 @@ export default function Home() {
             <p className="mb-4">
               <label>
                 <Input
+                  onChange={(event) => setName(event.target.value)}
+                  value={name}
                   type="text"
                   name="name"
                   placeholder={intl.formatMessage({
@@ -285,6 +294,8 @@ export default function Home() {
             <p className="mb-4">
               <label>
                 <Input
+                  onChange={(event) => setEmail(event.target.value)}
+                  value={email}
                   type="email"
                   name="email"
                   placeholder={intl.formatMessage({
@@ -297,6 +308,8 @@ export default function Home() {
             <p className="mb-4">
               <label>
                 <Input.TextArea
+                  onChange={(event) => setFeedback(event.target.value)}
+                  value={feedback}
                   name="message"
                   placeholder={intl.formatMessage({
                     defaultMessage: 'Sugerencias',
