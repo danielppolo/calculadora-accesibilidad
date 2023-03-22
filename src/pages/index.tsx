@@ -321,7 +321,6 @@ export default function Home() {
             </p>
           </form>
         </div>
-        <ContactForm />
       </Container>
       <div className="my-32" />
       <Footer />
