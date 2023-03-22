@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import React, { FormEvent, useState } from 'react';
 import { Modal, Button, Input, message } from 'antd';
 import { useIntl } from 'react-intl';
@@ -114,7 +115,6 @@ const FeedbackForm = () => {
           method="post"
           data-netlify="true"
           netlify-honeypot="bot-field"
-          netlify
           onSubmit={handleSubmit}
         >
           <input type="hidden" name="form-name" value="feedback" />
