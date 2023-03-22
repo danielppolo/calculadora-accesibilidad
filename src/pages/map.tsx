@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import React from 'react';
 
 import MapProvider from 'src/context/map';
@@ -21,6 +22,16 @@ function MapPage() {
         </MapboxLayerManagerProvider>
       </MapboxTilesetManagerProvider>
       <LoadingOverlay open={isFetching > 0} />
+      <form
+        hidden
+        className="hidden"
+        name="feedback"
+        method="post"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+      >
+        <input type="hidden" name="form-name" value="feedback" />
+      </form>
     </MapProvider>
   );
 }
