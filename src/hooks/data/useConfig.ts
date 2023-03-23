@@ -29,7 +29,9 @@ function useConfig() {
   const { show } = useMapboxTilesetManager();
   const { add } = useMapboxLayerManager();
   return useQuery({
-    queryKey: queries.config.main.queryKey,
+    queryKey: queries.config.main({
+      locale: locale ?? defaultLocale ?? DEFAULT_LOCALE,
+    }).queryKey,
     queryFn: () => fetchConfig(locale ?? defaultLocale ?? DEFAULT_LOCALE),
     onSuccess: (config) => {
       add({

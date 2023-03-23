@@ -102,19 +102,19 @@ function FeedbackForm() {
 
       <Modal
         title={intl.formatMessage({
-          defaultMessage: 'How would you rate your experience?',
-          id: 'jTixpa',
+          defaultMessage: '¿Cómo calificaría su experiencia?',
+          id: 'UFeR96',
         })}
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={handleCancel}
         okText={intl.formatMessage({
-          defaultMessage: 'Submit',
-          id: 'wSZR47',
+          defaultMessage: 'Enviar',
+          id: 'hKJZJR',
         })}
         cancelText={intl.formatMessage({
-          defaultMessage: 'Cancel',
-          id: '47FYwb',
+          defaultMessage: 'Cancelar',
+          id: 'nZLeaQ',
         })}
         cancelButtonProps={{
           htmlType: 'button',
@@ -170,8 +170,8 @@ function FeedbackForm() {
                 value={comment}
                 onChange={handleCommentChange}
                 placeholder={intl.formatMessage({
-                  defaultMessage: 'Tell us about your experience',
-                  id: 'xZabQg',
+                  defaultMessage: 'Cuéntenos su experiencia',
+                  id: 'QoJDDu',
                 })}
               />
             </div>

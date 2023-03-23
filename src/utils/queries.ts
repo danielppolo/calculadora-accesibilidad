@@ -3,9 +3,9 @@ import * as api from './api';
 
 const queries = createQueryKeyStore({
   config: {
-    main: {
-      queryKey: ['config'],
-    },
+    main: ({ locale }: { locale: string }) => ({
+      queryKey: [locale],
+    }),
   },
   cities: {
     all: {

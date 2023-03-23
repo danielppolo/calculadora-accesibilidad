@@ -1,8 +1,9 @@
 import React from 'react';
+import LanguagePicker from './LanguagePicker';
 
 function Footer() {
   return (
-    <div className="bg-black h-16 text-white flex items-center justify-between px-16">
+    <div className="bg-black h-16 text-white items-center justify-between px-16 md:flex">
       <div className="space-x-4 flex items-center">
         <a
           href="https://mexico.itdp.org"
@@ -28,6 +29,9 @@ function Footer() {
         >
           <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
         </a>
+      </div>
+      <div>
+        <LanguagePicker />
       </div>
     </div>
   );

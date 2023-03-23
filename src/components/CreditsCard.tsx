@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import LanguagePicker from './LanguagePicker';
 
 function CreditsCard() {
   return (
@@ -23,6 +24,7 @@ function CreditsCard() {
       <a href="https://bidlab.org/es" target="_blank" rel="noopener noreferrer">
         <img className="h-5" src="/bid-lab.png" alt="BID LAB Logo" />
       </a>
+      <LanguagePicker />
     </div>
   );
 }
