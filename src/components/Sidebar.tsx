@@ -143,18 +143,27 @@ function Sidebar() {
             </div>
           )}
         </div>
+        <Divider className="m-0" key="info-divider" />
 
         {showInfoPanel ? (
-          <Collapse defaultActiveKey={['1']} onChange={onChange}>
-            <Panel header="This is panel header 1" key="1">
-              <Divider className="m-0" key="info-divider" />
-              <div className="p-4">
-                <h3 className="font-semibold uppercase mb-2 text-[16px]">
+          <Collapse
+            defaultActiveKey={['1']}
+            bordered={false}
+            expandIconPosition="end"
+            ghost
+          >
+            <Panel
+              header={
+                <h3 className="font-semibold uppercase text-[16px]">
                   {intl.formatMessage({
                     defaultMessage: 'Información',
                     id: 'R760dc',
                   })}
                 </h3>
+              }
+              key="1"
+            >
+              <div className="py-4">
                 <VisualizationInfo />
               </div>
             </Panel>
