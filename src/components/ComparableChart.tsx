@@ -65,7 +65,8 @@ function ComparableChart() {
       });
 
       const total = comparableKeys.map((comparableKey) => {
-        return comparingGeojson[id].features.reduce(
+        // FIXME: There's a race condition where the comparingGeojson is not yet loaded entirely but the filters already changed.
+        return comparingGeojson[id]?.features.reduce(
           (acc: number, feature: Feature<Polygon>) => {
             return acc + feature.properties?.[comparableKey];
           },

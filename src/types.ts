@@ -130,7 +130,7 @@ export type Filter = {
   // Preselected option.
   defaultOption: Option;
   // Selector interface.
-  selectorType?: 'button' | 'select' | 'slider' | 'radio';
+  selectorType?: 'button' | 'select' | 'slider' | 'radio' | 'grid-button';
 };
 
 // Represents a visualization.

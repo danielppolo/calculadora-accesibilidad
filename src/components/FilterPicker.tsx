@@ -5,6 +5,7 @@ import type { RadioChangeEvent } from 'antd';
 import type { SliderMarks } from 'antd/es/slider';
 import { Filter } from 'src/types';
 import { useIntl } from 'react-intl';
+import GridButton from './GridButton';
 
 interface FilterPickerProps {
   filter: Filter;
@@ -56,8 +57,42 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   const { current, onFiltersChange } = useMapParams();
 
   const value = current.filters?.[filter.code];
+  const comparableValue = typeof value === 'string' ? [value] : value;
 
   if (comparable) {
+    if (filter.selectorType === 'grid-button') {
+      return (
+        <div className="grid grid-cols-3 gap-2">
+          {filter.options.map((prop) => {
+            const isSelected = comparableValue?.includes(prop.code);
+
+            const handleClick = () => {
+              const newValue = comparableValue?.includes(prop.code)
+                ? comparableValue?.filter((val) => val !== prop.code)
+                : [...(comparableValue ?? []), prop.code];
+
+              onFiltersChange?.({ [filter.code]: newValue }, 'merge');
+            };
+
+            return (
+              <GridButton
+                disabled={disabled}
+                isSelected={isSelected}
+                onClick={handleClick}
+                icon={
+                  <span className="material-symbols-outlined leading-0 text-[20px]">
+                    {prop.iconName}
+                  </span>
+                }
+                label={prop.name}
+                color={prop.color}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+
     const optionDictionary = filter.options.reduce(
       (acc: Record<string, typeof filter.options[0]>, opt) => {
         acc[opt.code] = opt;
@@ -73,7 +108,7 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         allowClear
         showArrow
         defaultValue={value}
-        value={typeof value === 'string' ? [value] : value}
+        value={comparableValue}
         onChange={(val: string | string[]) => {
           onFiltersChange?.({ [filter.code]: val }, 'merge');
         }}
@@ -94,6 +129,35 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         })}
         style={{ width: '100%' }}
       />
+    );
+  }
+
+  if (filter.selectorType === 'grid-button') {
+    return (
+      <div className="grid grid-cols-3 gap-2">
+        {filter.options.map((prop) => {
+          const isSelected = Array.isArray(value)
+            ? value.includes(prop.code)
+            : value === prop.code;
+
+          return (
+            <GridButton
+              disabled={disabled}
+              isSelected={isSelected}
+              onClick={() => {
+                onFiltersChange?.({ [filter.code]: prop.code }, 'merge');
+              }}
+              icon={
+                <span className="material-symbols-outlined leading-0 text-[20px]">
+                  {prop.iconName}
+                </span>
+              }
+              label={prop.name}
+              color={prop.color}
+            />
+          );
+        })}
+      </div>
     );
   }
 
