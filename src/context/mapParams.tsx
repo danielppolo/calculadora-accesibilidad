@@ -92,7 +92,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       });
       const gridCode = visualization?.grid?.code;
 
-      const nextState = {
+      const nextState: Partial<MapParamsState> = {
         cityCode,
         gridCode,
         visualizationCode,
@@ -109,6 +109,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
       if (isDataCached) {
         const defaultFilters = getDefaultVisualizationFilters(visualization);
+        nextState.filters = defaultFilters;
 
         const id = generateVariantId({
           cityCode,

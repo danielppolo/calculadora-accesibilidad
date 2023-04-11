@@ -142,7 +142,6 @@ function ComparableChart() {
           // tooltip: {
           //   callbacks: {
           //     label: (context) => {
-          //       console.log(context.dataset);
           //       let label = context.dataset.label || '';
           //       if (label) label += '%';
           //       return label;
