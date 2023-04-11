@@ -157,6 +157,31 @@ export default function Home() {
             </Grid>
           </Grid>
 
+          <Grid container spacing={3} className="my-12">
+            <Grid item xs={12}>
+              <h3 className="font-bold text-xl mb-6 text-center">
+                {intl.formatMessage({
+                  defaultMessage: 'Alianzas con:',
+                  id: '5BIzfK',
+                })}
+              </h3>
+              <div
+                className="space-y-4"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(data?.partnerships || ''),
+                }}
+              />
+              <div className="flex items-center gap-12 justify-center">
+                <img
+                  className="h-6"
+                  alt="where is my transport"
+                  src="/where-is-my-transport.png"
+                />
+                <img className="h-16" alt="muevetex" src="/muevetex.png" />
+              </div>
+            </Grid>
+          </Grid>
+
           <Grid container spacing={4} className="my-16">
             <Grid item xs={12} lg={6}>
               <img
@@ -211,31 +236,6 @@ export default function Home() {
                 alt=""
               />
               <legend className="text-xs text-center">{data?.gifLegend}</legend>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={3} className="my-12">
-            <Grid item xs={12}>
-              <h3 className="font-bold text-xl mb-6 text-center">
-                {intl.formatMessage({
-                  defaultMessage: 'Alianzas con:',
-                  id: '5BIzfK',
-                })}
-              </h3>
-              <div
-                className="space-y-4"
-                dangerouslySetInnerHTML={{
-                  __html: marked.parse(data?.partnerships || ''),
-                }}
-              />
-              <div className="flex items-center gap-12 justify-center">
-                <img
-                  className="h-6"
-                  alt="where is my transport"
-                  src="/where-is-my-transport.png"
-                />
-                <img className="h-16" alt="muevetex" src="/muevetex.png" />
-              </div>
             </Grid>
           </Grid>
 
