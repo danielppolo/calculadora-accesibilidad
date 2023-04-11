@@ -7,6 +7,8 @@ function ContactForm() {
   const intl = useIntl();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [org, setOrg] = useState('');
   const [feedback, setFeedback] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -31,7 +33,7 @@ function ContactForm() {
         setName('');
         setEmail('');
       })
-      .catch((error) => alert(error));
+      .catch(console.error);
   };
 
   return (
@@ -43,34 +45,63 @@ function ContactForm() {
       onSubmit={handleSubmit}
     >
       <input type="hidden" name="form-name" value="contact" />
-      <p className="mb-4">
-        <label>
-          <Input
-            onChange={(event) => setName(event.target.value)}
-            value={name}
-            type="text"
-            name="name"
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Nombre',
-              id: 'hCOqfl',
-            })}
-          />
-        </label>
-      </p>
-      <p className="mb-4">
-        <label>
-          <Input
-            onChange={(event) => setEmail(event.target.value)}
-            value={email}
-            type="email"
-            name="email"
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Email',
-              id: 'sy+pv5',
-            })}
-          />
-        </label>
-      </p>
+      <div className="mb-4">
+        <div className="flex flex-col gap-4 md:flex-row">
+          <label className="w-full">
+            <Input
+              onChange={(event) => setName(event.target.value)}
+              value={name}
+              type="text"
+              name="name"
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Nombre',
+                id: 'hCOqfl',
+              })}
+            />
+          </label>
+          <label className="w-full">
+            <Input
+              onChange={(event) => setEmail(event.target.value)}
+              value={email}
+              type="email"
+              name="email"
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Email',
+                id: 'sy+pv5',
+              })}
+            />
+          </label>
+        </div>
+      </div>
+      <div className="mb-4">
+        <div className="flex flex-col gap-4 md:flex-row">
+          <label className="w-full">
+            <Input
+              onChange={(event) => setCity(event.target.value)}
+              value={city}
+              type="text"
+              name="city"
+              placeholder={intl.formatMessage({
+                defaultMessage: 'City',
+                id: 'TE4fIS',
+              })}
+            />
+          </label>
+
+          <label className="w-full">
+            <Input
+              onChange={(event) => setOrg(event.target.value)}
+              value={org}
+              type="text"
+              name="organization"
+              placeholder={intl.formatMessage({
+                defaultMessage: 'Organization',
+                id: 'K56Dim',
+              })}
+            />
+          </label>
+        </div>
+      </div>
       <p className="mb-4">
         <label>
           <Input.TextArea
