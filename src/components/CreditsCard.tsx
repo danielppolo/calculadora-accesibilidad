@@ -3,7 +3,7 @@ import LanguagePicker from './LanguagePicker';
 
 function CreditsCard() {
   return (
-    <div className="fixed z-20 left-0 bottom-0 bg-black space-x-10 flex items-center p-2 rounded-tr-md h-8">
+    <div className="fixed z-20 left-0 bottom-0 right-0 md:right-auto bg-black space-x-10 flex items-center p-2 md:rounded-tr-md h-8">
       <div className="flex space-x-4 items-center">
         <a
           href="https://mexico.itdp.org"
