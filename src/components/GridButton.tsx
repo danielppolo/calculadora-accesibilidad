@@ -22,7 +22,7 @@ function GridButton({
       disabled={disabled}
       type="button"
       title={label}
-      className={`h-12 w-full rounded-md border border-gray-300 hover:bg-neutral-100 transition ${
+      className={`h-12 w-full rounded-md border border-gray-300 hover:bg-neutral-100 transition  disabled:opacity-30 disabled:cursor-not-allowed ${
         isSelected && 'bg-neutral-100 border-neutral-400'
       }`}
       onClick={onClick}

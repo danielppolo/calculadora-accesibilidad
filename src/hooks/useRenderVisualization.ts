@@ -49,7 +49,7 @@ function useRenderVisualization() {
       const reversedVariants = [...variants].reverse();
       reversedVariants.forEach((variantFilters) => {
         const unit =
-          currentVisualization.unit?.shortName ??
+          currentVisualization?.metadata?.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         const comparableFilter = getComparableFilter(currentVisualization);
@@ -101,7 +101,6 @@ function useRenderVisualization() {
               optionColor ?? currentVisualization.maxColor,
             ],
             unit,
-            opacity: 1,
             beforeId: getGridId(cityCode, currentVisualization?.grid.code),
             scaleFormula: 'none',
           });
@@ -110,7 +109,7 @@ function useRenderVisualization() {
     } else {
       variants.forEach((variantFilters) => {
         const unit =
-          currentVisualization?.unit?.shortName ??
+          currentVisualization?.metadata?.unit?.shortName ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         const { features, values, maxValue } = filterFeatures({

@@ -9,12 +9,16 @@ import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import type { Feature, Polygon } from 'geojson';
 import { generateVariantId } from 'src/utils';
 import { isEmpty } from 'lodash';
+import { useIntl } from 'react-intl';
+import useGrid from 'src/hooks/data/useGrid';
 
 marked.setOptions({
   gfm: true,
 });
 
 function ComparableChart() {
+  const intl = useIntl();
+  const { data: grid } = useGrid();
   const { current } = useMapParams();
   const { comparingGeojson } = useMapboxLayerManager();
   const getCurrentVisualization = useCurrentVisualization();
@@ -44,16 +48,30 @@ function ComparableChart() {
       !comparingCodes?.length ||
       !comparableFilter ||
       !sampleId ||
-      !comparingGeojson[sampleId]
+      !comparingGeojson[sampleId] ||
+      !grid
     ) {
-      return () => undefined;
+      return undefined;
     }
+
     const comparableKeys =
       currentVisualization?.comparableOptions?.map((option) => option?.code) ??
       [];
     const comparableLabels =
       currentVisualization?.comparableOptions?.map((option) => option?.name) ??
       [];
+
+    const cityTotals: Record<string, number> = {};
+    Object.values(grid).forEach((feature) => {
+      comparableKeys.forEach((comparableKey) => {
+        if (cityTotals[comparableKey]) {
+          cityTotals[comparableKey] +=
+            feature?.properties?.[comparableKey] ?? 0;
+        } else {
+          cityTotals[comparableKey] = feature?.properties?.[comparableKey] ?? 0;
+        }
+      });
+    });
 
     const datasets = comparingCodes.map((optionCode) => {
       const id = generateVariantId({
@@ -65,12 +83,15 @@ function ComparableChart() {
       });
 
       const total = comparableKeys.map((comparableKey) => {
-        // FIXME: There's a race condition where the comparingGeojson is not yet loaded entirely but the filters already changed.
-        return comparingGeojson[id]?.features.reduce(
-          (acc: number, feature: Feature<Polygon>) => {
-            return acc + feature.properties?.[comparableKey];
-          },
-          0
+        return Math.round(
+          (comparingGeojson[id]?.features.reduce(
+            (acc: number, feature: Feature<Polygon>) => {
+              return acc + feature.properties?.[comparableKey];
+            },
+            0
+          ) /
+            cityTotals[comparableKey]) *
+            100
         );
       });
 
@@ -103,29 +124,63 @@ function ComparableChart() {
       type: 'bar',
       data,
       options: {
-        // indexAxis: 'y',
         plugins: {
           legend: {
             display: false,
           },
+          title: {
+            display: false,
+            text: intl.formatMessage({
+              defaultMessage: 'Oportunidades alcanzadas',
+              id: 'iR0iQ+',
+            }), // TODO: Remove hardcoded text
+            align: 'start',
+            // font: {
+            //   weight: 'regular',
+            // },
+          },
+          // tooltip: {
+          //   callbacks: {
+          //     label: (context) => {
+          //       console.log(context.dataset);
+          //       let label = context.dataset.label || '';
+          //       if (label) label += '%';
+          //       return label;
+          //     },
+          //   },
+          // },
         },
         scales: {
           y: {
             beginAtZero: true,
-            display: false,
+            display: true,
+            max: 100,
+            ticks: {
+              callback: (value: string | number) => {
+                return `${value}%`;
+              },
+            },
           },
         },
         responsive: true,
+        maintainAspectRatio: false,
       },
     });
 
     return () => {
       instance?.destroy();
     };
-  }, [comparingGeojson, current, current.filters, currentVisualization]);
+  }, [
+    comparingGeojson,
+    current,
+    current.filters,
+    currentVisualization,
+    grid,
+    intl,
+  ]);
 
   return (
-    <div className="w-full relative h-[300px]">
+    <div className="w-full relative h-[200px]">
       <canvas id="comparable" />
     </div>
   );

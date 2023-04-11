@@ -4,6 +4,7 @@ import {
   CITIES_ZONES_FILL_LAYER_ID,
   CITY_ZOOM,
   COUNTRY_ZOOM,
+  DEFAULT_OPACITY,
   MEXICO_COORDINATES,
 } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
@@ -72,6 +73,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
   const map = useMap();
   const queryClient = useQueryClient();
   const { data: config } = useConfig();
+
   const [messageApi, contextHolder] = message.useMessage();
   const getCurrentVisualization = useCurrentVisualization();
   const [current, setCurrent] = useState<Partial<MapParamsState>>({});
@@ -284,8 +286,12 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
           const currentFilter = visualization?.filters?.find(
             (filter) => filter.code === filterCode
           );
+
           currentFilter?.options.forEach((option) => {
-            if (option.code === propertyCode) {
+            if (
+              option.code === propertyCode ||
+              (propertyCode as string[]).includes(option.code) // Comparable
+            ) {
               option.enabledMapboxTilesets?.forEach((tileset) => {
                 showTileset(tileset);
               });
@@ -326,6 +332,11 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
                   [comparableFilter.code]: comparableValue,
                 },
               });
+              if (comparableValues.length === 1) {
+                map.setPaintProperty(id, 'fill-opacity', DEFAULT_OPACITY);
+              } else {
+                map.setPaintProperty(id, 'fill-opacity', 1);
+              }
               show(id, { reset: false });
             });
           }
@@ -334,6 +345,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
             ...state,
             filters: nextFilters,
           });
+          map.setPaintProperty(id, 'fill-opacity', DEFAULT_OPACITY);
           show(id);
         }
 
@@ -347,7 +359,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
         return nextState;
       });
     },
-    [getCurrentVisualization, hideAll, hideTileset, show, showTileset]
+    [getCurrentVisualization, hideAll, hideTileset, map, show, showTileset]
   );
 
   return (

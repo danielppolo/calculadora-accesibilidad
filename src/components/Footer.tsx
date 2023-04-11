@@ -3,7 +3,7 @@ import LanguagePicker from './LanguagePicker';
 
 function Footer() {
   return (
-    <div className="bg-black h-16 text-white items-center justify-between px-16 md:flex">
+    <div className="bg-black h-16 sticky text-white items-center justify-between px-16 md:flex">
       <div className="space-x-4 flex items-center">
         <a
           href="https://mexico.itdp.org"

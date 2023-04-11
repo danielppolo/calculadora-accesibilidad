@@ -39,15 +39,6 @@ function NavBar() {
               id: 'jbtZrA',
             })}
           </a>
-          <a
-            className="hover:opacity-70 duration-100"
-            href="https://ideamos.mx/convocatoria"
-          >
-            {intl.formatMessage({
-              defaultMessage: 'Convocatoria',
-              id: 'kLbvhe',
-            })}
-          </a>
         </div>
         <button
           type="button"
@@ -87,15 +78,6 @@ function NavBar() {
             {intl.formatMessage({
               defaultMessage: 'Noticias',
               id: 'jbtZrA',
-            })}
-          </a>
-          <a
-            className="duration-100 flex items-center text-2xl p-2 font-bold h-16"
-            href="https://ideamos.mx/convocatoria"
-          >
-            {intl.formatMessage({
-              defaultMessage: 'Convocatoria',
-              id: 'kLbvhe',
             })}
           </a>
         </div>

@@ -8,6 +8,8 @@ import { COMPARABLE_KEY } from 'src/constants';
 import isComparable from 'src/utils/isComparable';
 import isMobile from 'src/utils/isMobile';
 import { useIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
+import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
@@ -19,9 +21,11 @@ const { Panel } = Collapse;
 
 function Sidebar() {
   const intl = useIntl();
+
   const [open, setOpen] = useState(true);
   const { current } = useMapParams();
   const getCurrentVisualization = useCurrentVisualization();
+  const { comparingGeojson } = useMapboxLayerManager();
   const getCurrentVariant = useCurrentVariant();
   const currentVariant = getCurrentVariant(current);
   const currentVisualization = getCurrentVisualization(current);
@@ -31,10 +35,6 @@ function Sidebar() {
   const isDisabled =
     currentVisualization?.relativeTo === 'feature' && !current.featureId;
   const hasFullDescription = !!currentVisualization?.metadata?.fullDescription;
-
-  const onChange = (key: string | string[]) => {
-    console.log(key);
-  };
 
   return (
     <>
@@ -112,28 +112,28 @@ function Sidebar() {
               key={`${currentVisualization?.metadata?.name}-${COMPARABLE_KEY}`}
             >
               <p className="mb-2 text-gray-700">
-                {currentVisualization?.unit?.type}
+                {currentVisualization?.metadata?.unit?.type}
               </p>
               <FilterPicker
                 disabled={isDisabled}
                 filter={{
-                  name: currentVisualization?.unit?.type ?? '',
+                  name: currentVisualization?.metadata?.unit?.type ?? '',
                   code: COMPARABLE_KEY,
                   options:
                     currentVisualization?.customScales?.map((scale) => ({
                       name: `${scale.toString()} ${
-                        currentVisualization?.unit?.shortName
+                        currentVisualization?.metadata?.unit?.shortName
                       }`,
                       code: scale.toString(),
-                      unit: currentVisualization?.unit?.shortName,
+                      unit: currentVisualization?.metadata?.unit?.shortName,
                     })) ?? [],
                   defaultOption: {
                     name: `${currentVisualization?.customScales?.[0].toString()} ${
-                      currentVisualization?.unit?.shortName
+                      currentVisualization?.metadata?.unit?.shortName
                     }`,
                     code:
                       currentVisualization?.customScales?.[0].toString() ?? '',
-                    unit: currentVisualization?.unit?.shortName,
+                    unit: currentVisualization?.metadata?.unit?.shortName,
                   },
                   selectorType: 'button',
                 }}
@@ -170,14 +170,16 @@ function Sidebar() {
           </Collapse>
         ) : null}
 
-        {isComparable(currentVisualization) ? (
+        {isComparable(currentVisualization) &&
+        !!current.featureId &&
+        !isEmpty(comparingGeojson) ? (
           <>
             <Divider className="m-0" key="info-divider" />
             <div className="p-4">
               <h3 className="font-semibold uppercase mb-2 text-[16px]">
                 {intl.formatMessage({
-                  defaultMessage: 'Comparar',
-                  id: 'brpn1N',
+                  defaultMessage: 'Oportunidades alcanzadas',
+                  id: 'iR0iQ+',
                 })}
               </h3>
               <ComparableChart />

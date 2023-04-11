@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useContext, useState } from 'react';
-import { NUMBER_OF_SCALES } from 'src/constants';
+import { DEFAULT_OPACITY, NUMBER_OF_SCALES } from 'src/constants';
 import {
   getScales,
   getColor,
@@ -121,7 +121,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
       scaleColors = ['#f8dda1', '#f1bb43'],
       customScales,
       maxValue,
-      opacity = 0.5,
+      opacity = DEFAULT_OPACITY,
       customLegend,
       scaleFormula,
     }: AddOptions) => {
@@ -227,6 +227,7 @@ function MapboxLayerManagerProvider({ children }: MapboxLayerManagerProps) {
         // Display multiple
         registerMouseListeners(id);
         map.setLayoutProperty(id, 'visibility', 'visible');
+
         return setCurrent((currentIds) => [...currentIds, id]);
       }
 

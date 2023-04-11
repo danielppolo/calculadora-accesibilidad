@@ -1,6 +1,7 @@
 import { LngLatLike } from 'mapbox-gl';
 
 export const NUMBER_OF_SCALES = 10;
+export const DEFAULT_OPACITY = 0.5;
 export const MEXICO_COORDINATES: LngLatLike = [-102.918019, 24.244178];
 
 export const ZOOM_THRESHOLD = 5.5;

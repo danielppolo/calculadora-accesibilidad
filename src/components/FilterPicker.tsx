@@ -63,29 +63,29 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
     if (filter.selectorType === 'grid-button') {
       return (
         <div className="grid grid-cols-3 gap-2">
-          {filter.options.map((prop) => {
-            const isSelected = comparableValue?.includes(prop.code);
+          {filter.options.map((opt) => {
+            const isSelected = comparableValue?.includes(opt.code);
 
             const handleClick = () => {
-              const newValue = comparableValue?.includes(prop.code)
-                ? comparableValue?.filter((val) => val !== prop.code)
-                : [...(comparableValue ?? []), prop.code];
+              const newValue = comparableValue?.includes(opt.code)
+                ? comparableValue?.filter((val) => val !== opt.code)
+                : [...(comparableValue ?? []), opt.code];
 
               onFiltersChange?.({ [filter.code]: newValue }, 'merge');
             };
 
             return (
               <GridButton
-                disabled={disabled}
+                disabled={disabled || opt?.disabled}
                 isSelected={isSelected}
                 onClick={handleClick}
                 icon={
                   <span className="material-symbols-outlined leading-0 text-[20px]">
-                    {prop.iconName}
+                    {opt.iconName}
                   </span>
                 }
-                label={prop.name}
-                color={prop.color}
+                label={opt.name}
+                color={opt.color}
               />
             );
           })}
@@ -115,12 +115,13 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         options={filter.options.map((opt) => ({
           label: opt.name,
           value: opt.code,
+          disabled: opt?.disabled,
         }))}
-        tagRender={(props) =>
+        tagRender={(opts) =>
           tagRender({
-            ...props,
-            color: optionDictionary[props!.value]?.color,
-            iconName: optionDictionary[props!.value]?.iconName,
+            ...opts,
+            color: optionDictionary[opts!.value]?.color,
+            iconName: optionDictionary[opts!.value]?.iconName,
           })
         }
         placeholder={intl.formatMessage({
@@ -135,25 +136,25 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
   if (filter.selectorType === 'grid-button') {
     return (
       <div className="grid grid-cols-3 gap-2">
-        {filter.options.map((prop) => {
+        {filter.options.map((opt) => {
           const isSelected = Array.isArray(value)
-            ? value.includes(prop.code)
-            : value === prop.code;
+            ? value.includes(opt.code)
+            : value === opt.code;
 
           return (
             <GridButton
-              disabled={disabled}
+              disabled={disabled || opt?.disabled}
               isSelected={isSelected}
               onClick={() => {
-                onFiltersChange?.({ [filter.code]: prop.code }, 'merge');
+                onFiltersChange?.({ [filter.code]: opt.code }, 'merge');
               }}
               icon={
                 <span className="material-symbols-outlined leading-0 text-[20px]">
-                  {prop.iconName}
+                  {opt.iconName}
                 </span>
               }
-              label={prop.name}
-              color={prop.color}
+              label={opt.name}
+              color={opt.color}
             />
           );
         })}
@@ -168,12 +169,13 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         block
         defaultValue={value as string}
         value={value as string}
-        options={filter.options.map((prop) => ({
-          value: prop.code,
-          label: prop.iconName ? undefined : prop.name,
-          icon: prop.iconName && (
+        options={filter.options.map((opt) => ({
+          value: opt.code,
+          disabled: opt?.disabled,
+          label: opt.iconName ? undefined : opt.name,
+          icon: opt.iconName && (
             <span className="material-symbols-outlined leading-normal text-[16px]">
-              {prop.iconName}
+              {opt.iconName}
             </span>
           ),
         }))}
@@ -193,7 +195,7 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
       return acc;
     }, {});
     const valueIndex = filter.options.findIndex(
-      (prop) => prop.code === current.filters?.[filter.code]
+      (opt) => opt.code === current.filters?.[filter.code]
     );
 
     return (
@@ -225,9 +227,9 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
         value={value}
       >
         <Space direction="vertical">
-          {filter.options?.map((prop) => (
-            <Radio key={prop?.code} value={prop?.code}>
-              {prop?.name}
+          {filter.options?.map((opt) => (
+            <Radio key={opt?.code} value={opt?.code} disabled={opt?.disabled}>
+              {opt?.name}
             </Radio>
           ))}
         </Space>
@@ -246,6 +248,7 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
       options={filter.options.map((opt) => ({
         label: opt.name,
         value: opt.code,
+        disabled: opt?.disabled,
       }))}
       placeholder={intl.formatMessage({
         defaultMessage: 'Selecciona un filtro',

@@ -57,6 +57,8 @@ export type Option = {
   iconName?: string;
   // Tilesets to enable when the option toggles.
   enabledMapboxTilesets?: MapboxTileset[];
+  // Disabled the option.
+  disabled?: boolean;
 };
 
 // Represents a grid of features
@@ -172,8 +174,6 @@ export type Visualization = {
   mapboxTilesets?: MapboxTileset[];
   // Visualization relative to:
   relativeTo: 'city' | 'feature';
-  // Unit
-  unit?: Unit;
   // Scale formula
   scaleFormula?: 'linear' | 'quantile';
   // Group
@@ -265,4 +265,6 @@ export type VisualizationMetadata = {
   shortDescription?: string;
   // Human-friendly full description.
   fullDescription?: string;
+  // Unit
+  unit?: Unit;
 };

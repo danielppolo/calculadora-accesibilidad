@@ -132,18 +132,23 @@ function GlobalControls() {
 
         <Modal
           open={onboardingOpen}
+          closable={false}
           onCancel={() => setOnboardingOpen(false)}
           cancelText={intl.formatMessage({
             defaultMessage: 'Cancelar',
             id: 'nZLeaQ',
           })}
-          okText={intl.formatMessage({
-            defaultMessage: 'OK',
-            id: 'kAEQyV',
-          })}
-          okButtonProps={{
-            className: 'bg-black',
-          }}
+          onOk={() => setOnboardingOpen(false)}
+          footer={[
+            <Button
+              key="submit"
+              className="bg-black"
+              type="primary"
+              onClick={() => setOnboardingOpen(false)}
+            >
+              OK
+            </Button>,
+          ]}
         >
           <Onboarding />
         </Modal>
@@ -160,13 +165,16 @@ function GlobalControls() {
             defaultMessage: 'Cancelar',
             id: 'nZLeaQ',
           })}
-          okText={intl.formatMessage({
-            defaultMessage: 'OK',
-            id: 'kAEQyV',
-          })}
-          okButtonProps={{
-            className: 'bg-black',
-          }}
+          footer={[
+            <Button
+              key="submit"
+              className="bg-black"
+              type="primary"
+              onClick={() => setNotesOpen(false)}
+            >
+              OK
+            </Button>,
+          ]}
         >
           <Notes />
         </Modal>
