@@ -33,7 +33,7 @@ function GlobalControls() {
               shape="circle"
               size="large"
               type="default"
-              onClick={router.back}
+              onClick={() => router.push('/')}
               icon={
                 <span className="material-symbols-outlined leading-normal text-[16px]">
                   arrow_back

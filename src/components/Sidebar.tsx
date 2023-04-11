@@ -163,7 +163,7 @@ function Sidebar() {
               }
               key="1"
             >
-              <div className="py-4">
+              <div className="pb-4">
                 <VisualizationInfo />
               </div>
             </Panel>

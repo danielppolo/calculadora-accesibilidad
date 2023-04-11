@@ -214,6 +214,23 @@ export default function Home() {
             </Grid>
           </Grid>
 
+          <Grid container spacing={3} className="my-12">
+            <Grid item xs={12}>
+              <h3 className="font-bold text-xl mb-6 text-center">
+                {intl.formatMessage({
+                  defaultMessage: 'Alianzas con:',
+                  id: '5BIzfK',
+                })}
+              </h3>
+              <div
+                className="space-y-4"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(data?.partnerships || ''),
+                }}
+              />
+            </Grid>
+          </Grid>
+
           <Grid container spacing={3} className="my-12 text-sm">
             <Grid item xs={12}>
               <h3 className="font-bold text-xl mb-6 text-center">
