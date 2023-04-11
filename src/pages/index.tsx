@@ -228,6 +228,14 @@ export default function Home() {
                   __html: marked.parse(data?.partnerships || ''),
                 }}
               />
+              <div className="flex items-center gap-12 justify-center">
+                <img
+                  className="h-6"
+                  alt="where is my transport"
+                  src="/where-is-my-transport.png"
+                />
+                <img className="h-16" alt="muevetex" src="/muevetex.png" />
+              </div>
             </Grid>
           </Grid>
 
