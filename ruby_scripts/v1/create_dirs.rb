@@ -21,6 +21,12 @@ cities.each do |city|
   directory_name = "data_aws/cities/#{city}/visualizations/reachable-opportunities"
   Dir.mkdir(directory_name) unless File.exist?(directory_name)
 
+  directory_name = "data_aws/cities/#{city}/visualizations/reachable-by-emissions"
+  Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
+  directory_name = "data_aws/cities/#{city}/visualizations/reachable-by-emissions/current"
+  Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
   directory_name = "data_aws/cities/#{city}/visualizations/total-opportunities"
   Dir.mkdir(directory_name) unless File.exist?(directory_name)
 

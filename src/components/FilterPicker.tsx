@@ -80,9 +80,11 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
                 isSelected={isSelected}
                 onClick={handleClick}
                 icon={
-                  <span className="material-symbols-outlined leading-0 text-[20px]">
-                    {opt.iconName}
-                  </span>
+                  opt.iconName ? (
+                    <span className="material-symbols-outlined leading-0 text-[20px]">
+                      {opt.iconName}
+                    </span>
+                  ) : null
                 }
                 label={opt.name}
                 color={opt.color}
@@ -149,9 +151,11 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
                 onFiltersChange?.({ [filter.code]: opt.code }, 'merge');
               }}
               icon={
-                <span className="material-symbols-outlined leading-0 text-[20px]">
-                  {opt.iconName}
-                </span>
+                opt.iconName ? (
+                  <span className="material-symbols-outlined leading-0 text-[20px]">
+                    {opt.iconName}
+                  </span>
+                ) : null
               }
               label={opt.name}
               color={opt.color}

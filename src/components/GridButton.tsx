@@ -35,7 +35,7 @@ function GridButton({
       }
     >
       <div className="flex items-center justify-center" style={{ color }}>
-        {icon ?? <span className="text-xs">{label}</span>}
+        {icon ?? <span className="text-xs truncate">{label}</span>}
       </div>
     </button>
   );
