@@ -14,6 +14,7 @@ const useZoomToReset = () => {
 
   useEffect(() => {
     const handleZoomEnd = (event: MapMouseEvent) => {
+      // FIXME: This is resetting the map.
       if (event.target.getZoom() <= ZOOM_THRESHOLD && cityCode && !isMobile()) {
         onReset();
       }

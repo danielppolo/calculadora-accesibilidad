@@ -76,6 +76,7 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
 
             return (
               <GridButton
+                key={opt.code}
                 disabled={disabled || opt?.disabled}
                 isSelected={isSelected}
                 onClick={handleClick}
@@ -145,6 +146,7 @@ function FilterPicker({ filter, comparable, disabled }: FilterPickerProps) {
 
           return (
             <GridButton
+              key={opt.code}
               disabled={disabled || opt?.disabled}
               isSelected={isSelected}
               onClick={() => {

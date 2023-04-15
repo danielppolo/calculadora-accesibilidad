@@ -4,7 +4,7 @@ export const NUMBER_OF_SCALES = 10;
 export const DEFAULT_OPACITY = 0.5;
 export const MEXICO_COORDINATES: LngLatLike = [-102.918019, 24.244178];
 
-export const ZOOM_THRESHOLD = 5.5;
+export const ZOOM_THRESHOLD = 4.5;
 export const MAX_ZOOM = 16;
 export const MIN_ZOOM = 4;
 export const COUNTRY_ZOOM = 4.5;
