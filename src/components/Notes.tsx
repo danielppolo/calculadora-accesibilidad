@@ -10,12 +10,14 @@ function Notes() {
   const { data: config } = useConfig();
 
   return (
-    <div
-      className="prose prose-sm max-w-none"
-      dangerouslySetInnerHTML={{
-        __html: marked.parse(config?.notes?.body || ''),
-      }}
-    />
+    <div>
+      <div
+        className="prose prose-sm max-w-none"
+        dangerouslySetInnerHTML={{
+          __html: marked.parse(config?.notes?.body || ''),
+        }}
+      />
+    </div>
   );
 }
 

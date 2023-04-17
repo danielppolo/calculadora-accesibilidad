@@ -4,6 +4,7 @@ import { useMapParams } from 'src/context/mapParams';
 import { ONBOARDING_STORAGE_KEY } from 'src/constants';
 import { useRouter } from 'next/router';
 import { useIntl } from 'react-intl';
+import Link from 'next/link';
 import Notes from './Notes';
 import Download from './Download';
 import Onboarding from './Onboarding';
@@ -161,18 +162,30 @@ function GlobalControls() {
             overflowY: 'auto',
           }}
           width={800}
-          cancelText={intl.formatMessage({
-            defaultMessage: 'Cancelar',
-            id: 'nZLeaQ',
-          })}
           footer={[
+            <Link passHref href="/methodology">
+              <Button
+                key="submit"
+                className="border-black"
+                type="ghost"
+                onClick={() => setNotesOpen(false)}
+              >
+                {intl.formatMessage({
+                  defaultMessage: 'Ver metodología',
+                  id: '2XPLJq',
+                })}
+              </Button>
+            </Link>,
             <Button
               key="submit"
               className="bg-black"
               type="primary"
               onClick={() => setNotesOpen(false)}
             >
-              OK
+              {intl.formatMessage({
+                defaultMessage: 'Cerrar',
+                id: 'Rcsl93',
+              })}
             </Button>,
           ]}
         >

@@ -24,23 +24,6 @@ const client = contentful.createClient({
   accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN ?? '',
 });
 
-const CustomButton = () => {
-  const intl = useIntl();
-  return (
-    <Link passHref href="/map">
-      <button
-        type="button"
-        className="bg-blue rounded-full px-4 py-2 text-white font-medium"
-      >
-        {intl.formatMessage({
-          defaultMessage: 'Accede a la plataforma',
-          id: 'zwZ5Xo',
-        })}
-      </button>
-    </Link>
-  );
-};
-
 export default function Home() {
   const intl = useIntl();
   const [data, setData] = useState<any>(null);
@@ -98,7 +81,17 @@ export default function Home() {
               }}
             />
             <div className="flex justify-center my-8">
-              <CustomButton />
+              <Link passHref href="/map">
+                <button
+                  type="button"
+                  className="bg-blue rounded-full px-4 py-2 text-white font-medium"
+                >
+                  {intl.formatMessage({
+                    defaultMessage: 'Accede a la plataforma',
+                    id: 'zwZ5Xo',
+                  })}
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -217,7 +210,17 @@ export default function Home() {
                   __html: marked.parse(data?.sectionThree || ''),
                 }}
               />
-              <CustomButton />
+              <Link passHref href="/map">
+                <button
+                  type="button"
+                  className="bg-blue rounded-full px-4 py-2 text-white font-medium"
+                >
+                  {intl.formatMessage({
+                    defaultMessage: 'Accede a la plataforma',
+                    id: 'zwZ5Xo',
+                  })}
+                </button>
+              </Link>
             </Grid>
             <Grid item xs={12} lg={6}>
               <img
@@ -255,6 +258,20 @@ export default function Home() {
               />
             </Grid>
           </Grid>
+
+          <div className="flex justify-center">
+            <Link passHref href="/methodology">
+              <button
+                type="button"
+                className="bg-blue rounded-full px-4 py-2 text-white font-medium"
+              >
+                {intl.formatMessage({
+                  defaultMessage: 'Ver metodología',
+                  id: '2XPLJq',
+                })}
+              </button>
+            </Link>
+          </div>
         </div>
         <div>
           <h3 className="font-bold text-xl mt-24 mb-6 text-center">

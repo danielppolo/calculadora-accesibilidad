@@ -49,7 +49,7 @@ function useRenderVisualization() {
       const reversedVariants = [...variants].reverse();
       reversedVariants.forEach((variantFilters) => {
         const unit =
-          currentVisualization?.metadata?.unit?.shortName ??
+          currentVisualization?.metadata?.unit?.shortName?.toLowerCase() ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         const comparableFilter = getComparableFilter(currentVisualization);
@@ -109,7 +109,7 @@ function useRenderVisualization() {
     } else {
       variants.forEach((variantFilters) => {
         const unit =
-          currentVisualization?.metadata?.unit?.shortName ??
+          currentVisualization?.metadata?.unit?.shortName?.toLowerCase() ??
           unitDict[Object.values(variantFilters)[0]]?.toLowerCase();
 
         const { features, values, maxValue } = filterFeatures({

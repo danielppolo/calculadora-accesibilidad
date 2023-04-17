@@ -82,8 +82,8 @@ function ContactForm() {
               type="text"
               name="city"
               placeholder={intl.formatMessage({
-                defaultMessage: 'City',
-                id: 'TE4fIS',
+                defaultMessage: 'Ciudad',
+                id: '/ZNzGW',
               })}
             />
           </label>
@@ -95,8 +95,8 @@ function ContactForm() {
               type="text"
               name="organization"
               placeholder={intl.formatMessage({
-                defaultMessage: 'Organization',
-                id: 'K56Dim',
+                defaultMessage: 'Organización',
+                id: '6JxxuB',
               })}
             />
           </label>
