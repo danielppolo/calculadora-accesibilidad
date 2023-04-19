@@ -45,7 +45,7 @@ const filterFeatures = ({
 
       // We filter features with no data
       const isInRange = limit ? total <= limit : true;
-      if ((total > 0 && isInRange) || isClickedHexagon) {
+      if ((grid[hexId] && total > 0 && isInRange) || isClickedHexagon) {
         values.push(total);
         filtered.push({
           ...grid[hexId],
