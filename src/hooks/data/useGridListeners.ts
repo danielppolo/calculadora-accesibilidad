@@ -6,6 +6,7 @@ import { MapMouseEvent } from 'src/types';
 import useCurrentVisualization from './useCurrentVisualization';
 
 let hoveredStateId: string | number | undefined;
+let selectedStateId: string | number | undefined;
 
 function useGridListeners() {
   const getCurrentVisualization = useCurrentVisualization();
@@ -21,6 +22,24 @@ function useGridListeners() {
     const handleHexagonClick = (event: MapMouseEvent) => {
       if (!isIsochroneVariant) {
         return;
+      }
+
+      if ((event?.features?.length ?? 0) > 0) {
+        if (selectedStateId) {
+          map.setFeatureState(
+            { source: sourceId, id: selectedStateId },
+            { selected: false }
+          );
+        }
+
+        selectedStateId = event?.features?.[0].id;
+
+        if (selectedStateId) {
+          map.setFeatureState(
+            { source: sourceId, id: selectedStateId },
+            { selected: true }
+          );
+        }
       }
 
       const featureId = event.features?.[0]?.properties?.id;

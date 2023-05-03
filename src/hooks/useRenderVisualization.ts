@@ -33,7 +33,6 @@ function useRenderVisualization() {
   return ({
     data,
     currentVisualization,
-    currentVariant,
     grid,
     featureId,
     current,

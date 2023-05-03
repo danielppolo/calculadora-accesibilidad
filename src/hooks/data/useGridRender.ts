@@ -44,9 +44,16 @@ function useGridGeojson() {
               source: id,
               paint: {
                 'fill-opacity': 0.7,
-                'fill-outline-color': ['rgba', 0, 0, 0, 0.2],
+                'fill-outline-color': [
+                  'case',
+                  // For selected hexagons
+                  ['boolean', ['feature-state', 'selected'], false],
+                  ['rgba', 0, 0, 0, 1],
+                  ['rgba', 0, 0, 0, 0.2],
+                ],
                 'fill-color': [
                   'case',
+                  // For hovered hexagons
                   ['boolean', ['feature-state', 'hover'], false],
                   ['rgba', 0, 0, 0, 0.2],
                   'transparent',
