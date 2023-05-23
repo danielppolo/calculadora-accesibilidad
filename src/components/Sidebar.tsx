@@ -36,6 +36,7 @@ function Sidebar() {
     currentVisualization?.relativeTo === 'feature' && !current.featureId;
   const hasFullDescription = !!currentVisualization?.metadata?.fullDescription;
 
+  console.log(currentVisualization?.customScaleSelectorType);
   return (
     <>
       <Drawer
@@ -135,7 +136,8 @@ function Sidebar() {
                       currentVisualization?.customScales?.[0].toString() ?? '',
                     unit: currentVisualization?.metadata?.unit?.shortName,
                   },
-                  selectorType: 'button',
+                  selectorType:
+                    currentVisualization?.customScaleSelectorType ?? 'button',
                 }}
                 key={COMPARABLE_KEY}
               />

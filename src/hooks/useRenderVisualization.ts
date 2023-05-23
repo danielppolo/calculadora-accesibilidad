@@ -84,7 +84,7 @@ function useRenderVisualization() {
             maxValue,
             visible: false,
             numberOfScales: currentVisualization?.scalesCount,
-            customScales: currentVisualization?.customScales,
+            customScales: currentVisualization?.customScales, // FIXME: this is not working
             customLegend: {
               title: comparableFilter?.name ?? '',
               scales:
