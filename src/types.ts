@@ -81,6 +81,8 @@ export type DataProvider = {
   logo?: ContentfulImage;
   // Helper text.
   helperText?: string;
+  // Max height for the logo.
+  maxHeight?: number;
 };
 
 // Represents a Mapbox Tileset. Visit https://studio.mapbox.com/tilesets

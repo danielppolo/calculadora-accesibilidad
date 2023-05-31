@@ -20,9 +20,10 @@ function DataSource() {
             rel="noreferrer"
           >
             <img
-              className="max-h-6 inline-block"
+              className="inline-block"
               src={`https:${dataSource.logo?.file?.url}`}
               alt=""
+              style={{ maxHeight: dataSource?.maxHeight ?? 24 }}
             />
           </a>
         </Tooltip>
