@@ -10,12 +10,17 @@ import isMobile from 'src/utils/isMobile';
 import { useIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
+import { marked } from 'marked';
 import DataSource from './DataSource';
 import MapboxLayerToggle from './MapboxLayerToggle';
 import VisualizationInfo from './VisualizationInfo';
 import VariantPicker from './VariantPicker';
 import FilterPicker from './FilterPicker';
 import ComparableChart from './ComparableChart';
+
+marked.setOptions({
+  gfm: true,
+});
 
 const { Panel } = Collapse;
 
@@ -36,7 +41,6 @@ function Sidebar() {
     currentVisualization?.relativeTo === 'feature' && !current.featureId;
   const hasFullDescription = !!currentVisualization?.metadata?.fullDescription;
 
-  console.log(currentVisualization?.customScaleSelectorType);
   return (
     <>
       <Drawer
@@ -65,9 +69,14 @@ function Sidebar() {
                   id: 'beJl9c',
                 })}
               </h3>
-              <p className="mb-2 text-gray-700">
-                {currentVisualization?.metadata?.fullDescription}
-              </p>
+              <p
+                className="mb-2 text-gray-700"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(
+                    currentVisualization?.metadata?.fullDescription || ''
+                  ),
+                }}
+              />
             </div>
             <Divider className="m-0" key="filters-divider" />
           </>
