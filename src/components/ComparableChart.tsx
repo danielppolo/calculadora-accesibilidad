@@ -125,6 +125,10 @@ function ComparableChart() {
       data,
       options: {
         plugins: {
+          tooltip: {
+            enabled: true, // Display the tooltip at all times
+            intersect: false,
+          },
           legend: {
             display: false,
           },
@@ -211,6 +215,7 @@ function ComparableChart() {
     const comparableKeys =
       currentVisualization?.comparableOptions?.map((option) => option?.code) ??
       [];
+
     const comparableLabels =
       currentVisualization?.comparableOptions?.map((option) => option?.name) ??
       [];
@@ -277,6 +282,10 @@ function ComparableChart() {
       data,
       options: {
         plugins: {
+          tooltip: {
+            enabled: true, // Display the tooltip at all times
+            intersect: false,
+          },
           legend: {
             display: false,
           },
@@ -285,27 +294,14 @@ function ComparableChart() {
             text: intl.formatMessage({
               defaultMessage: 'Oportunidades alcanzadas',
               id: 'iR0iQ+',
-            }), // TODO: Remove hardcoded text
+            }),
             align: 'start',
-            // font: {
-            //   weight: 'regular',
-            // },
           },
-          // tooltip: {
-          //   callbacks: {
-          //     label: (context) => {
-          //       let label = context.dataset.label || '';
-          //       if (label) label += '%';
-          //       return label;
-          //     },
-          //   },
-          // },
         },
         scales: {
           y: {
             beginAtZero: true,
             display: true,
-            // max: 100,
           },
         },
         responsive: true,
