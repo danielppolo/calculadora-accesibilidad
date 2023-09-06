@@ -34,4 +34,9 @@ yarn-error.log*
 .vercel
 
 # data
-data
+/data
+/data_aws
+
+/aws
+
+tsconfig.tsbuildinfo

@@ -1,5 +1,32 @@
 {
   "extends": [
-    "next/core-web-vitals"
-  ]
+    "next",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["jest", "formatjs"],
+  "env": {
+    "jest/globals": true
+  },
+  "rules": {
+    "formatjs/enforce-id": [
+      "error",
+      {
+        "idInterpolationPattern": "[sha512:contenthash:base64:6]"
+      }
+    ],
+    "formatjs/enforce-default-message": 2,
+    "import/extensions": 0,
+    "react/require-default-props": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
+  }
 }
