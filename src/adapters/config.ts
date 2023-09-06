@@ -1,3 +1,5 @@
+import { Config } from 'src/types';
+
 export default {
   title: 'Urban accessibility visualizer',
   onboardingText:
@@ -32925,4 +32927,4 @@ export default {
     title: 'Notes',
     body: '### Proposed mobility projects:\nInformation obtained from the "Accessibility Plan", ITDP, and through Knowledge Generation Workshops.\n\n### Population density::\nPrepared from the Population and Housing Census (INEGI, 2020)\n\n### Others:\n* INEGI (2019) National Statistical Directory of Economic Units (DENUE) November 2019.\n* * OpenStreetMap data. Available at: https://download.geofabrik.de/\n* Pereira, R.H.M., Braga, C.K.V., Serra, B., & Nadalin, V.G. (2019). Socio-spatial inequalities in access to opportunities in Brazilian cities – 2019. Applied Economic Research Institute – ipea 2020 58.\n* National Road Network, 2021, Mexican Institute of Transportation.\n* Saraiva, M., Herszenhut, D., Pereira, R.H.M., Braga, C.K.V., & Matthew Wigginton Conway. (2021). Package ‘r5r.’ Available at: https://cloud.r-project.org/web/packages/r5r/r5r.pdf\n* SEDATU, CONAPO and INEGI (2018). Delimitation of the metropolitan areas of Mexico 2015. Available at: https://www.inegi.org.mx/contenido/productos/prod_serv/contenidos/espanol/bvinegi/productos/nueva_estruc/702825006792.pdf',
   },
-};
+} as Config;
