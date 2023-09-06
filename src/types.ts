@@ -47,7 +47,7 @@ export type Legend = {
 export type Option = {
   // Human-friendly name.
   name: string;
-  // Machine friendly code. Must match propery in the JSON.
+  // Machine friendly code. Must match property in the JSON.
   code: string;
   // Associated color.
   color?: Color;

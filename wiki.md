@@ -1,699 +1,432 @@
-# README
-Geo-visualization tool for ITDP generated data.
+## Storage
 
-## Setup
-The application uses a few third-party services in order to run.
-
-**External requirements**
-* AWS S3 Bucket
-* [Contentful Account](https://www.contentful.com/sign-up/)
-* [Mapbox Account](https://account.mapbox.com/auth/signup/)
-
-**Local requirements**
-* [Node](https://nodejs.org/es/download/)
-* Package manager such as `npm` or `yarn`
-
-**Environment variables:**
-```
-NEXT_PUBLIC_BUCKET_BASE_URL=
-NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN=
-NEXT_PUBLIC_MAPBOX_PUBLIC_TOKEN=
-```
-
-To start the app in development mode run: 
-```
-yarn dev
-```
-
-## Deploy
-See [Next.js deployment](https://nextjs.org/docs/deployment) for instructions.
-
-# Data structure
-
-## Glossary
-
-**Country**
-
-**City**
-
-**Grid**
-
-**Visualization**
-
-**Visualization scenario**
-
-
-
-
-## AWS bucket structure
-
-> The AWS bucket must implement public READ policies. If open source consider making it fully public, otherwise whitelist the app domain.
+> The bucket must implement public READ policies. If open source consider making it fully public, otherwise whitelist the app domain.
 
 The application needs a public directory with following directory structure: 
+
 ``` md
-📦 aws
+📦 bucket
  ┗ 📂 v1
  ┃ ┣ 📂 cities
- ┃ ┃ ┗ 📂 <city_code>
+ ┃ ┃ ┗ 📂 :city_code
  ┃ ┃ ┃ ┣ 📂 grids
- ┃ ┃ ┃ ┃ ┗ 📜 <grid_code>.json
+ ┃ ┃ ┃ ┃ ┗ 📜 :grid_code.json
  ┃ ┃ ┃ ┗ 📂 visualizations
- ┃ ┃ ┃ ┃ ┗ 📂 <visualization_code>
- ┃ ┃ ┃ ┃ ┃ ┣ 📂 <scenario_code>
- ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 <cell_id>.json
- ┃ ┃ ┃ ┃ ┃ ┗ 📜 <scenario_code>.json
- ┃ ┃ ┗ 📜 cities_geometry.json
+ ┃ ┃ ┃ ┃ ┗ 📂 :visualization_code
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂 :variant_code
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜 :feature_id.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜 :variant_code.json
+ ┃ ┃ ┗ core
+ ┃ ┃ ┃ ┗ 📜 cities_geometry.json
 ```
 
 Where 
-* **city_code** is the unique identifier (via Contentful)
-* **grid_code** is the unique identifier for a grid pattern (via Contentful)
-* **visualization_code** is the unique identifier for a visualization (via Contentful)
-* **scenario_code** is the unique identifier for a scenario in a visualization (via Contentful)
-* **cell_id** is the unique identifier for a cell in a grid. Defined by the team. Eg. `8849b0b11bfffff`
+* **:city_code** is the unique identifier declared in the **configuration object**
+* **:grid_code** is the unique identifier for a grid pattern declared in the **configuration object**
+* **:visualization_code** is the unique identifier for a visualization declared in the **configuration object**
+* **:variant_code** is the unique identifier for a scenario in a visualization declared in the **configuration object**.
+* **:feature_id** is the unique identifier for a cell in a grid.
 
 > All codes must be in `snake_case`
 
-## Types of visualization
-The tool supports two types of visualizations:
 
-### Absolute visualization
-Displays information in a selected city.
-![[1663216785.png]]
-_Features_:
-* Uses the _value_ to determine the color an opacity of a cell.
-* Colours the entire city.
-* Ability to nest filters.
+---
+## Data
 
-### Relative visualization
-Displays information around a location (cell) in the map.
-![[1663216936.png]]
+### Configuration object
+Setups the entire application. It can be served with a third-party CMS, custom backend, or as a static JSON. The file `useConfig` loads the object and when used a different service to serve the file it only requires to add an adapter to load the file.
 
-_Features_:
-* Use the value to determine 
+See the **Reference/Data Types** section at the end of the document in order to have a complete picture of the object.
 
-## Display de areas metropolitanas
-La calculadora solicitará el archivo con la geometría de las zonas metropolitanas al cargar la aplicación. Inmediatamente después de recibir la configuración remota de Contentful, mostrará únicamente las áreas metropolitanas que se encuentren activas (`City.active`). 
+```typescript
+type Config = {
+	title?: string;
+	onboardingText?: string;
+	onboardingChartConfig?: Record<ID, ChartConfiguration>;
+	cities: City[];
+	mapboxTilesets: MapboxTileset[];
+	enabledMapboxTilesets?: MapboxTileset[];
+	notes?: Note;
+	logotype?: Image;
+}
+```
 
-> Para activar una zona metropolitana se debe cambiar el atributo `active` desde Contentful.
 
-#### Estructura
-El diccionario de áreas metropolitanas está formato JSON con la siguiente estructura:
+### Cities geometry object
+Renders the initial geometry when the application loads, depending on the active cities and the available geometries available in this document. This serves as a dictionary of geometries for every city available in the application. The format is a [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946), more specifically, a [FeatureCollection](https://datatracker.ietf.org/doc/html/rfc7946#section-3.3). Each [Feature](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2) in the collection must contain a property `code` which should match the ID/code declared in the **configuration object**.
+
+This file must be stored in `/core/cities_geometry.json`
+
+
 ```typescript
 {
-    data: Record<City.code, GeoJSONFeature>;
+	"type": "FeatureCollection",
+	"name": "Zonas Metropolitanas",
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"code": REPLACE_WITH_CITY_UNIQUE_ID
+			},
+			"geometry": {
+				"type": "MultiPolygon",
+				"coordinates": [...],
+				...
+			},
+			...
+		},
+		{...},
+	]
 }
 ```
 
-Ejemplo:
-```json
-{
-    "data": {
-        "cdmx": {
-            geometry: {type: "Polygon", ...},
-            properties: {},
-            type: "Feature"
-        },
-        "guadalajara": {
-            geometry: {type: "Polygon", ...},
-            properties: {},
-            type: "Feature"
-        },
-        ...
-    }
-}
-```
 
+### Grid object
+Represents a dictionary of GeoJSON [Features](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2), however the format is a plain [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON). The keys of the object are the Feature **IDs** and the values are GeoJSON [Features](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2). Due to the nature of a GeoJSON  [Feature](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2), the grid cell can be any shape, a square, hexagon or a custom one. The grid object is the foundation on which the visualizations are built, they provide the geometry.
 
-#### Almacenamiento
-> Se usa únicamente 1 archivo para que la calculadora cargue más veloz.
+This file must be stored in `/cities/:city_code/grids/:grid_code.json`. It's important to note that the name of the file must match the ID/code in the **configuration object**
 
-Este archivo está almacenado en el directorio _root_ de la calculadora en AWS con el nombre `cities_geometry.json`
-
-```
-/calculadora_oportunidades/v1/core/cities_geometry.json
-```
-
-Every feature in the GeoJSON must have a `code` property with the corresponding city code. It's used to identify the city when clicking.
-```json
-"properties": {
-  "code": "acapulco"
-},
-```
-
-
-## Display de HEX grid
-Al momento que se selecciona una ciudad, la aplicación revisará la configuración y ,dependiendo de las rejillas que estén disponibles, solicitará los archivos (JSON) correspondientes a AWS. 
-
-> Las rejillas disponibles se determinan a través de Contentful en la instancia correspondiente de la ciudad.
-
-#### Estructura
-El diccionario de la rejilla está formato JSON con la siguiente estructura:
 ```typescript
-{
-    data: Record<ID, GeoJSONFeature>;
-}
-```
-
-Ejemplo:
-```json
-{
-    "data": {
-        "8849b0b11bfffff": {
-            geometry: {type: "Polygon", ...},
-            properties: {}, // 
-            type: "Feature"
-        },
-        "8849b0b025fffff": {
-            geometry: {type: "Polygon", ...},
-            properties: {},
-            type: "Feature"
-        },
-        ...
-    }
-}
-```
-
-> ⚠️ El atributo de properties debe ser un objeto vacío. Las propiedades deben ser declaradas en los **archivos de visualización.** (Ver abajo 👇)
-
-
-#### Almacenamiento
-Este archivo está almacenado en el directorio relativo a la ciudad en AWS con el nombre `:hex_code.json`, siendo `:hex_code` definido previamente en Contentful.
-
-```
-/calculadora_oportunidades/v1/cities/:city_code/grids/:grid_code.json
+Record<ID, Feature>
 ```
 
 
-## Display de visualizaciones relativas a la ciudad (JSON)
-Este tipo de visualización hace uso de la rejilla HEX para pintar el mapa con los colores correspondientes. Las visualizaciones pueden ser filtradas con buckets predefinidos en Contentful. (ej. tiempo).
+### Visualization object
+Renders a map in the application. The format is a plain [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON) where the keys are **grid cell IDs** and the values are arbitrary metadata. Keep in mind that all IDs must contain the same metadata in order to render all cells properly. 
 
-
-#### Estructura
-Los archivos de visualización se almacenan en formato JSON. Representan un diccionario con los IDs de los hexágonos como _keys_ y un objeto de propiedades como valor.
 ```typescript
-{
-    data: Record<ID, Record<Property.code, number | string>>;
-}
-```
-
-Cada nivel de anidado en el diccionario se representará en la calculadora como un control que el usuario puede usar para filtrar los resultados. Para poder mostrar los filtros en la aplicación es necesario declarar las propiedades desde Contentful.
-
-
-> 🔥 Se recomienda no usar mas de 4 propiedades por diccionario, y se recomienda que el nombre de la propiedad sea corto. Esto debido a que la aplicación muestra los controles con botones horizontales.
-
-
-Ejemplo para _visualización que únicamente pinta los hexágonos con el color correspondiente_:
-
-> Esta estructura de datos permite mostrar 4 visualizaciones.
-
-```json
-{
-    "data": {
-        "8849b0b11bfffff": {
-            clinics: 0,
-            empress: 8,
-            escuels: 0,
-            jobs_w: 24,
-        },
-        "8849b0b025fffff": {
-            clinics: 1,
-            empress: 16,
-            escuels: 2,
-            jobs_w: 12,
-        },
-        ...
-    }
-}
+Record<ID, Metadata>
 ```
 
 
+### Metadata object
+As mentioned previously, the metadata is an arbitrary object containing integers that allow the application to: 
+- render filters
+- render charts
+- render legends
+- render geometry in the map with the correct styles
 
-Ejemplo para _visualización que permite filtrar por transporte y tiempo_:
+It's important to note that the structure of the object is mapped to UI. Each level of nesting in the object represent a **filter**. The nesting is mapped from the most general (the outer nesting) to the most specific (the inner nesting). Translated to the UI, the filters render in a stack, where the outer nesting is on top and the inner nesting at the bottom. 
 
-> Esta estructura de datos permite mostrar 48 visualizaciones.
-
-```json
-{
-    "data": {
-        "8849b0b11bfffff": {
-            clinics: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            empress: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            escuels: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            jobs_w: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-        },
-        "8849b0b025fffff": {
-            clinics: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            empress: {
-                car: {
-                    15_min: {
-                            7am: 45
-                            8am: 68, // TODO: 
-                        },
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            escuels: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-            jobs_w: {
-                car: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                public_transport: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                walk: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-                bycicle: {
-                    15_min: 45,
-                    30_min: 78,
-                    60_min: 823,
-                },
-            },
-        },
-        ...
-    }
-}
-```
+>⚠️ It's really important to note that the **Configuration Object** must declare the Filter object with the Options in the same order as the nesting is. If the order don't match the application will render none.
 
 
-#### Almacenamiento
-Este archivo está almacenado en el directorio relativo a la ciudad en AWS con el nombre `:visualization_variant.json`, siendo `:visualization_variant` definido previamente en Contentful.
+Each key in the object represents a Option **code**, and they must match the codes/IDs declared in the **Configuration Object** for the application to load correctly.
 
-> 🚀 No hay límite en el número de variantes para una visualización. La aplicación las muestra en forma de lista.
-
-```
-/calculadora_oportunidades/v1/cities/:city_code/visualizations/:visualization_code/:visualization_variant.json
-```
-
-
-## Display de visualizaciones relativas a un hexágono (JSON)
-> Ejemplo: Isocronas.
-
-Este tipo de visualización hace uso de la rejilla HEX para pintar el mapa con los colores correspondientes en relación a un hexágono seleccionado. Las visualizaciones pueden ser filtradas con buckets predefinidos en Contentful. (ej. tiempo).
-
-
-#### Estructura
-Los archivos de visualización se almacenan en formato JSON. Representan un diccionario con los IDs de los hexágonos como _keys_ y un objeto de propiedades como valor.
-```typescript
-{
-    data: Record<ID, Record<Property.code, number | string>>;
-}
-```
-
-
-Ejemplo para _visualización de área alcanzable desde hexágono_:
-
-> Esta estructura de datos permite mostrar 4 visualizaciones. Se extiende a 12 con filtros de tiempo (En caso de ser declarados los buckets desde Contentful).
-
-```json
-{
-    "data": {
-        "8849b0b11bfffff": {
-            car: 0,
-            public_transport: 8,
-            bycicle: 0,
-            walk: 24,
-        },
-        "8849b0b025fffff": {
-            car: 0,
-            public_transport: 8,
-            bycicle: 0,
-            walk: 24,
-        },
-        ...
-    }
-}
-```
-
-
-
-#### Almacenamiento
-Este archivo está almacenado en el subdirectorio de la variante de la visualización usando el ID del hexágono como nombre del archivo. Ejemplo `8849b0b025fffff.json`. Esto permite a la aplicación solicitar el archivo correcto cuando se selecciona el hexágono.
-
-```
-/calculadora_oportunidades/v1/cities/:city_code/visualizations/:visualization_code/:visualization_variant/:hexagon_id.json
-```
-
-
-
-## Display visualizaciones estáticas (GeoJSON)
-> Ejemplo: Red vial, marginación federal, densidad federal.
-
-
-#### Almacenamiento
-Se almacenan como [Mapbox Tilesets](https://studio.mapbox.com/tilesets/). Si la visualización esta segmentada o tiene capas, entonces se debe crear 1 tileset por capa para poder asignar un color y nombre independiente.
-
-Ejemplo:
-Para la siguiente visualización se deben de crear 6 tilesets distintos y declarar los correspondientes _MapboxTileset_ en Contentful.
-![[1661749906.png]]
-
-
-## Estructura de datos de la aplicación
-```typescript
-// Platform
-type City = {
-    // Nombre de la ciudad. Visible para el usuario.
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
-    code: string;  
-    // País al que pertenece.
-    country: Country;  
-    // Esconde/muestra la ciudad en la calculadora.
-    active: boolean;
-    // Representa la latitud del centro de la ciudad.
-    lat: number;
-    // Representa la longitud del centro de la ciudad.
-    lng: number;
-    // Color en formato HEX. Usado para charts, etc.
-    color: string;
-    // Visualización por default que se muestra cuando se selecciona la ciudad.
-    defaultVisualization: Visualization;
-    // Visualizaciones disponibles para la ciudad.
-    visualizations: Visualization[];
-    // Visualizaciones de Mapbox disponibles para la ciudad.
-    statucVisualizations: StaticVisualization[];
-    
-    // Sidebar information
-    // Total de oportunidades en la ciudad. Usado en charts.
-    totalOpportunities: number;
-}
-
-type Country = {
-    // Nombre del país. Visible para el usuario.
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar el país en las distintas partes del código.
-    code: string;
-    // Esconde/muestra la ciudad en la calculadora.
-    active: boolean;  
-    // Visualizaciones de Mapbox disponibles para el país.
-    statucVisualizations: StaticVisualization[]; 
-}
-
-type HEXGrid = {
-    // Unique code in snake_case. Represents the variant.
-    code: string;
-    // Tamaño del hexágono base.
-    size: number;
-}
-
-
-type Transport = {
-    // Nombre del transporte. Visible para el usuario.
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar el transport en las distintas partes del código.
-    code: string;    
-}
-
-type Visualization = {
-    // Ciudad a la que pertenece la visualización.
-    city: City;
-    // Nombre de la visualización. Visible para el usuario. 
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
-    code: string;    
-    // Default variant to display.
-    defaultVariant: VisualizationVariant;
-    // Variants for the visualization. E.g. Different time. 
-    variants: VisualizationVariant[];
-    // HEX Grid que usa la visualización.
-    hexGrid: HEXGrid.code;
-}
-
-
-type VisualizationVariant = {
-    // Nombre de la visualización. Visible para el usuario. 
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar la visualización en las distintas partes del código.
-    code: string;  
-    // Proveedor de datos para la visualización.
-    dataProvider: DataProvider;  
-    // Unidad de los valores
-    unit: 'minutes' | 'hours' | 'seconds'; // TBD
-    // Buckets para filtrar los valores. (En caso de requerir filtro)
-    buckets: number[];
-    // Tipo de visualización. Determina su display e interactividad.
-    type: 'isocrone' | 'static';
-    // Default static visualization. Enabled when users select viz.
-    defaultStaticVisualizations: StaticVisualization[];
-    // Controles activados por default
-    defaultProperties: Properties[]
-}
-
-
-type DataProvider = {
-     // Código único en formato snake_case. Se usa para referenciar el proveedor de datos en las distintas partes del código.
-    code: string;
-    // Nombre del proveedor de datos visible para el cliente.
-    name: string;
-    // Dirección URL del proveedor de datos.
-    url: string;
-    // Dirección URL del asset a mostrar.
-    logotype: string;
-}
-
-
-type Properties = {
-    // Nombre de la propiedad. Visible para el usuario.
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar la propiedad en las distintas partes del código.
-    code: string;    
-}
-
-type StaticVisualization = {
-     // Nombre de la visualización. Visible para el usuario en la leyenda.
-    name: string;
-    // Código único en formato snake_case. Se usa para referenciar la ciudad en las distintas partes del código.
-    code: string;  
-    // Layers que component el mapa. 
-    mapboxTilesets: MapboxTileset[];
-}
-
-type MapboxTileset = {
-    // Aplication layer code. Unique.
-    code: 'uso-agricultura';
-    // Mapbox's layer code.
-    sourceLayer: 'AGRICULTURA-1nglu1';
-    // Mapbox's tileset ID.
-    tilesetId: 'mapbox://daniel-itdp.d2k35cu0';
-    // Geomtry visualization type.
-    type: 'fill' | 'line';
-    // Layer name. Visible to the user.
-    name: 'Agricultura';
-    // Geometry fill color in HEX code.
-    fillColor: string; 
-    // Geometry fill opacity. 0-1.
-    fillOpacity: 0.3;
-    // Geometry line color in HEX code.
-    lineColor: string; 
-    // Geometry line opacity. 0-1.
-    lineOpacity: 0.3;
-    // Geometry line width in pixels.
-    lineWidth: 0.3;
-}
-
-
-// Landing
-type LandingPage = {
-    title: string;
-    subtitle: string;
-    description: string;
-    feature1: string;
-    feature2: string;
-    feature3: string;
-    feature4: string;
-    feature1Img: string;
-    feature2Img: string;
-    feature3Img: string;
-    feature4Img: string;
-    sectionTwo: string;
-    sectionThree: string;
-    section1Img: string;
-    section2Img: string;
-    gif: string;
-    faq: string;
-    map: string;
-} 
-
-```
-
-
-
-### FAQ.
-* ¿Cómo agrego una nueva ciudad?
-    1. Crear una instancia del modelo _Country_ en Contentful. (En caso de requerirlo).
-    2. Crear una instancia del modelo _City_ en Contentful con los campos correspondientes.
-    3. Actualizar el diccionario de ciudades (JSON). Agregar el nuevo _key_ usando el código de la ciudad y asignar como valor el GeoJSON del área metropolitana.
+Finally the inner most values, which must be an integer, are used for calculations.
 
 
 
 ---
-**Modificador de tipo de transporte**
+## How to...
+The following is a step by step guide on how to perform common actions. This should allow anyone to setup the application. The guide is generic, it doesn't mention specific third party services, so please read the information above in order to setup the different external services for storage and CMS to fit your needs.
 
-* Congestion en distintos horarios.
-    * Aplica solo para carro.
-    * Aplica solo para ciertos mapas.
+#### How to add a new city?
+1. Update the `/core/cities_geometry.json` file to include the new city geometry within the [FeatureCollection](https://datatracker.ietf.org/doc/html/rfc7946#section-3.3) (see Cities Geometry Object)
+2. Declare the new **City** in the **Configuration Object** with all the corresponding fields set.
 
-* Comparacion habilitada para todos los mapas de tipo isocrona.
-* Buckets solo sirven para isocronas (NOT)
-.
+#### How to add a visualization?
+1. Add a new **City** if needed.
+1. Add a new **Grid** if needed.
+2. Declare a new **Visualization** in the **Configuration Object**
+3. Declare a new default **Visualization Variant** for this **Visualization**
+##### Static (relative to the city)
+2. Set the **Visualization** `relativeTo` property to `city`
+3. Upload the corresponding JSON to `/cities/:city/visualizations/:variant_code.json` (see Visualization Object)
+##### Dynamic (relative to a point in the map)
+2. Set the **Visualization** `relativeTo` property to `feature`
+3. Create a new directory in`/cities/:city/visualizations/:variant_code/`
+4. Upload a JSON per feature in the **Grid** used to `/cities/:city/visualizations/:variant_code/:feature_id.json` (see Visualization Object)
+
+#### How to add scenarios to a visualization?
+1. Declare a new **Visualization Variant** for the **Visualization** in question.
+2. Assign the **Visualization Variant** as part of the **Visualization**
+##### Static (relative to the city)
+3. Upload the corresponding JSON to `/cities/:city/visualizations/:variant_code.json` (see Visualization Object)
+##### Dynamic (relative to a point in the map)
+3. Create a new directory in`/cities/:city/visualizations/:variant_code/
+4. Upload a JSON per feature in the **Grid** used to `/cities/:city/visualizations/:variant_code/:feature_id.json` (see Visualization Object)
+
+#### How to add a map with a different grid?
+1. Declare a new **Grid** in the **Configuration Object**
+2. Upload the Grid Object **JSON** to `/cities/:city/grids/:grid_code.json` (see Grid Object)
+3. Update or create the **Visualization** in order to use the correct **Grid** code. 
+4. When updating a **Visualization**, you must update all the JSON (see Visualization Object) because the IDs of the cell IDs won't match.
 
 
+#### How to add a charts to visualization metadata?
+1. Create a **Visualization** if needed
+2. Enter text in the field `helperText`
+3. Enter a placeholder text using the `{{ID}}` syntax. This placeholder is replaced with the Chart later.
+4. Setup the `chartConfig` which is a **Chart Config** 
 
+```typescript
+Record<ID_FROM_HELPER_TEXT, ChartConfiguration>
+```
 
+Consider that the `ChartConfiguration` is an object in the [Chart.js Configuration Object](https://www.chartjs.org/docs/latest/configuration)
 
-## Guides
+#### How to add Mapbox Tilesets?
+1. Add a new **Mapbox Tileset** in the **Configuration Object** and set the two required properties: `sourceLayer` and `id` (Tileset ID). They come from the [Mapbox Studio Tileset](https://studio.mapbox.com/tilesets/) panel. 
+2. Assign the **Mapbox Tileset** to either: a Country, a City, a Visualization, a Visualization Variant. The application have granular control on where to have the tilesets available depending on the selected visualization. It's possible to automatically turn on Tilesets. This configuration exists for the City and the Filter.
 
-#### Register a new city
-1. Create a new city in Contentful
-2. Update the `/cities.json` and replace the current in AWS
-3. Add the directory in AWS
-4. 
+**Customizing styles**
+It uses the [Mapbox Style Expressions](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions) which is a JSON-like format. [See reference](https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions).
+
+#### How to setup filters?
+See the Metadata Object
+
+#### How to create visualizations that allow comparison?
+1. Create the **Visualization**.
+2. Set the **Visualization** `comparableOptions`to the Options in the Filter that allow multiple selection.
+3. Set the **Visualization** `customScales` to an array. This property represents the buckets in which the values will be compared. Eg. `[15, 30, 60]` will render the UI to compare from 0-15, 16-30, 31-60.
+
+---
+## Reference
+
+## Data types
+The following types represent all the data used in the application and the purpose for each of them. This might be useful to build and/or setup a custom CMS.
+
+```typescript
+
+type Unit = {
+	name?: string;
+	shortName?: string;
+	type?: string;
+};
+
+// Represents a filter option. It is a property in the dataset JSON.
+type Option = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code. Must match property in the JSON.
+	code: string;
+	// Associated color.
+	color?: Color;
+	// Unit.
+	unit?: string;
+	// Material Icon code. Visit https://fonts.google.com/icons
+	iconName?: string;
+	// Tilesets to enable when the option toggles.
+	enabledMapboxTilesets?: MapboxTileset[];
+	// Disabled the option.
+	disabled?: boolean;
+};
+
+// Represents a grid of features
+type Grid = {
+	// Machine friendly code. Must match the grid JSON name.
+	code: string;
+	// Size.
+	size: number;
+};
+
+// Represents a data provider.
+type DataProvider = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code.
+	code: string;
+	// Provider's URL.
+	url?: string;
+	// Logotype.
+	logo?: Image;
+	// Helper text.
+	helperText?: string;
+	// Max height for the logo.
+	maxHeight?: number;
+};
+
+// Represents a Mapbox Tileset. Visit https://studio.mapbox.com/tilesets
+type MapboxTileset = {
+	// Tileset's ID.
+	id: string;
+	// Tileset's source layer.
+	sourceLayer: string;
+	// Style type.
+	type: 'fill' | 'line';
+	// Human-friendly name.
+	name: string;
+	// Fill color, when type fill. Must be a valid MapboxExpression
+	fillColorExpression?: ColorExpression;
+	// Fill opacity, when type fill.
+	fillOpacity?: number;
+	// Line color, when type line. Must be a valid MapboxExpression
+	lineColorExpression?: ColorExpression;
+	// Line opacity, when type line.
+	lineOpacity?: number;
+	// Line width, when type line.
+	lineWidth?: number;
+	// Legend object to override the auto-generated.
+	legendRanges?: Legend['scales'];
+};
+
+// Represents a visualization variant. It's a dataset.
+type VisualizationVariant = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code. Must match the filename or namespace in AWS.
+	code: string;
+	// Visibility. Defaults to false.
+	active?: boolean;
+	// Data providers
+	dataProviders?: DataProvider[];
+	// Tilesets available when city is selected.
+	mapboxTilesets?: MapboxTileset[];
+};
+
+// Represents a filter for a visualization.
+type Filter = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code.
+	code: string;
+	// Collection of options.
+	options: Option[];
+	// Preselected option.
+	defaultOption: Option;
+	// Selector interface.
+	selectorType?: 'button' | 'select' | 'slider' | 'radio' | 'grid-button';
+};
+
+  
+
+// Represents a visualization.
+type Visualization = {
+	metadata?: VisualizationMetadata;
+	// Machine friendly code. Must match the AWS namespace.
+	code: string;
+	// Visibility. Defaults to false.
+	active?: boolean;
+	// Enables comparison mode.
+	comparableOptions?: Option[];
+	// Variants for the visualization. E.g. Different time.
+	variants: VisualizationVariant[];
+	// Default variant to display when toggled.
+	defaultVariant: VisualizationVariant;
+	// Grid used.
+	grid: Grid;
+	// Filters available for the datasets.
+	filters: Filter[];
+	// Color assigned to the minimum value.
+	minColor: Color;
+	// Color assigned to the maximum value.
+	maxColor: Color;
+	// Value assigned to the minimum value.
+	minValue: number;
+	// Value assigned to the maximum value.
+	maxValue: number;
+	// Number of scales to for the color breakdown. Defaults to 6.
+	scalesCount?: number;
+	// Overrides the programmatically generated scales.
+	customScales?: number[];
+	// Text associated to the visualization.
+	helperText?: string;
+	// Chart.js configuration. Visit https://www.chartjs.org/docs/latest/configuration/
+	chartConfig?: Record<ID, ChartConfiguration>;
+	// Selector interface for the variants. Defaults to `select`.
+	variantSelectorType?: 'select' | 'slider' | 'radio';
+	// Tilesets available when city is selected.
+	mapboxTilesets?: MapboxTileset[];
+	// Visualization relative to:
+	relativeTo: 'city' | 'feature';
+	// Scale formula
+	scaleFormula?: 'linear' | 'quantile';
+	// Group
+	visualizationGroup?: VisualizationGroup;
+	// Picker type for autogenerated filter.
+	customScaleSelectorType?: 'select' | 'slider' | 'radio';
+};
+
+// Represents a country
+type Country = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code.
+	code: string;
+};
+
+  
+
+// Represents a City
+type City = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code. Must match the AWS namespace.
+	code: string;
+	// Country
+	country: Country;
+	// Visibility. Defaults to false.
+	active?: boolean;
+	// City centre coordinates.
+	coordinates: LngLatLike;
+	// Associated color.
+	color: Color;
+	// Visualizations associated.
+	visualizations: Visualization[];
+	// Visualization to enable when city is selected.
+	defaultVisualization: Visualization;
+	// Tilesets available when city is selected.
+	mapboxTilesets?: MapboxTileset[];
+	// Arbitraty key-value data.
+	metadata: Record<string, any>;
+};
+
+  
+type Code = string;
+type UUID = string;
+type FeatureDictionary = Record<UUID, Feature<Polygon>>;
+
+type Note = {
+	title?: string;
+	body?: string;
+};
+
+// Tool configuration.
+type Config = {
+	// Human-friendly name.
+	title?: string;
+	// Onboarding text.
+	onboardingText?: string;
+	// Onboarding charts.
+	onboardingChartConfig?: Record<ID, ChartConfiguration>;
+	// Available cities.
+	cities: City[];
+	// Tilesets available globally.
+	mapboxTilesets: MapboxTileset[];
+	// Tilesets to enable when application loads.
+	enabledMapboxTilesets?: MapboxTileset[];
+	// Notes
+	notes?: Note;
+	// Logotype
+	logotype?: Image;
+};
+
+type MapData = Record<
+	City['code'],
+	{
+	grids: Record<Code, FeatureDictionary>;
+	visualizations: Record<Code, Record<string, Record<Code, any>>>;
+	}
+>;
+
+type VisualizationGroup = {
+	// Human-friendly name.
+	name: string;
+	// Machine friendly code. Must match the AWS namespace.
+	code: string;
+};
+
+type VisualizationMetadata = {
+	// Human-friendly name.
+	name: string;
+	// Human-friendly description.
+	shortDescription?: string;
+	// Human-friendly full description.
+	fullDescription?: string;
+	// Unit
+	unit?: Unit;
+};
+
+```
+
