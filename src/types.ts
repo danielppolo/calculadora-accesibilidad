@@ -245,6 +245,8 @@ export type Config = {
   notes?: Note;
   // Logotype
   logotype?: ContentfulImage;
+  // Initial center coordinates.
+  center: LngLatLike;
 };
 
 export type MapData = Record<

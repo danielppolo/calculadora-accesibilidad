@@ -5,7 +5,6 @@ import {
   CITY_ZOOM,
   COUNTRY_ZOOM,
   DEFAULT_OPACITY,
-  MEXICO_COORDINATES,
 } from 'src/constants';
 import useConfig from 'src/hooks/data/useConfig';
 import { MapParamsState } from 'src/types';
@@ -184,7 +183,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
 
       if (options?.flyToOrigin) {
         map.flyTo({
-          center: MEXICO_COORDINATES,
+          center: config?.center,
           zoom: COUNTRY_ZOOM,
           duration: 2000,
         });
@@ -198,7 +197,7 @@ function MapParamsProvider({ children }: MapParamsProviderProps) {
       nonReactiveCurrent = nextState;
       return setCurrent(nextState);
     },
-    [hideAll, hideAllTilesets, map, messageApi]
+    [config?.center, hideAll, hideAllTilesets, map, messageApi]
   );
 
   const handleCityChange = useCallback(

@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import queries from 'src/utils/queries';
 import { useMapboxTilesetManager } from 'src/context/mapboxTilesetManager';
 import { useMapboxLayerManager } from 'src/context/mapboxLayerManager';
-import { BASE_LAYER_ID, DEFAULT_LOCALE } from 'src/constants';
+import { BASE_LAYER_ID, COUNTRY_ZOOM, DEFAULT_LOCALE } from 'src/constants';
 import { useRouter } from 'next/router';
+import { useMap } from 'src/context/map';
 
 type CustomConfig = Config & {
   citiesDictionary: Record<City['code'], City>;
@@ -28,6 +29,8 @@ function useConfig() {
   const { locale, defaultLocale } = useRouter();
   const { show } = useMapboxTilesetManager();
   const { add } = useMapboxLayerManager();
+  const map = useMap();
+
   return useQuery({
     queryKey: queries.config.main({
       locale: locale ?? defaultLocale ?? DEFAULT_LOCALE,
@@ -43,6 +46,12 @@ function useConfig() {
         maxValue: 0,
         legendTitle: '',
       });
+      map.flyTo({
+        center: config.center,
+        zoom: COUNTRY_ZOOM,
+        duration: 2000,
+      });
+
       config?.enabledMapboxTilesets?.forEach((tileset) => {
         show(tileset);
       });
